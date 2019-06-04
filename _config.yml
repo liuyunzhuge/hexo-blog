@@ -80,4 +80,4 @@ theme: next
 deploy:
   type: git
   repo: https://github.com/liuyunzhuge/hexo-blog.git
-  branch: site
+  branch: gh-pages
