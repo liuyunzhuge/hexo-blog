@@ -417,3 +417,5 @@ locked: function() {
 
 ## 小结
 以上就是本篇要分享的关于zepto中callback实现的内容。 学习它的目的是为了下篇继续研究zepto中deferred模块的实现，毕竟这算是早期的Promise实现方式，在它们源码并不复杂的情况下， 花点时间来琢磨也还是值得的。
+
+最后看了下jquery的[callback源码](https://github.com/jquery/jquery/blob/master/src/callbacks.js)，发现跟zepto是几乎一样的，估计zepto实现参考了它吧。
