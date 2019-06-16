@@ -1,10 +1,12 @@
 ---
 title: mac os下centos虚拟机的安装、网络及文件共享配置
 tags:
-- mac开发环境
+  - mac开发环境
 categories:
-- 开发环境
+  - 开发环境
+date: 2019-06-16 11:33:34
 ---
+
 
 准备用mac pro作为开发机。之前在win10下，一直都是通过虚拟机来作为主要开发环境，这次用mac也想这么干。最重要的3个实现目标是：
 1. 虚拟机能访问互联网；
@@ -171,7 +173,7 @@ The authenticity of host '192.168.56.103 (192.168.56.103)' can't be established.
 ECDSA key fingerprint is SHA256:Og1eS6sM/dUoPXnQH6TVNd4/GE7FdH7AApWtUTfm/rg.
 Are you sure you want to continue connecting (yes/no)? 
 ```
-输入yes之后，就会提示输入密码，输完密码，就能进入虚拟了。
+输入yes之后，就会提示输入密码，输完密码，就能进入虚拟机了。
 
 至此本篇的第2个目标也实现了。
 
