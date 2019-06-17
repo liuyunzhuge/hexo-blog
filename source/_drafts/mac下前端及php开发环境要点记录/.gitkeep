@@ -1,4 +1,0 @@
-✖ Install fail! Error: ENOTSUP: operation not supported on socket, symlink '_js-cookie@2.2.0@js-cookie' -> '/mnt/hgfs/code/allyoga_passport/node_modules/js-cookie'
-Error: ENOTSUP: operation not supported on socket, symlink '_js-cookie@2.2.0@js-cookie' -> '/mnt/hgfs/code/allyoga_passport/node_modules/js-cookie'
-npminstall version: 3.22.1
-npminstall args: /usr/local/node/bin/node /usr/local/node/lib/node_modules/cnpm/node_modules/npminstall/bin/install.js --fix-bug-versions --china --userconfig=/root/.cnpmrc --disturl=https://npm.taobao.org/mirrors/node --registry=https://r.npm.taobao.org
