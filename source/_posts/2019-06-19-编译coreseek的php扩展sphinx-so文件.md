@@ -4,7 +4,9 @@ tags:
   - 运维知识
 categories:
   - 运维管理
+date: 2019-06-19 23:03:35
 ---
+
 
 本篇在{% post_link "centos安装coreseek作为全文搜索引擎" "centos安装coreseek作为全文搜索引擎" %}的基础上，编译coreseek的php库文件sphinx.so，以便php应用能够sphinx的api调用搜索引擎服务。
 
