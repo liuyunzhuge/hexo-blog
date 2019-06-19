@@ -352,6 +352,9 @@ words:
 
 /etc/csft.conf只是sphinx全文检索配置的一个模板，实际应该根据产品需要自己编写配置文件。
 
+## 其它可能遇到的问题
+{% asset_img 01.png [title] %}
+
 至此，coreseek就已经安装好了。下一步是要编译它相关的so文件，提供给php用，让php能够利用api来使用全文搜索引擎提供的服务。
 
 
