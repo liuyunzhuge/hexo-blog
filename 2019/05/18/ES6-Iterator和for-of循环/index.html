@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中Iterator和for-of循环我的ES6入门学习规划">
+<meta name="keywords" content="ES6学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6 Iterator和for...of循环">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/05/18/ES6-Iterator和for-of循环/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中Iterator和for-of循环我的ES6入门学习规划">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-14T13:57:46.175Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6 Iterator和for...of循环">
+<meta name="twitter:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中Iterator和for-of循环我的ES6入门学习规划">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/05/18/ES6-Iterator和for-of循环/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ES6 Iterator和for...of循环 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/05/18/ES6-Iterator和for-of循环/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6 Iterator和for...of循环
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-17 18:10:30" itemprop="dateCreated datePublished" datetime="2019-05-17T18:10:30Z">2019-05-17</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：</p>
+<blockquote>
+<p>阮一峰ES6的书籍中<a href="http://es6.ruanyifeng.com/#docs/iterator" target="_blank" rel="noopener">Iterator和for-of循环</a><br><a href="/2019/05/01/ES6入门学习的规划/" title="我的ES6入门学习规划">我的ES6入门学习规划</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="Iterator定义"><a href="#Iterator定义" class="headerlink" title="Iterator定义"></a>Iterator定义</h2><p>Iterator称为遍历器，是一种设计模式，很多语言都有它的实现，JS出得比较晚。主要作用是用来遍历数据结构，但是任何类或对象都可以按它的规范实现它，以便给外部提供遍历自己内部数据或状态的能力。它的规范如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">interface Iterable &#123;</span><br><span class="line">  [<span class="built_in">Symbol</span>.iterator]() : Iterator,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface Iterator &#123;</span><br><span class="line">  next(value?: any) : IterationResult,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface IterationResult &#123;</span><br><span class="line">  value: any,</span><br><span class="line">  done: boolean,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>要点：</p>
+<ul>
+<li>需要把Symbol.iterator这个Symbol值定义为一个方法属性，部署到在对象或类上，并返回一个Iterator对象；外部通过调用类实例或对象的[Symbol.iterator]方法即可得到它的遍历器对象；</li>
+<li>遍历器对象（Iterator对象）需部署一个next实例方法，在外部拿到遍历器对象后，通过不断地调用它的next方法就能遍历出对象的内部数据或状态；</li>
+<li>next方法返回值的value属性用于传递本次遍历的值，next返回值的done属性可用作判断遍历是否结束，为true时表示结束；</li>
+<li>实际实现中next方法的返回值，不一定需要同时包含value跟done属性；</li>
+<li>由于Iterator的作用是遍历，所以在考虑如何生成这个对象的时候，用一个变量去记住当前的遍历位置，是个比较常见的做法。</li>
+</ul>
+<p>举例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">	<span class="number">0</span>: <span class="string">'tom'</span>,</span><br><span class="line">	<span class="number">1</span>: <span class="string">'jerry'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'jim'</span>,</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	[<span class="built_in">Symbol</span>.iterator]() &#123;</span><br><span class="line">		<span class="keyword">let</span> curIndex = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> &#123;</span><br><span class="line">			next: <span class="function"><span class="params">()</span>=&gt;</span> &#123;</span><br><span class="line">				<span class="keyword">if</span>(curIndex === <span class="keyword">this</span>.length) &#123;</span><br><span class="line">					<span class="keyword">return</span> &#123;<span class="attr">done</span>: <span class="literal">true</span>&#125;;</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">return</span> &#123;<span class="attr">value</span>: <span class="keyword">this</span>[curIndex++]&#125;;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> iterator = obj[<span class="built_in">Symbol</span>.iterator]();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result;</span><br><span class="line"><span class="keyword">while</span>((result = iterator.next()) &amp;&amp; !result.done) &#123;</span><br><span class="line">	log(result);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'当前值：'</span> + result.value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>js中，实现了Iterator接口的内置对象：</p>
+<ul>
+<li>Array</li>
+<li>Map</li>
+<li>Set</li>
+<li>String: 默认的Iterator接口会把字符串对象当成字符数组进行遍历</li>
+<li>TypedArray</li>
+<li>函数的 arguments 对象</li>
+<li>NodeList 对象</li>
+</ul>
+<p>这些内置对象的[Symbol.iterator]方法有时候可以借用，比如数组的Iterator接口可以借給类数组对象（含数值键和length属性）使用：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">	<span class="number">0</span>: <span class="string">'tom'</span>,</span><br><span class="line">	<span class="number">1</span>: <span class="string">'jerry'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'jim'</span>,</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	[<span class="built_in">Symbol</span>.iterator]: <span class="built_in">Array</span>.prototype[<span class="built_in">Symbol</span>.iterator]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> iterator = obj[<span class="built_in">Symbol</span>.iterator]();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result;</span><br><span class="line"><span class="keyword">while</span>((result = iterator.next()) &amp;&amp; !result.done) &#123;</span><br><span class="line">	log(result);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'当前值：'</span> + result.value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ES新增for-of循环，专门用来遍历Iterator接口：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">	<span class="number">0</span>: <span class="string">'tom'</span>,</span><br><span class="line">	<span class="number">1</span>: <span class="string">'jerry'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'jim'</span>,</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	[<span class="built_in">Symbol</span>.iterator]() &#123;</span><br><span class="line">		<span class="keyword">let</span> curIndex = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> &#123;</span><br><span class="line">			next: <span class="function"><span class="params">()</span>=&gt;</span> &#123;</span><br><span class="line">				<span class="keyword">if</span>(curIndex === <span class="keyword">this</span>.length) &#123;</span><br><span class="line">					<span class="keyword">return</span> &#123;<span class="attr">done</span>: <span class="literal">true</span>&#125;;</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">return</span> &#123;<span class="attr">value</span>: <span class="keyword">this</span>[curIndex++]&#125;;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> value <span class="keyword">of</span> obj) &#123;</span><br><span class="line">	log(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'当前值：'</span> + value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可想而知, for-of循环内部一定会通过[Symbol.iterator]方法，拿到遍历器对象，然后反复调用next方法实现遍历。即使没有for-of循环，我们也能使用while来实现遍历，for-of只是语言级别上提供的一个遍历而已。</p>
+<h2 id="主要用途"><a href="#主要用途" class="headerlink" title="主要用途"></a>主要用途</h2><ul>
+<li><a href="/2019/05/13/ES6-数组解构-变量解构/" title="解构赋值">解构赋值</a></li>
+<li><a href="/2019/05/14/ES6-数组的扩展/" title="扩展运算符">扩展运算符</a></li>
+<li>yield *表达式，<a href="/2019/05/18/ES6-Generator函数的语法/" title="参见Generator部分">参见Generator部分</a></li>
+<li>for-of循环</li>
+</ul>
+<h2 id="Generator函数"><a href="#Generator函数" class="headerlink" title="Generator函数"></a>Generator函数</h2><p>由于后面要学习的Generator函数，返回的就是一个Iterator对象，所以如果要实现一个类或对象的遍历器，也可以直接在[System.iterator]上部署一个Generator函数。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">	<span class="number">0</span>: <span class="string">'tom'</span>,</span><br><span class="line">	<span class="number">1</span>: <span class="string">'jerry'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'jim'</span>,</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	*[<span class="built_in">Symbol</span>.iterator]() &#123;</span><br><span class="line">		<span class="keyword">let</span> curIndex = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">while</span>(curIndex &lt; <span class="keyword">this</span>.length) &#123;</span><br><span class="line">			<span class="keyword">yield</span> <span class="keyword">this</span>[curIndex++];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> value <span class="keyword">of</span> obj) &#123;</span><br><span class="line">	log(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'当前值：'</span> + value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Iterator对象的return方法"><a href="#Iterator对象的return方法" class="headerlink" title="Iterator对象的return方法"></a>Iterator对象的return方法</h2><p>除了next方法，还可以在Iterator对象上再部署一个return方法。 </p>
+<ul>
+<li>return方法必须返回一个对象，这是规范约定的，否则会报错；</li>
+<li>return方法会在for-of循环出现break，或for-of循环体内抛出异常时调用<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">	<span class="number">0</span>: <span class="string">'tom'</span>,</span><br><span class="line">	<span class="number">1</span>: <span class="string">'jerry'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'jim'</span>,</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	[<span class="built_in">Symbol</span>.iterator]() &#123;</span><br><span class="line">		<span class="keyword">let</span> curIndex = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> &#123;</span><br><span class="line">			next: <span class="function"><span class="params">()</span>=&gt;</span> &#123;</span><br><span class="line">				<span class="keyword">if</span>(curIndex === <span class="keyword">this</span>.length) &#123;</span><br><span class="line">					<span class="keyword">return</span> &#123;<span class="attr">done</span>: <span class="literal">true</span>&#125;;</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">return</span> &#123;<span class="attr">value</span>: <span class="keyword">this</span>[curIndex++]&#125;;</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="keyword">return</span>: <span class="function"><span class="params">()</span>=&gt;</span> &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">'return'</span>);</span><br><span class="line">				<span class="keyword">return</span> &#123;<span class="attr">done</span>: <span class="literal">true</span>&#125;;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'当前值：'</span> + value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> value <span class="keyword">of</span> obj) &#123;</span><br><span class="line">	<span class="keyword">if</span>(value === <span class="string">'jerry'</span>) <span class="keyword">break</span>;</span><br><span class="line">	log(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> value <span class="keyword">of</span> obj) &#123;</span><br><span class="line">	<span class="keyword">if</span>(value === <span class="string">'jerry'</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'sth wrong'</span>);</span><br><span class="line">	log(value);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 执行以上语句会发现打印了2次return</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>return只是要求返回一个对象，但是并没有说清楚应该返回一个什么结构的对象，上面的例子中返回了{done: true}，也仅仅是补充表达了遍历已结束的含义。</p>
+<p>return方法的使用价值：对于一般的遍历实现来说，return方法可能不是一定需要部署的，但是如果在遍历过程中有用到一些特殊的资源或任务，比如打开文件、打开数据库连接这种，那么部署一个return方法，然后在return方法里面做资源的关闭或任务地中止（关闭文件、关闭数据库连接），是一个比较不错的处理方式。</p>
+<h2 id="Iterator对象的throw方法"><a href="#Iterator对象的throw方法" class="headerlink" title="Iterator对象的throw方法"></a>Iterator对象的throw方法</h2><p>除了return方法，还可以在Iterator对象上再部署一个throw方法。 这个方法大部分遍历场景不用到，它是专门给Generator函数配套提供的。 这一点，我觉得实现地不够优雅。如果把Generator函数返回的Iterator对象类型，作为普通的Iterator类型的一个子类，然后给这个子类单独定义throw方法，会不会更好一点。</p>
+<h2 id="for-of循环"><a href="#for-of循环" class="headerlink" title="for-of循环"></a>for-of循环</h2><p>这是ES推出的专门用来遍历Iterator对象的语法。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'red'</span>, <span class="string">'green'</span>, <span class="string">'blue'</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> v <span class="keyword">of</span> arr) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(v); <span class="comment">// red green blue</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>v这个变量就是对象(arr)的Iterator对象next方法返回值的value属性。任何部署了[System.iterator]接口的对象，都能使用for-of循环。</p>
+<p>注意：Iterator对象最后一次next方法，返回的value如果有值，会被for-of循环给忽略：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">	<span class="number">0</span>: <span class="string">'tom'</span>,</span><br><span class="line">	<span class="number">1</span>: <span class="string">'jerry'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'jim'</span>,</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	[<span class="built_in">Symbol</span>.iterator]() &#123;</span><br><span class="line">		<span class="keyword">let</span> curIndex = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> &#123;</span><br><span class="line">			next: <span class="function"><span class="params">()</span>=&gt;</span> &#123;</span><br><span class="line">				<span class="keyword">if</span>(curIndex === <span class="keyword">this</span>.length) &#123;</span><br><span class="line">					<span class="keyword">return</span> &#123;<span class="attr">done</span>: <span class="literal">true</span>, <span class="attr">value</span>: <span class="string">'end'</span>&#125;;</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">return</span> &#123;<span class="attr">value</span>: <span class="keyword">this</span>[curIndex++]&#125;;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'当前值：'</span> + value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> value <span class="keyword">of</span> obj) &#123;</span><br><span class="line">	log(value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这是合理的，最后一次next方法调用，返回值的done属性，必定为true，它表达的含义就是遍历结束，所以它的value值会被忽略。</p>
+<p>Object Array Set Map这几个类新推出的entries()、keys()、values()实例方法，返回的都是Iterator对象，所以都能用for-of循环。</p>
+<p>跟数组实例的forEach方法相比，for-of循环不是回调，可正常使用break continue return这些语法控制遍历，所以for-of循环优于forEach方法来遍历数组。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6学习笔记/" rel="tag"># ES6学习笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/17/ES6-Promise/" rel="next" title="ES6 Promise">
+                <i class="fa fa-chevron-left"></i> ES6 Promise
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/18/ES6-Generator函数的语法/" rel="prev" title="ES6 Generator函数的语法">
+                ES6 Generator函数的语法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterator定义"><span class="nav-number">1.</span> <span class="nav-text">Iterator定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要用途"><span class="nav-number">2.</span> <span class="nav-text">主要用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator函数"><span class="nav-number">3.</span> <span class="nav-text">Generator函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterator对象的return方法"><span class="nav-number">4.</span> <span class="nav-text">Iterator对象的return方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterator对象的throw方法"><span class="nav-number">5.</span> <span class="nav-text">Iterator对象的throw方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#for-of循环"><span class="nav-number">6.</span> <span class="nav-text">for-of循环</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

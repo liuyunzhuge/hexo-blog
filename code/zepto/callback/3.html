@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="../zepto/dist/zepto.js"></script>
+	<script type="text/javascript" src="./callback.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+	let foo = (msg)=>{
+		console.log('foo says: ' + msg);
+	};
+	let bar = (msg)=>{
+		console.log('bar says: ' + msg);
+	};
+	let callbacks = $.Callbacks({
+		memory: true
+	});
+
+	callbacks.add(foo);
+	callbacks.fire('bingo'); 
+	// foo says: binggo
+
+	callbacks.add(bar);
+	// bar says: binggo
+
+	// memory这个option让callbacks记住了上一次fire的参数，如果在上一次fire之后，下一次fire之前
+	// add了新的回调，新的回调会立即执行，传入上一次fire的参数
+</script>
+</body>
+</html>

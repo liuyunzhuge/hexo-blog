@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中函数的扩展我的ES6入门学习规划  平常所说的对象属性，似乎都是指对象的那些跟值对应的属性，实际上属性除了有值属性，还有方法属性，这也是为啥在遍历对象的时候，能遍历出来的不单是那些值，还有对象的方法。 在掌握了属性描述符（PropertyDescriptor）之后">
+<meta name="keywords" content="ES6学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6 对象的扩展">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/05/14/ES6-对象的扩展/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中函数的扩展我的ES6入门学习规划  平常所说的对象属性，似乎都是指对象的那些跟值对应的属性，实际上属性除了有值属性，还有方法属性，这也是为啥在遍历对象的时候，能遍历出来的不单是那些值，还有对象的方法。 在掌握了属性描述符（PropertyDescriptor）之后">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-14T13:57:46.171Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6 对象的扩展">
+<meta name="twitter:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中函数的扩展我的ES6入门学习规划  平常所说的对象属性，似乎都是指对象的那些跟值对应的属性，实际上属性除了有值属性，还有方法属性，这也是为啥在遍历对象的时候，能遍历出来的不单是那些值，还有对象的方法。 在掌握了属性描述符（PropertyDescriptor）之后">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/05/14/ES6-对象的扩展/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ES6 对象的扩展 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/05/14/ES6-对象的扩展/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6 对象的扩展
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-14 15:40:38" itemprop="dateCreated datePublished" datetime="2019-05-14T15:40:38Z">2019-05-14</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：</p>
+<blockquote>
+<p>阮一峰ES6的书籍中<a href="http://es6.ruanyifeng.com/#docs/function" target="_blank" rel="noopener">函数的扩展</a><br><a href="/2019/05/01/ES6入门学习的规划/" title="我的ES6入门学习规划">我的ES6入门学习规划</a></p>
+</blockquote>
+<p>平常所说的对象属性，似乎都是指对象的那些跟值对应的属性，实际上属性除了有值属性，还有方法属性，这也是为啥在遍历对象的时候，能遍历出来的不单是那些值，还有对象的方法。 在掌握了属性描述符（PropertyDescriptor）之后，对属性的理解就会加深不少。</p>
+<a id="more"></a>
+<p>在对象扩展这个部分要特别注意以下几个点的适用情况：</p>
+<ol>
+<li>是否包含继承属性</li>
+<li>是否包含不可枚举属性</li>
+<li>setters, getters如何处理</li>
+<li>symbol值如何处理</li>
+</ol>
+<h2 id="属性的简洁表示法。"><a href="#属性的简洁表示法。" class="headerlink" title="属性的简洁表示法。"></a>属性的简洁表示法。</h2><p>ES6在给对象定义值或方法的时，有更简洁的写法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="string">'bar'</span>;</span><br><span class="line"><span class="keyword">let</span> baz = &#123;foo&#125;;</span><br><span class="line">baz.foo;<span class="comment">//bar</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> o = &#123;</span><br><span class="line">	method() &#123;</span><br><span class="line">	    <span class="comment">//...</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>setters, getters:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> card = &#123;</span><br><span class="line">    _wheels: <span class="number">4</span>,</span><br><span class="line">    <span class="keyword">get</span> wheels() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>._wheels;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">set</span> wheels(value) &#123;</span><br><span class="line">        <span class="keyword">this</span>._wheels = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>generator函数，加星号：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">    * method() &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="属性名表达式"><a href="#属性名表达式" class="headerlink" title="属性名表达式"></a>属性名表达式</h2><p>在定义属性的时候，可以通过中括号使用表达式来表示属性名称：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> propKey = <span class="string">'foo'</span>;</span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    [propKey]: <span class="literal">true</span>,</span><br><span class="line">    [<span class="string">'a'</span> + <span class="string">'bc'</span>]: <span class="number">123</span>,</span><br><span class="line">    [propKey + <span class="string">'_yes'</span>]() &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;,</span><br><span class="line">    * [propKey + <span class="string">'_no'</span>]() &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>属性名表达式不能与属性名简写同时使用</li>
+<li>属性名表达式如果是一个对象，默认情况下会自动将对象转为字符串[object Object]</li>
+</ul>
+<h2 id="属性的可枚举性"><a href="#属性的可枚举性" class="headerlink" title="属性的可枚举性"></a>属性的可枚举性</h2><p>对象的属性描述符上面有一个enumerable值，如果为true，则表示这个属性是可枚举的。有四个操作会忽略不可枚举的属性：</p>
+<ul>
+<li>for…in 只遍历对象自身和继承的可枚举属性</li>
+<li>Object.keys() 返回对象自身的所有可枚举属性的键名</li>
+<li>JSON.stringify() 只串行化对象自身的可枚举属性</li>
+<li>Object.assign() 只考虑对象自身的可枚举属性</li>
+</ul>
+<p>这四个方法按照笔记一开始提到的注意点，重新整理如下：</p>
+<table>
+<thead>
+<tr>
+<th>api</th>
+<th>继承属性</th>
+<th>不可枚举属性</th>
+<th>setter</th>
+<th>getter</th>
+<th>symbol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>for…in</td>
+<td><strong>包含</strong></td>
+<td>不包含</td>
+<td>包含</td>
+<td>包含</td>
+<td>不包含</td>
+</tr>
+<tr>
+<td>Object.keys()</td>
+<td>不包含</td>
+<td>不包含</td>
+<td>包含</td>
+<td>包含</td>
+<td>不包含</td>
+</tr>
+<tr>
+<td>JSON.stringify()</td>
+<td>不包含</td>
+<td>不包含</td>
+<td><strong>不包含</strong></td>
+<td>包含</td>
+<td>不包含</td>
+</tr>
+<tr>
+<td>Object.assign()</td>
+<td>不包含</td>
+<td>不包含</td>
+<td>包含</td>
+<td>包含</td>
+<td><strong>包含</strong></td>
+</tr>
+</tbody>
+</table>
+<p>测试用例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> parent = &#123;<span class="attr">name</span>: <span class="string">'parent'</span>&#125;;</span><br><span class="line"><span class="keyword">let</span> _birth;</span><br><span class="line"><span class="keyword">let</span> id = <span class="built_in">Symbol</span>();</span><br><span class="line"><span class="keyword">let</span> child = &#123;</span><br><span class="line">    <span class="keyword">set</span> birth(birth) &#123;</span><br><span class="line">        _birth = birth;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">get</span> birthday()&#123;</span><br><span class="line">        <span class="keyword">return</span> _birth;</span><br><span class="line">    &#125;,</span><br><span class="line">    [id]: <span class="string">'lyzg'</span>,</span><br><span class="line">    __proto__: parent</span><br><span class="line">&#125;;</span><br><span class="line">child.birth = <span class="string">'0101'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'for...in'</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i <span class="keyword">in</span> child) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i, child[i])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Object.keys()'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.keys(child));</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'JSON.stringify()'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(child));</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Object.assign()'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.assign(&#123;&#125;, child));</span><br></pre></td></tr></table></figure></p>
+<p>注意：</p>
+<ul>
+<li>JSON.stringify()在串行化的时候，如果属性是一个getter，那么会把getter调用一次，并把返回值进行串行化</li>
+<li>Object.assign()在复制的时候，如果属性是一个getter，那么会把getter调用一次，并把返回值复制出来，而不是getter属性本身；Object.assign()在复制的时候，如果属性是一个单独的setter，没有getter与其对应，这个属性会以undefined为值进行复制，setter本身不会被复制</li>
+</ul>
+<p>ES6规定所有Class的原型的方法都是不可枚举的。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(<span class="class"><span class="keyword">class</span> </span>&#123;foo() &#123;&#125;&#125;.prototype, <span class="string">'foo'</span>).enumerable</span><br><span class="line"><span class="comment">// false</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="属性的遍历"><a href="#属性的遍历" class="headerlink" title="属性的遍历"></a>属性的遍历</h2><p>目前有5种方法遍历对象的属性</p>
+<ul>
+<li>for…in: 遍历对象自身和继承的可枚举属性，不含Symbol属性</li>
+<li>Object.keys(obj): 可用来遍历对象自身的可枚举属性，不含Symbol属性</li>
+<li>Object.getOwnPropertyNames(obj): 可用来遍历对象自身的可枚举属性和不可枚举属性，不含Symbol属性</li>
+<li>Object.getOwnPropertySymbols(obj): 可用来遍历对象自身的所有Symbol属性</li>
+<li>Reflect.ownKeys(obj): 可用来遍历对象自身的所有属性，含Symbol属性, 含不可枚举属性</li>
+</ul>
+<p>属性遍历的顺序规则：</p>
+<ul>
+<li>首先遍历所有数字键属性，按数值升序；</li>
+<li>其次遍历所有字符串键属性，按加入时间升序；</li>
+<li>最后遍历所有Symbol键属性，按加入时间升序；</li>
+</ul>
+<h2 id="super关键字"><a href="#super关键字" class="headerlink" title="super关键字"></a>super关键字</h2><p>指向对象的原型对象。 super关键字表示原型对象时，只能用在对象的方法之中，用在其他地方都会报错。只有对象方法的简写法可以让 JavaScript 引擎确认，定义的是对象的方法，用在其它地方会报错。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 报错</span></span><br><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  foo: <span class="keyword">super</span>.foo</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 报错</span></span><br><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  foo: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">super</span>.foo</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 报错</span></span><br><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  foo: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.foo</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>JavaScript 引擎内部，super.foo等同于Object.getPrototypeOf(this).foo（值属性）或Object.getPrototypeOf(this).foo.call(this)（方法属性）。</p>
+<h2 id="对象扩展运算符"><a href="#对象扩展运算符" class="headerlink" title="对象扩展运算符"></a>对象扩展运算符</h2><p>应用于两个方面。 一个是以前的笔记里记录过的对象解构，另外一个就是用于字面量对象创建的时候，从其它对象拷贝属性。举例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> z = &#123; <span class="attr">a</span>: <span class="number">3</span>, <span class="attr">b</span>: <span class="number">4</span> &#125;;</span><br><span class="line"><span class="keyword">let</span> n = &#123; ...z &#125;;</span><br><span class="line">n <span class="comment">// &#123; a: 3, b: 4 &#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>它用于字面量对象定义时，作用是取出参数对象自身的所有可枚举属性，拷贝到待定义的字面量对象当中。如果参数不是对象，先将目标转为对象，再进行处理。null,undefined,boolean,string的作用结果如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 等同于 &#123;...Object(1)&#125;</span></span><br><span class="line">&#123;..<span class="number">.1</span>&#125; ;<span class="comment">// &#123;&#125;</span></span><br><span class="line"><span class="comment">// 等同于 &#123;...Object(true)&#125;</span></span><br><span class="line">&#123;...true&#125; ;<span class="comment">// &#123;&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 等同于 &#123;...Object(undefined)&#125;</span></span><br><span class="line">&#123;...undefined&#125;; <span class="comment">// &#123;&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 等同于 &#123;...Object(null)&#125;</span></span><br><span class="line">&#123;...null&#125; ;<span class="comment">// &#123;&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>注意null,undefined值，对象扩展运算符使用的时候不会报错，但是数组的扩展运算符使用的时候会报错。</p>
+<p>string,数组,NodeList对象,arguments对象,使用对象扩展运算符的时候，效果相同，都是把索引键与值拷贝出来。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = &#123; ...[<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>] &#125;;</span><br><span class="line">foo</span><br><span class="line"><span class="comment">// &#123;0: "a", 1: "b", 2: "c"&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>其它：与数组的扩展运算符一样，对象的扩展运算符后面可以跟表达式。</p>
+<h3 id="主要应用"><a href="#主要应用" class="headerlink" title="主要应用"></a>主要应用</h3><ul>
+<li>对象的复制</li>
+<li>对象的合并</li>
+</ul>
+<p>对象的扩展运算符等同于Object.assign()方法。</p>
+<p>复制：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> aClone = &#123; ...a &#125;;</span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line"><span class="keyword">let</span> aClone = <span class="built_in">Object</span>.assign(&#123;&#125;, a);</span><br></pre></td></tr></table></figure></p>
+<p>合并：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> ab = &#123; ...a, ...b &#125;;</span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line"><span class="keyword">let</span> ab = <span class="built_in">Object</span>.assign(&#123;&#125;, a, b);</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果用户自定义的属性，放在扩展运算符后面，则扩展运算符内部的同名属性会被覆盖掉。</span></span><br><span class="line"><span class="keyword">let</span> aWithOverrides = &#123; ...a, <span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span> &#125;;</span><br><span class="line"><span class="comment">// x y 会覆盖a里面的x y</span></span><br><span class="line"><span class="comment">// 用来修改现有对象部分的属性就很方便</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//如果把自定义属性放在扩展运算符前面，就变成了设置新对象的默认属性值</span></span><br><span class="line"><span class="keyword">let</span> aWithDefaults = &#123; <span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>, ...a &#125;;</span><br><span class="line"><span class="comment">// a里面的x y 会覆盖一开始的x y</span></span><br></pre></td></tr></table></figure></p>
+<p>对象扩展运算符用于字面量对象的行为整理如下：</p>
+<table>
+<thead>
+<tr>
+<th>api</th>
+<th>继承属性</th>
+<th>不可枚举属性</th>
+<th>setter</th>
+<th>getter</th>
+<th>symbol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>对象的扩展运算符</td>
+<td>不包含</td>
+<td>不包含</td>
+<td>包含</td>
+<td>包含</td>
+<td><strong>包含</strong></td>
+</tr>
+</tbody>
+</table>
+<p>注意点：如果属性是一个getter，那么会把getter调用一次，并把返回值复制出来，而不是getter属性本身；如果属性是一个单独的setter，没有getter与其对应，这个属性会以undefined为值进行复制，setter本身不会被复制。这一点与 Object.assign()是完全一样的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6学习笔记/" rel="tag"># ES6学习笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/14/ES6-数组的扩展/" rel="next" title="ES6 数组的扩展">
+                <i class="fa fa-chevron-left"></i> ES6 数组的扩展
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/15/ES6-Symbol类型/" rel="prev" title="ES6 Symbol类型">
+                ES6 Symbol类型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#属性的简洁表示法。"><span class="nav-number">1.</span> <span class="nav-text">属性的简洁表示法。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性名表达式"><span class="nav-number">2.</span> <span class="nav-text">属性名表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性的可枚举性"><span class="nav-number">3.</span> <span class="nav-text">属性的可枚举性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性的遍历"><span class="nav-number">4.</span> <span class="nav-text">属性的遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#super关键字"><span class="nav-number">5.</span> <span class="nav-text">super关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象扩展运算符"><span class="nav-number">6.</span> <span class="nav-text">对象扩展运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要应用"><span class="nav-number">6.1.</span> <span class="nav-text">主要应用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中ES6 Generator函数的语法我的ES6入门学习规划  简介Generator函数是一种函数，不过是特殊的。以下是这两种函数的形式：">
+<meta name="keywords" content="ES6学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6 Generator函数的语法">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/05/18/ES6-Generator函数的语法/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中ES6 Generator函数的语法我的ES6入门学习规划  简介Generator函数是一种函数，不过是特殊的。以下是这两种函数的形式：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/05/18/ES6-Generator函数的语法/01.jpg">
+<meta property="og:updated_time" content="2019-06-14T13:57:46.173Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6 Generator函数的语法">
+<meta name="twitter:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中ES6 Generator函数的语法我的ES6入门学习规划  简介Generator函数是一种函数，不过是特殊的。以下是这两种函数的形式：">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2019/05/18/ES6-Generator函数的语法/01.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/05/18/ES6-Generator函数的语法/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ES6 Generator函数的语法 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/05/18/ES6-Generator函数的语法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6 Generator函数的语法
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-17 18:10:47" itemprop="dateCreated datePublished" datetime="2019-05-17T18:10:47Z">2019-05-17</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：</p>
+<blockquote>
+<p>阮一峰ES6的书籍中<a href="http://es6.ruanyifeng.com/#docs/generator" target="_blank" rel="noopener">ES6 Generator函数的语法</a><br><a href="/2019/05/01/ES6入门学习的规划/" title="我的ES6入门学习规划">我的ES6入门学习规划</a></p>
+</blockquote>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Generator函数是一种函数，不过是特殊的。以下是这两种函数的形式：<br><a id="more"></a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">genFunc</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">commonFunc</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(genFunc());<span class="comment">//genFunc &#123;&lt;suspended&gt;&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(commonFunc());<span class="comment">//1</span></span><br></pre></td></tr></table></figure></p>
+<p>Generator函数与普通函数的区别是：</p>
+<ul>
+<li>表现上，Generator函数在function关键字后面会有一个额外的 * 号，普通函数没有；</li>
+<li>另外一种表现，Generator函数可以使用yield关键字，普通函数不能用；</li>
+<li>Generator函数的执行，不是一次性完成的，而是可以分为多个阶段来执行，普通函数的执行是一次性完成的；</li>
+<li>Generator函数执行以后，不会立即开始执行函数体的代码，而是通过[native code]先返回一个Iterator对象，普通函数执行将立即执行函数体的代码，并且把return后面的表达式作为返回值返回；</li>
+</ul>
+<p>yield是一个关键词，它后面可以接表达式，它的作用是将Generator函数体从起始位置到结束位置（比如：return）分为多个阶段，如果把函数体看作是一条线段，每一个yield表达式就是这条线段中的一个分隔点，函数体的起始位置和结束位置也是这条线段上的点，这些点的含义代表了函数体执行时的位置；通过调用Generator函数返回的Iterator对象的next方法，可以让Generator函数体真正开始执行，并且是分阶段执行。详细的规则如下：</p>
+<ol>
+<li>每一次调用Iterator对象next方法，都会让函数体从当前的执行位置执行到下一个yield关键词出现的位置，并把yiled后面表达式的值，部署到next方法返回值的value属性上从而传递到外面，Generator函数的执行就会停在这里；Generato函数体默认的执行位置是起始位置；</li>
+<li>如果调用next方法时，函数体当前执行位置后面没有了yield 表达式，就会把剩下的代码都执行完，并把函数返回值部署到next方法的返回值里面，至此一个Generator函数才算是完整的运行结束；</li>
+<li>当函数体已经运行结束，继续调用next方法不会再继续运行函数体内的代码。 </li>
+</ol>
+<p>next方法的返回值，包含了value和done属性，value属性用来存放yield后面表达式的值或者是函数的返回值（函数结束的时候）；done属性代表了函数体是否执行完毕。 掌握Iterator接口以后，这个next方法的返回值属性会特别好理解。</p>
+<p>Generator函数简单举例如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">genFunc</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="comment">//start</span></span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'range 0'</span>);</span><br><span class="line">	<span class="keyword">yield</span> (<span class="built_in">Math</span>.random() * <span class="number">10</span>) &gt; <span class="number">5</span> ? <span class="string">'first lucky'</span> : <span class="string">'first unlucky'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'range 1'</span>);</span><br><span class="line">	<span class="keyword">yield</span> (<span class="built_in">Math</span>.random() * <span class="number">10</span>) &gt; <span class="number">5</span> ? <span class="string">'second lucky'</span> : <span class="string">'second unlucky'</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'range 2'</span>);</span><br><span class="line">	<span class="keyword">yield</span> (<span class="built_in">Math</span>.random() * <span class="number">10</span>) &gt; <span class="number">5</span> ? <span class="string">'third lucky'</span> : <span class="string">'third unlucky'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'range 3'</span>);</span><br><span class="line">	<span class="comment">// end</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> gen = genFunc();</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"></span><br><span class="line"><span class="comment">// range 0</span></span><br><span class="line"><span class="comment">// &#123;value: "first lucky", done: false&#125;</span></span><br><span class="line"><span class="comment">// range 1</span></span><br><span class="line"><span class="comment">// &#123;value: "second lucky", done: false&#125;</span></span><br><span class="line"><span class="comment">// range 2</span></span><br><span class="line"><span class="comment">// &#123;value: "third lucky", done: false&#125;</span></span><br><span class="line"><span class="comment">// range 3</span></span><br><span class="line"><span class="comment">// &#123;value: true, done: true&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>这个简单的例子可以看到Generator函数的执行过程。它一共包含3个yield关键词，包含起点和终点在内，把函数体分为了5个部分，4个阶段；每一次调用next方法，都能看到之前打印的一条range信息，意味着有一个阶段完成了执行；next每次执行的返回值打印出来后，也能清楚地看到yield表达式的返回值。</p>
+<p>Generator函数的行为让它用起来更符合面向对象层次的含义，它提供了封装分阶段向外部传递（或者说回调）内部状态的能力。在编码的时候，如果某个行为，在执行的时候，可能有多次向外部暴露数据的需求，可以考虑使用Generator函数来处理。 </p>
+<p>实际上，除了Generator函数可以向外部分阶段传递数据，外部环境也可以在每个阶段执行的时候，通过next方法往Generator函数体内注入数据，这个数据会作为上一个yield表达式的返回值，从而影响下一阶段的函数执行。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">foo</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"x"</span>, x);</span><br><span class="line">  <span class="keyword">var</span> y = <span class="number">2</span> * (<span class="keyword">yield</span> (x + <span class="number">1</span>));</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"y"</span>, y);</span><br><span class="line">  <span class="keyword">var</span> z = <span class="keyword">yield</span> (y / <span class="number">3</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"z"</span>, z);</span><br><span class="line">  <span class="keyword">return</span> (x + y + z);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = foo(<span class="number">5</span>);</span><br><span class="line"><span class="built_in">console</span>.log(b.next())</span><br><span class="line"><span class="built_in">console</span>.log(b.next(<span class="number">12</span>))</span><br><span class="line"><span class="built_in">console</span>.log(b.next(<span class="number">13</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">//x 5</span></span><br><span class="line"><span class="comment">//&#123;value: 6, done: false&#125;</span></span><br><span class="line"><span class="comment">//y 24</span></span><br><span class="line"><span class="comment">//&#123;value: 8, done: false&#125;</span></span><br><span class="line"><span class="comment">//z 13</span></span><br><span class="line"><span class="comment">//&#123;value: 42, done: true&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>next方法的参数会被传入到Generator函数体内，作为当前执行位置的yield表达式的返回值，但是第一次调用next方法传递的参数是无效的，因为此时函数体的执行位置是起始位置，没有yield表达式。通过上面例子中的log可以清晰地看到<strong>yield后面表达式的返回值</strong>以及通过next方法注入数据后，<strong>yield表达式的返回值</strong>。</p>
+<p>有了这个注入数据的特性后，Generator函数面向对象的封装作用就更加明显了，它就像一个小机器人一样，开发人员根据需要为它编写逻辑，当它执行的时候，会把每个步骤的执行结果告诉外部控制它的人，同时它的外部控制环境，也能通过next方法参数注入新的命令，这样它的内部就能根据外部最新的命令，执行下一阶段的任务，直到自己的职责履行完毕。</p>
+<p>一些小要点:</p>
+<ul>
+<li><p>yield表达式可以不出现在Generator函数，这样Generator函数就变成了一个延迟执行的函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">delayFunc</span>(<span class="params">gen</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> gen.next().value;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">genFunc</span>(<span class="params">x,y,z</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x+y+z;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> delayGen = delayFunc(genFunc(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>));</span><br><span class="line"></span><br><span class="line">delayGen();<span class="comment">// 6</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>yield关键词只能出现在Generator函数体内，下面这种是错的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, [[<span class="number">2</span>, <span class="number">3</span>], <span class="number">4</span>], [<span class="number">5</span>, <span class="number">6</span>]];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> flat = <span class="function"><span class="keyword">function</span>* (<span class="params">a</span>) </span>&#123;</span><br><span class="line">  a.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">item</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> item !== <span class="string">'number'</span>) &#123;</span><br><span class="line">      <span class="keyword">yield</span>* flat(item);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">yield</span> item;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> f <span class="keyword">of</span> flat(arr))&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(f);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>yield表达式如果用在另一个表达式之中，必须放在圆括号里面。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">demo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span> + <span class="keyword">yield</span>); <span class="comment">// SyntaxError</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span> + <span class="keyword">yield</span> <span class="number">123</span>); <span class="comment">// SyntaxError</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span> + (<span class="keyword">yield</span>)); <span class="comment">// OK</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span> + (<span class="keyword">yield</span> <span class="number">123</span>)); <span class="comment">// OK</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>yield表达式用作函数参数或放在赋值表达式的右边，可以不加括号。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">demo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  foo(<span class="keyword">yield</span> <span class="string">'a'</span>, <span class="keyword">yield</span> <span class="string">'b'</span>); <span class="comment">// OK</span></span><br><span class="line">  <span class="keyword">let</span> input = <span class="keyword">yield</span>; <span class="comment">// OK</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Generator函数执行后，返回的是是一个Iterator对象，所以Generator函数具备Iterator对象的所有特性，也可以用Generator函数来实现对象的遍历逻辑</p>
+</li>
+<li><p>Generator函数用于for-of循环时，它return的值不会被for-of循环遍历到，这其实也是Iterator对象的特性，这里只是单独强调：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">5</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">6</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> foo()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(v);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 1 2 3 4 5</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>Generator函数的流程，可以简单的用图来描述：<br><img src="/2019/05/18/ES6-Generator函数的语法/01.jpg" title="[title]"></p>
+<h2 id="throw方法"><a href="#throw方法" class="headerlink" title="throw方法"></a>throw方法</h2><p>在学习Iterator对象的时候，了解到Iterator对象其实有一个throw方法，不过主要是在Generator函数里面才有应用。这个方法部署在Generator函数返回的对象上面，调用它之后，Generator函数体可以在内部部署一套try-catch来处理相应的逻辑。也就是说Generator函数现在又具备了一个新的能力，就是它的外部环境能够告知它外部执行时出现了什么意外，然后Generator函数可以针对外部的发生的意外进行响应处理。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> gen = foo();</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> gen.throw);<span class="comment">// function</span></span><br></pre></td></tr></table></figure>
+<p>throw方法接收一个参数，会传递到Generator函数体内部署的try-catch代码，这个参数通常是Error类的实例。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> g = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'内部捕获'</span>, e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> i = g();</span><br><span class="line">i.next();</span><br><span class="line"></span><br><span class="line">i.throw(<span class="string">'a'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这个简单的例子看到外部通过i.throw抛出的错误，被g函数体内捕获到了。</p>
+<p>throw方法的本质是什么？（我觉得）<strong>应该是在调用throw方法的时候，在Generator函数体当前的执行位置在函数体内抛出了throw方法传递过来的数据，如果此时Generator函数体当前的执行位置正好位于内部的一个try-catch范围内，那么就能捕获到这个异常</strong>。可以下面的一些例子来验证：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> g = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'ready'</span>);</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">'start'</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">  	<span class="built_in">console</span>.log(<span class="string">'try block'</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'catch block'</span>, e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'end'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> i = g();</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  i.throw(<span class="string">'sth happened'</span>)</span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'外部捕获'</span>, e);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 外部捕获 sth happened</span></span><br></pre></td></tr></table></figure>
+<p><strong>↑</strong> 这个例子未调用i.next()，所以i.throw的时候，g函数体的执行位置还是起始位置，而起始位置不在函数体的try-catch范围内。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> g = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'ready'</span>);</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">'start'</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">  	<span class="built_in">console</span>.log(<span class="string">'try block'</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'catch block'</span>, e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'end'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> i = g();</span><br><span class="line">i.next();</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  i.throw(<span class="string">'sth happened'</span>)</span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'外部捕获'</span>, e);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ready</span></span><br><span class="line"><span class="comment">// 外部捕获 sth happened</span></span><br></pre></td></tr></table></figure>
+<p><strong>↑</strong> 这个例子调用了i.next()，所以i.throw的时候，g函数体的执行位置是函数体内第一个yield表达式的位置，但是这个位置也不在内部的try-catch范围内。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> g = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'ready'</span>);</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">  	<span class="built_in">console</span>.log(<span class="string">'try block'</span>);</span><br><span class="line">  	<span class="keyword">yield</span> <span class="string">'start'</span>;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'catch block'</span>, e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'end'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> i = g();</span><br><span class="line">i.next();</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  i.throw(<span class="string">'sth happened'</span>)</span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'外部捕获'</span>, e);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ready</span></span><br><span class="line"><span class="comment">// try block</span></span><br><span class="line"><span class="comment">// catch block sth happened</span></span><br></pre></td></tr></table></figure>
+<p><strong>↑</strong> 这个例子有效地在内部捕获到了外部注入的错误，原因也是因为i.throw的时候，g函数体的执行位置已经位于try-catch范围内了。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> g = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'ready'</span>);</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">  	<span class="built_in">console</span>.log(<span class="string">'try block'</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'catch block'</span>, e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">'a little late'</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'end'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> i = g();</span><br><span class="line">i.next();</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  i.throw(<span class="string">'sth happened'</span>)</span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'外部捕获'</span>, e);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ready</span></span><br><span class="line"><span class="comment">// try block</span></span><br><span class="line"><span class="comment">// 外部捕获 sth happened</span></span><br></pre></td></tr></table></figure>
+<p><strong>↑</strong> 这个例子跟前2个一样，虽然执行了next方法，但是调用throw方法时，g函数体的执行位置已经位于内部的try-catch范围之后了。</p>
+<p>综合以上4个例子，可以看到throw方法的作用机制确实跟Generator函数体的执行位置有关系，认清这一点，throw方法就基本上已经掌握了。 如果throw方法调用的时候，Generator函数体的执行位置并没有位于try-catch范围内，这个错误就会全局地抛出到Generator函数的外部执行环境了。</p>
+<p>throw方法还有一个特性，<strong>就是在内部的try-catch块有效地捕捉到外部注入的错误后，还会把Generator函数继续往后执行一次（等同于内部自己再调用一次next方法）</strong>。前面介绍throw方法的价值时，说过</p>
+<blockquote>
+<p>Generator函数现在又具备了一个新的能力，就是它的外部环境能够告知它外部执行时出现了什么意外，然后Generator函数可以针对外部的发生的意外进行响应处理</p>
+</blockquote>
+<p>throw方法会内部再做一次next方法的处理，也是有道理的。因为当外部环境告诉Generator函数，外部执行出现了意外时；Generator函数对此意外的处理是不定的，完全由实际需求决定，也许这种意外发生的时候，某些Generator函数应该彻底终止，但是某些Generator函数可以自己处理掉意外，然后告诉外部“我”还能继续运行；所以throw方法通过再做一次next方法的处理，并把“意外”的处理结果通过throw方法的返回值传递到外部环境，这样外部完全可以根据内部传递出的“信息”决定下一步是否继续要运行Generator函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> machineFactory = <span class="function"><span class="keyword">function</span>*(<span class="params">no</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			count++;</span><br><span class="line">			<span class="keyword">yield</span> <span class="string">`No.<span class="subst">$&#123;no&#125;</span> has worked <span class="subst">$&#123;count&#125;</span> times`</span>;</span><br><span class="line">		&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">			<span class="keyword">if</span>(e <span class="keyword">instanceof</span> NothingImportant) &#123;</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span>(e <span class="keyword">instanceof</span> BigAccident) &#123;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="string">`No.<span class="subst">$&#123;no&#125;</span> has stopped.`</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NothingImportant</span> <span class="keyword">extends</span> <span class="title">Error</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BigAccident</span> <span class="keyword">extends</span> <span class="title">Error</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> machine = machineFactory(<span class="number">1</span>);</span><br><span class="line"><span class="built_in">console</span>.log(machine.next().value);</span><br><span class="line"><span class="built_in">console</span>.log(machine.next().value);</span><br><span class="line"><span class="built_in">console</span>.log(machine.throw(<span class="keyword">new</span> NothingImportant(<span class="string">""</span>)).value);</span><br><span class="line"><span class="built_in">console</span>.log(machine.next().value);</span><br><span class="line"><span class="built_in">console</span>.log(machine.throw(<span class="keyword">new</span> BigAccident(<span class="string">""</span>)).value);</span><br><span class="line"></span><br><span class="line"><span class="comment">// No.1 has worked 1 times</span></span><br><span class="line"><span class="comment">// No.1 has worked 2 times</span></span><br><span class="line"><span class="comment">// No.1 has worked 3 times</span></span><br><span class="line"><span class="comment">// No.1 has worked 4 times</span></span><br><span class="line"><span class="comment">// No.1 has stopped.</span></span><br></pre></td></tr></table></figure>
+<h2 id="return方法"><a href="#return方法" class="headerlink" title="return方法"></a>return方法</h2><p>Generator函数返回的Iterator对象还有一个return实例方法，它调用后会终止掉整个Generator函数的执行。这个方法接收一个参数，会部署到这个方法的返回值的value属性中传递回来。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> genFunc = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">yield</span> <span class="string">'state1'</span>;</span><br><span class="line">	<span class="keyword">yield</span> <span class="string">'state2'</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'state3'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = genFunc();</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());<span class="comment">// &#123;value: "state1", done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(gen.return(<span class="string">'no state'</span>));<span class="comment">// &#123;value: "no state", done: true&#125;</span></span><br></pre></td></tr></table></figure>
+<p>return方法其实也跟Generator函数体的执行位置有关系。调用return方法实际上就是紧跟在Generator函数当前的执行位置后面，插入一个return语句，然后内部运行一次next方法的调用，这样Generator函数相当于就是提前结束了。 这个方法的实际意义在于提供给了Generator函数外部执行环境的一种强制终止Generator函数的能力，虽然霸道，但在某些场合下肯定有需要的。</p>
+<p>特殊的点，如果调用return方法时，Generator函数当前的执行位置正好位于try-[catch]-finally的try或catch范围内，return方法等效的return语句就不会插入到当前的执行位置，而是插入到finally代码块的最后，因为要保证finally里面的代码一定能被执行，尤其是在这个代码里面做了一些资源释放、清理等重要性操作的时候。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> genFunc = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state1'</span>;</span><br><span class="line">	&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state2'</span>;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'return after me'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'state3'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = genFunc();</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.return(<span class="string">'no state'</span>));</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="comment">// &#123;value: "state1", done: false&#125;</span></span><br><span class="line"><span class="comment">// &#123;value: "state2", done: false&#125;</span></span><br><span class="line"><span class="comment">// return after me</span></span><br><span class="line"><span class="comment">// &#123;value: "no state", done: true&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这个例子先运行了一次next方法，让函数执行到第一个yield表达式的位置，然后运行return方法，此时函数执行位置还位于try代码块内，函数体还有finally代码，运行return方法，会让函数进入finally代码内执行，finally里面还有yield表达式，所以return方法最终的执行结果就好比把执行位置切入到了finally里面，然后运行了一次next。 下次再运行next方法，就会运行到finally方法最后的一个执行位置，而这最后的一个位置，因为前面有return的调用，实际上已经被插入了一条“return ‘no state’”的调用了，所以最后一次运行next方法会把return方法调用时的参数给返回出来。<br>这个代码等效于：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> genFunc = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state1'</span>;</span><br><span class="line">	&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state2'</span>;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'return after me'</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="string">'no state'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'state3'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = genFunc();</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="comment">// &#123;value: "state1", done: false&#125;</span></span><br><span class="line"><span class="comment">// &#123;value: "state2", done: false&#125;</span></span><br><span class="line"><span class="comment">// return after me</span></span><br><span class="line"><span class="comment">// &#123;value: "no state", done: true&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>再看几个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> genFunc = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state1'</span>;</span><br><span class="line">	&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state2'</span>;</span><br><span class="line">	&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state3'</span>;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'return after me'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'state4'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = genFunc();</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.throw(<span class="string">'test'</span>));</span><br><span class="line"><span class="built_in">console</span>.log(gen.return(<span class="string">'no state'</span>));</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="comment">// &#123;value: "state1", done: false&#125;</span></span><br><span class="line"><span class="comment">// &#123;value: "state2", done: false&#125;</span></span><br><span class="line"><span class="comment">// &#123;value: "state3", done: false&#125;</span></span><br><span class="line"><span class="comment">// return after me</span></span><br><span class="line"><span class="comment">// &#123;value: "no state", done: true&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这个例子跟上面的差不多，只不过用了throw方法，让函数执行位置停留在了catch的代码块内。执行结果的原理也跟上面的一致。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> genFunc = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state1'</span>;</span><br><span class="line">	&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state2'</span>;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'return after me'</span>);</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">'state3'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'state4'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = genFunc();</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.return(<span class="string">'no state'</span>));</span><br><span class="line"><span class="comment">// &#123;value: "state1", done: false&#125;</span></span><br><span class="line"><span class="comment">// &#123;value: "state2", done: false&#125;</span></span><br><span class="line"><span class="comment">// &#123;value: "no state", done: true&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这个例子中，当运行return方法的时候，函数体的执行位置本身已经进入finally代码了，但是“return after me”这句话没有打印，return方法返回的value也不是state3，说明这个时候return方法调用并没有把return调用插入到finally代码块的最后，而是插入到了当前的执行位置。 也就是说只有当函数执行位置是try或catch代码块内的时候，调用return才会放到finally最后执行。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> genFunc = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">yield</span> <span class="string">'state1'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = genFunc();</span><br><span class="line"><span class="built_in">console</span>.log(gen.return(<span class="number">1</span>));</span><br><span class="line"><span class="comment">// &#123;value: 1, done: true&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(gen.return(<span class="number">2</span>));</span><br><span class="line"><span class="comment">// &#123;value: 2, done: true&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(gen.return(<span class="number">3</span>));</span><br><span class="line"><span class="comment">// &#123;value: 3, done: true&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这个例子说明对于一个已经结束的Generator函数，继续运行return方法，不会改变done的事实，但是会把return的参数重新部署到return方法的返回值中返回出来。</p>
+<h2 id="yield-表达式"><a href="#yield-表达式" class="headerlink" title="yield* 表达式"></a>yield* 表达式</h2><p>在一个Generator函数里面，调用了另外一个Generator函数，就需要用到yield * 表达式。 yield*表达式后面接的是一个Iterator对象，除了Generator函数返回的Iterator对象，其它的Iterator对象，比如数组，字符串都可以放到yield*表达式后面。</p>
+<p>它的作用实际上就是把它后面的Iterator对象遍历逻辑并入到当前的Generator函数中，并把它后面的Iterator对象遍历完成时的value值作为yield*表达式的返回值。 再以线段来类比Generator函数执行的话，yield *表达式等同于给Generator函数增加了额外的分隔点。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">inner</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'before inner return'</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">outer</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">let</span> ret = <span class="keyword">yield</span>* inner();</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'after inner return'</span>);</span><br><span class="line">	<span class="keyword">yield</span> ret;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> gen = outer();</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="built_in">console</span>.log(gen.next());</span><br><span class="line"><span class="comment">// &#123;value: 1, done: false&#125;</span></span><br><span class="line"><span class="comment">// &#123;value: 2, done: false&#125;</span></span><br><span class="line"><span class="comment">// before inner return</span></span><br><span class="line"><span class="comment">// after inner return</span></span><br><span class="line"><span class="comment">// &#123;value: 3, done: false&#125;</span></span><br><span class="line"><span class="comment">// &#123;value: 4, done: false&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这个例子中，当执行第二次next调用时，outer的函数执行已经进入到了inner的函数里面，但是会停在inner的内部；当执行第三次next调用时，outer的函数执行会从inner的内部开始，但是不会停留在inner结束的位置，而是运行到outer里面yield*表达式的下一个yield表达式的位置(yield ret)。 也就是说yield*后面的Iterator的返回值，不会增加Generator函数的执行分隔点。</p>
+<h2 id="Generator函数与this"><a href="#Generator函数与this" class="headerlink" title="Generator函数与this"></a>Generator函数与this</h2><p>当Generator函数作为一个对象的属性部署的时候，Generator函数执行时this指向它所在的对象。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> machineFactory = <span class="function"><span class="keyword">function</span>*(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="keyword">this</span>.times--) &#123;</span><br><span class="line">		<span class="keyword">this</span>.count++;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">`No.<span class="subst">$&#123;<span class="keyword">this</span>.no&#125;</span> has worked <span class="subst">$&#123;<span class="keyword">this</span>.count&#125;</span> times`</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> machine = &#123;</span><br><span class="line">	count: <span class="number">0</span>,</span><br><span class="line">	no: <span class="number">1</span>,</span><br><span class="line">	times: <span class="number">5</span>,</span><br><span class="line">	[<span class="built_in">Symbol</span>.iterator]: machineFactory</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> v <span class="keyword">of</span> machine) &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//No.1 has worked 1 times</span></span><br><span class="line"><span class="comment">//No.1 has worked 2 times</span></span><br><span class="line"><span class="comment">//No.1 has worked 3 times</span></span><br><span class="line"><span class="comment">//No.1 has worked 4 times</span></span><br><span class="line"><span class="comment">//No.1 has worked 5 time</span></span><br></pre></td></tr></table></figure></p>
+<p>Generator 函数总是返回一个遍历器，ES6 规定这个遍历器是 Generator 函数的实例，也继承了 Generator 函数的prototype对象上的方法。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">g</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">g.prototype.hello = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'hi!'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = g();</span><br><span class="line"></span><br><span class="line">obj <span class="keyword">instanceof</span> g <span class="comment">// true</span></span><br><span class="line">obj.hello() <span class="comment">// 'hi!'</span></span><br></pre></td></tr></table></figure></p>
+<p>这看起来跟普通函数是一致的。 但是Generator函数不能用作构造函数，不能跟new一起使用，会报错。Generator函数如果不部署到对象上，将无法在它内部使用this。如果为了在Generator函数上使用this，需要换一种方式使用Generator函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> machineFactory = <span class="function"><span class="keyword">function</span>*(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="keyword">this</span>.times--) &#123;</span><br><span class="line">		<span class="keyword">this</span>.count++;</span><br><span class="line">		<span class="keyword">yield</span> <span class="string">`No.<span class="subst">$&#123;<span class="keyword">this</span>.no&#125;</span> has worked <span class="subst">$&#123;<span class="keyword">this</span>.count&#125;</span> times`</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> machine = machineFactory.call(&#123;</span><br><span class="line">	count: <span class="number">0</span>,</span><br><span class="line">	no: <span class="number">1</span>,</span><br><span class="line">	times: <span class="number">5</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> v <span class="keyword">of</span> machine) &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//No.1 has worked 1 times</span></span><br><span class="line"><span class="comment">//No.1 has worked 2 times</span></span><br><span class="line"><span class="comment">//No.1 has worked 3 times</span></span><br><span class="line"><span class="comment">//No.1 has worked 4 times</span></span><br><span class="line"><span class="comment">//No.1 has worked 5 time</span></span><br></pre></td></tr></table></figure>
+<p>用call或者apply，改变Generator函数的调用方式，就能把this注入到Generator函数内。</p>
+<h2 id="Generator-与状态机"><a href="#Generator-与状态机" class="headerlink" title="Generator 与状态机"></a>Generator 与状态机</h2><p>Generator 是实现状态机的最佳结构。 </p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Generator函数是一个特殊的函数，可以分阶段执行，虽然它返回的对象，经常被称为遍历器对象，实际上它返回的对象应该说只是实现了Iterator和Iterable的接口，所以能把Generator函数当做遍历器对象那样应用。除了用来实现遍历结构，我觉得Generator函数，还能发挥更大的价值，比如说面向对象的封装，或者是帮助我们实现分步骤、分阶段才能完成的多个任务。学习起来不太难，但是真正的掌握，还需要经常编码，不断地思考是否能将其应用起来，才能感受到更多的东西。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6学习笔记/" rel="tag"># ES6学习笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/18/ES6-Iterator和for-of循环/" rel="next" title="ES6 Iterator和for...of循环">
+                <i class="fa fa-chevron-left"></i> ES6 Iterator和for...of循环
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/18/ES6-Generator函数的异步应用/" rel="prev" title="ES6 Generator函数的异步应用（一）">
+                ES6 Generator函数的异步应用（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#throw方法"><span class="nav-number">2.</span> <span class="nav-text">throw方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#return方法"><span class="nav-number">3.</span> <span class="nav-text">return方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yield-表达式"><span class="nav-number">4.</span> <span class="nav-text">yield* 表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator函数与this"><span class="nav-number">5.</span> <span class="nav-text">Generator函数与this</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator-与状态机"><span class="nav-number">6.</span> <span class="nav-text">Generator 与状态机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

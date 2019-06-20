@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇记录一个较早较简单的Promise基本实现，思想来自知名前端开发人员的博客：十年踪迹的博客。 Promise是用来封装异步任务的，所以这篇笔记主要解释如何把异步任务的封装这个事情，一步步地进化为Promise的形式。">
+<meta name="keywords" content="Promise相关,源码学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从别人博客学到的基本的Promise实现思路">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/03/从别人博客学到的基本的Promise实现思路/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇记录一个较早较简单的Promise基本实现，思想来自知名前端开发人员的博客：十年踪迹的博客。 Promise是用来封装异步任务的，所以这篇笔记主要解释如何把异步任务的封装这个事情，一步步地进化为Promise的形式。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-14T13:57:46.177Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从别人博客学到的基本的Promise实现思路">
+<meta name="twitter:description" content="本篇记录一个较早较简单的Promise基本实现，思想来自知名前端开发人员的博客：十年踪迹的博客。 Promise是用来封装异步任务的，所以这篇笔记主要解释如何把异步任务的封装这个事情，一步步地进化为Promise的形式。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/03/从别人博客学到的基本的Promise实现思路/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>从别人博客学到的基本的Promise实现思路 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/03/从别人博客学到的基本的Promise实现思路/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从别人博客学到的基本的Promise实现思路
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-02 22:04:20" itemprop="dateCreated datePublished" datetime="2019-06-02T22:04:20Z">2019-06-02</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇记录一个较早较简单的Promise基本实现，思想来自知名前端开发人员的博客：<a href="https://www.h5jun.com/post/when.js%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BF%AB%E9%80%9F%E5%AE%9E%E7%8E%B0.html" target="_blank" rel="noopener">十年踪迹的博客</a>。</p>
+<p>Promise是用来封装异步任务的，所以这篇笔记主要解释如何把异步任务的封装这个事情，一步步地进化为Promise的形式。<br><a id="more"></a></p>
+<p>先来看Promise之前的异步任务封装形式。</p>
+<h2 id="封装异步任务"><a href="#封装异步任务" class="headerlink" title="封装异步任务"></a>封装异步任务</h2><p>回调函数是最简单的封装异步任务的形式。 比如下面的代码封装一个异步任务，使用了两个回调函数，可分别接收最终异步任务成功或失败时的状态：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createAsyncTask</span>(<span class="params">onSuccess, onFail</span>) </span>&#123;</span><br><span class="line">	setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="comment">// if async task finished</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">Math</span>.random() * <span class="number">10</span> &gt; <span class="number">5</span>) &#123;</span><br><span class="line">			<span class="keyword">let</span> data = &#123;<span class="attr">name</span>: <span class="string">'lyzg'</span>&#125;;</span><br><span class="line">			onSuccess &amp;&amp; onSuccess(data);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			onFail &amp;&amp; onFail(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'sth happened'</span>));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">createAsyncTask(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.error(err);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>但是有时候会遇到不适合使用回调函数的场景，比如调用createAsyncTask的位置不需要做异步的回调，可能后面其它代码调用的内部才需要回调这个。 如果把异步任务，用对象的形式封装一下就能改善这一点：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">AsyncTask</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		_state : <span class="number">0</span>,<span class="comment">// 记录task的状态 0 执行中 1 执行成功 2 执行失败</span></span><br><span class="line">		_whenSuccess : [],<span class="comment">// 存放task执行成功时的回调函数</span></span><br><span class="line">		_whenFail : [],<span class="comment">// 存放task执行失败时的回调函数</span></span><br><span class="line">		_data : <span class="literal">undefined</span>,<span class="comment">// 存放task执行成功时的状态</span></span><br><span class="line">		_error : <span class="literal">undefined</span>, <span class="comment">// 存放task执行失败时的错误</span></span><br><span class="line">		finish(data) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">this</span>._state = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">this</span>._data = data;<span class="comment">//保存成功时状态</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">let</span> callback <span class="keyword">of</span> <span class="keyword">this</span>._whenSuccess) &#123;</span><br><span class="line">				callback(<span class="keyword">this</span>._data);	</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>._whenSuccess.length = <span class="number">0</span>;</span><br><span class="line">		&#125;,</span><br><span class="line">		fail(err) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">this</span>._state = <span class="number">2</span>;</span><br><span class="line">			<span class="keyword">this</span>._error = err;<span class="comment">//保存失败时状态</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">let</span> callback <span class="keyword">of</span> <span class="keyword">this</span>._whenFail) &#123;</span><br><span class="line">				callback(<span class="keyword">this</span>._error);	</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>._whenFail.length = <span class="number">0</span>;</span><br><span class="line">		&#125;,</span><br><span class="line">		whenSuccess(onSuccess) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">typeof</span> onSuccess !== <span class="string">'function'</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">1</span>) &#123;</span><br><span class="line">				<span class="comment">//如果添加回调时，task已经执行完毕，则直接把执行完毕时保存的状态回调onSuccess</span></span><br><span class="line">				onSuccess(<span class="keyword">this</span>._data);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._whenSuccess.findIndex(onSuccess)  === <span class="number">-1</span>) &#123;</span><br><span class="line">				<span class="keyword">this</span>._whenSuccess.push(onSuccess);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		whenFail(onFail) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">typeof</span> onFail !== <span class="string">'function'</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">2</span>) &#123;</span><br><span class="line">				<span class="comment">//如果添加回调时，task已经执行失败，则直接把执行失败时保存的状态回调onSuccess</span></span><br><span class="line">				onFail(<span class="keyword">this</span>._error);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._whenFail.findIndex(onFail)  === <span class="number">-1</span>) &#123;</span><br><span class="line">				<span class="keyword">this</span>._whenFail.push(onFail);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createAsyncTask</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> task = <span class="keyword">new</span> AsyncTask(); </span><br><span class="line">	setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="comment">// if async task finished</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">Math</span>.random() * <span class="number">10</span> &gt; <span class="number">5</span>) &#123;</span><br><span class="line">			<span class="keyword">let</span> data = &#123;<span class="attr">name</span>: <span class="string">'lyzg'</span>&#125;;</span><br><span class="line">			task.finish(data);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			task.fail(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'sth happened'</span>));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, <span class="number">1000</span>);</span><br><span class="line">	<span class="keyword">return</span> task;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">anotherModule</span>(<span class="params">asyncTask</span>)</span>&#123;</span><br><span class="line">	asyncTask.whenSuccess(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(data);</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	asyncTask.whenFail(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.error(err);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> asyncTask = createAsyncTask();</span><br><span class="line">anotherModule(asyncTask);</span><br></pre></td></tr></table></figure></p>
+<p>上面模拟的就是在在调用createAsyncTask的时候可能不需要回调，真正的回调在另外一个代码anotherModule的内部，单纯的回调函数做不到这个形式。 它的核心点就在于把异步回调封装了可用于传递的对象，只要在异步任务完成之前，把这个异步对象传递到任何需要的位置，每个位置都能单独添加自己的回调函数，互不影响。 相比单纯的回调形式，这个方式有更多优点：</p>
+<ol>
+<li>不受使用位置限制</li>
+<li>可接收多个回调函数</li>
+<li>更加面向对象</li>
+<li>还可保存异步任务的状态，随时都能获取已经结束的异步任务的结果</li>
+</ol>
+<p>第4点可以用下面的例子来测试：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">anotherModule</span>(<span class="params">asyncTask</span>)</span>&#123;</span><br><span class="line">	setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		asyncTask.whenSuccess(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(data);</span><br><span class="line">		&#125;);</span><br><span class="line"></span><br><span class="line">		asyncTask.whenFail(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">			<span class="built_in">console</span>.error(err);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;, <span class="number">2000</span>); <span class="comment">// 2s后再取asyncTask的结果</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> asyncTask = createAsyncTask();</span><br><span class="line">anotherModule(asyncTask);</span><br></pre></td></tr></table></figure></p>
+<p>AsyncTask类的封装看起来增加了很多代码，但是完全没有增加使用时的复杂度，而且适用性更广，所以把代码重构成这样是值得的。再观察这个类的代码，还会发现一个新的问题，就是AsyncTask类的实例具有finish和fail这两个实例方法，而这两个实例方法的行为应该是只有异步任务才能使用的，所以直接部署在AsyncTask实例上不合适，外边拿到AsyncTask实例后，如果意外地调用了这两个方法，就会导致错误发生。 所以需要想办法把这两个方法的行为控制在异步任务内使用。</p>
+<p>解决的办法就是再对这个AsyncTask封装一层，把finish和fail的行为，放到这新的一层处理。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">AsyncTask</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		_state : <span class="number">0</span>,<span class="comment">// 记录task的状态 0 执行中 1 执行成功 2 执行失败</span></span><br><span class="line">		_whenSuccess : [],<span class="comment">// 存放task执行成功时的回调函数</span></span><br><span class="line">		_whenFail : [],<span class="comment">// 存放task执行失败时的回调函数</span></span><br><span class="line">		_data : <span class="literal">undefined</span>,<span class="comment">// 存放task执行成功时的状态</span></span><br><span class="line">		_error : <span class="literal">undefined</span>, <span class="comment">// 存放task执行失败时的错误</span></span><br><span class="line">		whenSuccess(onSuccess) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">typeof</span> onSuccess !== <span class="string">'function'</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">1</span>) &#123;</span><br><span class="line">				<span class="comment">//如果添加回调时，task已经执行完毕，则直接把执行完毕时保存的状态回调onSuccess</span></span><br><span class="line">				onSuccess(<span class="keyword">this</span>._data);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._whenSuccess.findIndex(onSuccess)  === <span class="number">-1</span>) &#123;</span><br><span class="line">				<span class="keyword">this</span>._whenSuccess.push(onSuccess);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		whenFail(onFail) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">typeof</span> onFail !== <span class="string">'function'</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">2</span>) &#123;</span><br><span class="line">				<span class="comment">//如果添加回调时，task已经执行失败，则直接把执行失败时保存的状态回调onSuccess</span></span><br><span class="line">				onFail(<span class="keyword">this</span>._error);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._whenFail.findIndex(onFail)  === <span class="number">-1</span>) &#123;</span><br><span class="line">				<span class="keyword">this</span>._whenFail.push(onFail);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">AsyncTaskWrapper</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		asyncTask: <span class="keyword">new</span> AsyncTask(),</span><br><span class="line">		finish(data) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>.asyncTask._state !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">this</span>.asyncTask._state = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">this</span>.asyncTask._data = data;<span class="comment">//保存成功时状态</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">let</span> callback <span class="keyword">of</span> <span class="keyword">this</span>.asyncTask._whenSuccess) &#123;</span><br><span class="line">				callback(<span class="keyword">this</span>.asyncTask._data);	</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>.asyncTask._whenSuccess.length = <span class="number">0</span>;</span><br><span class="line">		&#125;,</span><br><span class="line">		fail(err) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>.asyncTask._state !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">this</span>.asyncTask._state = <span class="number">2</span>;</span><br><span class="line">			<span class="keyword">this</span>.asyncTask._error = err;<span class="comment">//保存失败时状态</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">let</span> callback <span class="keyword">of</span> <span class="keyword">this</span>.asyncTask._whenFail) &#123;</span><br><span class="line">				callback(<span class="keyword">this</span>.asyncTask._error);	</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>.asyncTask._whenFail.length = <span class="number">0</span>;</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在异步任务中，直接使用AsyncTaskWrapper，而不是直接使用AsyncTask：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createAsyncTask</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> taskWrapper = <span class="keyword">new</span> AsyncTaskWrapper(); </span><br><span class="line">	setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="comment">// if async task finished</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">Math</span>.random() * <span class="number">10</span> &gt; <span class="number">5</span>) &#123;</span><br><span class="line">			<span class="keyword">let</span> data = &#123;<span class="attr">name</span>: <span class="string">'lyzg'</span>&#125;;</span><br><span class="line">			taskWrapper.finish(data);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			taskWrapper.fail(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'sth happened'</span>));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, <span class="number">1000</span>);</span><br><span class="line">	<span class="keyword">return</span> taskWrapper.asyncTask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">anotherModule</span>(<span class="params">asyncTask</span>)</span>&#123;</span><br><span class="line">	asyncTask.whenSuccess(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(data);</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	asyncTask.whenFail(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.error(err);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> asyncTask = createAsyncTask();</span><br><span class="line">anotherModule(asyncTask);</span><br></pre></td></tr></table></figure></p>
+<p>加了AsyncTaskWrapper之后，结果是一样的， 但是代码的封装性更好。 现在异步任务创建的AsyncTask实例就没有finish和fail的行为可以随便用了。 </p>
+<h2 id="Promise模式初现"><a href="#Promise模式初现" class="headerlink" title="Promise模式初现"></a>Promise模式初现</h2><p>上面的AsyncTaskWrapper和AsyncTask类的使用模式，就是Promise模式的一个基本形态，对上面两个类及其方法、属性做一些名称上的调整，就能看地更加直观了：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		_state : <span class="number">0</span>,<span class="comment">// 记录promise的状态 0 执行中 1 执行成功 2 执行失败</span></span><br><span class="line">		_resolved : [],<span class="comment">// 存放promise被resolved时的回调函数</span></span><br><span class="line">		_rejected : [],<span class="comment">// 存放promise被rejected时的回调函数</span></span><br><span class="line">		_data : <span class="literal">undefined</span>,<span class="comment">// 存放promise被resolved时的状态</span></span><br><span class="line">		_error : <span class="literal">undefined</span>, <span class="comment">// 存放promise被rejected时的错误</span></span><br><span class="line">		then(onResolved) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">typeof</span> onResolved !== <span class="string">'function'</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">1</span>) &#123;</span><br><span class="line">				<span class="comment">//如果添加回调时，promise已经resolved，则直接把执行完毕时保存的状态回调onResolved</span></span><br><span class="line">				onResolved(<span class="keyword">this</span>._data);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._resolved.findIndex(onResolved)  === <span class="number">-1</span>) &#123;</span><br><span class="line">				<span class="keyword">this</span>._resolved.push(onResolved);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="keyword">catch</span>(onReject) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">typeof</span> onReject !== <span class="string">'function'</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">2</span>) &#123;</span><br><span class="line">				<span class="comment">//如果添加回调时，promise已经rejected，则直接把执行失败时保存的状态回调onRejected</span></span><br><span class="line">				onReject(<span class="keyword">this</span>._error);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._rejected.findIndex(onReject)  === <span class="number">-1</span>) &#123;</span><br><span class="line">				<span class="keyword">this</span>._rejected.push(onReject);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deferred</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		promise: <span class="keyword">new</span> <span class="built_in">Promise</span>(),</span><br><span class="line">		resolve(data) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>.promise._state !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">this</span>.promise._state = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">this</span>.promise._data = data;<span class="comment">//保存成功时状态</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">let</span> callback <span class="keyword">of</span> <span class="keyword">this</span>.promise._resolved) &#123;</span><br><span class="line">				callback(<span class="keyword">this</span>.promise._data);	</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>.promise._resolved.length = <span class="number">0</span>;</span><br><span class="line">		&#125;,</span><br><span class="line">		reject(err) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>.promise._state !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">this</span>.promise._state = <span class="number">2</span>;</span><br><span class="line">			<span class="keyword">this</span>.promise._error = err;<span class="comment">//保存失败时状态</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">let</span> callback <span class="keyword">of</span> <span class="keyword">this</span>.promise._rejected) &#123;</span><br><span class="line">				callback(<span class="keyword">this</span>.promise._error);	</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>.promise._rejected.length = <span class="number">0</span>;</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createAsyncTask</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> deferred = <span class="keyword">new</span> Deferred(); </span><br><span class="line">	setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="comment">// if async task finished</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">Math</span>.random() * <span class="number">10</span> &gt; <span class="number">5</span>) &#123;</span><br><span class="line">			<span class="keyword">let</span> data = &#123;<span class="attr">name</span>: <span class="string">'lyzg'</span>&#125;;</span><br><span class="line">			deferred.resolve(data);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			deferred.reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'sth happened'</span>));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, <span class="number">1000</span>);</span><br><span class="line">	<span class="keyword">return</span> deferred.promise;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">anotherModule</span>(<span class="params">promise</span>)</span>&#123;</span><br><span class="line">	promise.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(data);</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	promise.catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.error(err);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> promise = createAsyncTask();</span><br><span class="line">anotherModule(promise);</span><br></pre></td></tr></table></figure></p>
+<p>看，现在是不是很像Promise的风格了！</p>
+<p>尽管如此，它还是不完美的，首先是then跟catch方法并不统一，在Promise标准里面，then方法是同时加两个回调的，catch方法也只是重载then方法而已；然后最重要的就是Promise实例必须要支持then方法的链式调用，这才是Promise标准最大的特点。所以要想办法把上面的Promise类继续改进。</p>
+<h2 id="改进后的Promise类"><a href="#改进后的Promise类" class="headerlink" title="改进后的Promise类"></a>改进后的Promise类</h2><p>先来看如何改进then方法，这个还是比较简单的：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		_state : <span class="number">0</span>,<span class="comment">// 记录promise的状态 0 执行中 1 执行成功 2 执行失败</span></span><br><span class="line">		_resolved : [],<span class="comment">// 存放promise被resolved时的回调函数</span></span><br><span class="line">		_rejected : [],<span class="comment">// 存放promise被rejected时的回调函数</span></span><br><span class="line">		_data : <span class="literal">undefined</span>,<span class="comment">// 存放promise被resolved时的状态</span></span><br><span class="line">		_error : <span class="literal">undefined</span>, <span class="comment">// 存放promise被rejected时的错误</span></span><br><span class="line">		then(onResolved, onReject) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">1</span>) &#123;</span><br><span class="line">				<span class="comment">//如果添加回调时，promise已经resolved，则直接把执行完毕时保存的状态回调onResolved</span></span><br><span class="line">				onResolved(<span class="keyword">this</span>._data);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">2</span>) &#123;</span><br><span class="line">				<span class="comment">//如果添加回调时，promise已经rejected，则直接把执行失败时保存的状态回调onRejected</span></span><br><span class="line">				onReject(<span class="keyword">this</span>._error);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">typeof</span> onResolved === <span class="string">'function'</span> &amp;&amp; <span class="keyword">this</span>._resolved.findIndex(onResolved)  === <span class="number">-1</span>) &#123;</span><br><span class="line">				<span class="keyword">this</span>._resolved.push(onResolved);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">typeof</span> onReject === <span class="string">'function'</span> &amp;&amp; <span class="keyword">this</span>._rejected.findIndex(onReject)  === <span class="number">-1</span>) &#123;</span><br><span class="line">				<span class="keyword">this</span>._rejected.push(onReject);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="keyword">catch</span>(onReject) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>.then(<span class="literal">null</span>, onReject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于只是给then方法增加了几个if逻辑，所以then方法和catch方法是很好统一起来的。</p>
+<p>接下来是重点，怎么样才能让then方法具备异步任务的链式调用特性呢？我们已经知道then方法要实现链式调用，那么它的返回值必须是一个Promise实例，所以then方法重构的第一步就是确定下面这个结构：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		_state : <span class="number">0</span>,<span class="comment">// 记录promise的状态 0 执行中 1 执行成功 2 执行失败</span></span><br><span class="line">		_resolved : [],<span class="comment">// 存放promise被resolved时的回调函数</span></span><br><span class="line">		_rejected : [],<span class="comment">// 存放promise被rejected时的回调函数</span></span><br><span class="line">		_data : <span class="literal">undefined</span>,<span class="comment">// 存放promise被resolved时的状态</span></span><br><span class="line">		_error : <span class="literal">undefined</span>, <span class="comment">// 存放promise被rejected时的错误</span></span><br><span class="line">		then(onResolved, onReject) &#123;</span><br><span class="line">			<span class="keyword">let</span> deferred = <span class="keyword">new</span> Deferred();</span><br><span class="line">			<span class="comment">//todo more</span></span><br><span class="line">			<span class="keyword">return</span> deferred.promise;</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="keyword">catch</span>(onReject) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>.then(<span class="literal">null</span>, onReject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于deferred正常情况下都是在异步代码块里面去使用的，异步代码块可以调用deferred对象的resolve或reject方法来改变promise状态，以便promise的回调能够执行。 所以下一步就是要想办法调用then方法内部deferred对象的resolve或reject方法。 按照Promise标准，then的调用者被resolve或reject的时候，then添加的onResolved或onReject回调就会执行，而onResolved或onReject回调执行后，会导致then返回的Promise实例被resolve或reject。所以下一步就是要想办法在onResolved或onReject回调的时候，把then返回的promise实例给resolve或reject掉。 诀窍就是：原本应该把onResolved或onReject加到then调用者的回调数组中去的，调整一下，不是直接把它们加进去，而是加一个新的回调函数进去，在这个新的回调函数内再去调用原始的回调，同时还要调用deferred对象的resolve或reject方法。 简单不完整实现如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		_state : <span class="number">0</span>,<span class="comment">// 记录promise的状态 0 执行中 1 执行成功 2 执行失败</span></span><br><span class="line">		_resolved : [],<span class="comment">// 存放promise被resolved时的回调函数</span></span><br><span class="line">		_rejected : [],<span class="comment">// 存放promise被rejected时的回调函数</span></span><br><span class="line">		_data : <span class="literal">undefined</span>,<span class="comment">// 存放promise被resolved时的状态</span></span><br><span class="line">		_error : <span class="literal">undefined</span>, <span class="comment">// 存放promise被rejected时的错误</span></span><br><span class="line">		then(onResolved, onReject) &#123;</span><br><span class="line">			<span class="keyword">let</span> deferred = <span class="keyword">new</span> Deferred();</span><br><span class="line"></span><br><span class="line">			<span class="keyword">let</span> _onResolved = <span class="function">(<span class="params">data</span>)=&gt;</span>&#123;</span><br><span class="line">				<span class="keyword">let</span> ret = <span class="keyword">typeof</span> onResolved === <span class="string">'function'</span> ? onResolved(data) : <span class="literal">undefined</span>;</span><br><span class="line">				deferred.resolve(ret);</span><br><span class="line">			&#125;;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">let</span> _onReject = <span class="function">(<span class="params">err</span>)=&gt;</span>&#123;</span><br><span class="line">				<span class="keyword">let</span> ret = <span class="keyword">typeof</span> onReject === <span class="string">'function'</span> ? onReject(err) : <span class="literal">undefined</span>;</span><br><span class="line">				deferred.reject(ret);</span><br><span class="line">			&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">			<span class="keyword">this</span>._resolved.push(_onResolved);</span><br><span class="line">			<span class="keyword">this</span>._rejected.push(_onReject);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">return</span> deferred.promise;</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="keyword">catch</span>(onReject) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>.then(<span class="literal">null</span>, onReject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>虽然上面这个then的实现很简陋，但已经展现了本篇要介绍的Promise简单实现思想的核心。 这个_onResolved和_onReject作为一个中间函数，成功地联结了then的调用者、then的返回者以及then的回调函数，这三个关键的角色。 回顾之前在<a href="/2019/05/17/ES6-Promise/" title="ES6 Promise的学习笔记">ES6 Promise的学习笔记</a>中的内容，理解then方法的特性，就是要理解这三者之间的关系。</p>
+<p>到了这里，要让then方法实现异步任务的链式调用就比较容易了，只要对前面then方法继续改进即可，，示范及举例如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> p =  &#123;</span><br><span class="line">		_state : <span class="number">0</span>,<span class="comment">// 记录promise的状态 0 执行中 1 执行成功 2 执行失败</span></span><br><span class="line">		_resolved : [],<span class="comment">// 存放promise被resolved时的回调函数</span></span><br><span class="line">		_rejected : [],<span class="comment">// 存放promise被rejected时的回调函数</span></span><br><span class="line">		_data : <span class="literal">undefined</span>,<span class="comment">// 存放promise被resolved时的状态</span></span><br><span class="line">		_error : <span class="literal">undefined</span>, <span class="comment">// 存放promise被rejected时的错误</span></span><br><span class="line">		then(onResolved, onReject) &#123;</span><br><span class="line">			<span class="keyword">let</span> deferred = <span class="keyword">new</span> Deferred();</span><br><span class="line"></span><br><span class="line">			<span class="keyword">let</span> _onResolved = <span class="function">(<span class="params">data</span>)=&gt;</span>&#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					<span class="comment">//加上try-catch，任何错误都将导致deferred调用reject</span></span><br><span class="line"></span><br><span class="line">					<span class="keyword">let</span> ret = <span class="keyword">typeof</span> onResolved === <span class="string">'function'</span> ? onResolved(data) : <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line">					<span class="keyword">if</span>(ret <span class="keyword">instanceof</span> <span class="built_in">Promise</span>) &#123;</span><br><span class="line">						<span class="comment">//关键代码 onResolved如果返回一个新的Promise实例，那么该实例将决定deferred调用哪个方法</span></span><br><span class="line">						ret.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">							deferred.resolve(data);</span><br><span class="line">						&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">							deferred.reject(err);</span><br><span class="line">						&#125;);</span><br><span class="line">					&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">						deferred.resolve(ret);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">					deferred.reject(e);	</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">let</span> _onReject = <span class="function">(<span class="params">err</span>)=&gt;</span>&#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					<span class="comment">//加上try-catch，任何错误都将导致deferred调用reject</span></span><br><span class="line"></span><br><span class="line">					<span class="keyword">let</span> ret = <span class="keyword">typeof</span> onReject === <span class="string">'function'</span> ? onReject(err) : <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line">					<span class="keyword">if</span>(ret <span class="keyword">instanceof</span> <span class="built_in">Promise</span>) &#123;</span><br><span class="line">						<span class="comment">//关键代码 onReject如果返回一个新的Promise实例，那么该实例将决定deferred调用哪个方法</span></span><br><span class="line">						ret.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">							deferred.resolve(data);</span><br><span class="line">						&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">							deferred.reject(err);</span><br><span class="line">						&#125;);</span><br><span class="line">					&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">						<span class="comment">// 只要onReject没有抛出新的错误，就还是resolve掉deferred</span></span><br><span class="line">						deferred.resolve(ret);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">					deferred.reject(e);	</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">1</span>) &#123;</span><br><span class="line">				_onResolved(<span class="keyword">this</span>._data);</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">this</span>._state === <span class="number">2</span>) &#123;</span><br><span class="line">				_onReject(<span class="keyword">this</span>._error);</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">this</span>._resolved.push(_onResolved);</span><br><span class="line">				<span class="keyword">this</span>._rejected.push(_onReject);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">return</span> deferred.promise;</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="keyword">catch</span>(onReject) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>.then(<span class="literal">null</span>, onReject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//必须加这行，否则上面instanceof运算不对</span></span><br><span class="line">	<span class="built_in">Object</span>.setPrototypeOf(p, <span class="built_in">Promise</span>.prototype);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deferred</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		promise: <span class="keyword">new</span> <span class="built_in">Promise</span>(),</span><br><span class="line">		resolve(data) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>.promise._state !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">this</span>.promise._state = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">this</span>.promise._data = data;<span class="comment">//保存成功时状态</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">let</span> callback <span class="keyword">of</span> <span class="keyword">this</span>.promise._resolved) &#123;</span><br><span class="line">				setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;callback(<span class="keyword">this</span>.promise._data);&#125;, <span class="number">0</span>);	</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>.promise._resolved.length = <span class="number">0</span>;</span><br><span class="line">		&#125;,</span><br><span class="line">		reject(err) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>.promise._state !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">this</span>.promise._state = <span class="number">2</span>;</span><br><span class="line">			<span class="keyword">this</span>.promise._error = err;<span class="comment">//保存失败时状态</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">let</span> callback <span class="keyword">of</span> <span class="keyword">this</span>.promise._rejected) &#123;</span><br><span class="line">				setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;callback(<span class="keyword">this</span>.promise._error);&#125;, <span class="number">0</span>);	</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>.promise._rejected.length = <span class="number">0</span>;</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createAsyncTask</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> deferred = <span class="keyword">new</span> Deferred(); </span><br><span class="line">	setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="comment">// if async task finished</span></span><br><span class="line">		deferred.resolve(&#123;<span class="attr">name</span>: <span class="string">'lyzg'</span>&#125;);</span><br><span class="line">	&#125;, <span class="number">1000</span>);</span><br><span class="line">	<span class="keyword">return</span> deferred.promise;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> promise = createAsyncTask();</span><br><span class="line"></span><br><span class="line">promise.then(<span class="function"><span class="params">data</span>=&gt;</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(data);</span><br><span class="line">	<span class="keyword">let</span> deferred = <span class="keyword">new</span> Deferred();</span><br><span class="line">	setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">		deferred.resolve(&#123;<span class="attr">name</span>: <span class="string">'lyzg2'</span>&#125;);</span><br><span class="line">	&#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//模拟返回一个新的Promise实例</span></span><br><span class="line">	<span class="keyword">return</span> deferred.promise;</span><br><span class="line">&#125;).then(<span class="function"><span class="params">data</span>=&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(data);</span><br><span class="line">	<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'error happened'</span>);</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">err</span>=&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.error(err);</span><br><span class="line">&#125;).then(<span class="function"><span class="params">data</span>=&gt;</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'ended!'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// &#123;name: "lyzg"&#125;</span></span><br><span class="line"><span class="comment">// &#123;name: "lyzg2"&#125;</span></span><br><span class="line"><span class="comment">// Error: error happened</span></span><br><span class="line"><span class="comment">// ended!</span></span><br></pre></td></tr></table></figure></p>
+<p>到了这一步，本篇封装的Promise类就已经达到前面计划要实现的那两个目标了。 跟Promise标准实现比起来，这个类还差了很多很多特性，但是最起码已经把Promise最为突出的特点已经展现出来了，了解这个基本实现的思想，对于深入理解Promise的特性一定是有帮助的。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>最后我想说的是，本篇的思想是从别人那学来的，而且是13年的文章，现在看起来好像没有什么实用价值，但是对于我自己理解Promise的原理是很有帮助的一个点，所以我把它按自己的思路重新分享出来。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Promise相关/" rel="tag"># Promise相关</a>
+          
+            <a href="/tags/源码学习/" rel="tag"># 源码学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/18/ES6-Module的加载/" rel="next" title="ES6 Module的加载">
+                <i class="fa fa-chevron-left"></i> ES6 Module的加载
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/04/从then-js的源码掌握Promise的思想/" rel="prev" title="从then.js的源码掌握Promise实现的思路">
+                从then.js的源码掌握Promise实现的思路 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#封装异步任务"><span class="nav-number">1.</span> <span class="nav-text">封装异步任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise模式初现"><span class="nav-number">2.</span> <span class="nav-text">Promise模式初现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进后的Promise类"><span class="nav-number">3.</span> <span class="nav-text">改进后的Promise类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

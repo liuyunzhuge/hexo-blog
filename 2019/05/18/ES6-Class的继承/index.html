@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中ES6 Class 的继承我的ES6入门学习规划  这篇文章继续学习ES6面向对象编程的语法要点。">
+<meta name="keywords" content="ES6学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6 Class的继承">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/05/18/ES6-Class的继承/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中ES6 Class 的继承我的ES6入门学习规划  这篇文章继续学习ES6面向对象编程的语法要点。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-14T13:57:46.173Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6 Class的继承">
+<meta name="twitter:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中ES6 Class 的继承我的ES6入门学习规划  这篇文章继续学习ES6面向对象编程的语法要点。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/05/18/ES6-Class的继承/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ES6 Class的继承 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/05/18/ES6-Class的继承/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6 Class的继承
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-17 18:11:40" itemprop="dateCreated datePublished" datetime="2019-05-17T18:11:40Z">2019-05-17</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：</p>
+<blockquote>
+<p>阮一峰ES6的书籍中<a href="http://es6.ruanyifeng.com/#docs/class-extends" target="_blank" rel="noopener">ES6 Class 的继承</a><br><a href="/2019/05/01/ES6入门学习的规划/" title="我的ES6入门学习规划">我的ES6入门学习规划</a></p>
+</blockquote>
+<p>这篇文章继续学习ES6面向对象编程的语法要点。<br><a id="more"></a></p>
+<p>ES6提供了跟其它语言如java比较相像的继承方式，但本质上还是原型继承。</p>
+<h2 id="ES5的继承方式"><a href="#ES5的继承方式" class="headerlink" title="ES5的继承方式"></a>ES5的继承方式</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ClassA</span>(<span class="params">sColor</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.color = sColor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ClassA.prototype.sayColor = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.color);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ClassB</span>(<span class="params">sColor, sName</span>) </span>&#123;</span><br><span class="line">    ClassA.call(<span class="keyword">this</span>, sColor);</span><br><span class="line">    <span class="keyword">this</span>.name = sName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//下面三行代码比较重要</span></span><br><span class="line">ClassB.prototype = <span class="keyword">new</span> ClassA();</span><br><span class="line">ClassB.prototype.constructor = ClassB;</span><br><span class="line">ClassB.__proto__ = ClassA;</span><br><span class="line"></span><br><span class="line">ClassB.prototype.sayName = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.name);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(ClassA.prototype.constructor === ClassA);<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(ClassB.prototype.constructor === ClassB);<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> ClassB() <span class="keyword">instanceof</span> ClassA);<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> ClassB() <span class="keyword">instanceof</span> ClassA);<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(ClassB.prototype.__proto__ === ClassA.prototype);<span class="comment">//true</span></span><br><span class="line"><span class="built_in">console</span>.log(ClassB.__proto__ === ClassA);<span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<h2 id="ES6继承的形式"><a href="#ES6继承的形式" class="headerlink" title="ES6继承的形式"></a>ES6继承的形式</h2><p>跟别的语言一样，都使用extend关键字，后面接父类名称：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ColorPoint</span> <span class="keyword">extends</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//1</span></span><br><span class="line"><span class="built_in">console</span>.log(Point.prototype.constructor === Point);<span class="comment">// true</span></span><br><span class="line"><span class="comment">//2</span></span><br><span class="line"><span class="built_in">console</span>.log(ColorPoint.prototype.constructor === ColorPoint);<span class="comment">// true</span></span><br><span class="line"><span class="comment">//3</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> ColorPoint() <span class="keyword">instanceof</span> Point);<span class="comment">// true</span></span><br><span class="line"><span class="comment">//4</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> ColorPoint() <span class="keyword">instanceof</span> ColorPoint);<span class="comment">// true</span></span><br><span class="line"><span class="comment">//5</span></span><br><span class="line"><span class="built_in">console</span>.log(ColorPoint.prototype.__proto__ === Point.prototype);<span class="comment">//true</span></span><br><span class="line"><span class="comment">//6</span></span><br><span class="line"><span class="built_in">console</span>.log(ColorPoint.__proto__ === Point);<span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
+<p>这个例子采用ES6来编写继承，效果与ES5一样。 观察这个例子（或者是ES5的那个例子）中的6个console.log，了解它们各自代表的含义：</p>
+<ul>
+<li>第1个与第2个描述的是类的构造函数与prototype之间的关联关系，这是js语言规定的；</li>
+<li>第3个与第4个是继承的特征表现，instanceof说明了ColorPoint的实例与ColorPoint和Point类，属于同一条原型链；</li>
+<li>第5个表示子类与父类的实例之间的继承，实例的原型链的就是这么构建起来的。通过实例的原型链查找一个实例属性，先从子类实例开始找，找不到就到<strong>子类实例原型</strong>上去找，如果子类实例原型上访问不到，则会到<strong>子类实例原型的原型</strong>上去查找，而子类实例原型的原型，正好是<strong>父类实例的原型</strong>。</li>
+<li>第6个表示子类与父类的静态继承，类级别的原型链就是这么构建起来的。通过类的原型链查找一个类的属性，先从子类开始找，找不到就到<strong>子类的原型</strong>上去找，而子类的原型，正好是<strong>父类</strong>。</li>
+</ul>
+<p>最后2个也等价于：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getPrototypeOf(ColorPoint.prototype) === Point.prototype;</span><br><span class="line"><span class="built_in">Object</span>.getPrototypeOf(ColorPoint) === Point;</span><br></pre></td></tr></table></figure></p>
+<p>对比ES5和ES6的继承，发现效果是差不多的，但是ES5必须通过下面的hack方式才能将ES6的继承特性实现：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ClassB.prototype = <span class="keyword">new</span> ClassA();</span><br><span class="line">ClassB.prototype.constructor = ClassB;</span><br><span class="line">ClassB.__proto__ = ClassA;</span><br></pre></td></tr></table></figure></p>
+<p>如果不是特别注意的话，这三个点很有可能会被忽略掉。 ES6的继承则可以把这一切做地比较完美妥当。 另外ES6毕竟是语言级别的继承方式，还有新的特性可以使用，比如super关键字，可以很方面地在子类或子类实例调用父类的行为方法，这个是ES5里面没有的。</p>
+<h2 id="理解JS的原型链"><a href="#理解JS的原型链" class="headerlink" title="理解JS的原型链"></a>理解JS的原型链</h2><p><strong>首先要理解什么是类的原型，什么是类实例的原型。</strong>类的原型指的是类这个函数本身的原型，类实例的原型是指通过调用类的构造函数创建的实例对象的原型。在进行面向对象编程的时候，大部分情况都是把行为部署到类的实例上面去，然后通过实例方法来调用，少部分情况也会把行为直接部署在类级别上，然后通过静态方法来调用。继承帮助我们解决基础性、重复性的行为封装，因为有前面2种部署方式，所以继承也有两条继承的<strong>线</strong>。JS是通过2条原型链来实现这两种继承的。</p>
+<p>实例的原型链继承，最关键的是把握以下几点：</p>
+<ol>
+<li>类实例.__proto__指向的是类实例的原型，也就是类.prototype</li>
+<li>类.prototype也是一个对象，它也有__proto__属性，它会指向父类.prototype；如果没有父类，它会指向Object.prototype</li>
+<li>Object.prototype.__proto__为null</li>
+</ol>
+<p>所以如果想弄清楚一个类的实例，它的原型链是怎么样的，把它这个类、父类、以及原型对象都找出来即可。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="keyword">new</span> B();</span><br><span class="line"></span><br><span class="line"><span class="comment">// b.__proto__指向类实例的原型，也就是B.prototype</span></span><br><span class="line"><span class="built_in">console</span>.log(b.__proto__ === B.prototype); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// B.prototype也是一个对象，它.__proto__会指向A.prototype</span></span><br><span class="line"><span class="built_in">console</span>.log(B.prototype.__proto__ === A.prototype); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 因为上面的结论成立，也说明子类的原型是父类的一个实例</span></span><br><span class="line"><span class="built_in">console</span>.log(B.prototype <span class="keyword">instanceof</span> A); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// A没有继承于别的类，A.prototype就是Object类的一个实例</span></span><br><span class="line"><span class="built_in">console</span>.log(A.prototype <span class="keyword">instanceof</span> <span class="built_in">Object</span>); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// A.prototype就是Object类的一个实例，所以A.prototype.__proto__指向的是Object类的原型</span></span><br><span class="line"><span class="built_in">console</span>.log(A.prototype.__proto__ === <span class="built_in">Object</span>.prototype); <span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
+<p>虽然前面说到<strong>一个类，如果没有父类，它的prototype的__proto__属性会指向Object.prototype</strong>，能说这个类就继承于Object类吗？不能，因为继承是同时满足实例继承和类的静态继承的，前面的结论只能说明一个独立的类，在类实例层面，继承于Object类，但是类的静态继承方面并不是的，通过后面的内容就能明白这点了。</p>
+<p>类的原型链继承，也有以下几个要点：</p>
+<ol>
+<li>类.__proto__，指向的是父类；如果没有父类，类.__proto__指向Function.prototype，因为所有的类，都是Function的实例；</li>
+<li>Function.prototype是所有函数的原型对象，它是Object类的一个实例，所以它的__proto__属性指向的是Object.prototype</li>
+<li>Object.prototype.__proto__为null<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// B.__proto__指向是父类，也就是A</span></span><br><span class="line"><span class="built_in">console</span>.log(B.__proto__ === A); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// A没有继承别的类，A仅仅是Function的一个实例，它的__proto__指向Function的原型</span></span><br><span class="line"><span class="built_in">console</span>.log(A.__proto__ === <span class="built_in">Function</span>.prototype); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意：A不是继承于Function，A是Function的一个实例，所以A.__proto__ === Function不成立</span></span><br><span class="line"><span class="built_in">console</span>.log(A.__proto__ === <span class="built_in">Function</span>);<span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Function.prototype是Object类的一个实例</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Function</span>.prototype <span class="keyword">instanceof</span> <span class="built_in">Object</span>); <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Function</span>.prototype.__proto__ === <span class="built_in">Object</span>.prototype); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>值得提醒的是，A类没有继承别的类，但也不是继承于Function，它是Function的一个实例，所以它的原型就是Function.prototype。 我原本认为应该要把Function.__proto__考虑进去，看看是会怎么继续这个原型链，但是因为A.__proto__指向的并不是Function，所以Function.__proto__不是A类静态继承原型链的一部分，不能在这里去研究。</p>
+<p>类的实例继承和类的静态继承，到这里就已经描述地很详细了，只要不是讨论Function类，其它类，都可以根据前面的结论来摸清它和它实例的继承原型链。最后也可以看到，不管是实例继承还是类的静态继承，所有继承的终点是Object.prototype，Object.prototype的__proto__指向的是null，从一个对象查找一个属性，如果找不到，最终都会找到Object.prototype的__proto__为止，这也是为啥原型链如果太长会影响到性能的原因。</p>
+<h2 id="Function-proto"><a href="#Function-proto" class="headerlink" title="Function.__proto__"></a>Function.__proto__</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Function</span> <span class="keyword">instanceof</span> <span class="built_in">Function</span>); <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Function</span>.__proto__ === <span class="built_in">Function</span>.prototype); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>因为Function也是Function类的实例，所以Function的__proto__指向的也是Function类的原型，也就是Function.prototype。</p>
+<h2 id="super复用父类行为"><a href="#super复用父类行为" class="headerlink" title="super复用父类行为"></a>super复用父类行为</h2><p>在继承的场景中，子类在重写或自定义新的行为时，如果想复用父类的行为，需要使用ES6新使用的关键字super。 super既可以当做对象又可以当函数使用，它主要使用的位置可分为构造函数、实例方法和静态方法。 super在不同的位置，有完全不同的特性，所以需要掌握清楚，以便实际编码的时候减少未知的错误。</p>
+<h3 id="super作为函数调用"><a href="#super作为函数调用" class="headerlink" title="super作为函数调用"></a>super作为函数调用</h3><p>在子类构造函数中，可以把super当函数一样使用，它用来调用父类的构造函数，<strong>它在调用时，虽然是执行父类的构造函数，但是内部this绑定的是子类要构造的实例</strong>。子类必须在constructor方法中调用super方法，否则新建实例时会报错。这是因为：</p>
+<blockquote>
+<p>ES5 的继承，实质是先创造子类的实例对象this，然后再将父类的方法添加到this上面（Parent.apply(this)）。ES6 的继承机制完全不同，实质是先将父类实例对象的属性和方法，加到this上面（所以必须先调用super方法），然后再用子类的构造函数修改this。</p>
+</blockquote>
+<p>同时ES6还有规定：</p>
+<ol>
+<li>在子类的构造函数中，只有调用super之后，才可以使用this关键字，否则会报错</li>
+<li>如果子类没有定义constructor方法，那么会自动加一个构造函数，并在内部调用super</li>
+</ol>
+<p>ES6这种super方式来复用父类构造函数的方式，比较简单好理解，这样的话，父类实例化过程中，得到的所有非原型的实例属性和实例方法，都能够在子类实例化的时候处理一遍，最后子类实例就完全地同步了父类实例所有非原型的实例成员拉。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">	_dis = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">constructor</span>(x) &#123;</span><br><span class="line">		<span class="keyword">this</span>._x = x;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">this</span>.hi = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">'test hi'</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// _dis _x hi 这三个属性在A类实例化的时候都属于非原型的实例属性或方法</span></span><br><span class="line"></span><br><span class="line">	getDis() &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>._dis;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// getDis 是原型上的实例方法</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = <span class="keyword">new</span> A();</span><br><span class="line"><span class="built_in">console</span>.log(a.hasOwnProperty(<span class="string">'_dis'</span>));<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(a.hasOwnProperty(<span class="string">'_x'</span>));<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(a.hasOwnProperty(<span class="string">'hi'</span>));<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(a.hasOwnProperty(<span class="string">'getDis'</span>));<span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span></span>&#123;</span><br><span class="line">	<span class="comment">//默认会被添加一个构造函数，并调用super</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="keyword">new</span> B();</span><br><span class="line"><span class="built_in">console</span>.log(b.hasOwnProperty(<span class="string">'_dis'</span>));<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(b.hasOwnProperty(<span class="string">'_x'</span>));<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(b.hasOwnProperty(<span class="string">'hi'</span>));<span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(b.hasOwnProperty(<span class="string">'getDis'</span>));<span class="comment">// false</span></span><br></pre></td></tr></table></figure></p>
+<p>从上面的例子可以很清楚地看到，super为子类实例复制了父类实例相同的非原型的实例成员。 </p>
+<p>前面记录到super在调用过程里面，this绑定的是子类的实例，可以通过一个简单的例子来验证这一点：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">let</span> tmp = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">	<span class="keyword">constructor</span>() &#123;</span><br><span class="line">		tmp = <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="keyword">new</span> B();</span><br><span class="line">b === tmp;</span><br></pre></td></tr></table></figure></p>
+<p>tmp作为一个全局变量，始终记录A类构造函数被调用过程中的this指向，最后b === tmp说明了B类实例化过程中，super调用时的this确实为B类实例。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">let</span> tmp = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">	<span class="keyword">constructor</span>() &#123;</span><br><span class="line">		tmp = <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="keyword">new</span> B();</span><br><span class="line">b === tmp;</span><br></pre></td></tr></table></figure>
+<p>上一篇笔记记录到如何通过new.target如果在父类构造函数中使用，那么在做子类实例化的时候，它会指向子类的构造函数，可以用下面的例子来印证：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">new</span>.target.name);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">new</span> A() <span class="comment">// A</span></span><br><span class="line"><span class="keyword">new</span> B() <span class="comment">// B</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>在子类构造函数中，把super当函数使用，是super关键字唯一被作为函数使用的场景，其它地方把它用作函数都会报错。</strong></p>
+<h3 id="super作为对象使用"><a href="#super作为对象使用" class="headerlink" title="super作为对象使用"></a>super作为对象使用</h3><p>要区分两种场景，一种是在构造函数、实例方法或原型方法中使用super对象，另外一种是在静态方法中使用super对象。</p>
+<h4 id="在构造函数、或原型方法中使用super对象"><a href="#在构造函数、或原型方法中使用super对象" class="headerlink" title="在构造函数、或原型方法中使用super对象"></a>在构造函数、或原型方法中使用super对象</h4><p>在这个场景下，<strong>super对象指向为父类的原型对象</strong>，它的作用是帮助我们重用父类原型上的行为，尤其是在子类需要覆盖父类的同名方法的时候，特别有用。</p>
+<p>所以可以在子类的构造函数中、原型方法中，通过super来访问父类原型对象上的属性或方法，<strong>且在super调用父类原型方法时，内部this会绑定为子类实例</strong>。由于super指向父类的原型对象，所以定义在父类实例上的方法或属性，是无法通过super调用的。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">	_content = <span class="string">''</span>;</span><br><span class="line">	_tag = <span class="string">'A'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">constructor</span>(content) &#123;</span><br><span class="line">		<span class="keyword">this</span>._content = content;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	render() &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">`&lt;<span class="subst">$&#123;<span class="keyword">this</span>._tag&#125;</span>&gt;<span class="subst">$&#123;<span class="keyword">this</span>._content&#125;</span>&lt;/<span class="subst">$&#123;<span class="keyword">this</span>._tag&#125;</span>&gt;`</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">A.prototype.id = <span class="string">'a_pro'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">	_tag = <span class="string">'B'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">constructor</span>(content)&#123;</span><br><span class="line">		<span class="keyword">super</span>(content);</span><br><span class="line">		<span class="keyword">this</span>.test();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">this</span>.test2 = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">			<span class="comment">// 这里面无法使用super关键字的：ES6规定super只能用在对象的方法当中。目前，只有对象方法的简写法可以让 JavaScript 引擎确认，定义的是对象的方法。</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	test() &#123;</span><br><span class="line">		<span class="comment">//super作为对象在构造函数、原型方法中使用，指向的是父类原型对象</span></span><br><span class="line">		<span class="built_in">console</span>.log(<span class="keyword">super</span>.render === A.prototype.render); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">//可以通过super调用父类原型方法，并且内部this绑定的是子类实例</span></span><br><span class="line">		<span class="built_in">console</span>.log(<span class="keyword">super</span>.render()); <span class="comment">// &lt;B&gt;hello world&lt;/B&gt;</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">//可以通过super访问到父类原型上定义的属性</span></span><br><span class="line">		<span class="built_in">console</span>.log(<span class="keyword">super</span>.id); <span class="comment">// a_pro</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">//super指向的是父类的原型对象，所以无法取到父类的实例属性</span></span><br><span class="line">		<span class="built_in">console</span>.log(<span class="keyword">super</span>._content); <span class="comment">// undefined</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="keyword">new</span> B(<span class="string">'hello world'</span>);</span><br><span class="line">b.test();</span><br></pre></td></tr></table></figure></p>
+<p>test方法最终会调用两次，一次是在构造函数中，一次是最后的主动调用，打印结果都是一样的。</p>
+<p>有一种很特殊的情况，在ES6这本书里面有介绍：</p>
+<blockquote>
+<p>由于this指向子类实例，所以如果通过super对某个属性赋值，这时super就是this，赋值的属性会变成子类实例的属性。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">this</span>.x = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">this</span>.x = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">super</span>.x = <span class="number">3</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">super</span>.x); <span class="comment">// undefined</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.x); <span class="comment">// 3</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="keyword">new</span> B();</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>上面代码中，super.x赋值为3，这时等同于对this.x赋值为3。而当读取super.x的时候，读的是A.prototype.x，所以返回undefined。</p>
+</blockquote>
+<p>这个结果虽然是看到了，但是并没有把原因解释清楚，既然super指向的是父类原型对象，取值的时候是去原型对象找属性，赋值的时候为啥不是给原型对象赋值呢？除非说super的赋值行为，在ES6的内部做了处理，等同于方法调用，由于方法调用内部this都是指向子类实例，所以给super赋值，最后等同于给子类实例赋值。</p>
+<p>从我的想法来说，上面属于一种比较奇怪的现象，在实际编程的时候，我们是不应该去给super赋值的，那意味着子类的行为有篡改父类行为的含义，这种方式是违背封装原则的。</p>
+<h4 id="在静态方法中使用super对象"><a href="#在静态方法中使用super对象" class="headerlink" title="在静态方法中使用super对象"></a>在静态方法中使用super对象</h4><p>在子类的静态方法中通过super调用父类的方法时，方法内部的this指向当前的子类，而不是子类的实例。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">	x = <span class="number">1</span>;<span class="comment">// 父类的实例属性x</span></span><br><span class="line">	<span class="keyword">static</span> x = <span class="number">2</span>; <span class="comment">// 父类的静态属性x</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> getX() &#123;<span class="comment">// 父类的静态方法x</span></span><br><span class="line">		<span class="built_in">console</span>.log(<span class="keyword">this</span>.x);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">	x = <span class="number">3</span>;<span class="comment">// 子类的实例属性x</span></span><br><span class="line">	<span class="keyword">static</span> x = <span class="number">4</span>; <span class="comment">//子类的静态属性x</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">B.getX();<span class="comment">// 4</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="其它补充"><a href="#其它补充" class="headerlink" title="其它补充"></a>其它补充</h3><p>由于对象总是继承其他对象的，所以可以在任意一个字面量对象中，都能使用super关键字。</p>
+<h2 id="原生类的继承"><a href="#原生类的继承" class="headerlink" title="原生类的继承"></a>原生类的继承</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Boolean()</span><br><span class="line">Number()</span><br><span class="line">String()</span><br><span class="line">Array()</span><br><span class="line">Date()</span><br><span class="line">Function()</span><br><span class="line">RegExp()</span><br><span class="line">Error()</span><br><span class="line">Object()</span><br></pre></td></tr></table></figure>
+<p>ES6以前，无法继承这些原生类。ES6可以了。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyArray</span> <span class="keyword">extends</span> <span class="title">Array</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(...args) &#123;</span><br><span class="line">    <span class="keyword">super</span>(...args);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> MyArray();</span><br><span class="line">arr[<span class="number">0</span>] = <span class="number">12</span>;</span><br><span class="line">arr.length <span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line">arr.length = <span class="number">0</span>;</span><br><span class="line">arr[<span class="number">0</span>] <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure></p>
+<p>注意，继承Object的子类，有一个行为差异。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NewObj</span> <span class="keyword">extends</span> <span class="title">Object</span></span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>()&#123;</span><br><span class="line">    <span class="keyword">super</span>(...arguments);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> o = <span class="keyword">new</span> NewObj(&#123;<span class="attr">attr</span>: <span class="literal">true</span>&#125;);</span><br><span class="line">o.attr === <span class="literal">true</span>  <span class="comment">// false</span></span><br></pre></td></tr></table></figure></p>
+<p>上面代码中，NewObj继承了Object，但是无法通过super方法向父类Object传参。这是因为 ES6 改变了Object构造函数的行为，一旦发现Object方法不是通过new Object()这种形式调用，ES6 规定Object构造函数会忽略参数。</p>
+<h2 id="多重继承"><a href="#多重继承" class="headerlink" title="多重继承"></a>多重继承</h2><p>mixin模式可以帮助我们实现多重继承，目前对多重继承在ES6中应用没有多大的兴趣，暂时只是把这个点留在这里备忘，将来有需要的时候可以考虑使用：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mix</span>(<span class="params">...mixins</span>) </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Mix</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> mixin <span class="keyword">of</span> mixins) &#123;</span><br><span class="line">        copyProperties(<span class="keyword">this</span>, <span class="keyword">new</span> mixin()); <span class="comment">// 拷贝实例属性</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> mixin <span class="keyword">of</span> mixins) &#123;</span><br><span class="line">    copyProperties(Mix, mixin); <span class="comment">// 拷贝静态属性</span></span><br><span class="line">    copyProperties(Mix.prototype, mixin.prototype); <span class="comment">// 拷贝原型属性</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> Mix;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">copyProperties</span>(<span class="params">target, source</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">of</span> <span class="built_in">Reflect</span>.ownKeys(source)) &#123;</span><br><span class="line">    <span class="keyword">if</span> ( key !== <span class="string">'constructor'</span></span><br><span class="line">      &amp;&amp; key !== <span class="string">'prototype'</span></span><br><span class="line">      &amp;&amp; key !== <span class="string">'name'</span></span><br><span class="line">    ) &#123;</span><br><span class="line">      <span class="keyword">let</span> desc = <span class="built_in">Object</span>.getOwnPropertyDescriptor(source, key);</span><br><span class="line">      <span class="built_in">Object</span>.defineProperty(target, key, desc);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6学习笔记/" rel="tag"># ES6学习笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/18/ES6-Class的基本语法/" rel="next" title="ES6 Class的基本语法">
+                <i class="fa fa-chevron-left"></i> ES6 Class的基本语法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/18/ES6-Module的语法/" rel="prev" title="ES6 Module的语法">
+                ES6 Module的语法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ES5的继承方式"><span class="nav-number">1.</span> <span class="nav-text">ES5的继承方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES6继承的形式"><span class="nav-number">2.</span> <span class="nav-text">ES6继承的形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解JS的原型链"><span class="nav-number">3.</span> <span class="nav-text">理解JS的原型链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Function-proto"><span class="nav-number">4.</span> <span class="nav-text">Function.__proto__</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#super复用父类行为"><span class="nav-number">5.</span> <span class="nav-text">super复用父类行为</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#super作为函数调用"><span class="nav-number">5.1.</span> <span class="nav-text">super作为函数调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#super作为对象使用"><span class="nav-number">5.2.</span> <span class="nav-text">super作为对象使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在构造函数、或原型方法中使用super对象"><span class="nav-number">5.2.1.</span> <span class="nav-text">在构造函数、或原型方法中使用super对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在静态方法中使用super对象"><span class="nav-number">5.2.2.</span> <span class="nav-text">在静态方法中使用super对象</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它补充"><span class="nav-number">5.3.</span> <span class="nav-text">其它补充</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原生类的继承"><span class="nav-number">6.</span> <span class="nav-text">原生类的继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多重继承"><span class="nav-number">7.</span> <span class="nav-text">多重继承</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

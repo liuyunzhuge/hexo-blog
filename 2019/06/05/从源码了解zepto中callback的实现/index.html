@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇继续学习Promise实现相关的一些东西。 Promise很早就在jquery框架中出现，jquery是用deferred和callbacks两个模块来实现它的，跟jquery类似的框架zepto也有类似的实现。相比之下，zepto的代码可能更加简单好理解一些，所以这次打算从zepto源码的角度研究下它是如何实现类似Promise的模式的。 zepto也是用callbacks和deferred">
+<meta name="keywords" content="Promise相关,源码学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从源码了解zepto中callback的实现">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/05/从源码了解zepto中callback的实现/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇继续学习Promise实现相关的一些东西。 Promise很早就在jquery框架中出现，jquery是用deferred和callbacks两个模块来实现它的，跟jquery类似的框架zepto也有类似的实现。相比之下，zepto的代码可能更加简单好理解一些，所以这次打算从zepto源码的角度研究下它是如何实现类似Promise的模式的。 zepto也是用callbacks和deferred">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-14T13:57:46.178Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从源码了解zepto中callback的实现">
+<meta name="twitter:description" content="本篇继续学习Promise实现相关的一些东西。 Promise很早就在jquery框架中出现，jquery是用deferred和callbacks两个模块来实现它的，跟jquery类似的框架zepto也有类似的实现。相比之下，zepto的代码可能更加简单好理解一些，所以这次打算从zepto源码的角度研究下它是如何实现类似Promise的模式的。 zepto也是用callbacks和deferred">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/05/从源码了解zepto中callback的实现/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>从源码了解zepto中callback的实现 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/05/从源码了解zepto中callback的实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从源码了解zepto中callback的实现
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-04 22:06:34" itemprop="dateCreated datePublished" datetime="2019-06-04T22:06:34Z">2019-06-04</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇继续学习Promise实现相关的一些东西。 Promise很早就在jquery框架中出现，jquery是用deferred和callbacks两个模块来实现它的，跟jquery类似的框架zepto也有类似的实现。相比之下，zepto的代码可能更加简单好理解一些，所以这次打算从zepto源码的角度研究下它是如何实现类似Promise的模式的。 zepto也是用callbacks和deferred两个模块来实现的，这两个模块的源码在它的github上都有：<a href="https://github.com/madrobby/zepto/tree/master/src" target="_blank" rel="noopener">zepto</a>。 本篇从callbacks开始。</p>
+<a id="more"></a>
+<h2 id="了解callbacks的作用"><a href="#了解callbacks的作用" class="headerlink" title="了解callbacks的作用"></a>了解callbacks的作用</h2><p>callbacks用来管理一组回调函数。 平常我们如果想要做一个回调函数队列，最简单的办法是用数组，但是数组的能力比较有限，只能做到顺序执行，适用的场景很小。zepto封装的callbacks管理回调很方便，只需要借助add和remove方法，就能快速添加和删除回调函数；它要回调所有的回调函数也很方便，只需要调用fire方法即可，语义非常清晰；另外它借助几个可选得到option，有更多的功能可用。这几个option分别是：</p>
+<ul>
+<li>memory</li>
+<li>unique</li>
+<li>once</li>
+<li>stopOnFalse</li>
+</ul>
+<p>为了快速了解callbacks和这几个option的作用，我准备了几个代码，将以下代码放到html中，并准备好zepto的脚本，就能在浏览器中运行起来。 </p>
+<ol>
+<li>不加option的情况<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> foo = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'foo says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> bar = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'bar says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> callbacks = $.Callbacks(&#123;</span></span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	callbacks.add(foo);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>); </span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"></span><br><span class="line">	callbacks.add(bar);</span><br><span class="line">	callbacks.add(foo);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>);</span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">// bar says: bingo</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">	callbacks.remove(foo);<span class="comment">//移除所有的foo回调</span></span></span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>);</span></span><br><span class="line"><span class="javascript">	<span class="comment">// bar says: bingo</span></span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>从这个例子可以看到，不加option时，callbacks每次fire都会把所有的回调都执行一遍。</p>
+<ol start="2">
+<li>设置once<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> foo = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'foo says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> bar = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'bar says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> callbacks = $.Callbacks(&#123;</span></span><br><span class="line"><span class="javascript">		once: <span class="literal">true</span></span></span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	callbacks.add(foo);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>); </span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"></span><br><span class="line">	callbacks.add(bar);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>);</span></span><br><span class="line"><span class="javascript">	<span class="comment">// 没有打印</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>once这个option让callbacks只能被fire一次。</p>
+<ol start="3">
+<li>设置memory<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> foo = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'foo says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> bar = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'bar says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> callbacks = $.Callbacks(&#123;</span></span><br><span class="line"><span class="javascript">		memory: <span class="literal">true</span></span></span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	callbacks.add(foo);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>); </span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"></span><br><span class="line">	callbacks.add(bar);</span><br><span class="line"><span class="javascript">	<span class="comment">// bar says: binggo</span></span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>memory这个option让callbacks记住了上一次fire的参数，如果在上一次fire之后，下一次fire之前add了新的回调，新的回调会立即执行，传入上一次fire的参数。</p>
+<ol start="4">
+<li>设置unique<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> foo = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'foo says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> bar = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'bar says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> callbacks = $.Callbacks(&#123;</span></span><br><span class="line"><span class="javascript">		unique: <span class="literal">true</span></span></span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	callbacks.add(foo);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>); </span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"></span><br><span class="line">	callbacks.add(bar);</span><br><span class="line">	callbacks.add(foo);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>);</span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">// bar says: bingo</span></span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>unique这个option控制callbacks不能加入重复的回调函数。</p>
+<ol start="5">
+<li>设置stopOnFalse<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> foo = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'foo says: '</span> + msg);</span></span><br><span class="line"><span class="javascript">		<span class="keyword">return</span> <span class="literal">false</span>;</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> bar = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'bar says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> callbacks = $.Callbacks(&#123;</span></span><br><span class="line"><span class="javascript">		stopOnFalse: <span class="literal">true</span></span></span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	callbacks.add(foo);</span><br><span class="line">	callbacks.add(foo);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>); </span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>stopOnFalse这个option在fire的时候，如果某一个回调返回false，则后面所有回调都不会执行。</p>
+<p>以上几个option都是可选的，可以根据需要启用0到多个。callback的核心用法，就是上面这些，掌握好它的特性之后，接下来学习源码实现就会容易好多。</p>
+<h2 id="源码结构"><a href="#源码结构" class="headerlink" title="源码结构"></a>源码结构</h2><p>$.Callbacks()返回的实例，具有的方法及作用如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	add: ..., <span class="comment">// 添加回调，支持任意个参数，支持嵌套数组</span></span><br><span class="line">	remove: ...,<span class="comment">// 移除回调，支持任意个参数，支持数组</span></span><br><span class="line">	has: ..., <span class="comment">// 判断某个回调函数在当前实例中是否有加过</span></span><br><span class="line">	empty: ..., <span class="comment">// 清空回调函数的数组</span></span><br><span class="line">	disable: ...,<span class="comment">// 销毁Callbacks实例</span></span><br><span class="line">	disabled: ...,<span class="comment">// 返回实例的销毁状态</span></span><br><span class="line">	lock: ...,<span class="comment">// 用于锁住Callbacks实例的状态，不能再用新的状态进行fire，它会记住最后一次fire的状态，通常是配合memory这个option来使用</span></span><br><span class="line">	locked: ...,<span class="comment">// 返回实例的lock状态</span></span><br><span class="line">	fireWith: ...,<span class="comment">// 触发Callbacks实例的所有回调函数调用，支持两个参数，第一个参数是指定回调函数被调用时的context，第二个参数是数组，指定回调函数需要的参数</span></span><br><span class="line">	fire: ...,<span class="comment">// fireWith的重载方法</span></span><br><span class="line">	fired: ...<span class="comment">// 返回Callbacks实例有没有被fire过</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>跟Callbacks实例使用场景最密切的方法是add、remove、fire以及fireWith，其它方法都是作者根据他自己的需要加入的，好在源码比较少，通过对源码进行分析，我们也能琢磨出disable以及lock这两个特殊方法的作用和含义。</p>
+<h3 id="源码里的主要变量"><a href="#源码里的主要变量" class="headerlink" title="源码里的主要变量"></a>源码里的主要变量</h3><p>这个库的主要变量及作用如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> memory, <span class="comment">// 有两个作用，1是用于判断options.memory是否启用，2是用于保存上一次fire时传递的参数</span></span><br><span class="line">    fired,  <span class="comment">// 这是一个简单的布尔变量，每次被fire的时候它都会设置为true，它唯一的作用就是用在</span></span><br><span class="line">    <span class="comment">// fired这个实例方法里面，用于判断实例是否有被fire过</span></span><br><span class="line">    firing, <span class="comment">// 这个布尔变量，用于内部判断当前实例是否正在fire回调函数</span></span><br><span class="line">    firingStart, <span class="comment">// 这是个int变量，用于记录当前实例fire时的起始位置</span></span><br><span class="line">    firingLength, <span class="comment">// 这是个int变量，用于记录当前实例fire时的回调函数个数</span></span><br><span class="line">    firingIndex, <span class="comment">// 这是个int变量，用于记录当前实例fire的实时位置</span></span><br><span class="line">    list = [], <span class="comment">// 这个数组用于存放add进来的回调函数</span></span><br><span class="line">    stack = !options.once &amp;&amp; [], <span class="comment">// 这个变量只有在options.once没有启用的时候才会初始化为一个空数组</span></span><br><span class="line">    <span class="comment">// 它的作用是用于排队，如果当前实例正在fire，但此时别的位置又调用了它的fire，后续的fire参数都会暂存到</span></span><br><span class="line">    <span class="comment">// stack里面进行排队，等到前一次fire完成，就会从stack里面shift一个出来，继续fire</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="add方法"><a href="#add方法" class="headerlink" title="add方法"></a>add方法</h3><p>add用于添加回调函数，支持传递数组。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">add: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">//只有list为trusy的时候，才会继续，disable方法会把list赋值为undefined值</span></span><br><span class="line">  <span class="keyword">if</span> (list) &#123;</span><br><span class="line">    <span class="keyword">var</span> start = list.length,</span><br><span class="line">        add = <span class="function"><span class="keyword">function</span>(<span class="params">args</span>) </span>&#123;</span><br><span class="line">          $.each(args, <span class="function"><span class="keyword">function</span>(<span class="params">_, arg</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">typeof</span> arg === <span class="string">"function"</span>) &#123;</span><br><span class="line">              <span class="comment">//此处是options.unique的控制点，如果options.unqiue为true，那么同一个回调函数不会被add进来</span></span><br><span class="line">              <span class="keyword">if</span> (!options.unique || !Callbacks.has(arg)) list.push(arg)</span><br><span class="line">            &#125;</span><br><span class="line">        	<span class="comment">// 此处判断add的参数有数组类型的情况，比如add(foo, [foo, bar])这种调用</span></span><br><span class="line">        	<span class="comment">// 如果有则递归调用一下内部的add函数</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (arg &amp;&amp; arg.length &amp;&amp; <span class="keyword">typeof</span> arg !== <span class="string">'string'</span>) add(arg)</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    add(<span class="built_in">arguments</span>); </span><br><span class="line">    <span class="comment">//注意下面的实现</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//如果当前实例正在被fire，那么firingLength会被重置为list的最新长度</span></span><br><span class="line">    <span class="comment">//因为实例被fire的时候，是通过for循环来写的</span></span><br><span class="line">    <span class="comment">//firingLength是for循环的终止条件</span></span><br><span class="line">    <span class="comment">//有人可能要问了：在callbacks实例被fire的过程中，怎么还能再add新的回调函数呢</span></span><br><span class="line">    <span class="comment">//这是因为被fire的回调函数，很可能还能访问到callbacks实例，然后继续调用add方法</span></span><br><span class="line">    <span class="keyword">if</span> (firing) firingLength = list.length</span><br><span class="line"></span><br><span class="line">    <span class="comment">//这个就是options.memory这个特性的关键点</span></span><br><span class="line">	<span class="comment">//如果options.memory有启用，同时上次fire有传递参数</span></span><br><span class="line">	<span class="comment">//那么上次的参数就会赋值给memory变量</span></span><br><span class="line">	<span class="comment">//此时判断memory变量，有值，就把新add的回调函数用上一次的参数fire一遍</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (memory) &#123;</span><br><span class="line">      firingStart = start</span><br><span class="line">      fire(memory)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>回顾前面的这个例子，应该能帮助你明白else if (memory)这个点：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> foo = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'foo says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> bar = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'bar says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> callbacks = $.Callbacks(&#123;</span></span><br><span class="line"><span class="javascript">		memory: <span class="literal">true</span></span></span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	callbacks.add(foo);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>); </span></span><br><span class="line"><span class="javascript">	<span class="comment">// foo says: binggo</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">	callbacks.add(bar);<span class="comment">//这次add不需要外部手动调用fire就会用上次的参数，在内部进行“fire”</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">// bar says: binggo</span></span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="fireWith及fire、fired方法"><a href="#fireWith及fire、fired方法" class="headerlink" title="fireWith及fire、fired方法"></a>fireWith及fire、fired方法</h3><p>fireWith是fire内部调用的方法，所以fireWith方法才是核心。fired方法仅仅是返回fired变量的值，判断当前实例有没有被fire过。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">fireWith: <span class="function"><span class="keyword">function</span>(<span class="params">context, args</span>) </span>&#123;</span><br><span class="line">  <span class="comment">//注意这个判断条件</span></span><br><span class="line">  <span class="comment">//stack变量有2种情况会是falsy: 第1种是options.once启用了，第2种是lock或disable方法被调用了</span></span><br><span class="line">  <span class="comment">//只有list有效，并且（实例没有被fire过或者stack变量为trusy），fireWith方法才能有效</span></span><br><span class="line">  <span class="comment">//lock和disable方法会直接影响到fireWith的功能</span></span><br><span class="line">  <span class="keyword">if</span> (list &amp;&amp; (!fired || stack)) &#123;</span><br><span class="line">    args = args || []</span><br><span class="line">    <span class="comment">//只有args是数组才有slice方法</span></span><br><span class="line">    args = [context, args.slice ? args.slice() : args]</span><br><span class="line"></span><br><span class="line">    <span class="comment">//注意此处：如果当前实例正在fire，但是别的位置又调用了实例的fire方法，那么新的fire调用参数会被存入stack数组，进行排队</span></span><br><span class="line">    <span class="keyword">if</span> (firing) stack.push(args)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当前实例没有在fire，就会执行此处，通过内部的fire函数来完成回调函数的调用</span></span><br><span class="line">    <span class="keyword">else</span> fire(args)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">&#125;,</span><br><span class="line">fire: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> Callbacks.fireWith(<span class="keyword">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">&#125;,</span><br><span class="line">fired: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> !!fired</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="内部的fire函数"><a href="#内部的fire函数" class="headerlink" title="内部的fire函数"></a>内部的fire函数</h3><p>这是个内部函数，在它执行过程中，Callbacks的其它实例方法，均有可能调用从而影响这个函数的行为，比如：empty、add、remove、lock、disable、fireWith。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">fire = <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">	<span class="comment">//注意此处：memory只有在options.memory启用时，才会赋值为data，data就是实例被fire时传递的参数</span></span><br><span class="line">	<span class="comment">//但是data不能是falsy值，否则等同于没有启用option.memory</span></span><br><span class="line">	memory = options.memory &amp;&amp; data</span><br><span class="line">	fired = <span class="literal">true</span><span class="comment">// 你看每次fire时，fired变量都会被赋值为true</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//注意firingIndex这个变量的赋值，一般情况下它是0，表示从第一个回调函数开始回调</span></span><br><span class="line">	<span class="comment">//但是在options.memory启用的场景中，它可能是会被赋值为firingStart的值</span></span><br><span class="line">	<span class="comment">//参考add实例方法的源码</span></span><br><span class="line">	firingIndex = firingStart || <span class="number">0</span></span><br><span class="line">	firingStart = <span class="number">0</span></span><br><span class="line">	firingLength = list.length</span><br><span class="line"></span><br><span class="line">	<span class="comment">//开始fire</span></span><br><span class="line">	firing = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//注意for语句的第二个部分，也必须是list为trusy才会继续</span></span><br><span class="line">	<span class="comment">//因为很有可能fire过程中，会被调用lock或disable方法</span></span><br><span class="line">	<span class="keyword">for</span> ( ; list &amp;&amp; firingIndex &lt; firingLength ; ++firingIndex ) &#123;</span><br><span class="line">	  <span class="comment">//此处是options.stopOnFalse特性的关键点</span></span><br><span class="line">	  <span class="comment">//只有这个option启用了，且某个回调函数返回了false，那么整个实例都不会再继续调用</span></span><br><span class="line">	  <span class="keyword">if</span> (list[firingIndex].apply(data[<span class="number">0</span>], data[<span class="number">1</span>]) === <span class="literal">false</span> &amp;&amp; options.stopOnFalse) &#123;</span><br><span class="line">	    memory = <span class="literal">false</span></span><br><span class="line">	    <span class="keyword">break</span></span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//结束fire</span></span><br><span class="line">	firing = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//如果list为trusy</span></span><br><span class="line">	<span class="keyword">if</span> (list) &#123;</span><br><span class="line"></span><br><span class="line">	  <span class="comment">// 大部分情况下走这个分支，但是当stack为falsy的时候就不会走了</span></span><br><span class="line">	  <span class="comment">// stack为falsy只有2种情况，见fireWith方法的源码分析</span></span><br><span class="line">	  <span class="comment">// 如果stack数组不为空，就会从stack数组的顶部取出最早在等待地参数，继续fire</span></span><br><span class="line">	  <span class="comment">// stack是一个先进先出的队列作用</span></span><br><span class="line">	  <span class="keyword">if</span> (stack) stack.length &amp;&amp; fire(stack.shift())</span><br><span class="line"></span><br><span class="line">	  <span class="comment">// 如果stack为falsy，要么是options.once启用了， 要么是实例被lock了</span></span><br><span class="line">	  <span class="comment">// 如果实例被lock了，且options.memory有启用的话，就可能会进入这个分支</span></span><br><span class="line">	  <span class="comment">// 清掉当前的回调函数，但是callbacks实例还能继续调用add，新的回调函数依然会用最后一次的fire参数进行fire</span></span><br><span class="line">	  <span class="comment">// 这是lock的使用场景实现</span></span><br><span class="line">	  <span class="keyword">else</span> <span class="keyword">if</span> (memory) list.length = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	  <span class="comment">// 否则就销毁掉了callbacks实例，这是options.once这个场景需要的</span></span><br><span class="line">	  <span class="keyword">else</span> Callbacks.disable()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<h3 id="remove方法"><a href="#remove方法" class="headerlink" title="remove方法"></a>remove方法</h3><p>这个方法用来移除回调，可以传递多个参数，只要在list中有，就通过数组的splice方法进行移除。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">remove: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (list) &#123;</span><br><span class="line">    $.each(<span class="built_in">arguments</span>, <span class="function"><span class="keyword">function</span>(<span class="params">_, arg</span>)</span>&#123;</span><br><span class="line">      <span class="keyword">var</span> index</span><br><span class="line">      <span class="keyword">while</span> ((index = $.inArray(arg, list, index)) &gt; <span class="number">-1</span>) &#123;</span><br><span class="line">        list.splice(index, <span class="number">1</span>)</span><br><span class="line">        <span class="comment">// Handle firing indexes</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//注意此处：有可能remove调用的时候，实例正在进行fire，那么就要根据被移除的元素位置来</span></span><br><span class="line">        <span class="comment">//调整firingLength和firingIndex的值</span></span><br><span class="line">        <span class="comment">//因为remove回调函数，用的是数组的splice方法，这是直接修改list数组的</span></span><br><span class="line">        <span class="comment">//而fire过程是对list进行的for循环，所以必须得同步remove之后for循环的状态</span></span><br><span class="line">        <span class="keyword">if</span> (firing) &#123;</span><br><span class="line">          <span class="keyword">if</span> (index &lt;= firingLength) --firingLength</span><br><span class="line">          <span class="keyword">if</span> (index &lt;= firingIndex) --firingIndex</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<h3 id="disable方法"><a href="#disable方法" class="headerlink" title="disable方法"></a>disable方法</h3><p>它的作用很简单，就是用来销毁callbacks实例，让它没法再继续用了。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">disable: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  list = stack = memory = <span class="literal">undefined</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">&#125;,</span><br><span class="line">disabled: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> !list</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>我个人觉得叫destroy方法更合适。</p>
+<h3 id="lock方法"><a href="#lock方法" class="headerlink" title="lock方法"></a>lock方法</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lock: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  stack = <span class="literal">undefined</span></span><br><span class="line">  <span class="keyword">if</span> (!memory) Callbacks.disable()</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">&#125;,</span><br><span class="line">locked: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> !stack</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>这个方法是配合options.memory这个场景来使用的，因为当memory为falsy时，它的作用跟disable方法一模一样，没有存在的价值。</p>
+<p>我觉得合适的场景是：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> foo = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'foo says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> bar = <span class="function">(<span class="params">msg</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="built_in">console</span>.log(<span class="string">'bar says: '</span> + msg);</span></span><br><span class="line">	&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> callbacks = $.Callbacks(&#123;</span></span><br><span class="line"><span class="javascript">		memory: <span class="literal">true</span></span></span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	callbacks.add(foo);</span><br><span class="line">	callbacks.add(bar);</span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'bingo'</span>); </span></span><br><span class="line"></span><br><span class="line">	callbacks.lock();</span><br><span class="line"></span><br><span class="line"><span class="javascript">	callbacks.add(foo);<span class="comment">// foo says: bingo</span></span></span><br><span class="line"><span class="javascript">	callbacks.add(bar);<span class="comment">// bar says: bingo</span></span></span><br><span class="line"><span class="javascript">	callbacks.add(foo);<span class="comment">// foo says: bingo</span></span></span><br><span class="line"><span class="javascript">	callbacks.add(bar);<span class="comment">// bar says: bingo</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">	callbacks.fire(<span class="string">'aaa'</span>);<span class="comment">// 无效了</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>在这个例子中，如果没有lock方法，callbacks.fire(‘aaa’)这个调用，会把callbacks内部所有的回调函数全部用aaa回调一遍，但是加了lock之后，callbacks.fire无效了，callbacks变为一个只能按上一次fire的参数继续使用的一个特殊对象。当然如果这个实例后面再也不调用fire方法了，那么lock方法也没有使用的必要性，只要memory被启用了，它再继续add都能用上一次的参数进行回调。但是有了lock会把这个控制地更加完美。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>以上就是本篇要分享的关于zepto中callback实现的内容。 学习它的目的是为了下篇继续研究zepto中deferred模块的实现，毕竟这算是早期的Promise实现方式，在它们源码并不复杂的情况下， 花点时间来琢磨也还是值得的。</p>
+<p>最后看了下jquery的<a href="https://github.com/jquery/jquery/blob/master/src/callbacks.js" target="_blank" rel="noopener">callback源码</a>，发现跟zepto是几乎一样的，估计zepto实现参考了它吧。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Promise相关/" rel="tag"># Promise相关</a>
+          
+            <a href="/tags/源码学习/" rel="tag"># 源码学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/04/从then-js的源码掌握Promise的思想/" rel="next" title="从then.js的源码掌握Promise实现的思路">
+                <i class="fa fa-chevron-left"></i> 从then.js的源码掌握Promise实现的思路
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/06/从源码了解zepto中defer延迟对象的实现/" rel="prev" title="从源码了解zepto中defer延迟对象的实现">
+                从源码了解zepto中defer延迟对象的实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#了解callbacks的作用"><span class="nav-number">1.</span> <span class="nav-text">了解callbacks的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码结构"><span class="nav-number">2.</span> <span class="nav-text">源码结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源码里的主要变量"><span class="nav-number">2.1.</span> <span class="nav-text">源码里的主要变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add方法"><span class="nav-number">2.2.</span> <span class="nav-text">add方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fireWith及fire、fired方法"><span class="nav-number">2.3.</span> <span class="nav-text">fireWith及fire、fired方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内部的fire函数"><span class="nav-number">2.4.</span> <span class="nav-text">内部的fire函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#remove方法"><span class="nav-number">2.5.</span> <span class="nav-text">remove方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#disable方法"><span class="nav-number">2.6.</span> <span class="nav-text">disable方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock方法"><span class="nav-number">2.7.</span> <span class="nav-text">lock方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">3.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

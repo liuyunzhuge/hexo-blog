@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="换到mac之后，先未尝试找xshell的替代品，而是想把scp命令给配置起来，这样哪怕没找到好用的ftp工具，也能通过终端完成文件的传输。主要目标有2个：  文件双向传输； 传输的免密设置。  本篇记录这些内容的要点。 学习参考：https://www.cnblogs.com/peida/archive/2013/03/15/2960802.html">
+<meta name="keywords" content="运维知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用scp命令进行文件传输">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/16/使用scp命令进行文件传输/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="换到mac之后，先未尝试找xshell的替代品，而是想把scp命令给配置起来，这样哪怕没找到好用的ftp工具，也能通过终端完成文件的传输。主要目标有2个：  文件双向传输； 传输的免密设置。  本篇记录这些内容的要点。 学习参考：https://www.cnblogs.com/peida/archive/2013/03/15/2960802.html">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-16T07:02:03.404Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用scp命令进行文件传输">
+<meta name="twitter:description" content="换到mac之后，先未尝试找xshell的替代品，而是想把scp命令给配置起来，这样哪怕没找到好用的ftp工具，也能通过终端完成文件的传输。主要目标有2个：  文件双向传输； 传输的免密设置。  本篇记录这些内容的要点。 学习参考：https://www.cnblogs.com/peida/archive/2013/03/15/2960802.html">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/16/使用scp命令进行文件传输/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用scp命令进行文件传输 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/16/使用scp命令进行文件传输/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用scp命令进行文件传输
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-16 14:52:04" itemprop="dateCreated datePublished" datetime="2019-06-16T14:52:04Z">2019-06-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维管理/" itemprop="url" rel="index"><span itemprop="name">运维管理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>换到mac之后，先未尝试找xshell的替代品，而是想把scp命令给配置起来，这样哪怕没找到好用的ftp工具，也能通过终端完成文件的传输。主要目标有2个：</p>
+<ol>
+<li>文件双向传输；</li>
+<li>传输的免密设置。</li>
+</ol>
+<p>本篇记录这些内容的要点。</p>
+<p>学习参考：<a href="https://www.cnblogs.com/peida/archive/2013/03/15/2960802.html" target="_blank" rel="noopener">https://www.cnblogs.com/peida/archive/2013/03/15/2960802.html</a></p>
+<a id="more"></a>
+<h2 id="scp命令用法"><a href="#scp命令用法" class="headerlink" title="scp命令用法"></a>scp命令用法</h2><ol>
+<li><p>命令格式：<br>scp [参数] [原路径] [目标路径]</p>
+</li>
+<li><p>命令常用参数：<br>-B  使用批处理模式（传输过程中不询问传输口令或短语）<br>-C  允许压缩。（将-C标志传递给ssh，从而打开压缩功能）<br>-r  递归复制整个目录。 <strong>目录传输时要用到这个</strong><br>-v 详细方式显示输出。scp和ssh(1)会显示出整个过程的调试信息。这些信息用于调试连接，验证和配置问题。<br>-i identity_file  从指定文件中读取传输时使用的密钥文件，此参数直接传递给ssh。 <strong>这个有用，如果要连接的目标主机只允许使用ssh密钥文件登录，那么scp命令也就必须使用密钥文件才能传输文件，-i参数用来指定目标主机的ssh私钥文件</strong><br>-P port  注意是大写的P, port是指定数据传输用到的端口号。<strong>这个有用，ssh连接可能用的不是22端口</strong></p>
+</li>
+</ol>
+<h2 id="scp使用举例"><a href="#scp使用举例" class="headerlink" title="scp使用举例"></a>scp使用举例</h2><p>先准备mac主机里面需要使用的文件夹及文件：(隐私原因文件夹名称有被修改，下面代码的三角形是因为我使用了zsh作为终端，并且启用了zsh的主题，所以样式不太一样)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge                                                                       </span><br><span class="line">▶ <span class="built_in">pwd</span>     </span><br><span class="line">/Users/administrator/liuyunzhuge</span><br><span class="line"></span><br><span class="line">~/liuyunzhuge                                                                       </span><br><span class="line">▶ mkdir scp_of_mac</span><br><span class="line"></span><br><span class="line">~/liuyunzhuge                                                                       </span><br><span class="line">▶ mkdir scp_of_centos</span><br><span class="line"></span><br><span class="line">~/liuyunzhuge                                                                       </span><br><span class="line">▶ ls</span><br><span class="line">blog            scp_of_centos   soft_package</span><br><span class="line">centos_share    scp_of_mac      virtual_machine</span><br><span class="line"></span><br><span class="line">~/liuyunzhuge                                                                       </span><br><span class="line">▶ <span class="built_in">cd</span> scp_of_mac </span><br><span class="line"></span><br><span class="line">~/liuyunzhuge/scp_of_mac                                                            </span><br><span class="line">▶ touch file_of_mac</span><br><span class="line"></span><br><span class="line">~/liuyunzhuge/scp_of_mac                                                            </span><br><span class="line">▶ vim file_of_mac </span><br><span class="line"></span><br><span class="line">~/liuyunzhuge/scp_of_mac                                                            </span><br><span class="line">▶ mkdir dir_of_mac</span><br><span class="line"></span><br><span class="line">~/liuyunzhuge/scp_of_mac                                                            </span><br><span class="line">▶ cp file_of_mac dir_of_mac</span><br></pre></td></tr></table></figure></p>
+<p>scp_of_mac准备放置mac本身的文件及文件夹。scp_of_centos准备放置从centos虚拟机复制过来的文件夹。</p>
+<p>进入centos虚拟机，准备虚拟机内的文件夹及文件。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># cd ~</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mkdir scp_of_mac</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mkdir scp_of_centos</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd scp_of_centos/</span></span><br><span class="line">[root@localhost scp_of_centos]<span class="comment"># touch file_of_centos</span></span><br><span class="line">[root@localhost scp_of_centos]<span class="comment"># vim file_of_centos </span></span><br><span class="line">[root@localhost scp_of_centos]<span class="comment"># mkdir dir_of_centos</span></span><br><span class="line">[root@localhost scp_of_centos]<span class="comment"># cp file_of_centos dir_of_centos/</span></span><br><span class="line">[root@localhost scp_of_centos]<span class="comment"># ls</span></span><br><span class="line">dir_of_centos  file_of_centos</span><br></pre></td></tr></table></figure></p>
+<p>scp_of_centos准备放置centos本身的文件及文件夹。scp_of_mac准备放置从mac主机复制过来的文件夹。</p>
+<h3 id="从虚拟机拷贝文件到mac主机"><a href="#从虚拟机拷贝文件到mac主机" class="headerlink" title="从虚拟机拷贝文件到mac主机"></a>从虚拟机拷贝文件到mac主机</h3><p>运行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge                                                                       </span><br><span class="line">▶ scp root@192.168.56.103:/root/scp_of_centos/file_of_centos /Users/administrator/liuyunzhuge/scp_of_centos</span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">file_of_centos                                100%   15    22.9KB/s   00:00    </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">~/liuyunzhuge                                                                       </span></span><br><span class="line"><span class="string">▶ cd scp_of_centos </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">~/liuyunzhuge/scp_of_centos                                                         </span></span><br><span class="line"><span class="string">▶ ls</span></span><br><span class="line"><span class="string">file_of_centos</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">~/liuyunzhuge/scp_of_centos                                                         </span></span><br><span class="line"><span class="string">▶ cat file_of_centos </span></span><br><span class="line"><span class="string">file_of_centos</span></span><br></pre></td></tr></table></figure></p>
+<p>以上命令把虚拟机的scp_of_centos/file_of_centos这个文件，拷贝到了mac主机的scp_of_centos/目录下。scp默认情况下需要输入密码，所以上面的命令执行会提示输入密码。 </p>
+<p>也可以在拷贝的时候进行文件重命名：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge/scp_of_centos                                                         </span><br><span class="line">▶ scp root@192.168.56.103:/root/scp_of_centos/file_of_centos /Users/administrator/liuyunzhuge/scp_of_centos/file_of_centos_copy</span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">file_of_centos                                100%   15    23.7KB/s   00:00    </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">~/liuyunzhuge/scp_of_centos                                                         </span></span><br><span class="line"><span class="string">▶ ls</span></span><br><span class="line"><span class="string">file_of_centos      file_of_centos_copy</span></span><br></pre></td></tr></table></figure></p>
+<p>如果目标目录中，已存在被拷贝的文件，会直接覆盖，所以要小心。</p>
+<h3 id="从虚拟机拷贝文件夹到mac主机"><a href="#从虚拟机拷贝文件夹到mac主机" class="headerlink" title="从虚拟机拷贝文件夹到mac主机"></a>从虚拟机拷贝文件夹到mac主机</h3><p>运行:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge/scp_of_centos                                                         </span><br><span class="line">▶ scp -r root@192.168.56.103:/root/scp_of_centos/dir_of_centos /Users/administrator/liuyunzhuge/scp_of_centos/                </span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">file_of_centos                                100%   15    21.9KB/s   00:00    </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">~/liuyunzhuge/scp_of_centos                                                         </span></span><br><span class="line"><span class="string">▶ ls</span></span><br><span class="line"><span class="string">dir_of_centos       file_of_centos      file_of_centos_copy</span></span><br></pre></td></tr></table></figure></p>
+<p>文件夹的拷贝用到-r参数。</p>
+<p>也可以在拷贝的时候进行文件重命名：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge/scp_of_centos                                                         </span><br><span class="line">▶ scp -r root@192.168.56.103:/root/scp_of_centos/dir_of_centos /Users/administrator/liuyunzhuge/scp_of_centos/dir_of_centos_copy</span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">file_of_centos                                100%   15    22.5KB/s   00:00    </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">~/liuyunzhuge/scp_of_centos                                                         </span></span><br><span class="line"><span class="string">▶ ls</span></span><br><span class="line"><span class="string">dir_of_centos       dir_of_centos_copy  file_of_centos      file_of_centos_copy</span></span><br></pre></td></tr></table></figure></p>
+<p>如果目标路径中包含不存在的目录，会报错：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge/scp_of_centos                                                         </span><br><span class="line">▶ scp -r root@192.168.56.103:/root/scp_of_centos/dir_of_centos /Users/administrator/liuyunzhuge/scp_of_centos/sub1/sub2/sub3/dir_of_centos_copy</span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">/Users/administrator/liuyunzhuge/scp_of_centos/sub1/sub2/sub3/dir_of_centos_copy: No such file or directory</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="从mac主机拷贝文件到虚拟机"><a href="#从mac主机拷贝文件到虚拟机" class="headerlink" title="从mac主机拷贝文件到虚拟机"></a>从mac主机拷贝文件到虚拟机</h3><p>这个点以及下一个点都有一个变通的做法。就是把上面两个举例的方式，进入虚拟机里面再做。这样的话，从主机往虚拟机上同步文件，就跟虚拟机往主机同步文件，是一模一样的的操作。</p>
+<p>也可以继续选在在mac主机里面使用scp命令，只要把上面scp命令使用的源路径与目标路径互换位置即可。<br>运行:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge                                                                       </span><br><span class="line">▶ <span class="built_in">cd</span> scp_of_mac </span><br><span class="line"></span><br><span class="line">~/liuyunzhuge/scp_of_mac                                                            </span><br><span class="line">▶ ls</span><br><span class="line">dir_of_mac  file_of_mac</span><br><span class="line"></span><br><span class="line">~/liuyunzhuge/scp_of_mac                                                            </span><br><span class="line">▶ scp file_of_mac root@192.168.56.103:/root/scp_of_mac</span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">file_of_mac                                   100%   12     4.7KB/s   00:00</span></span><br></pre></td></tr></table></figure></p>
+<p>以上命令，在mac主机上运行，直接把mac的文件复制到了虚拟机。进入虚拟机可查看：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># cd scp_of_mac</span></span><br><span class="line">[root@localhost scp_of_mac]<span class="comment"># ls</span></span><br><span class="line">file_of_mac</span><br></pre></td></tr></table></figure></p>
+<p>也可以在拷贝的时候，重命名：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge/scp_of_mac                                                           ⍉</span><br><span class="line">▶ scp file_of_mac root@192.168.56.103:/root/scp_of_mac/file_of_mac_copy</span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">file_of_mac                                   100%   12     5.3KB/s   00:00</span></span><br></pre></td></tr></table></figure></p>
+<p>以上命令把file_of_mac拷贝到虚拟机，同时完成了文件重命名。进入虚拟机查看：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost scp_of_mac]<span class="comment"># ls</span></span><br><span class="line">file_of_mac  file_of_mac_copy</span><br></pre></td></tr></table></figure></p>
+<h3 id="从mac直接拷贝文件夹到虚拟机"><a href="#从mac直接拷贝文件夹到虚拟机" class="headerlink" title="从mac直接拷贝文件夹到虚拟机"></a>从mac直接拷贝文件夹到虚拟机</h3><p>运行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge/scp_of_mac                                                            </span><br><span class="line">▶ scp -r dir_of_mac root@192.168.56.103:/root/scp_of_mac               </span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">file_of_mac                                   100%   12     4.4KB/s   00:00</span></span><br></pre></td></tr></table></figure></p>
+<p>以上命令用到-r参数。</p>
+<p>亦可在拷贝的时候重命名文件夹：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge/scp_of_mac                                                            </span><br><span class="line">▶ scp -r dir_of_mac root@192.168.56.103:/root/scp_of_mac/dir_of_mac_copy</span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">file_of_mac                                   100%   12     5.7KB/s   00:00</span></span><br></pre></td></tr></table></figure></p>
+<p>进入虚拟机查看：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost scp_of_mac]<span class="comment"># ls</span></span><br><span class="line">dir_of_mac  dir_of_mac_copy  file_of_mac  file_of_mac_copy</span><br></pre></td></tr></table></figure></p>
+<h2 id="可能遇到的问题"><a href="#可能遇到的问题" class="headerlink" title="可能遇到的问题"></a>可能遇到的问题</h2><p>错误：Permission denied, please try again。<br>这是ssh的权限问题，修改权限即可，进入到/etc/ssh文件夹下，<br>用root用户修改文件sshd_config，<br>将PermitRootLogin no / without-password 改为 PermitRootLogin yes，然后重启sshd服务。<br>重启ssh：service ssh restart。</p>
+<h2 id="scp免密传输"><a href="#scp免密传输" class="headerlink" title="scp免密传输"></a>scp免密传输</h2><p>基于ssh的密钥文件，可以实现scp免密传输。原则上，需要把scp命令的源主机的ssh公钥文件添加到目标主机的authorized_keys文件中；但是也可以把目标主机的ssh公钥文件放置到自己的authorized_keys文件中，把自己的ssh的私钥文件发送给源主机，然后源主机在使用scp命令的时候用-i参数指定私钥文件进行传输。</p>
+<p>这两个方法本质是一样的，scp在不指定-i参数的时候，肯定用的是自己的私钥文件，当你指定了别的文件以后，就启用别的了。第二种办法有缺点，就是不该随便传递私钥文件，这样不安全，但是也有自己的使用场景，比如源主机上进行scp的用户不具备ssh的权限时。</p>
+<p>理解了scp免密的本质，就容易理解如何进行单向免密设置，以及双向免密设置。</p>
+<p>本篇仅介绍单向免密设置。</p>
+<h3 id="单向免密设置"><a href="#单向免密设置" class="headerlink" title="单向免密设置"></a>单向免密设置</h3><p>检查mac主机的用户目录是否有.ssh文件夹，没有则创建。</p>
+<p>运行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">~/.ssh                                                                         </span><br><span class="line">▶ ls</span><br><span class="line">known_hosts</span><br><span class="line"></span><br><span class="line">~/.ssh                                                                         </span><br><span class="line">▶ ssh-keygen -b 1024 -t rsa</span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file <span class="keyword">in</span> <span class="built_in">which</span> to save the key (/Users/administrator/.ssh/id_rsa): </span><br><span class="line">Enter passphrase (empty <span class="keyword">for</span> no passphrase): </span><br><span class="line">Enter same passphrase again: </span><br><span class="line">Your identification has been saved <span class="keyword">in</span> /Users/administrator/.ssh/id_rsa.</span><br><span class="line">Your public key has been saved <span class="keyword">in</span> /Users/administrator/.ssh/id_rsa.pub.</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:LjodC0k+SjyGBQPqi/nDH/s4kYTCBtR5sRpe4CIUbzI administrator@administratordeMBP.lan</span><br><span class="line">The key<span class="string">'s randomart image is:</span></span><br><span class="line"><span class="string">+---[RSA 1024]----+</span></span><br><span class="line"><span class="string">|++o....          |</span></span><br><span class="line"><span class="string">|* oo...          |</span></span><br><span class="line"><span class="string">|=E *.o           |</span></span><br><span class="line"><span class="string">|+oO *            |</span></span><br><span class="line"><span class="string">|.* * o  S        |</span></span><br><span class="line"><span class="string">|o.* B ..         |</span></span><br><span class="line"><span class="string">|o= o.=.o.        |</span></span><br><span class="line"><span class="string">| .+ o=o.         |</span></span><br><span class="line"><span class="string">|  .o=+.          |</span></span><br><span class="line"><span class="string">+----[SHA256]-----+</span></span><br></pre></td></tr></table></figure></p>
+<p>生成mac主机的ssh密钥文件，其中id_rsa是私钥文件，id_ras.pub是公钥文件。生成过程中提示输入的passphrase不要写，否则scp的时候又得输入密钥文件的密码了。。</p>
+<p>进入虚拟机，进入用户目录，查看是否有.ssh目录，没有则创建。</p>
+<p>进入.ssh目录，查看是否有authorized_keys文件，没有则创建：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir .ssh</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd .ssh</span></span><br><span class="line">[root@localhost .ssh]<span class="comment"># touch authorized_keys</span></span><br></pre></td></tr></table></figure></p>
+<p>回到mac主机，将.ssh/rd_rsa.pub拷贝到虚拟机的.ssh目录。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">~/.ssh                                                                             ⍉</span><br><span class="line">▶ ll</span><br><span class="line">total 24</span><br><span class="line">-rw-------  1 administrator  staff   1.0K  6 16 14:28 id_rsa</span><br><span class="line">-rw-r--r--  1 administrator  staff   242B  6 16 14:28 id_rsa.pub</span><br><span class="line">-rw-r--r--  1 administrator  staff   1.5K  6 15 13:14 known_hosts</span><br><span class="line"></span><br><span class="line">~/.ssh                                                                              </span><br><span class="line">▶ scp id_rsa.pub root@192.168.56.103:/root/.ssh/mac_id_rsa.pub</span><br><span class="line">root@192.168.56.103<span class="string">'s password: </span></span><br><span class="line"><span class="string">id_rsa.pub                                         100%  242   195.5KB/s   00:00</span></span><br></pre></td></tr></table></figure></p>
+<p>回到虚拟机，查看.ssh目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost .ssh]<span class="comment"># ll</span></span><br><span class="line">总用量 4</span><br><span class="line">-rw-r--r-- 1 root root   0 6月  16 14:32 authorized_keys</span><br><span class="line">-rw-r--r-- 1 root root 242 6月  16 14:37 mac_id_rsa.pub</span><br></pre></td></tr></table></figure></p>
+<p>将mac_id_rsa.pub的内容追加到authorized_keys文件内。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat mac_id_rsa.pub &gt;&gt; authorized_keys</span><br></pre></td></tr></table></figure></p>
+<p>回到mac主机，随便测试一个scp操作，看看是否还需要输入密码。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/liuyunzhuge/scp_of_centos                                                              </span><br><span class="line">▶ scp root@192.168.56.103:/root/scp_of_centos/file_of_centos /Users/administrator/liuyunzhuge/scp_of_centos</span><br><span class="line">file_of_centos                                     100%   15    23.4KB/s   00:00</span><br></pre></td></tr></table></figure></p>
+<p>已经不需要密码了。</p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><ol>
+<li>使用scp命令的用户，应该跟目标主机进行ssh连接的用户，具有相同的用户名</li>
+<li>authorized_keys文件之所以要采用追加的方式，是因为一个服务器可能不止一个源主机想跟它进行免密传输，authorized_keys里面包含了所有源主机的ssh公钥文件。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/运维知识/" rel="tag"># 运维知识</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/16/mac-os通过virtual-box安装centos系统/" rel="next" title="mac os下centos虚拟机的安装、网络及文件共享配置">
+                <i class="fa fa-chevron-left"></i> mac os下centos虚拟机的安装、网络及文件共享配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/17/ssh连接基本使用方法/" rel="prev" title="ssh连接基本使用要点">
+                ssh连接基本使用要点 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#scp命令用法"><span class="nav-number">1.</span> <span class="nav-text">scp命令用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scp使用举例"><span class="nav-number">2.</span> <span class="nav-text">scp使用举例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从虚拟机拷贝文件到mac主机"><span class="nav-number">2.1.</span> <span class="nav-text">从虚拟机拷贝文件到mac主机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从虚拟机拷贝文件夹到mac主机"><span class="nav-number">2.2.</span> <span class="nav-text">从虚拟机拷贝文件夹到mac主机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从mac主机拷贝文件到虚拟机"><span class="nav-number">2.3.</span> <span class="nav-text">从mac主机拷贝文件到虚拟机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从mac直接拷贝文件夹到虚拟机"><span class="nav-number">2.4.</span> <span class="nav-text">从mac直接拷贝文件夹到虚拟机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可能遇到的问题"><span class="nav-number">3.</span> <span class="nav-text">可能遇到的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scp免密传输"><span class="nav-number">4.</span> <span class="nav-text">scp免密传输</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单向免密设置"><span class="nav-number">4.1.</span> <span class="nav-text">单向免密设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充"><span class="nav-number">5.</span> <span class="nav-text">补充</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

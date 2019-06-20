@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇继续学习Promise的实现思路，这一次从github上找了一个比较简单的库来学习：then/promise。 它代码比较少，如果对Promise特性掌握地比较熟悉的话，学起来会比较容易。">
+<meta name="keywords" content="Promise相关,源码学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从then.js的源码掌握Promise实现的思路">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/04/从then-js的源码掌握Promise的思想/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇继续学习Promise的实现思路，这一次从github上找了一个比较简单的库来学习：then/promise。 它代码比较少，如果对Promise特性掌握地比较熟悉的话，学起来会比较容易。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-14T13:57:46.177Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从then.js的源码掌握Promise实现的思路">
+<meta name="twitter:description" content="本篇继续学习Promise的实现思路，这一次从github上找了一个比较简单的库来学习：then/promise。 它代码比较少，如果对Promise特性掌握地比较熟悉的话，学起来会比较容易。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/04/从then-js的源码掌握Promise的思想/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>从then.js的源码掌握Promise实现的思路 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/04/从then-js的源码掌握Promise的思想/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从then.js的源码掌握Promise实现的思路
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-03 22:05:00" itemprop="dateCreated datePublished" datetime="2019-06-03T22:05:00Z">2019-06-03</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇继续学习Promise的实现思路，这一次从github上找了一个比较简单的库来学习：<a href="https://github.com/then/promise" target="_blank" rel="noopener">then/promise</a>。 它代码比较少，如果对Promise特性掌握地比较熟悉的话，学起来会比较容易。</p>
+<a id="more"></a>
+<p>Promise的特性及简单实现思路可参考之前的两篇文章：</p>
+<blockquote>
+<a href="/2019/05/17/ES6-Promise/" title="ES6 Promise">ES6 Promise</a>；<br><a href="/2019/06/03/从别人博客学到的基本的Promise实现思路/" title="从别人博客学到的基本的Promise实现思路">从别人博客学到的基本的Promise实现思路</a>
+</blockquote>
+<p>这个库的核心代码是这个文件<a href="https://github.com/then/promise/blob/master/src/core.js" target="_blank" rel="noopener">core.js</a>，本篇也是主要学习这个文件的实现要点。</p>
+<h2 id="核心实现思想"><a href="#核心实现思想" class="headerlink" title="核心实现思想"></a>核心实现思想</h2><p>我觉得每个Promise实现库最重要的一个思路是要解决then的调用对象、then的回调函数以及then的返回对象三者之间的作用关系，在上一篇文章：<a href="/2019/06/03/从别人博客学到的基本的Promise实现思路/" title="从别人博客学到的基本的Promise实现思路">从别人博客学到的基本的Promise实现思路</a>，介绍的方法是通过一个中间形式的回调函数，在这个中间层的回调函数内，利用js闭包的特性，来联结它们三个角色。 then/promise这个库，它思路跟中间形式的回调函数差不多，它采用的是面向对象的形式，封装了一个临时的Handler对象：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Handler</span>(<span class="params">onFulfilled, onRejected, promise</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.onFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">'function'</span> ? onFulfilled : <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">this</span>.onRejected = <span class="keyword">typeof</span> onRejected === <span class="string">'function'</span> ? onRejected : <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">this</span>.promise = promise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个Handler对象接收三个参数，前面两个是then方法调用时的两个回调函数，而第三个参数则是then方法返回的那个promise实例对象。现在Handler对象已经联结了then方法的回调和then方法返回的Promise实例，还需要再联结到then方法的调用对象才行。</p>
+<p>这个库是这么做的，它在Promise类里面，封装了一个_deferreds属性：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">'object'</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Promises must be constructed via new'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Promise constructor\'s argument is not a function'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>._deferredState = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">this</span>._state = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">this</span>._value = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">this</span>._deferreds = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (fn === noop) <span class="keyword">return</span>;</span><br><span class="line">  doResolve(fn, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>经过then方法的调用之后，then内部创建的Handler对象，会存储到then调用对象的_deferreds属性上面去。等到then的调用对象被resolve或reject的时候，会同时拿到_deferreds属性上存储的所有Handler对象，并挨个地把Handler对象上的回调函数都执行一遍，并改变Handler对象上的Promise实例的状态。</p>
+<p>这样一来，它就实现了then的调用对象、then的回调函数以及then的返回对象三者之间的联动关系。</p>
+<p>下面开始解读它的源码。 这个core.js总共不到200行，你不看我下面的内容也没什么关系，每个人理解的思路，描述的方法都不一定能帮助另外一个人快速理解，如果感兴趣的话，自己去反复阅读它的源码，效果会更好。</p>
+<h2 id="源码零散的部分"><a href="#源码零散的部分" class="headerlink" title="源码零散的部分"></a>源码零散的部分</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> asap = <span class="built_in">require</span>(<span class="string">'asap/raw'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">noop</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// States:</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// 0 - pending</span></span><br><span class="line"><span class="comment">// 1 - fulfilled with _value</span></span><br><span class="line"><span class="comment">// 2 - rejected with _value</span></span><br><span class="line"><span class="comment">// 3 - adopted the state of another promise, _value</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// once the state is no longer pending (0) it is immutable</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意： 3这个状态，在这个库的实现里面是一个比较特殊的状态，它的定义对于整个库的完整实现是比较关键的</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面三个函数，作用很简单，我觉得现在只需要认识它们，等到后面的代码中看到它们的调用，就能明白它们的意义了</span></span><br><span class="line"><span class="comment">// 这个作者能想到这个办法，还是挺聪明的，我以前从来没这么考虑过</span></span><br><span class="line"><span class="keyword">var</span> LAST_ERROR = <span class="literal">null</span>;<span class="comment">//这个变量用来存储下面三个函数调用过程中的抛出的错误</span></span><br><span class="line"><span class="keyword">var</span> IS_ERROR = &#123;&#125;;<span class="comment">// 这个变量主要用来做判断用的，如果下面三个函数的返回值等于它，说明调用报错了</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getThen</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> obj.then;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (ex) &#123;</span><br><span class="line">    LAST_ERROR = ex;</span><br><span class="line">    <span class="keyword">return</span> IS_ERROR;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">tryCallOne</span>(<span class="params">fn, a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fn(a);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (ex) &#123;</span><br><span class="line">    LAST_ERROR = ex;</span><br><span class="line">    <span class="keyword">return</span> IS_ERROR;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">tryCallTwo</span>(<span class="params">fn, a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    fn(a, b);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (ex) &#123;</span><br><span class="line">    LAST_ERROR = ex;</span><br><span class="line">    <span class="keyword">return</span> IS_ERROR;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一个asap的依赖，是为了解决Promise跟event-loop之间的问题，从其它一些资料学习到，Promise是一种mico-task，它的回调是异步执行的，会在本轮事件循环的末尾执行，而setTimeout这种都是下一轮事件循环的开始执行。asap这个模块可以让Promise回调在本轮事件循环的末尾执行，这是一个npm 模块，可以去它的主页学习。</p>
+<h2 id="Promise的构造函数"><a href="#Promise的构造函数" class="headerlink" title="Promise的构造函数"></a>Promise的构造函数</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">'object'</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Promises must be constructed via new'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Promise constructor\'s argument is not a function'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//_deferredState这个属性作用也比较关键，对于这个库来说它是必须的，但如果一般人理解这个库的核心思路</span></span><br><span class="line">  <span class="comment">//我觉得不一定会用这个属性来做，或者不一定是类似这个库这样用它</span></span><br><span class="line">  <span class="keyword">this</span>._deferredState = <span class="number">0</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">this</span>._state = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//保留异步的结果 resolve或reject都用它 毕竟Promise只能有一个状态，所以不需要两个变量存储</span></span><br><span class="line">  <span class="keyword">this</span>._value = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//前面解释过，用来存放then方法调用后创建的handler对象的</span></span><br><span class="line">  <span class="keyword">this</span>._deferreds = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (fn === noop) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//核心方法</span></span><br><span class="line">  doResolve(fn, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//下面三个静态方法，做一些全局性的逻辑</span></span><br><span class="line"><span class="built_in">Promise</span>._onHandle = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">Promise</span>._onReject = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">Promise</span>._noop = noop;</span><br></pre></td></tr></table></figure>
+<h2 id="doResolve核心方法"><a href="#doResolve核心方法" class="headerlink" title="doResolve核心方法"></a>doResolve核心方法</h2><p>Promise都是直接new Promise(function(resolve, reject){})这么用的，它的构造函数接收一个参数函数，这个参数函数我们用来写异步任务，它接收两个参数，分别是resolve和reject，利用这两个参数，可以改变Promise实例的状态。doResolve方法是一个单独的方法，它不与任何的Promise实例关联，你可以认为它是静态的，它的第一个参数fn表示一个包含异步任务的函数，通常是Promise构造函数参数，它的第二个参数promise表示一个跟fn相关的promise实例，fn内部的逻辑最终改变的就是这个promise实例的状态。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doResolve</span>(<span class="params">fn, promise</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> done = <span class="literal">false</span>;</span><br><span class="line">  <span class="comment">// 这里已经可以看到tryCallTwo这几个方法的作用了</span></span><br><span class="line">  <span class="keyword">var</span> res = tryCallTwo(fn, </span><br><span class="line">  <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (done) <span class="keyword">return</span>;</span><br><span class="line">    done = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//核心方法</span></span><br><span class="line">    resolve(promise, value);</span><br><span class="line">  &#125;, </span><br><span class="line">  <span class="function"><span class="keyword">function</span> (<span class="params">reason</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (done) <span class="keyword">return</span>;</span><br><span class="line">    done = <span class="literal">true</span>;</span><br><span class="line">    <span class="comment">//核心方法</span></span><br><span class="line">    reject(promise, reason);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//如果前面通过tryCallTwo调用fn发生错误，下面的代码就会执行，把promise给reject掉</span></span><br><span class="line">  <span class="comment">//这就是Promise标准里面的特性：当new Promise发生错误，那么构造出的Promise实例就是rejected</span></span><br><span class="line">  <span class="keyword">if</span> (!done &amp;&amp; res === IS_ERROR) &#123;</span><br><span class="line">    done = <span class="literal">true</span>;</span><br><span class="line">    reject(promise, LAST_ERROR);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意tryCallTwo的第二个参数和第三个参数的含义，假如有：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>这个里面的resolve和reject就是tryCallTwo的第二个参数和第三个参数！done变量的作用是为了防止fn，也就是Promise构造函数的参数内部，多次调用resolve或reject的情况，比如这种：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">	resolve();</span><br><span class="line">	resolve();</span><br><span class="line">	resolve();</span><br><span class="line">	resolve();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>doResolve内部的resolve方法和reject方法，又是这个库的另外两个核心方法，它们跟doResolve方法一样，没有与任何Promise实例绑定，可以认为是静态方法。</p>
+<h2 id="resolve核心方法"><a href="#resolve核心方法" class="headerlink" title="resolve核心方法"></a>resolve核心方法</h2><p>这个方法接收2个参数，第一个参数self表示一个promise实例，第二个参数表示一个状态，这个方法的作用就是尝试用第二个参数把第一个参数给resolve掉。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resolve</span>(<span class="params">self, newValue</span>) </span>&#123;</span><br><span class="line">  <span class="comment">//这个不知道为啥需要处理，感觉不处理也没事</span></span><br><span class="line">  <span class="keyword">if</span> (newValue === self) &#123;</span><br><span class="line">    <span class="keyword">return</span> reject(</span><br><span class="line">      self,</span><br><span class="line">      <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'A promise cannot be resolved with itself.'</span>)</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//newValue是异步任务的结果，根据异步任务的结果可能是一个普通js值，也可能是一另外一个Promise</span></span><br><span class="line">  <span class="comment">//所以下面的逻辑都是处理它的情况</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (</span><br><span class="line">    newValue &amp;&amp;</span><br><span class="line">    (<span class="keyword">typeof</span> newValue === <span class="string">'object'</span> || <span class="keyword">typeof</span> newValue === <span class="string">'function'</span>)</span><br><span class="line">  ) &#123;</span><br><span class="line"></span><br><span class="line">  	<span class="comment">//看看能否拿到newValue的then属性</span></span><br><span class="line">    <span class="keyword">var</span> then = getThen(newValue);</span><br><span class="line">    <span class="keyword">if</span> (then === IS_ERROR) &#123;</span><br><span class="line">    	<span class="comment">//拿的过程出错了，都会跳到将self给reject掉的逻辑</span></span><br><span class="line">      <span class="keyword">return</span> reject(self, LAST_ERROR);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//这个if判断用来判断newValue是否是这个库写的Promise类的实例</span></span><br><span class="line">    <span class="keyword">if</span> (</span><br><span class="line">      then === self.then &amp;&amp;</span><br><span class="line">      newValue <span class="keyword">instanceof</span> <span class="built_in">Promise</span></span><br><span class="line">    ) &#123;</span><br><span class="line"></span><br><span class="line">  	  <span class="comment">//此处把self这个实例的状态设置为3了，只有当newValue是另外一个Promise实例的时候</span></span><br><span class="line">  	  <span class="comment">// state才会变为3，并且self的_value也会保存newValue对应的那个Promise实例</span></span><br><span class="line">  	  <span class="comment">// 这么做的目的是为啥呢？</span></span><br><span class="line">  	  <span class="comment">// 它是为了把self身上保存的所有handler实例，通通都转移到newValue去处理</span></span><br><span class="line">  	  <span class="comment">// 由newValue的状态，来决定handler的回调及promise的调用</span></span><br><span class="line">  	  <span class="comment">// 这也是Promise标准特性的实现</span></span><br><span class="line">      self._state = <span class="number">3</span>;</span><br><span class="line">      self._value = newValue;</span><br><span class="line">      <span class="comment">//finale核心方法</span></span><br><span class="line">      finale(self);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> then === <span class="string">'function'</span>) &#123;</span><br><span class="line">      <span class="comment">//下面又是一个特殊情况，不过似乎在Promise标准特性里面没见过</span></span><br><span class="line">      <span class="comment">// 它考虑的是newValue是一个thenable对象的时候</span></span><br><span class="line">      doResolve(then.bind(newValue), self);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//将self这个promise给resolve</span></span><br><span class="line">  self._state = <span class="number">1</span>;</span><br><span class="line">  self._value = newValue;</span><br><span class="line">  <span class="comment">//finale核心方法</span></span><br><span class="line">  finale(self);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="reject核心方法"><a href="#reject核心方法" class="headerlink" title="reject核心方法"></a>reject核心方法</h2><p>这个方法跟resolve类似，就是为了把第一个参数表示的promise实例，用第二个参数给reject掉。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reject</span>(<span class="params">self, newValue</span>) </span>&#123;</span><br><span class="line">  self._state = <span class="number">2</span>;</span><br><span class="line">  self._value = newValue;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Promise</span>._onReject) &#123;</span><br><span class="line">    <span class="built_in">Promise</span>._onReject(self, newValue);</span><br><span class="line">  &#125;</span><br><span class="line">  finale(self);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>它比较简单，没有复杂逻辑，直接就是reject。</p>
+<h2 id="final核心方法"><a href="#final核心方法" class="headerlink" title="final核心方法"></a>final核心方法</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">finale</span>(<span class="params">self</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (self._deferredState === <span class="number">1</span>) &#123;</span><br><span class="line">  	<span class="comment">//核心方法</span></span><br><span class="line">    handle(self, self._deferreds);</span><br><span class="line">    self._deferreds = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (self._deferredState === <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; self._deferreds.length; i++) &#123;</span><br><span class="line">      handle(self, self._deferreds[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    self._deferreds = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只有三种情况会调用finale方法：</p>
+<ol>
+<li>self状态为resolved</li>
+<li>self状态为rejected</li>
+<li>self状态为3</li>
+</ol>
+<p>这个方法内部通过handle方法来处理这三个场景的逻辑。</p>
+<h2 id="then方法"><a href="#then方法" class="headerlink" title="then方法"></a>then方法</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.prototype.then = <span class="function"><span class="keyword">function</span>(<span class="params">onFulfilled, onRejected</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.constructor !== <span class="built_in">Promise</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> safeThen(<span class="keyword">this</span>, onFulfilled, onRejected);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> res = <span class="keyword">new</span> <span class="built_in">Promise</span>(noop);</span><br><span class="line">  handle(<span class="keyword">this</span>, <span class="keyword">new</span> Handler(onFulfilled, onRejected, res));</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">safeThen</span>(<span class="params">self, onFulfilled, onRejected</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> self.constructor(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> res = <span class="keyword">new</span> <span class="built_in">Promise</span>(noop);</span><br><span class="line">    res.then(resolve, reject);</span><br><span class="line">    handle(self, <span class="keyword">new</span> Handler(onFulfilled, onRejected, res));</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个core.js内，并没有提到过catch实例方法，因为只要then方法实现好了，catch方法自然能实现。它的then方法，有一个safeThen的逻辑，这个是为了应付一些特殊的场景的，比如说别的一个Promise类的实例可能借用了这个库的then实例方法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.prototype.then.call(objOfAnotherPromiseLibrary, onFulfilled, onRejected)</span><br></pre></td></tr></table></figure></p>
+<p>经验有限，我也不太清楚它这个逻辑真正的价值，所以在学习这个库的时候我没有花太多时间在这个点上。</p>
+<p>通过源码，可以看到then方法很简单，比我上篇笔记中写的then方法简单多了，它把最主要的逻辑都放在了handle里面来处理了。另外也能看到，then方法内部，实例化了一个Handler对象，联结了then内部返回的Promise实例以及then方法的两个回调函数，这个Handler实例，就是其它代码中经常看到用来表示deferred含义的对象。 “延迟对象”</p>
+<h2 id="handle核心方法"><a href="#handle核心方法" class="headerlink" title="handle核心方法"></a>handle核心方法</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 纳闷了，为啥参数这里叫deferred，外面的类叫Handler</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params">self, deferred</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (self._state === <span class="number">3</span>) &#123;</span><br><span class="line">    self = self._value;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Promise</span>._onHandle) &#123;</span><br><span class="line">    <span class="built_in">Promise</span>._onHandle(self);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (self._state === <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">//这一块代码是为了缓存deferred对象到_deferreds属性，不知道是为啥不直接用一个数组来搞</span></span><br><span class="line">    <span class="comment">//而要分两个情况来考虑</span></span><br><span class="line">    <span class="comment">//我猜是性能的角度，它是想能不用数组就尽量不用数组，毕竟大部分情况下Promise的实例都可能只调用一次then</span></span><br><span class="line">    <span class="keyword">if</span> (self._deferredState === <span class="number">0</span>) &#123;</span><br><span class="line">      self._deferredState = <span class="number">1</span>;</span><br><span class="line">      self._deferreds = deferred;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (self._deferredState === <span class="number">1</span>) &#123;</span><br><span class="line">      self._deferredState = <span class="number">2</span>;</span><br><span class="line">      self._deferreds = [self._deferreds, deferred];</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    self._deferreds.push(deferred);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//核心方法</span></span><br><span class="line">  handleResolved(self, deferred);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个hande方法要解决四个场景的作用：</p>
+<ol>
+<li>self这个promise状态为pending的时候<br>在这个场景下，handle方法的作用是把deferred这个对象缓存到self实例的_deferreds属性上。</li>
+<li>self这个promise状态为1的时候<br>在这个场景下，它直接跳到最后的handleResolved方法，通过这个方法，来完成deferred上面的回调函数调用和promise实例的状态处理。</li>
+<li>self这个promise状态为2的时候<br>同第2点。</li>
+<li>self这个promise状态为3的时候<br>有2个情况会出现这个场景，一是new Promise的构造参数内，通过resolve方法，传递了另外一个Promise实例；二是then方法的回调函数返回了一个新的Promise实例。这两种场景会让promise实例们通过self._value和self._state=3构造成为一个链表，这个方法内部先通过while结构，找到这个链表最原始的那个promise实例，并把它赋值给原来的self变量。然后再重新根据self的状态来判断进行前面第1、2、3点处理。</li>
+</ol>
+<h2 id="handleResolve核心方法"><a href="#handleResolve核心方法" class="headerlink" title="handleResolve核心方法"></a>handleResolve核心方法</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleResolved</span>(<span class="params">self, deferred</span>) </span>&#123;</span><br><span class="line">  asap(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> cb = self._state === <span class="number">1</span> ? deferred.onFulfilled : deferred.onRejected;</span><br><span class="line">    <span class="keyword">if</span> (cb === <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (self._state === <span class="number">1</span>) &#123;</span><br><span class="line">        resolve(deferred.promise, self._value);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        reject(deferred.promise, self._value);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> ret = tryCallOne(cb, self._value);</span><br><span class="line">    <span class="keyword">if</span> (ret === IS_ERROR) &#123;</span><br><span class="line">      reject(deferred.promise, LAST_ERROR);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      resolve(deferred.promise, ret);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法是一定只有在self的状态变为1或2的时候才会调用的，deferred也一定是self对象上保存的Handler类的实例，deferred上面缓存着曾经调用then方法注册的与异步任务关联的回调函数，以及then方法返回的promise对象。 理解这个代码的时候，不能把resolve和reject方法的细节带进来，而是从resolve和reject的作用去理解。他们的作用分别是为了resolve掉或reject掉deferred上面保存的那个promise对象。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>到这里为止，then/promise这个库该记录与分享的东西就差不多了，在源码部分的描述可能会让有的人觉得理解不了，这个确实是挺难的，每个人描述和理解的思路都不同，而且源码的解读本身就是一个比较纠结的事情。 所以学习它更好的办法是自己去研究、琢磨，等到自己领悟到了它的核心思路，那我这里怎么写怎么说都不重要了。</p>
+<p>写这篇笔记只是为了记录、分享这样一个比较简单的Promise实现思想。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Promise相关/" rel="tag"># Promise相关</a>
+          
+            <a href="/tags/源码学习/" rel="tag"># 源码学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/03/从别人博客学到的基本的Promise实现思路/" rel="next" title="从别人博客学到的基本的Promise实现思路">
+                <i class="fa fa-chevron-left"></i> 从别人博客学到的基本的Promise实现思路
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/05/从源码了解zepto中callback的实现/" rel="prev" title="从源码了解zepto中callback的实现">
+                从源码了解zepto中callback的实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#核心实现思想"><span class="nav-number">1.</span> <span class="nav-text">核心实现思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码零散的部分"><span class="nav-number">2.</span> <span class="nav-text">源码零散的部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise的构造函数"><span class="nav-number">3.</span> <span class="nav-text">Promise的构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#doResolve核心方法"><span class="nav-number">4.</span> <span class="nav-text">doResolve核心方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#resolve核心方法"><span class="nav-number">5.</span> <span class="nav-text">resolve核心方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reject核心方法"><span class="nav-number">6.</span> <span class="nav-text">reject核心方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#final核心方法"><span class="nav-number">7.</span> <span class="nav-text">final核心方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#then方法"><span class="nav-number">8.</span> <span class="nav-text">then方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#handle核心方法"><span class="nav-number">9.</span> <span class="nav-text">handle核心方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#handleResolve核心方法"><span class="nav-number">10.</span> <span class="nav-text">handleResolve核心方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">11.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="准备用mac pro作为开发机。之前在win10下，一直都是通过虚拟机来作为主要开发环境，这次用mac也想这么干。最重要的3个实现目标是：  虚拟机能访问互联网； 虚拟机与主机可以互通； 虚拟机与主机有文件共享。  本篇把重要的一些笔记记录下来，方便日后参考。">
+<meta name="keywords" content="mac开发环境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mac os下centos虚拟机的安装、网络及文件共享配置">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="准备用mac pro作为开发机。之前在win10下，一直都是通过虚拟机来作为主要开发环境，这次用mac也想这么干。最重要的3个实现目标是：  虚拟机能访问互联网； 虚拟机与主机可以互通； 虚拟机与主机有文件共享。  本篇把重要的一些笔记记录下来，方便日后参考。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/04.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/05.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/06.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/07.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/08.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/09.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/10.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/11.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/12.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/13.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/14.png">
+<meta property="og:updated_time" content="2019-06-16T06:42:37.262Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mac os下centos虚拟机的安装、网络及文件共享配置">
+<meta name="twitter:description" content="准备用mac pro作为开发机。之前在win10下，一直都是通过虚拟机来作为主要开发环境，这次用mac也想这么干。最重要的3个实现目标是：  虚拟机能访问互联网； 虚拟机与主机可以互通； 虚拟机与主机有文件共享。  本篇把重要的一些笔记记录下来，方便日后参考。">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/04.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>mac os下centos虚拟机的安装、网络及文件共享配置 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/16/mac-os通过virtual-box安装centos系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mac os下centos虚拟机的安装、网络及文件共享配置
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-16 11:33:34" itemprop="dateCreated datePublished" datetime="2019-06-16T11:33:34Z">2019-06-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/开发环境/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>准备用mac pro作为开发机。之前在win10下，一直都是通过虚拟机来作为主要开发环境，这次用mac也想这么干。最重要的3个实现目标是：</p>
+<ol>
+<li>虚拟机能访问互联网；</li>
+<li>虚拟机与主机可以互通；</li>
+<li>虚拟机与主机有文件共享。</li>
+</ol>
+<p>本篇把重要的一些笔记记录下来，方便日后参考。</p>
+<a id="more"></a>
+<h2 id="安装virtual-box虚拟机"><a href="#安装virtual-box虚拟机" class="headerlink" title="安装virtual box虚拟机"></a>安装virtual box虚拟机</h2><p>这次选用的是virtual box虚拟机来安装，没别的原因，只为它是免费的，可以下载最新版。下载及安装过程本篇不记录。</p>
+<h2 id="安装centos系统"><a href="#安装centos系统" class="headerlink" title="安装centos系统"></a>安装centos系统</h2><p>首先要下载一个centos的镜像文件，我从官方下载到的是CentOS-7-x86_64-Minimal-1810。virtual box安装centos的过程，本篇不记录。</p>
+<p>只要mac是联网的，安装centos的时候，就可以设置网络，这样系统装好以后，centos就可以访问互联网了。记得使用ping命令测试一下。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># ping www.baidu.com</span></span><br><span class="line">PING www.a.shifen.com (61.135.169.121) 56(84) bytes of data.</span><br><span class="line">^C64 bytes from 61.135.169.121: icmp_seq=1 ttl=63 time=4.46 ms</span><br><span class="line"></span><br><span class="line">--- www.a.shifen.com ping statistics ---</span><br><span class="line">1 packets transmitted, 1 received, 0% packet loss, time 0ms</span><br><span class="line">rtt min/avg/max/mdev = 4.465/4.465/4.465/0.000 ms</span><br></pre></td></tr></table></figure></p>
+<p>到了这里，本篇的第一个目标就完成了。虚拟机能访问互联网之后，以后前端或后端的开发环境都可以直接在虚拟机里进行联网配置了，比如node git npm composer等。</p>
+<h2 id="mac与虚拟机互通"><a href="#mac与虚拟机互通" class="headerlink" title="mac与虚拟机互通"></a>mac与虚拟机互通</h2><p>centos装好以后，虚拟机应该是可以ping通mac主机的，但是主机不一定能ping通虚拟机。</p>
+<p>这是因为虚拟机默认情况下使用的是下面这个网卡模式：<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/04.png" title="[title]"></p>
+<p>如果想让主机也能ping通虚拟机，有2个做法：</p>
+<ol>
+<li><p>在上面这个网卡下面配置端口转发<br>这个方式我试了一下，第1天是好使的，第2天就不太好用了，原因未知，所以不推荐这个方式。</p>
+</li>
+<li><p>给虚拟机再启用一个网卡，采用host-only的方式连接主机与虚拟机。</p>
+</li>
+</ol>
+<p>具体做法如下：（注意在第一和第二步做完之前，最好先将虚拟机关闭）<br>第一，添加一个host only的网络<br>先打开virtual box的主机网络管理器<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/05.png" title="[title]"><br>点击创建<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/06.png" title="[title]"><br>得到如下一个网络配置：<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/07.png" title="[title]"><br>记住上面的ipv4地址和ipv4网络掩码，前者是这个网络的网关地址，后者是这个网络的子网掩码，后面配置静态ip的时候需要它们。然后切换到dhcp选项卡：<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/08.png" title="[title]"><br>看到上面的最小ip地址和最大ip地址，从这个范围确定一个ip地址，比如192.168.56.103，这将作为虚拟机要配置的静态ip地址。</p>
+<p>第二，启用虚拟机的第二个网卡<br>打开虚拟机的设置，注意是虚拟机自己的设置，不是virtual box的设置。<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/09.png" title="[title]"><br>按照1、2、3、4、5的顺序操作，注意第5步界面名称那里选择的东西，就是前面通过virtual box主机网络管理器添加的网络名称。</p>
+<p>第三，配置虚拟机的网卡文件<br>先启动虚拟机，然后运行命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/sysconfig/network-scripts</span><br></pre></td></tr></table></figure></p>
+<p>进入网卡配置文件的存放目录。</p>
+<p>运行一下ip addr命令，查看当前虚拟机内的网卡：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr</span><br></pre></td></tr></table></figure></p>
+<p>得到如下输出：<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/10.png" title="[title]"><br>上面图中”2:”后面的enp0s3(第1个红框)，是虚拟机安装完以后，网络配置成功后，就会自动添加的一个网卡，与虚拟机设置里面的网卡1是对应的。这个enp0s3的名称，不是固定的，不同的机器安装出来的名称可能不同，得以自己的虚拟机为准。</p>
+<p>“3:”后面的enp0s8(第1个红框)，是前面设置虚拟机的网络，启用了网卡2以后，给虚拟机增加的网卡，对应的host only模式的网络。这个名称也不是固定的，请以自己的虚拟机为准。</p>
+<p>确定这两个名称以后，在/etc/sysconfig/network-scripts目录下运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls</span><br></pre></td></tr></table></figure></p>
+<p>查看是否有ifcfg-enp0s3和ifcfg-enp0s8这个文件。 通常情况下，有ifcfg-enp0s3但是没有ifcfg-enp0s8。如果没有ifcfg-enp0s8，运行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp ifcfg-enp0s3 ifcfg-enp0s8</span><br></pre></td></tr></table></figure></p>
+<p>复制出一个ifcfg-enp0s8。然后用vi对ifcfg-enp0s8进行编辑：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi ifcfg-enp0s8</span><br></pre></td></tr></table></figure></p>
+<p>这个文件是从ifcfg-enp0s3复制出来的，所以在增加配置前，先把enp0s3相关的东西都改掉：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">TYPE=<span class="string">"Ethernet"</span></span><br><span class="line">PROXY_METHOD=<span class="string">"none"</span></span><br><span class="line">BROWSER_ONLY=<span class="string">"no"</span></span><br><span class="line">BOOTPROTO=<span class="string">"dhcp"</span></span><br><span class="line">DEFROUTE=<span class="string">"yes"</span></span><br><span class="line">IPV4_FAILURE_FATAL=<span class="string">"no"</span></span><br><span class="line">IPV6INIT=<span class="string">"yes"</span></span><br><span class="line">IPV6_AUTOCONF=<span class="string">"yes"</span></span><br><span class="line">IPV6_DEFROUTE=<span class="string">"yes"</span></span><br><span class="line">IPV6_FAILURE_FATAL=<span class="string">"no"</span></span><br><span class="line">IPV6_ADDR_GEN_MODE=<span class="string">"stable-privacy"</span></span><br><span class="line">NAME=<span class="string">"enp0s3"</span></span><br><span class="line">UUID=<span class="string">"3b54fc3f-36d4-4c69-8fc4-96da89b2b3fd"</span></span><br><span class="line">DEVICE=<span class="string">"enp0s3"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br></pre></td></tr></table></figure></p>
+<p>改三个东西：NAME,UUID,DEVICE。 把NAME和DEVICE改成enp0s8。把UUID随便改一个字符，比如把第一个3改成4。改完如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">YPE=<span class="string">"Ethernet"</span></span><br><span class="line">PROXY_METHOD=<span class="string">"none"</span></span><br><span class="line">BROWSER_ONLY=<span class="string">"no"</span></span><br><span class="line">DEFROUTE=<span class="string">"yes"</span></span><br><span class="line">IPV4_FAILURE_FATAL=<span class="string">"no"</span></span><br><span class="line">IPV6INIT=<span class="string">"yes"</span></span><br><span class="line">IPV6_AUTOCONF=<span class="string">"yes"</span></span><br><span class="line">IPV6_DEFROUTE=<span class="string">"yes"</span></span><br><span class="line">IPV6_FAILURE_FATAL=<span class="string">"no"</span></span><br><span class="line">IPV6_ADDR_GEN_MODE=<span class="string">"stable-privacy"</span></span><br><span class="line">NAME=<span class="string">"enp0s8"</span></span><br><span class="line">UUID=<span class="string">"4b54fc3f-36d4-4c69-8fc4-96da89b2b3fd"</span></span><br><span class="line">DEVICE=<span class="string">"enp0s8"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br></pre></td></tr></table></figure></p>
+<p>在改完的基础上，增加三个配置：IPADDR,GATEWAY,NETMASK，这三个分别是网卡的ip地址，网卡对应的网关地址，网卡对应的掩码。这三个东西的值，分别填入在virtual box主机网络管理器部分记录下来的值。另外由于这个网卡要配置的是静态ip地址，而不是动态ip地址，所以还得把BOOTPROTO=”dhcp”这个配置，替换为BOOTPROTO=”static”，我选择的是注释掉原来的dhcp，然后新增了static，最后完整的配置文件为：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">TYPE=<span class="string">"Ethernet"</span></span><br><span class="line">PROXY_METHOD=<span class="string">"none"</span></span><br><span class="line">BROWSER_ONLY=<span class="string">"no"</span></span><br><span class="line"><span class="comment">#BOOTPROTO="dhcp"</span></span><br><span class="line">DEFROUTE=<span class="string">"yes"</span></span><br><span class="line">IPV4_FAILURE_FATAL=<span class="string">"no"</span></span><br><span class="line">IPV6INIT=<span class="string">"yes"</span></span><br><span class="line">IPV6_AUTOCONF=<span class="string">"yes"</span></span><br><span class="line">IPV6_DEFROUTE=<span class="string">"yes"</span></span><br><span class="line">IPV6_FAILURE_FATAL=<span class="string">"no"</span></span><br><span class="line">IPV6_ADDR_GEN_MODE=<span class="string">"stable-privacy"</span></span><br><span class="line">NAME=<span class="string">"enp0s8"</span></span><br><span class="line">UUID=<span class="string">"4b54fc3f-36d4-4c69-8fc4-96da89b2b3fd"</span></span><br><span class="line">DEVICE=<span class="string">"enp0s8"</span></span><br><span class="line">ONBOOT=<span class="string">"yes"</span></span><br><span class="line">BOOTPROTO=<span class="string">"static"</span></span><br><span class="line">IPADDR=192.168.56.103</span><br><span class="line">GATEWAY=192.168.56.1</span><br><span class="line">NETMASK=255.255.255.0</span><br></pre></td></tr></table></figure></p>
+<p>ipaddr: 192.168.56.103，就是虚拟机绑定的固定ip地址，mac主机可通过ssh直接连接这个地址来访问虚拟机。</p>
+<p>配置文件修改之后，退出并保存，然后运行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure></p>
+<p>重启网络。然后再次运行ip addr，检查enp0s8这个网卡有没有设置为192.168.56.103这个ip地址：<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/11.png" title="[title]"></p>
+<p>回到mac主机，打开终端，运行:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@192.168.56.103</span><br></pre></td></tr></table></figure></p>
+<p>尝试与虚拟机进行连接。第一次连接会出现如下提示：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xxxx:~ xxxx$ ssh root@192.168.56.103</span><br><span class="line">The authenticity of host <span class="string">'192.168.56.103 (192.168.56.103)'</span> can<span class="string">'t be established.</span></span><br><span class="line"><span class="string">ECDSA key fingerprint is SHA256:Og1eS6sM/dUoPXnQH6TVNd4/GE7FdH7AApWtUTfm/rg.</span></span><br><span class="line"><span class="string">Are you sure you want to continue connecting (yes/no)?</span></span><br></pre></td></tr></table></figure></p>
+<p>输入yes之后，就会提示输入密码，输完密码，就能进入虚拟机了。</p>
+<p>至此本篇的第2个目标也实现了。</p>
+<h2 id="虚拟机与主机的文件共享"><a href="#虚拟机与主机的文件共享" class="headerlink" title="虚拟机与主机的文件共享"></a>虚拟机与主机的文件共享</h2><p>为了实现这个目标，需要安装virtual box的一个工具：VBoxGuestAdditions。这个是需要单独下载的，我的virtual box版本是6.0.8，这个工具的下载链接就是:<br><a href="http://download.virtualbox.org/virtualbox/6.0.8/VBoxGuestAdditions_6.0.8.iso" target="_blank" rel="noopener">http://download.virtualbox.org/virtualbox/6.0.8/VBoxGuestAdditions_6.0.8.iso</a></p>
+<p>这个链接地址需要根据virtual box的版本号来确定。下载好以后，记下这个文件的存放位置。</p>
+<p>在真正安装这个工具前，我们要做2个处理，防止安装失败的情况，这是我遇到的，为了减少麻烦，先把这两个做了，再安装会比较好：<br>第一步，先安装bzip2，运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install bzip2 -y</span><br></pre></td></tr></table></figure></p>
+<p>VBoxGuestAdditions需要bzip2来解压，为了防止安装失败，先把bzip2装好。</p>
+<p>第二步，更新kernel<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum update kernel -y</span><br><span class="line"></span><br><span class="line">yum install kernel-headers kernel-devel gcc make -y</span><br></pre></td></tr></table></figure></p>
+<p>这是我在安装VBoxGuestAdditions时遇到的，可能跟我的centos 版本也有关系，如果你也是我这个centos版本，建议也这么做。安装好关闭虚拟机。</p>
+<p>接下来开始安装VBoxGuestAdditions。<br>首先打开虚拟机设置：<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/12.png" title="[title]"><br>按照1、2、3、4的顺序来操作。这次设置的是虚拟机的存储部分，说白了就是要把VBoxGuestAdditions_6.0.8.iso这个镜像文件，放到虚拟机的光驱里面。<br>第4步，会打开finder，找到前面下载VBoxGuestAdditions_6.0.8.iso文件位置，确认即可。</p>
+<p>设置好以后，重新启动虚拟机。开始安装：</p>
+<ol>
+<li>挂载光驱文件<br>运行:<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /media/vbox</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>创建挂载点。运行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/cdrom /media/vbox</span><br></pre></td></tr></table></figure></p>
+<p>执行挂载。切换到挂载目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /media/vbox</span><br><span class="line">ls</span><br></pre></td></tr></table></figure></p>
+<p>可以看到iso文件里面的内容。<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/13.png" title="[title]"></p>
+<p>运行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh ./VBoxLinuxAdditions.run</span><br></pre></td></tr></table></figure></p>
+<p>开始正式安装。只要没有提示报错，就表示安装成功了。</p>
+<p>接下来准备做mac主机与虚拟机的文件共享。首先在mac主机下，创建一个文件夹，比如我设置的：<br>/users/xxx/xxgxf/centos_share(隐私原因，未写完整)<br>然后在虚拟机里创建一个文件夹：<br>/home/wwwroot</p>
+<p>关闭虚拟机，打开虚拟机设置，进行共享文件夹设置：<br><img src="/2019/06/16/mac-os通过virtual-box安装centos系统/14.png" title="[title]"><br>按照数字顺序，进行设置。注意：<br>第4步选择前面设置的主机文件夹，第7步选择虚拟机内的文件夹；<br>要勾选自动挂载和固定分配；不要勾选只读分配。</p>
+<p>然后重启虚拟机，这样主机与虚拟机就通过2个文件夹形成共享了。你可以在主机内添加个文件，然后在虚拟机里去找找看有没有。</p>
+<p>有了共享文件夹，以后代码就在mac里面写，然后部署在虚拟机内运行。php和node都能这么搞。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本篇记录的都是一些开发基本点，有条件的人可以这么试一试，这个开发方式比单独在windows或者mac里面搞全套，我觉得要好一些。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mac开发环境/" rel="tag"># mac开发环境</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/06/从源码了解zepto中defer延迟对象的实现/" rel="next" title="从源码了解zepto中defer延迟对象的实现">
+                <i class="fa fa-chevron-left"></i> 从源码了解zepto中defer延迟对象的实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/16/使用scp命令进行文件传输/" rel="prev" title="使用scp命令进行文件传输">
+                使用scp命令进行文件传输 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装virtual-box虚拟机"><span class="nav-number">1.</span> <span class="nav-text">安装virtual box虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装centos系统"><span class="nav-number">2.</span> <span class="nav-text">安装centos系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mac与虚拟机互通"><span class="nav-number">3.</span> <span class="nav-text">mac与虚拟机互通</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机与主机的文件共享"><span class="nav-number">4.</span> <span class="nav-text">虚拟机与主机的文件共享</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
