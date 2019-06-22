@@ -354,6 +354,10 @@ words:
 
 ## 其它可能遇到的问题
 {% asset_img 01.png [title] %}
+/var/lib/mysql/mysql.sock的问题，另外一种解决方式：
+```bash
+ln -s /tmp/mysql.sock /var/lib/mysql/mysql.sock
+```
 
 至此，coreseek就已经安装好了。下一步是要编译它相关的so文件，提供给php用，让php能够利用api来使用全文搜索引擎提供的服务。
 
