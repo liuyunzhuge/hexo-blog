@@ -99,18 +99,18 @@
 
 
 
-  <meta name="description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中Module 的加载实现我的ES6入门学习规划">
-<meta name="keywords" content="ES6学习笔记">
+  <meta name="description" content="之前把服务器开机启动的任务放到/etc/rc.local里面，总是不生效，后来在安装redis的时候，发现它redis_init_script的使用方式，能够将redis通过service来管理，同时还能做到开机自动调用redis service的start逻辑，所以如果要自定义一些开机启动的任务，也可以用这个方式来做。">
+<meta name="keywords" content="运维知识">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ES6 Module的加载">
-<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/05/18/ES6-Module的加载/index.html">
+<meta property="og:title" content="centos配置开机启动的任务">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/23/centos配置开机启动的任务/index.html">
 <meta property="og:site_name" content="流云诸葛">
-<meta property="og:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中Module 的加载实现我的ES6入门学习规划">
+<meta property="og:description" content="之前把服务器开机启动的任务放到/etc/rc.local里面，总是不生效，后来在安装redis的时候，发现它redis_init_script的使用方式，能够将redis通过service来管理，同时还能做到开机自动调用redis service的start逻辑，所以如果要自定义一些开机启动的任务，也可以用这个方式来做。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-14T13:57:46.175Z">
+<meta property="og:updated_time" content="2019-06-22T14:49:32.966Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ES6 Module的加载">
-<meta name="twitter:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中Module 的加载实现我的ES6入门学习规划">
+<meta name="twitter:title" content="centos配置开机启动的任务">
+<meta name="twitter:description" content="之前把服务器开机启动的任务放到/etc/rc.local里面，总是不生效，后来在安装redis的时候，发现它redis_init_script的使用方式，能够将redis通过service来管理，同时还能做到开机自动调用redis service的start逻辑，所以如果要自定义一些开机启动的任务，也可以用这个方式来做。">
 
 
 
@@ -118,7 +118,7 @@
 
   
   
-  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/05/18/ES6-Module的加载/">
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/23/centos配置开机启动的任务/">
 
 
 
@@ -128,7 +128,7 @@
   };
 </script>
 
-  <title>ES6 Module的加载 | 流云诸葛</title>
+  <title>centos配置开机启动的任务 | 流云诸葛</title>
   
 
 
@@ -394,7 +394,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/05/18/ES6-Module的加载/">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/23/centos配置开机启动的任务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="流云诸葛">
@@ -411,7 +411,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">ES6 Module的加载
+          <h1 class="post-title" itemprop="name headline">centos配置开机启动的任务
 
               
             
@@ -437,7 +437,7 @@
                 
               
 
-              <time title="创建时间：2019-05-17 18:12:00" itemprop="dateCreated datePublished" datetime="2019-05-17T18:12:00Z">2019-05-17</time>
+              <time title="创建时间：2019-06-22 22:49:32" itemprop="dateCreated datePublished" datetime="2019-06-22T22:49:32Z">2019-06-22</time>
             
 
             
@@ -455,21 +455,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维管理/" itemprop="url" rel="index"><span itemprop="name">运维管理</span></a></span>
 
                 
                 
@@ -504,28 +490,26 @@
       
 
       
-        <p>注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：</p>
-<blockquote>
-<p>阮一峰ES6的书籍中<a href="http://es6.ruanyifeng.com/#docs/module-loader" target="_blank" rel="noopener">Module 的加载实现</a><br><a href="/2019/05/01/ES6入门学习的规划/" title="我的ES6入门学习规划">我的ES6入门学习规划</a></p>
-</blockquote>
-<a id="more"></a>
-<h2 id="浏览器中加载脚本"><a href="#浏览器中加载脚本" class="headerlink" title="浏览器中加载脚本"></a>浏览器中加载脚本</h2><p>&lt;script>标签可以添加defer或async属性，脚本就会异步加载。渲染引擎遇到这一行命令，就会开始下载外部脚本，但不会等它下载和执行，而是直接执行后面的命令。</p>
-<p>defer与async的区别是：defer要等到整个页面在内存中正常渲染结束（DOM 结构完全生成，以及其他脚本执行完成），才会执行；async一旦下载完，渲染引擎就会中断渲染，执行这个脚本以后，再继续渲染。一句话，defer是“渲染完再执行”，async是“下载完就执行”。另外，如果有多个defer脚本，会按照它们在页面出现的顺序加载，而多个async脚本是不能保证加载顺序的。</p>
-<p>script标签也可以用来加载es6的模块，加上type=”module”即可：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> <span class="attr">src</span>=<span class="string">"./es6_module_04.js"</span> /&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
-<p>浏览器对于带有type=”module”的script，都是异步加载，等同于打开了defer属性，async属性也可以打开，这时只要加载完成，渲染引擎就会中断渲染立即执行。一旦使用了async属性，type=”module”的script就不会按照在页面出现的顺序执行，而是只要该模块加载完成，就执行该模块。</p>
-<p>script标签也可以直接用来定义es6模块：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> &gt;</span></span><br><span class="line"><span class="javascript">    	<span class="keyword">import</span> * <span class="keyword">as</span> m <span class="keyword">from</span> <span class="string">"./es6_module_04.js"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    	<span class="comment">// other module logic</span></span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>type=”module”的script引入的外部脚本，需要注意：</p>
+        <p>之前把服务器开机启动的任务放到/etc/rc.local里面，总是不生效，后来在安装redis的时候，发现它redis_init_script的使用方式，能够将redis通过service来管理，同时还能做到开机自动调用redis service的start逻辑，所以如果要自定义一些开机启动的任务，也可以用这个方式来做。<br><a id="more"></a></p>
+<p>第一步，在/etc/init.d文件夹下创建一个用于充当service的文件，如startd，并给它添加可执行的权限：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/init.d/</span><br><span class="line">touch startd</span><br><span class="line">chmod +x startd</span><br></pre></td></tr></table></figure></p>
+<p>第二步，按照下面的文件模板，编写startd内的shell程序：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment"># chkconfig: 2345 90 10</span></span><br><span class="line"></span><br><span class="line">CORESEEK_PIDFILE=/usr/<span class="built_in">local</span>/coreseek/var/<span class="built_in">log</span>/searchd_mysql.pid</span><br><span class="line">SUPERVISOR_PIDFILE=/tmp/supervisord.pid</span><br><span class="line"></span><br><span class="line">CORESEEK_EXEC=/usr/<span class="built_in">local</span>/coreseek/bin/searchd</span><br><span class="line">CORESEEK_CONF=/usr/<span class="built_in">local</span>/coreseek/etc/yourcontent.conf</span><br><span class="line"></span><br><span class="line">SUPERVISOR_EXEC=supervisord</span><br><span class="line">SUPERVISOR_CTL_EXEC=supervisorctl</span><br><span class="line">SUPERVISOR_CONF=/etc/supervisord.conf</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span></span><br><span class="line">    start)</span><br><span class="line">        <span class="comment">#starting coreseek</span></span><br><span class="line">        <span class="keyword">if</span> [ -f <span class="variable">$CORESEEK_PIDFILE</span> ]</span><br><span class="line">        <span class="keyword">then</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"<span class="variable">$CORESEEK_PIDFILE</span> exists, coreseek is already running or crashed"</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"Starting coreseek ...==========================================&gt;"</span></span><br><span class="line">                <span class="variable">$CORESEEK_EXEC</span> -c <span class="variable">$CORESEEK_CONF</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">#starting supervisor</span></span><br><span class="line">        <span class="keyword">if</span> [ -f <span class="variable">$SUPERVISOR_PIDFILE</span> ]</span><br><span class="line">        <span class="keyword">then</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"<span class="variable">$SUPERVISOR_PIDFILE</span> exists, supervisor is already running or crashed"</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"Starting supervisor ...========================================&gt;"</span></span><br><span class="line">                <span class="variable">$SUPERVISOR_EXEC</span> -c <span class="variable">$SUPERVISOR_CONF</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">        ;;</span><br><span class="line">    stop)</span><br><span class="line">        <span class="comment">#stop coreseek</span></span><br><span class="line">        <span class="keyword">if</span> [ ! -f <span class="variable">$CORESEEK_PIDFILE</span> ]</span><br><span class="line">        <span class="keyword">then</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"<span class="variable">$CORESEEK_PIDFILE</span> does not exist, coreseek is not running"</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                PID=$(cat <span class="variable">$CORESEEK_PIDFILE</span>)</span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"Stopping coreseek ..."</span></span><br><span class="line">                <span class="variable">$CORESEEK_EXEC</span> -c <span class="variable">$CORESEEK_CONF</span> --stop</span><br><span class="line">                <span class="keyword">while</span> [ -x /proc/<span class="variable">$&#123;PID&#125;</span> ]</span><br><span class="line">                <span class="keyword">do</span></span><br><span class="line">                    <span class="built_in">echo</span> <span class="string">"Waiting for coreseek to shutdown ..."</span></span><br><span class="line">                    sleep 1</span><br><span class="line">                <span class="keyword">done</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"coreseek stopped==============================================&gt;"</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">        <span class="comment">#stop supervisor</span></span><br><span class="line">        <span class="keyword">if</span> [ ! -f <span class="variable">$SUPERVISOR_PIDFILE</span> ]</span><br><span class="line">        <span class="keyword">then</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"<span class="variable">$SUPERVISOR_PIDFILE</span> does not exist, supervisor is not running"</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                PID=$(cat <span class="variable">$SUPERVISOR_PIDFILE</span>)</span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"Stopping supervisor ..."</span></span><br><span class="line">                <span class="variable">$SUPERVISOR_CTL_EXEC</span> shutdown</span><br><span class="line">                <span class="keyword">while</span> [ -x /proc/<span class="variable">$&#123;PID&#125;</span> ]</span><br><span class="line">                <span class="keyword">do</span></span><br><span class="line">                    <span class="built_in">echo</span> <span class="string">"Waiting for supervisor to shutdown ..."</span></span><br><span class="line">                    sleep 1</span><br><span class="line">                <span class="keyword">done</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"supervisor stopped============================================&gt;"</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">        ;;</span><br><span class="line">    *)</span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Please use start or stop as first argument"</span></span><br><span class="line">        ;;</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure></p>
+<p>上面这个模板文件有2个要点：</p>
+<ol>
+<li>前2行必不可少</li>
+<li>case结构内的start和stop分支也必须固定，因为当把startd当service调用的时候，调用的就是这个文件里面start和stop的逻辑</li>
+</ol>
+<p>上面startd里面的文件内容，在start的时候通过判断pid文件是否存在，不存在才会执行命令；在stop的时候，也做了pid文件判断，而且还会等待进程完全销毁之后才退出。</p>
+<p>第三步，将服务设置为开机启动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chkconfig startd on</span><br></pre></td></tr></table></figure></p>
+<p>这样startd内的任务开机就会启动起来了。</p>
+<p>其它：</p>
 <ul>
-<li>代码是在模块作用域之中运行，而不是在全局作用域运行。模块内部的顶层变量，外部不可见</li>
-<li>模块之中，顶层的this关键字返回undefined，而不是指向window。也就是说，在模块顶层使用this关键字，是无意义的</li>
+<li><p>手动停止startd的启动过的任务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service startd stop</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>手动启动startd的任务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service stard start</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<p>总之，不论是外部的es6模块脚本，还是内嵌的es6模块脚本，它都要遵循上一篇笔记记录的所有module的特性；浏览器最终只是module加载和被使用的位置，不会违背语言规范定出的规则。</p>
-<h2 id="node中加载es6的module"><a href="#node中加载es6的module" class="headerlink" title="node中加载es6的module"></a>node中加载es6的module</h2><p>这个部分的内容还没有统一起来，暂时学的兴趣不大。</p>
-<h2 id="循环加载"><a href="#循环加载" class="headerlink" title="循环加载"></a>循环加载</h2><p>cmd是动态加载，es6是静态加载，所以在处理循环加载时区别比较大。</p>
-<h3 id="cmd的循环加载"><a href="#cmd的循环加载" class="headerlink" title="cmd的循环加载"></a>cmd的循环加载</h3><p>为了避免重复，这个部分可完全参考<a href="http://es6.ruanyifeng.com/#docs/module-loader#CommonJS-%E6%A8%A1%E5%9D%97%E7%9A%84%E5%BE%AA%E7%8E%AF%E5%8A%A0%E8%BD%BD" target="_blank" rel="noopener">CommonJS 模块的循环加载</a>。 </p>
-<h3 id="es6的循环加载"><a href="#es6的循环加载" class="headerlink" title="es6的循环加载"></a>es6的循环加载</h3><p>为了避免重复，这个部分可完全参考<a href="http://es6.ruanyifeng.com/#docs/module-loader#ES6-%E6%A8%A1%E5%9D%97%E7%9A%84%E5%BE%AA%E7%8E%AF%E5%8A%A0%E8%BD%BD" target="_blank" rel="noopener">ES6 模块的循环加载</a>。 </p>
-<p>理解这个部分的要点还是es6模块的核心知识点：静态加载，每个模块的接口，在编译完成就已经确定了，但是值不确定，模块内部的逻辑要保证当接口真正被使用的那一刻，接口能够按照预期发挥作用。 正是因为这一点，当“module A引用了module B，B也在内部引用了A”这种情况发生时，不管是哪个moduel先被其它module使用，A或B都不用等到对方执行完毕，就能知道对方有什么接口，所以可以很大胆地去使用对方的接口，只不过由于循环加载总会导致一方需等到另一方执行完毕才能继续自己的加载逻辑，被等待的一方可能会因为等待方的逻辑未执行完，而在使用等待方的接口时发生错误。 只要明白了这个点，就能帮助自己去分析和解决循环加载的问题。</p>
-<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><p>es6的模块目前在较高版本的浏览器中是可用的，但是低版本的浏览器还不能使用，所以在实际工作中，需要转码。</p>
 
       
     </div>
@@ -549,7 +533,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/ES6学习笔记/" rel="tag"># ES6学习笔记</a>
+            <a href="/tags/运维知识/" rel="tag"># 运维知识</a>
           
         </div>
       
@@ -562,8 +546,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/18/ES6-Module的语法/" rel="next" title="ES6 Module的语法">
-                <i class="fa fa-chevron-left"></i> ES6 Module的语法
+              <a href="/2019/06/20/掌握css的帧动画/" rel="next" title="掌握css的帧动画">
+                <i class="fa fa-chevron-left"></i> 掌握css的帧动画
               </a>
             
           </div>
@@ -571,10 +555,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/06/03/从别人博客学到的基本的Promise实现思路/" rel="prev" title="从别人博客学到的基本的Promise实现思路">
-                从别人博客学到的基本的Promise实现思路 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -618,17 +598,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -732,23 +703,6 @@
         </div>
       </div>
 
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器中加载脚本"><span class="nav-number">1.</span> <span class="nav-text">浏览器中加载脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#node中加载es6的module"><span class="nav-number">2.</span> <span class="nav-text">node中加载es6的module</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环加载"><span class="nav-number">3.</span> <span class="nav-text">循环加载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cmd的循环加载"><span class="nav-number">3.1.</span> <span class="nav-text">cmd的循环加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6的循环加载"><span class="nav-number">3.2.</span> <span class="nav-text">es6的循环加载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其它"><span class="nav-number">4.</span> <span class="nav-text">其它</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
       
 
       

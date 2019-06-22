@@ -108,7 +108,7 @@
 <meta property="og:description" content="coreseek是sphinx全文搜索引擎的带有中文分词的版本。目前coreseek官网已经停止访问了，不知道为啥，我这边产品还在使用着它提供检索服务，前2年记下的笔记还在，这次正好重新准备centos环境，所以在博客中再记录一遍。我安装的是coreseek3.2.14，这是它最稳定的一个版本。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/19/centos安装coreseek作为全文搜索引擎/01.png">
-<meta property="og:updated_time" content="2019-06-19T13:38:38.813Z">
+<meta property="og:updated_time" content="2019-06-22T09:26:14.858Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="centos安装coreseek作为全文搜索引擎">
 <meta name="twitter:description" content="coreseek是sphinx全文搜索引擎的带有中文分词的版本。目前coreseek官网已经停止访问了，不知道为啥，我这边产品还在使用着它提供检索服务，前2年记下的笔记还在，这次正好重新准备centos环境，所以在博客中再记录一遍。我安装的是coreseek3.2.14，这是它最稳定的一个版本。">
@@ -318,7 +318,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">31</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">32</span></a>
 
   </li>
         
@@ -546,6 +546,7 @@
 <h2 id="停止搜索引擎"><a href="#停止搜索引擎" class="headerlink" title="停止搜索引擎"></a>停止搜索引擎</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/<span class="built_in">local</span>/coreseek/bin/searchd -c etc/csft.conf --stop</span><br></pre></td></tr></table></figure>
 <p>/etc/csft.conf只是sphinx全文检索配置的一个模板，实际应该根据产品需要自己编写配置文件。</p>
 <h2 id="其它可能遇到的问题"><a href="#其它可能遇到的问题" class="headerlink" title="其它可能遇到的问题"></a>其它可能遇到的问题</h2><img src="/2019/06/19/centos安装coreseek作为全文搜索引擎/01.png" title="[title]">
+<p>/var/lib/mysql/mysql.sock的问题，另外一种解决方式：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /tmp/mysql.sock /var/lib/mysql/mysql.sock</span><br></pre></td></tr></table></figure></p>
 <p>至此，coreseek就已经安装好了。下一步是要编译它相关的so文件，提供给php用，让php能够利用api来使用全文搜索引擎提供的服务。</p>
 
       
@@ -666,7 +667,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-count">32</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
