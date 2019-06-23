@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>01</title>
+	<style type="text/css">
+		#box {
+			width: 100px;
+			height: 100px;
+			background: #f77333;
+		}
+	</style>
+</head>
+<body>
+	<div id="box"></div>
+	<script type="module">
+		import Animation from "./modules/animation.js";
+		import TaskQueue from "./modules/taskQueue.js";
+
+		let boxElem = document.getElementById('box');
+		let dis = 300;
+
+		new Animation({
+			duration: 1000,
+			iterationCount: 'infinite',
+			ease: Animation.EASE.LINEAR,
+			direction: Animation.DIRECTION.NORMAL,
+			onProcess: function (p) {
+				boxElem.style.transform = 'translate(' + 300 * p + 'px)';
+			}
+		}).start();
+	</script>
+</body>
+</html>
