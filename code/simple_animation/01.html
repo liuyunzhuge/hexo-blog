@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>01</title>
+	<style type="text/css">
+		#box {
+			width: 100px;
+			height: 100px;
+			background: #f77333;
+		}
+	</style>
+</head>
+<body>
+	<div id="box"></div>
+	<form action="" onsubmit="return false" id="form">
+		<div><label>duration</label><input type="number" value="2000" placeholder="" name="duration">ms</div>
+		<div><label>iterationCount</label><input type="text" value="infinite" placeholder="" name="iterationCount">次</div>
+		<div><label>direciton</label>
+			<select name="direction">
+				<option value="normal">normal</option>
+				<option value="alternate">alternate</option>
+				<option value="reverse">reverse</option>
+				<option value="alternate_reverse">alternate_reverse</option>
+			</select>
+		</div>
+		<div>
+			<button type="button" onclick="pause()">暂停动画</button>
+			<button type="button" onclick="resume()">继续动画</button>
+		</div>
+		<p id="log"></p>
+		<hr>
+		<div>
+			<button type="button" onclick="create()">创建动画</button>
+		</div>
+	</form>
+	<script type="module">
+		import Animation from "./modules/animation.js";
+
+		let boxElem = document.getElementById('box');
+		let form = document.getElementById('form');
+		let log = document.getElementById('log');
+		let dis = 300;
+
+		window.create = function () {
+			if(window.ani) {
+				window.ani.destroy();
+			}
+			
+			let ani = window.ani = new Animation({
+				duration: parseInt(form.duration.value),
+				iterationCount: form.iterationCount.value === 'infinite' ? form.iterationCount.value : parseInt(form.iterationCount.value),
+				ease: Animation.EASE.LINEAR,
+				direction: form.direction.value,
+				onProgress: function (p) {
+					boxElem.style.transform = 'translate(' + 300 * p + 'px)';
+				}
+			});
+
+			ani.start().then(function() {
+				log.innerHTML = 'log======> 动画已结束';
+			});
+			
+			log.innerHTML = 'log======> 动画开始';
+		};
+
+		window.pause = function () {
+			if(window.ani) {
+				window.ani.pause();
+			}
+		}
+
+		window.resume = function () {
+			if(window.ani) {
+				window.ani.resume();
+			}
+		}
+
+
+	</script>
+</body>
+</html>
