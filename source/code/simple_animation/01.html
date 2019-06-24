@@ -19,15 +19,20 @@
 		let boxElem = document.getElementById('box');
 		let dis = 300;
 
-		new Animation({
+		window.ani = new Animation({
 			duration: 1000,
 			iterationCount: 'infinite',
 			ease: Animation.EASE.LINEAR,
-			direction: Animation.DIRECTION.NORMAL,
-			onProcess: function (p) {
+			direction: Animation.DIRECTION.ALTERNATE,
+			onProgress: function (p) {
 				boxElem.style.transform = 'translate(' + 300 * p + 'px)';
 			}
-		}).start();
+		});
+
+		setTimeout(()=>{
+			ani.start();
+		}, 1000);
+
 	</script>
 </body>
 </html>

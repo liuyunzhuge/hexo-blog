@@ -1,18 +1,12 @@
-function TaskQueue() {
-    this.tasks = [];
-}
+export default class {
+    constructor(){
+        this.tasks = [];
+    }
 
-
-Object.assign(TaskQueue.prototype, {
-    push: function (...tasks) {
-        this.tasks.push(...tasks);
-        return this;
-    },
-    start: function () {
+    run() {
         if (this.tasks.length === 0) return;
 
-
-        let _start = () => {
+        let _run = () => {
             if (this.tasks.length === 0) return;
 
 
@@ -22,16 +16,14 @@ Object.assign(TaskQueue.prototype, {
 
             if (ret instanceof Promise) {
                 ret.then(() => {
-                    _start();
+                    _run();
                 });
             } else {
-                _start();
+                _run();
             }
         };
 
 
-        _start();
+        _run();
     }
-});
-
-export default TaskQueue;
+};
