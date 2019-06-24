@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这是一篇学习笔记，参考十年踪迹的博客原文：《关于动画，你需要知道的》。本篇不记录任何动画原理相关的东西，只记录我在学习之后的实现。">
+<meta name="keywords" content="CSS动画">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习动画的基本原理">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/25/学习动画的基本原理/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="这是一篇学习笔记，参考十年踪迹的博客原文：《关于动画，你需要知道的》。本篇不记录任何动画原理相关的东西，只记录我在学习之后的实现。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-24T14:35:33.056Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="学习动画的基本原理">
+<meta name="twitter:description" content="这是一篇学习笔记，参考十年踪迹的博客原文：《关于动画，你需要知道的》。本篇不记录任何动画原理相关的东西，只记录我在学习之后的实现。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/25/学习动画的基本原理/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>学习动画的基本原理 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">6</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">34</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/25/学习动画的基本原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">学习动画的基本原理
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-24 22:35:33" itemprop="dateCreated datePublished" datetime="2019-06-24T22:35:33Z">2019-06-24</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/CSS/" itemprop="url" rel="index"><span itemprop="name">CSS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/CSS/知识学习/" itemprop="url" rel="index"><span itemprop="name">知识学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这是一篇学习笔记，参考十年踪迹的博客原文：《<a href="https://www.h5jun.com/post/animations-you-should-know.html" target="_blank" rel="noopener">关于动画，你需要知道的</a>》。本篇不记录任何动画原理相关的东西，只记录我在学习之后的实现。</p>
+<a id="more"></a>
+<p>《关于动画，你需要知道的》这篇文章帮助我完全理解了动画的本质，在它的基础上，我简单实现了一个动画库，可以：</p>
+<ol>
+<li>自定义动画时长</li>
+<li>自定义动画的ease函数，类似css动画的animation-timing-function</li>
+<li>自定义动画的迭代次数，类似css动画的animation-iteration-count</li>
+<li>自定义动画的direciton，类似css动画的animation-direction</li>
+<li>控制动画暂停和继续，类似css动画的animation-play-state</li>
+</ol>
+<p>下面是它的完整实现：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> _continueStart = <span class="built_in">Symbol</span>(<span class="string">'continueStart'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Animation</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(&#123;</span><br><span class="line">                       duration,</span><br><span class="line">                       iterationCount = <span class="number">1</span>,</span><br><span class="line">                       ease = Animation.EASE.LINEAR,</span><br><span class="line">                       direction = Animation.DIRECTION.NORMAL,</span><br><span class="line">                       onProgress = Animation.noop</span><br><span class="line">                   &#125; = &#123;&#125;) &#123;</span><br><span class="line">        <span class="keyword">this</span>.id = Animation.nextId();</span><br><span class="line">        <span class="keyword">this</span>.duration = duration;</span><br><span class="line">        <span class="keyword">this</span>.ease = ease;</span><br><span class="line">        <span class="keyword">this</span>.iterationCount = iterationCount;</span><br><span class="line">        <span class="keyword">this</span>.direction = direction;</span><br><span class="line">        <span class="keyword">this</span>.onProgress = onProgress;</span><br><span class="line">        <span class="keyword">this</span>.playState = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">this</span>.promise = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    start() &#123;</span><br><span class="line">        <span class="keyword">this</span>.promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.playState = Animation.playState.RUNNING;</span><br><span class="line">            <span class="keyword">this</span>.startTime = <span class="built_in">Date</span>.now();<span class="comment">//记录动画每次迭代的开始时间</span></span><br><span class="line">            <span class="keyword">this</span>.progress = <span class="number">0</span>;<span class="comment">//记录动画每次迭代的进程</span></span><br><span class="line">            <span class="keyword">let</span> _iterationCount = <span class="number">0</span>;<span class="comment">//累计动画迭代次数</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// 设置动画方向：只有在normal 和 alternate时，方向才是正向的</span></span><br><span class="line">            <span class="keyword">let</span> isPositiveDirection = <span class="keyword">this</span>.direction === Animation.DIRECTION.NORMAL || <span class="keyword">this</span>.direction === Animation.DIRECTION.ALTERNATE;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> iterationFinished = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.iterationCount === <span class="string">'infinite'</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">return</span> _iterationCount &gt;= <span class="keyword">this</span>.iterationCount;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">this</span>[_continueStart] = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>( <span class="keyword">this</span>.playState === Animation.playState.DESTROYED ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'animation destroyed...'</span>));</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">let</span> currentTime = <span class="built_in">Date</span>.now();</span><br><span class="line">                <span class="keyword">this</span>.progress = <span class="built_in">Math</span>.min(<span class="number">1.0</span>, (currentTime - <span class="keyword">this</span>.startTime) / <span class="keyword">this</span>.duration);</span><br><span class="line">                <span class="keyword">this</span>.onProgress(<span class="keyword">this</span>.ease(isPositiveDirection ? <span class="keyword">this</span>.progress : (<span class="number">1</span> - <span class="keyword">this</span>.progress)));</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.progress &gt;= <span class="number">1.0</span>) &#123;</span><br><span class="line">                    <span class="comment">// 累加动画迭代次数</span></span><br><span class="line">                    _iterationCount += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">let</span> isLastIteration = iterationFinished();</span><br><span class="line">                <span class="keyword">let</span> goon = <span class="keyword">this</span>.playState === Animation.playState.RUNNING;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 本次动画迭代结束</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.progress &gt;= <span class="number">1.0</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (!isLastIteration) &#123;</span><br><span class="line">                        <span class="comment">// 重置动画的状态</span></span><br><span class="line">                        <span class="keyword">this</span>.progress = <span class="number">0</span>;</span><br><span class="line">                        <span class="keyword">this</span>.startTime = currentTime;</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 只有alternate和alternate_reverse时，动画才会在结束点切换方向</span></span><br><span class="line">                        <span class="keyword">if</span> (<span class="keyword">this</span>.direction === Animation.DIRECTION.ALTERNATE || <span class="keyword">this</span>.direction === Animation.DIRECTION.ALTERNATE_REVERSE) &#123;</span><br><span class="line">                            isPositiveDirection = !isPositiveDirection;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">// 动画完全结束回调</span></span><br><span class="line">                        resolve(<span class="keyword">this</span>);</span><br><span class="line">                        goon = <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                goon &amp;&amp; requestAnimationFrame(<span class="keyword">this</span>[_continueStart]);</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            requestAnimationFrame(<span class="keyword">this</span>[_continueStart]);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.promise;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//销毁</span></span><br><span class="line">    destroy() &#123;</span><br><span class="line">        <span class="keyword">this</span>.playState = Animation.playState.DESTROYED;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//恢复</span></span><br><span class="line">    resume() &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.playState === Animation.playState.PAUSED) &#123;</span><br><span class="line">            <span class="keyword">this</span>.startTime = (<span class="built_in">Date</span>.now() * <span class="number">100000</span> - <span class="keyword">this</span>.duration * <span class="keyword">this</span>.progress * <span class="number">100000</span>)/<span class="number">100000</span>;</span><br><span class="line">            <span class="keyword">this</span>.playState = Animation.playState.RUNNING;   </span><br><span class="line">            <span class="keyword">this</span>[_continueStart]();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//暂停</span></span><br><span class="line">    pause() &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.playState === Animation.playState.RUNNING) &#123;</span><br><span class="line">            <span class="keyword">this</span>.playState = Animation.playState.PAUSED;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> DIRECTION = &#123;</span><br><span class="line">        NORMAL: <span class="string">'normal'</span>,</span><br><span class="line">        REVERSE: <span class="string">'reverse'</span>,</span><br><span class="line">        ALTERNATE: <span class="string">'alternate'</span>,</span><br><span class="line">        ALTERNATE_REVERSE: <span class="string">'alternate_reverse'</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> playState = &#123;</span><br><span class="line">        RUNNING: <span class="built_in">Symbol</span>(<span class="string">'running'</span>),</span><br><span class="line">        DESTROYED: <span class="built_in">Symbol</span>(<span class="string">'destroyed'</span>),</span><br><span class="line">        PAUSED: <span class="built_in">Symbol</span>(<span class="string">'paused'</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> EASE = &#123;</span><br><span class="line">        LINEAR: <span class="function"><span class="keyword">function</span> (<span class="params">p</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> p;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> noop() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> nextId = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> id = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> ++id;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)()</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>我写了一个demo，可以点击<a href="/code/simple_animation/01.html">这里</a>查看，看看这个动画库的实际效果。</p>
+<p>这个库有2个小要点，分别是动画暂停恢复的实现以及动画运行方向的实现。动画暂停恢复，我采用的是一个比较简单的办法，就是在每次动画定时器执行的时候，都把当前的progress给存起来，当动画恢复的时候，根据当前时间和暂停时的progress，反算动画的startTime，从而保证动画定时器恢复的时候，动画进程能够接着上次暂停的进度继续。</p>
+<p>动画运行方向的实现，利用的是动画状态关于时间的对称性，假如一个动画的时间为T，那这个动画反向运行一段时间t之后的动画状态应该等于这个动画正向运行T-t时的动画状态，假设动画正向的动画进程为Pz，则Pz = (T - t) / T = 1 - t / T，假设动画反向的动画进程为Pf，则Pf = Pz = 1 - t / T，也就是下面代码的核心原理：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.progress = <span class="built_in">Math</span>.min(<span class="number">1.0</span>, (currentTime - <span class="keyword">this</span>.startTime) / <span class="keyword">this</span>.duration);</span><br><span class="line"><span class="keyword">this</span>.onProgress(<span class="keyword">this</span>.ease(isPositiveDirection ? <span class="keyword">this</span>.progress : (<span class="number">1</span> - <span class="keyword">this</span>.progress)));</span><br></pre></td></tr></table></figure></p>
+<h2 id="其它实践"><a href="#其它实践" class="headerlink" title="其它实践"></a>其它实践</h2><p>利用一个简单的动画队列:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>()&#123;</span><br><span class="line">        <span class="keyword">this</span>.tasks = [];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    push (...tasks) &#123;</span><br><span class="line">        <span class="keyword">this</span>.tasks.push(...tasks);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    run() &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.tasks.length === <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> _run = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.tasks.length === <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> task = <span class="keyword">this</span>.tasks.shift();</span><br><span class="line">            <span class="keyword">let</span> ret = task();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (ret <span class="keyword">instanceof</span> <span class="built_in">Promise</span>) &#123;</span><br><span class="line">                ret.then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                    _run();</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                _run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        _run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>就能做出有序列的动画，点击<a href="/code/simple_animation/02.html">这里</a>查看，以及十年踪迹博客中提到的带阻尼效果的<a href="/code/simple_animation/03.html">运动小球效果</a>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSS动画/" rel="tag"># CSS动画</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/23/编写一个简单的菜单shell来快速打开常用的log文件/" rel="next" title="编写一个简单的菜单shell来快速打开常用的log文件">
+                <i class="fa fa-chevron-left"></i> 编写一个简单的菜单shell来快速打开常用的log文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#其它实践"><span class="nav-number">1.</span> <span class="nav-text">其它实践</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
