@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name=viewport content="initial-scale=1,maximum-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <style type="text/css">
+        #block {
+            width: 100px;
+            height: 100px;
+            background-color: #f77333;
+        }
+    </style>
+</head>
+<body>
+<div id="block"></div>
+<script type="module">
+    import Animation from "./modules/animation.js";
+    import TaskQueue from "./modules/taskQueue.js";
+
+    let elem = document.getElementById('block');
+    let distance = 200;
+
+    let queue = new TaskQueue();
+    queue.push(function () {
+        return new Animation({
+            duration: 2000,
+            onProgress: function (p) {
+                elem.style.transform = 'translate(' + (distance * p) + 'px, 0)';
+            }
+        }).start();
+    }).push(function () {
+        return new Animation({
+            duration: 2000,
+            onProgress: function (p) {
+                elem.style.transform = 'translate(' + (distance) + 'px, ' + (distance * p) + 'px)';
+            }
+        }).start();
+    }).push(function () {
+        return new Animation({
+            duration: 2000,
+            onProgress: function (p) {
+                elem.style.transform = 'translate(' + (distance * (1 - p)) + 'px, ' + (distance) + 'px)';
+            }
+        }).start();
+    }).push(function () {
+        return new Animation({
+            duration: 2000,
+            onProgress: function (p) {
+                elem.style.transform = 'translate(0, ' + (distance * (1 - p)) + 'px)';
+            }
+        }).start();
+    });
+
+    queue.run();
+</script>
+</body>
+</html>

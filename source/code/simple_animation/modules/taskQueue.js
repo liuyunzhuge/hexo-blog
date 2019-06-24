@@ -3,6 +3,11 @@ export default class {
         this.tasks = [];
     }
 
+    push (...tasks) {
+        this.tasks.push(...tasks);
+        return this;
+    }
+
     run() {
         if (this.tasks.length === 0) return;
 
@@ -12,7 +17,6 @@ export default class {
 
             let task = this.tasks.shift();
             let ret = task();
-
 
             if (ret instanceof Promise) {
                 ret.then(() => {

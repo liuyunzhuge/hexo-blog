@@ -14,11 +14,12 @@ export default class Animation {
         this.iterationCount = iterationCount;
         this.direction = direction;
         this.onProgress = onProgress;
-        this.state = null;
+        this.playState = null;
+        this.promise = null;
     }
 
     start() {
-        return new Promise(resolve => {
+        this.promise = new Promise((resolve, reject) => {
             this.playState = Animation.playState.RUNNING;
             this.startTime = Date.now();//记录动画每次迭代的开始时间
             this.progress = 0;//记录动画每次迭代的进程
@@ -33,6 +34,10 @@ export default class Animation {
             };
 
             this[_continueStart] = () => {
+                if( this.playState === Animation.playState.DESTROYED ) {
+                    return reject(new Error('animation destroyed...'));
+                }
+                
                 let currentTime = Date.now();
                 this.progress = Math.min(1.0, (currentTime - this.startTime) / this.duration);
                 this.onProgress(this.ease(isPositiveDirection ? this.progress : (1 - this.progress)));
@@ -68,6 +73,13 @@ export default class Animation {
 
             requestAnimationFrame(this[_continueStart]);
         });
+
+        return this.promise;
+    }
+
+    //销毁
+    destroy() {
+        this.playState = Animation.playState.DESTROYED;
     }
 
     //恢复
@@ -95,6 +107,7 @@ export default class Animation {
 
     static playState = {
         RUNNING: Symbol('running'),
+        DESTROYED: Symbol('destroyed'),
         PAUSED: Symbol('paused')
     }
 

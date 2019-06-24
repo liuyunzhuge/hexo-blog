@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name=viewport content="initial-scale=1,maximum-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <style type="text/css">
+        #block_wrap {
+            border-bottom: 1px solid #ccc;
+        }
+        #block {
+            margin-top: 200px;
+            width: 50px;
+            height: 50px;
+            border-radius: 100%;
+            background-color: #f77333;
+        }
+    </style>
+</head>
+<body>
+<div id="block_wrap">
+    <div id="block"></div>
+</div>
+<script type="module">
+    import Animation from "./modules/animation.js";
+    import TaskQueue from "./modules/taskQueue.js";
+
+    let elem = document.getElementById('block');
+
+    let queue = new TaskQueue();
+    let a1 = function () {
+        return new Animation({
+            duration: a1.duration,
+            ease: p => p * p,
+            onProgress: function (p) {
+                elem.style.transform = 'translateY(-' + (a1.distance - a1.distance * p) + 'px)';
+            }
+        }).start();
+    };
+    let a2 = function () {
+        return new Animation({
+            duration: a2.duration,
+            ease: p => p * (2-p),
+            onProgress: function (p) {
+                elem.style.transform = 'translateY(-' + (a2.distance * p) + 'px)';
+            }
+        }).start();
+    };
+    a1.distance = 200;
+    a2.distance = 200;
+    a1.duration = 1000;
+    a2.duration = 1000;
+
+    let func1 = function () {
+        a2.duration *= 0.8;//时间衰减
+        a2.distance *= 0.8 * 0.8;//距离衰减是时间的平方
+
+        if(a2.duration < 0.001) {
+            queue.tasks.length = 0;
+        }
+    };
+
+    let func2 = function () {
+        a1.duration *= 0.8;
+        a1.distance *= 0.8 * 0.8;
+        queue.push(a1, func1, a2, func2);
+    };
+
+    queue.push(a1, func1, a2, func2);
+
+    queue.run();
+</script>
+</body>
+</html>
