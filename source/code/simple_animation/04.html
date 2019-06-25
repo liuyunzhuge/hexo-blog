@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		
+	</title>
+
+	<style type="text/css">
+		body {
+			background-color: #f0f0f0;
+			width: 400px;
+			height: 400px;
+			margin: 150px auto;
+			perspective: 1200px;
+			position: relative;
+		}
+
+		body:after {
+			content:'';
+			position: absolute;
+			width: 1px;
+			background-color: #fff;
+			left: 50%;
+			top: 0;
+			height: 100%;
+			z-index: 100;
+		}
+
+		#container {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			transition: all 5s;
+			transform-style: preserve-3d;
+			transform-origin: 50% 50% -200px;
+		}
+
+		#container.left {
+			transform: rotateY(-90deg);
+		}
+
+		#container.right {
+			transform: rotateY(90deg);
+		}
+
+		.box {
+			display: block;
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			opacity: .5;
+		}
+
+
+		#box1 {
+			background-color: #f77333;
+			transform-origin: 100% 50%;
+			transform: rotateY(90deg) translate(100%, 0);
+		}
+
+		#box2 {
+			background-color: blue;
+		}
+
+		#box3 {
+			background-color: green;
+			transform-origin: 100% 50%;
+			transform: translate(-100%, 0) rotateY(-90deg);
+		}
+	</style>
+</head>
+<body>
+<div id="container">
+<a href="javascript:;" id="box1" class="box"></a>
+<a href="javascript:;" id="box2" class="box"></a>
+<a href="javascript:;" id="box3" class="box"></a>
+</div>
+<script type="text/javascript">
+	var container = document.getElementById('container');
+
+	function setRightToContainer() {
+		container.classList.remove('left');
+		container.classList.add('right');
+	}
+	function setLeftToContainer() {
+		container.classList.remove('right');
+		container.classList.add('left');
+	}
+</script>
+</body>
+</html>
