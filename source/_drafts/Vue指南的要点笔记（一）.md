@@ -10,11 +10,11 @@ categories:
 ---
 
 本篇开始，仔细地阅读Vue官方指南，并记录学习过程中思考、实践、总结的要点。 本篇包含的主要是内容是：
-1. 生命周期图示中关键节点
+1. 生命周期图示中要点
 
 <!-- more -->
 
-## 生命周期图示中关键节点
+## 生命周期图示中要点
 这是官方的生命周期图示:
 <img src="https://cn.vuejs.org/images/lifecycle.png" width="450">
 根据这张图示，可以总结出的要点有：
@@ -97,3 +97,44 @@ vue.$mount('#app');
 ```
 7. 不管有没有设置`el`option，只要设置了`template`option，就会把`template`直接用于底层的render函数，并根据`template`创建出新的dom元素，替换掉`el`option所指向的dom元素，并赋值给`vm.$el`；所以更加安全地访问`vm.$el`的时机点，最早是在`mounted`这个钩子函数里面。
 8. `template`option的应该只能包含一个顶层元素，这个顶层元素最后会被创建到dom里面，成为最终的`vm.$el`；由此可知，所谓的单文件的vue组件，实际上就是把template部分定义的内容，设置为了组件的`template`option而已。
+9. 8个生命周期函数，除了通过`vm`实例的option来写，也可以通过以下方式，手工添加：
+```js
+this.$on('hook:beforeDestroy',()=>{});
+this.$on('hook:destroyed',()=>{});
+this.$on('hook:beforeCreate',()=>{});
+this.$on('hook:created',()=>{});
+this.$on('hook:beforeMount',()=>{});
+this.$on('hook:mounted',()=>{});
+this.$on('hook:beforeUpdate',()=>{});
+this.$on('hook:updated',()=>{});
+```
+	这个方式在需要编写一些更加通用性的功能的时候，比如plugins，会起到很大的作用。同时由于`vm`实例的生命周期，第一步就是`init events and lifecyle`，所以上面的这些hook事件，最早在beforeCreate这个option里面就能使用。
+```html
+<div id="vue" :class="{enabled: enabled}">
+	<p ref="content">{{msg}}</p>
+</div>
+
+<script type="text/javascript">
+	let obj = {
+			msg: new Date(),
+			enabled: true
+		};
+	let vue = new Vue({
+		data: obj,
+		beforeCreate() {
+			this.$on('hook:created', ()=>{
+				console.log('another created hook');
+				//another created hook
+			})
+		},
+		created() {
+			console.log('created');
+			//created
+		}
+	});
+
+	vue.$mount('#vue');
+
+</script>
+```
+10. 
