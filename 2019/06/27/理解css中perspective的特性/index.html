@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="perspective是利用css做3d效果必不可少的一个属性，本篇记录理解这个属性的一些关键点、掌握怎么样找到这个属性的合适值。">
+<meta name="keywords" content="CSS tranform">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解css中perspective的特性">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="perspective是利用css做3d效果必不可少的一个属性，本篇记录理解这个属性的一些关键点、掌握怎么样找到这个属性的合适值。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/01.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/05.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/06.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/02.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/04.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/07.png">
+<meta property="og:updated_time" content="2019-06-26T14:55:01.979Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解css中perspective的特性">
+<meta name="twitter:description" content="perspective是利用css做3d效果必不可少的一个属性，本篇记录理解这个属性的一些关键点、掌握怎么样找到这个属性的合适值。">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/01.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>理解css中perspective的特性 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">35</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/27/理解css中perspective的特性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">理解css中perspective的特性
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-26 22:55:01" itemprop="dateCreated datePublished" datetime="2019-06-26T22:55:01Z">2019-06-26</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/CSS/" itemprop="url" rel="index"><span itemprop="name">CSS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/CSS/知识学习/" itemprop="url" rel="index"><span itemprop="name">知识学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>perspective是利用css做3d效果必不可少的一个属性，本篇记录理解这个属性的一些关键点、掌握怎么样找到这个属性的合适值。</p>
+<a id="more"></a>
+<h2 id="css-transforms里面的坐标系"><a href="#css-transforms里面的坐标系" class="headerlink" title="css transforms里面的坐标系"></a>css transforms里面的坐标系</h2><p>这是css transforms的坐标系：<br><img src="/2019/06/27/理解css中perspective的特性/01.png" width="300"></p>
+<ul>
+<li>x轴的正方向是向右的</li>
+<li>y轴的正方向是向下的</li>
+<li>z轴的正方向是从屏幕面向自己的眼睛的</li>
+</ul>
+<p>普通的元素是渲染在x轴和y轴所组成的这个平面的之内的，也就是上图中网格所表示的那个面，当应用了css transforms之后，元素可以在上述坐标系的整个3d空间内渲染。正确地理解这个坐标系，对于理解perspective有非常大的作用。</p>
+<h2 id="初始perspective的作用"><a href="#初始perspective的作用" class="headerlink" title="初始perspective的作用"></a>初始perspective的作用</h2><p>这是三个没有做任何transforms的三个box:<br><img src="/2019/06/27/理解css中perspective的特性/05.png" width="900"><br>它的代码如下：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span>1<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span>2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span>3<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span>	&#123;</span><br><span class="line">	<span class="attribute">display</span>: flex;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">1200px</span>;</span><br><span class="line">	<span class="attribute">height</span>: <span class="number">200px</span>;</span><br><span class="line">	<span class="attribute">justify-content</span>: space-between;</span><br><span class="line">	<span class="attribute">margin</span>: <span class="number">50px</span> auto;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">	<span class="attribute">height</span>: <span class="number">200px</span>;</span><br><span class="line">	<span class="attribute">background-color</span>: <span class="number">#f77333</span>;</span><br><span class="line">	<span class="attribute">display</span>: flex;</span><br><span class="line">	<span class="attribute">align-items</span>: center;</span><br><span class="line">	<span class="attribute">justify-content</span>: center;</span><br><span class="line">	<span class="attribute">color</span>: <span class="number">#fff</span>;</span><br><span class="line">	<span class="attribute">font-size</span>: <span class="number">80px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了通过它演示perspective的作用，我把container设置了<code>perspective: 800px</code>，然后分别对第二个盒子和第三个盒子，分别设置了<code>translateZ(400px)</code>和<code>translateZ(-400px)</code>，效果如下：<br><img src="/2019/06/27/理解css中perspective的特性/06.png" width="900"><br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span>	&#123;</span><br><span class="line">	<span class="attribute">display</span>: flex;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">1200px</span>;</span><br><span class="line">	<span class="attribute">height</span>: <span class="number">200px</span>;</span><br><span class="line">	<span class="attribute">justify-content</span>: space-between;</span><br><span class="line">	<span class="attribute">margin</span>: <span class="number">50px</span> auto;</span><br><span class="line">	<span class="attribute">perspective</span>: <span class="number">800px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">	<span class="attribute">height</span>: <span class="number">200px</span>;</span><br><span class="line">	<span class="attribute">background-color</span>: <span class="number">#f77333</span>;</span><br><span class="line">	<span class="attribute">display</span>: flex;</span><br><span class="line">	<span class="attribute">align-items</span>: center;</span><br><span class="line">	<span class="attribute">justify-content</span>: center;</span><br><span class="line">	<span class="attribute">color</span>: <span class="number">#fff</span>;</span><br><span class="line">	<span class="attribute">font-size</span>: <span class="number">80px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box</span><span class="selector-pseudo">:nth-child(1)</span> &#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.box</span><span class="selector-pseudo">:nth-child(2)</span> &#123;</span><br><span class="line">	<span class="attribute">transform</span>: <span class="built_in">translateZ</span>(400px);</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.box</span><span class="selector-pseudo">:nth-child(3)</span> &#123;</span><br><span class="line">	<span class="attribute">transform</span>: <span class="built_in">translateZ</span>(-400px);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过开发者工具，可以查看到三个box最后的尺寸分别是：<code>200px * 200px</code>，<code>400px * 400px</code>，<code>133.33px * 133.33px</code>。第一个元素没有设置<code>translateZ</code>，所以尺寸没变化，第二个元素的尺寸变为了原本的2倍，第三个元素的尺寸变为了原本的2/3倍。这其中起到关键作用的就是<code>perspective</code>，虽然translateZ可以把元素从默认的2d平面渲染，沿着z轴的方向进行平移（正的translateZ的值，让渲染平面沿z轴的正方向平移，负值让渲染平面沿着z轴负方向平移），但是只有当设置了<code>perspective</code>，这个平移的作用才会显现出来，也就是最后看到第二个box会变大，第三个box会变小。</p>
+<h2 id="perspective的原理及计算"><a href="#perspective的原理及计算" class="headerlink" title="perspective的原理及计算"></a>perspective的原理及计算</h2><p>perspective的含义是用于设置一个3d展示的舞台，在这个舞台内的所有子元素，都将在同一个视角、同一个视线之下来展示3d效果。所以perspective通常设置到一个包含所有3d效果子元素的父元素上面。</p>
+<p>它默认以设置了perspective元素正中心为起始点，从起始点沿着z轴正方向移动<code>perspective属性值大小</code>的距离，以终点作为整个3d舞台的视点。这是w3c对这个视点以及它作用特性的示意图：<br><img src="/2019/06/27/理解css中perspective的特性/02.png" width="400"><br>此图中：<br><code>drawing surface</code>表示浏览器默认渲染元素的平面。这个平面里面，蓝色部分的椭圆表示某个元素经过3d渲染之后的最终大小；黑色边线部分的椭圆表示元素的原始大小。z表示的是<code>drawing surface</code>上面某个元素的<code>translateZ</code>值的绝对值大小。d表示的是舞台父元素<code>perspective</code>属性设置的值。蓝色部分</p>
+<p>假设元素的原始宽高分为w,h，设元素3d渲染之后的宽高分为w1,h1，那么根据三角形中位线定理:<br>在上图的上半部分（translateZ大于0时），有如下等式成立：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(d - z) / d = w / w1</span><br><span class="line">(d - z) / d = h / h1</span><br><span class="line">#d z w h均为已知数，只有w1和h1是未知的s</span><br></pre></td></tr></table></figure></p>
+<p>根据这个规律，就能明白本篇第二个部分的实例中，第2个box最后的大小为啥是<code>400 * 400</code>了，（d=800, z=400, w=200, h=200; =&gt; w1 = 400, h1 = 400）。<br>在上图的下半部分（translateZ小于0时），有如下等式成立：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">d / (d + z) = w1 / w</span><br><span class="line">d / (d + z) = h1 / h</span><br></pre></td></tr></table></figure></p>
+<p>根据这个规律，就能明白本篇第二个部分的实例中，第3个box最后的大小为啥是<code>133.33 * 133.33</code>了，（d=800, z=400, w=200, h=200; =&gt; w1 = 133.33, h1 = 133.33）。</p>
+<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
+<li>当<code>translateZ</code>的值大于等于<code>perspective</code>设置的值时，元素会被渲染在视点也就是眼睛的背面，导致元素从3d舞台中消失不见；</li>
+<li>除了<code>translateZ</code>，其它css transforms属性只要会导致元素从默认的平面脱离渲染的话，都会受到perspective的影响，比如说rotateX、rotateY</li>
+</ul>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>如何确定perspective属性的大小？在了解了上面perspective相关的计算原理之后，怎么找到一个合适的perspective值呢？比如swiper这个库，它在做3d轮播的时候，设置的perspective值是1200px，为什么它会选择这个值呢，其实很简单，根据最终3d效果的真实性来判断即可。比如设置1000px，1200px都可以的时候，就看1000px还是1200px，哪个的3d效果更好。</p>
+<h2 id="配合perspective一起使用的perspective-origin"><a href="#配合perspective一起使用的perspective-origin" class="headerlink" title="配合perspective一起使用的perspective-origin"></a>配合perspective一起使用的perspective-origin</h2><p>这是一个目前支持还不太普遍的属性，需要使用浏览器前缀才能使用，它与perspective属性一起使用，用来设置perspective视点的投影到xy平面的位置，默认这个perspective-origin是设置在perspective舞台元素的正中心，perspective-origin用来改变这个位置。它的含义就是用来调整视角的位置，比如可以做到俯视、仰视、侧看等特殊的3d效果，w3c对它的示意如下：<br><img src="/2019/06/27/理解css中perspective的特性/04.png" width="400"></p>
+<p>本篇第2个部分的例子，设置了这个属性的话<code>-webkit-perspective-origin: 50% 0%;</code>，效果就会变为下面的样子(顶端对齐)：<br><img src="/2019/06/27/理解css中perspective的特性/07.png" width="900"></p>
+<p>如果是3d立体的效果，这个属性的作用应该能看得更明显一些。本篇暂不引入了。该属性详细的说明可参考：<a href="https://drafts.csswg.org/css-transforms-2/#propdef-perspective-origin" target="_blank" rel="noopener">https://drafts.csswg.org/css-transforms-2/#propdef-perspective-origin</a></p>
+<h2 id="w3c参考"><a href="#w3c参考" class="headerlink" title="w3c参考"></a>w3c参考</h2><blockquote>
+<p><a href="https://drafts.csswg.org/css-transforms-2/" target="_blank" rel="noopener">https://drafts.csswg.org/css-transforms-2/</a></p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSS-tranform/" rel="tag"># CSS tranform</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/25/学习动画的基本原理/" rel="next" title="学习动画的基本原理">
+                <i class="fa fa-chevron-left"></i> 学习动画的基本原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">35</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#css-transforms里面的坐标系"><span class="nav-number">1.</span> <span class="nav-text">css transforms里面的坐标系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始perspective的作用"><span class="nav-number">2.</span> <span class="nav-text">初始perspective的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perspective的原理及计算"><span class="nav-number">3.</span> <span class="nav-text">perspective的原理及计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意点"><span class="nav-number">4.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用"><span class="nav-number">5.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配合perspective一起使用的perspective-origin"><span class="nav-number">6.</span> <span class="nav-text">配合perspective一起使用的perspective-origin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#w3c参考"><span class="nav-number">7.</span> <span class="nav-text">w3c参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

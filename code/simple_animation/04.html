@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		
+	</title>
+
+	<style type="text/css">
+		body {
+			background-color: #f0f0f0;
+			width: 400px;
+			height: 400px;
+			margin: 100px auto;
+			perspective: 1200px;
+			position: relative;
+		}
+
+		#container {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			transition: all 1s;
+			transform-style: preserve-3d;
+			transform-origin: 50% 50% -200px;
+		}
+
+		.box {
+			display: block;
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			opacity: .8;
+			line-height: 400px;
+			text-align: center;
+			font-size: 100px;
+			font-weight: bold;
+			color: white;
+			text-decoration: none;
+		}
+
+		.box1 {
+			background-color: blue;		
+		}
+
+		.box2 {
+			background-color: #f77333;
+			transform-origin: 100% 50%;
+			transform: translate(-100%, 0) rotateY(-90deg);
+		}
+
+		.box3 {
+			background-color: green;
+			transform: translate3d(0, 0, -400px) rotateY(-180deg);
+		}
+
+		.box4 {
+			background-color: silver;
+			transform-origin: 100% 50%;
+			transform: rotateY(90deg) translate(100%, 0);
+		}
+	</style>
+</head>
+<body>
+<div id="container">
+<a href="javascript:;" class="box box1">1</a>
+<a href="javascript:;" class="box box2">2</a>
+<a href="javascript:;" class="box box3">3</a>
+<a href="javascript:;" class="box box4">4</a>
+</div>
+<div>
+	<button type="button" onclick="left()">left</button>
+	<button type="button" onclick="right()">right</button>
+</div>
+<script type="text/javascript">
+	var container = document.getElementById('container');
+	var value = 0;
+
+	function left() {
+		container.style.transform = 'rotateY(' + (value -= 90) +'deg)';
+	}
+	function right() {
+		container.style.transform = 'rotateY(' + (value += 90) +'deg)';
+	}
+</script>
+</body>
+</html>
