@@ -11,6 +11,7 @@ categories:
 
 本篇开始，仔细地阅读Vue官方指南，并记录学习过程中思考、实践、总结的要点。 本篇包含的主要是内容是：
 1. 生命周期图示中要点
+2. 2.6.0新增的动态参数属性
 
 <!-- more -->
 
@@ -33,11 +34,12 @@ let vue = new Vue({
 vue.$mount('#app');
 ```
 	而且没有`el`option的实例，它的生命周期只会进行到`created`这个钩子，当它被`$mount`到一个dom元素之后，`created`后面的生命周期才能继续。
-2. `vm.$data`这个属性、`vm`的计算属性、`vm`通过watch添加的回调，最早要在`created`这个钩子里面才能生效。只有生命周期进行到`created`这个钩子的时候，vue实例才完成了injections的初始化；
-3. `vm.$el`这个属性，最早要在`beforeMounte`这个钩子里面才能访问到；
+2. `vm.$data`这个属性、`vm`的计算属性、`vm`的watch属性、以及`vm.$watch`方法，最早要在`created`这个钩子里面才能生效。只有生命周期进行到`created`这个钩子的时候，vue实例才完成了injections的初始化；
+3. `vm.$el`这个属性，最早要在`beforeMount`这个钩子里面才能访问到；
 4. vm实例methods内定义的行文方法，最早要在`created`这个钩子里面才能访问到；
-5. `vm.$refs`这个属性内的节点引用，至少要在`mounted`这个钩子里面才能访问到；
+5. `vm.$refs`这个属性内的节点引用，最早要在`mounted`这个钩子里面才能访问到；
 6. 当设置了`el`option，且未设置`template`option的时候，会把`el`的`outerHTML`作为渲染模板进行编译，由于是`outerHTML`，所以el元素本身也能使用vue的模板语法，比如动态地设置class属性；
+	以上几点都可以通过下面的示例进行说明：
 ```html
 <div id="vue" :class="{enabled: enabled}">
 	<p ref="content">{{msg}}</p>
@@ -137,4 +139,144 @@ this.$on('hook:updated',()=>{});
 
 </script>
 ```
-10. 
+10. `vm`的侦听属性方法，要比手工调用`vm.$watch`添加的回调先执行; 计算属性晚于`beforeUpdate`这个钩子函数之后执行，但是会在`updated`这个钩子函数之前执行。
+```html
+<div id="vue" :class="{enabled: enabled}">
+	<p ref="content">{{reverseMsg}}</p>
+</div>
+
+<script type="text/javascript">
+	let obj = {
+			msg: new Date() + "",
+			enabled: true
+		};
+	let vue = new Vue({
+		data: obj,
+		watch: {
+			msg(){
+				console.log('msg changed in watch property');
+			}
+		},
+		computed: {
+			reverseMsg(){
+				let r = this.msg.split('').reverse().join('');
+				console.log('reverse msg changed');
+				return r;
+			}
+		},
+		created() {
+			this.$watch('msg', ()=>{
+				console.log('msg changed from created');
+			});
+		},
+		mounted(){
+			this.msg = new Date() + "1";
+		},
+		beforeUpdate(){
+			console.log('beforeUpdate');
+		},
+		updated(){
+			console.log('updated');
+		}
+	});
+
+	vue.$mount('#vue');
+
+	//reverse msg changed
+	//msg changed in watch property
+	//msg changed from created
+	//beforeUpdate
+	//reverse msg changed
+	//updated
+</script>
+```
+
+## 2.6.0新增的动态参数属性
+2.6.0开始，模板里面bind元素的attributes，可以使用动态参数了，不过这个动态参数跟通常取值的模板语法不太一样。先来看它正常的使用：
+```html
+<div id="vue" v-bind:[titlename]="titleValue">
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		data: {
+			titlename: 'title',
+			titleValue: 'this is a test'
+		}
+	});
+
+	vue.$mount('#vue');
+</script>
+```
+最后dom里面会输出：
+```html
+<div id="vue" title="this is a test"></div>
+```
+bind动态参数的用法，与bind常规参数的区别就是中括号，`v-bind:[titlename]`，表示最终要bind的属性名称，由`vm`实例的titlename属性值来决定。动态参数的值如果是一个非空字符串，就以该字符串作为attribute的名称，如果是null值，表示移除该attribute。
+
+直接在html中书写`vm`实例的模板（`el`option或通过`vm.$mount`与html中的元素挂载），要注意：当html被浏览器加载完，`vm`实例还没构建前，html中与`vm`实例对应的元素，如果使用了动态参数绑定attributes，动态参数名称会全部转为小写，导致一些意外的情况。比如：
+```html
+<div id="vue" v-bind:[titleName]="titleValue">
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		data: {
+			titleName: 'title',
+			titleValue: 'this is a test'
+		}
+	});
+
+	vue.$mount('#vue');
+</script>
+```
+上面这个代码在浏览器运行会报错`Property or method "titlename" is not defined on the instance but referenced during render`。因为它是直接在html中运行的，`div#vue`加载到dom以后，被实例化为`vm`实例前，这个元素上所有的属性名称都会被转为小写：`v-bind:[titleName]`=>`v-bind:[titleName]`，导致最后参与`vm`实例化的时候，这个元素的outerHTML实际上是：
+```html
+<div id="vue" v-bind:[titlename]="titleValue"></div>
+```
+而不是
+```html
+<div id="vue" v-bind:[titleName]="titleValue"></div>
+```
+最后`vm`实例就把`<div id="vue" v-bind:[titlename]="titleValue"></div>`编译为了渲染模板，当实际渲染的时候，`[titlename]`就变为了取`vm`实例`titlename`属性的值，而`vm`实例的`data`里面只定义了`titleName`，没有`titlename`，所以导致报错。
+
+如果直接通过`template`option指定模板，就不会有这个问题：
+```html
+<div id="vue">
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		data: {
+			titleName: 'title',
+			titleValue: 'this is a test'
+		},
+		template: `<div v-bind:[titleName]="titleValue"></div>`
+	});
+
+	vue.$mount('#vue');
+</script>
+```
+所以单文件的Vue组件也不会有这个问题，因为它本质上利用template来构造`vm`实例的。
+
+同理，下面的写法如果直接放在html里面也是有问题的：
+```html
+<div id="vue" v-bind:['title' + Name]="titleValue">
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		data: {
+			titleName: 'title',
+			name: 'Name',
+			titleValue: 'this is a test'
+		},
+	});
+
+	vue.$mount('#vue');
+</script>
+```
+`div#vue`的`v-bind:['title' + Name]`这个名称，违背了html5文档的规范：属性名不能出现空格、引号。 这种改用template写法也是不行的，Vue严格规定了动态参数不能使用一些特殊字符，否则会出现下面的警告：
+```
+Invalid dynamic argument expression: attribute names cannot contain spaces, quotes, <, >, / or =.
+```

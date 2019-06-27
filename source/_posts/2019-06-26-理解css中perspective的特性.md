@@ -99,7 +99,7 @@ perspective的含义是用于设置一个3d展示的舞台，在这个舞台内�
 它默认以设置了perspective元素正中心为起始点，从起始点沿着z轴正方向移动`perspective属性值大小`的距离，以终点作为整个3d舞台的视点。这是w3c对这个视点以及它作用特性的示意图：
 <img src="{% asset_path "02.png" %}" width="400">
 此图中：
-`drawing surface`表示浏览器默认渲染元素的平面。这个平面里面，蓝色部分的椭圆表示某个元素经过3d渲染之后的最终大小；黑色边线部分的椭圆表示元素的原始大小。z表示的是`drawing surface`上面某个元素的`translateZ`值的绝对值大小。d表示的是舞台父元素`perspective`属性设置的值。蓝色部分
+`drawing surface`表示浏览器默认渲染元素的平面。这个平面里面，蓝色部分的椭圆表示某个元素经过3d渲染之后的最终大小；黑色边线部分的椭圆表示元素的原始大小。z表示的是`drawing surface`上面某个元素的`translateZ`值的绝对值大小。d表示的是舞台父元素`perspective`属性设置的值。
 
 假设元素的原始宽高分为w,h，设元素3d渲染之后的宽高分为w1,h1，那么根据三角形中位线定理:
 在上图的上半部分（translateZ大于0时），有如下等式成立：
@@ -124,7 +124,7 @@ d / (d + z) = h1 / h
 如何确定perspective属性的大小？在了解了上面perspective相关的计算原理之后，怎么找到一个合适的perspective值呢？比如swiper这个库，它在做3d轮播的时候，设置的perspective值是1200px，为什么它会选择这个值呢，其实很简单，根据最终3d效果的真实性来判断即可。比如设置1000px，1200px都可以的时候，就看1000px还是1200px，哪个的3d效果更好。
 
 ## 配合perspective一起使用的perspective-origin
-这是一个目前支持还不太普遍的属性，需要使用浏览器前缀才能使用，它与perspective属性一起使用，用来设置perspective视点的投影到xy平面的位置，默认这个perspective-origin是设置在perspective舞台元素的正中心，perspective-origin用来改变这个位置。它的含义就是用来调整视角的位置，比如可以做到俯视、仰视、侧看等特殊的3d效果，w3c对它的示意如下：
+这是一个目前支持还不太普遍的属性，需要使用浏览器前缀才能使用，它与perspective属性一起使用，用来设置perspective视点的投影在xy轴平面的位置，默认这个perspective-origin是设置在perspective舞台元素的正中心，perspective-origin用来改变这个位置。它的含义就是用来调整视角的位置，比如可以做到俯视、仰视、侧看等特殊的3d效果，w3c对它的示意如下：
 <img src="{% asset_path "04.png" %}" width="400">
 
 本篇第2个部分的例子，设置了这个属性的话`-webkit-perspective-origin: 50% 0%;`，效果就会变为下面的样子(顶端对齐)：
