@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇开始，仔细地阅读Vue官方指南，并记录学习过程中思考、实践、总结的要点。 本篇包含的主要是内容是：  生命周期图示中要点 2.6.0新增的动态参数属性">
+<meta name="keywords" content="Vue指南要点笔记,Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue指南的要点笔记（一）">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/06/28/Vue指南的要点笔记（一）/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇开始，仔细地阅读Vue官方指南，并记录学习过程中思考、实践、总结的要点。 本篇包含的主要是内容是：  生命周期图示中要点 2.6.0新增的动态参数属性">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://cn.vuejs.org/images/lifecycle.png">
+<meta property="og:updated_time" content="2019-06-27T12:57:09.955Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue指南的要点笔记（一）">
+<meta name="twitter:description" content="本篇开始，仔细地阅读Vue官方指南，并记录学习过程中思考、实践、总结的要点。 本篇包含的主要是内容是：  生命周期图示中要点 2.6.0新增的动态参数属性">
+<meta name="twitter:image" content="https://cn.vuejs.org/images/lifecycle.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/06/28/Vue指南的要点笔记（一）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Vue指南的要点笔记（一） | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">36</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/06/28/Vue指南的要点笔记（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue指南的要点笔记（一）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-27 20:57:09" itemprop="dateCreated datePublished" datetime="2019-06-27T20:57:09Z">2019-06-27</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/指南要点/" itemprop="url" rel="index"><span itemprop="name">指南要点</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇开始，仔细地阅读Vue官方指南，并记录学习过程中思考、实践、总结的要点。 本篇包含的主要是内容是：</p>
+<ol>
+<li>生命周期图示中要点</li>
+<li>2.6.0新增的动态参数属性</li>
+</ol>
+<a id="more"></a>
+<h2 id="生命周期图示中要点"><a href="#生命周期图示中要点" class="headerlink" title="生命周期图示中要点"></a>生命周期图示中要点</h2><p>这是官方的生命周期图示:<br><img src="https://cn.vuejs.org/images/lifecycle.png" width="450"><br>根据这张图示，可以总结出的要点有：</p>
+<ol>
+<li><p>如果没有<code>el</code>option，<code>new Vue</code>构造出的实例不会立即渲染到dom上，除非再次调用实例的<code>$mount</code>方法，将vue实例与dom元素进行挂载：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">	el: <span class="string">'#app'</span></span><br><span class="line">	<span class="comment">//,...</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//等价于</span></span><br><span class="line"><span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">vue.$mount(<span class="string">'#app'</span>);</span><br></pre></td></tr></table></figure>
+<p> 而且没有<code>el</code>option的实例，它的生命周期只会进行到<code>created</code>这个钩子，当它被<code>$mount</code>到一个dom元素之后，<code>created</code>后面的生命周期才能继续。</p>
+</li>
+<li><code>vm.$data</code>这个属性、<code>vm</code>的计算属性、<code>vm</code>的watch属性、以及<code>vm.$watch</code>方法，最早要在<code>created</code>这个钩子里面才能生效。只有生命周期进行到<code>created</code>这个钩子的时候，vue实例才完成了injections的初始化；</li>
+<li><code>vm.$el</code>这个属性，最早要在<code>beforeMount</code>这个钩子里面才能访问到；</li>
+<li>vm实例methods内定义的行文方法，最早要在<code>created</code>这个钩子里面才能访问到；</li>
+<li><code>vm.$refs</code>这个属性内的节点引用，最早要在<code>mounted</code>这个钩子里面才能访问到；</li>
+<li><p>当设置了<code>el</code>option，且未设置<code>template</code>option的时候，会把<code>el</code>的<code>outerHTML</code>作为渲染模板进行编译，由于是<code>outerHTML</code>，所以el元素本身也能使用vue的模板语法，比如动态地设置class属性；<br> 以上几点都可以通过下面的示例进行说明：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">:class</span>=<span class="string">"&#123;enabled: enabled&#125;"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">p</span> <span class="attr">ref</span>=<span class="string">"content"</span>&gt;</span>&#123;&#123;msg&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> obj = &#123;</span></span><br><span class="line"><span class="javascript">			msg: <span class="keyword">new</span> <span class="built_in">Date</span>(),</span></span><br><span class="line"><span class="javascript">			enabled: <span class="literal">true</span></span></span><br><span class="line">		&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">		data: obj,</span><br><span class="line">		beforeCreate() &#123;</span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="string">'beforeCreate'</span>, <span class="keyword">this</span>.$el, <span class="keyword">this</span>.$data, <span class="keyword">this</span>.$data === obj );</span></span><br><span class="line"><span class="javascript">			<span class="comment">//beforeCreate undefined undefined false</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="keyword">this</span>.updateMsg);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//undefined</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="keyword">this</span>.$refs.content);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//undefined</span></span></span><br><span class="line">		&#125;,</span><br><span class="line">		created() &#123;</span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="string">'created'</span>, <span class="keyword">this</span>.$el, <span class="keyword">this</span>.$data, <span class="keyword">this</span>.$data === obj);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//created undefined &#123;__ob__: Observer&#125; true</span></span></span><br><span class="line">			</span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="keyword">this</span>.updateMsg);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//function updateMsg</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="keyword">this</span>.$refs.content);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//undefined</span></span></span><br><span class="line">		&#125;,</span><br><span class="line">		beforeMount()&#123;</span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="string">'beforeMount'</span>, <span class="keyword">this</span>.$el);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//beforeMount div#vue</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="keyword">this</span>.$refs.content);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//undefined</span></span></span><br><span class="line">		&#125;,</span><br><span class="line">		mounted()&#123;</span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="string">'mounted'</span>, <span class="keyword">this</span>.$el);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//mounted div#vue</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="keyword">this</span>.$refs.content);</span></span><br><span class="line"><span class="xml">			//<span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line">		&#125;,</span><br><span class="line">		methods: &#123;</span><br><span class="line">			updateMsg()&#123;</span><br><span class="line"><span class="javascript">				<span class="keyword">this</span>.msg = <span class="keyword">new</span> <span class="built_in">Date</span>();</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	vue.$mount(<span class="string">'#vue'</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不管有没有设置<code>el</code>option，只要设置了<code>template</code>option，就会把<code>template</code>直接用于底层的render函数，并根据<code>template</code>创建出新的dom元素，替换掉<code>el</code>option所指向的dom元素，并赋值给<code>vm.$el</code>；所以更加安全地访问<code>vm.$el</code>的时机点，最早是在<code>mounted</code>这个钩子函数里面。</p>
+</li>
+<li><code>template</code>option的应该只能包含一个顶层元素，这个顶层元素最后会被创建到dom里面，成为最终的<code>vm.$el</code>；由此可知，所谓的单文件的vue组件，实际上就是把template部分定义的内容，设置为了组件的<code>template</code>option而已。</li>
+<li><p>8个生命周期函数，除了通过<code>vm</code>实例的option来写，也可以通过以下方式，手工添加：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$on(<span class="string">'hook:beforeDestroy'</span>,()=&gt;&#123;&#125;);</span><br><span class="line"><span class="keyword">this</span>.$on(<span class="string">'hook:destroyed'</span>,()=&gt;&#123;&#125;);</span><br><span class="line"><span class="keyword">this</span>.$on(<span class="string">'hook:beforeCreate'</span>,()=&gt;&#123;&#125;);</span><br><span class="line"><span class="keyword">this</span>.$on(<span class="string">'hook:created'</span>,()=&gt;&#123;&#125;);</span><br><span class="line"><span class="keyword">this</span>.$on(<span class="string">'hook:beforeMount'</span>,()=&gt;&#123;&#125;);</span><br><span class="line"><span class="keyword">this</span>.$on(<span class="string">'hook:mounted'</span>,()=&gt;&#123;&#125;);</span><br><span class="line"><span class="keyword">this</span>.$on(<span class="string">'hook:beforeUpdate'</span>,()=&gt;&#123;&#125;);</span><br><span class="line"><span class="keyword">this</span>.$on(<span class="string">'hook:updated'</span>,()=&gt;&#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p> 这个方式在需要编写一些更加通用性的功能的时候，比如plugins，会起到很大的作用。同时由于<code>vm</code>实例的生命周期，第一步就是<code>init events and lifecyle</code>，所以上面的这些hook事件，最早在beforeCreate这个option里面就能使用。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">:class</span>=<span class="string">"&#123;enabled: enabled&#125;"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">p</span> <span class="attr">ref</span>=<span class="string">"content"</span>&gt;</span>&#123;&#123;msg&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> obj = &#123;</span></span><br><span class="line"><span class="javascript">			msg: <span class="keyword">new</span> <span class="built_in">Date</span>(),</span></span><br><span class="line"><span class="javascript">			enabled: <span class="literal">true</span></span></span><br><span class="line">		&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">		data: obj,</span><br><span class="line">		beforeCreate() &#123;</span><br><span class="line"><span class="javascript">			<span class="keyword">this</span>.$on(<span class="string">'hook:created'</span>, ()=&gt;&#123;</span></span><br><span class="line"><span class="javascript">				<span class="built_in">console</span>.log(<span class="string">'another created hook'</span>);</span></span><br><span class="line"><span class="javascript">				<span class="comment">//another created hook</span></span></span><br><span class="line">			&#125;)</span><br><span class="line">		&#125;,</span><br><span class="line">		created() &#123;</span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="string">'created'</span>);</span></span><br><span class="line"><span class="javascript">			<span class="comment">//created</span></span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	vue.$mount(<span class="string">'#vue'</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>vm</code>的侦听属性方法，要比手工调用<code>vm.$watch</code>添加的回调先执行; 计算属性晚于<code>beforeUpdate</code>这个钩子函数之后执行，但是会在<code>updated</code>这个钩子函数之前执行。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">:class</span>=<span class="string">"&#123;enabled: enabled&#125;"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">p</span> <span class="attr">ref</span>=<span class="string">"content"</span>&gt;</span>&#123;&#123;reverseMsg&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> obj = &#123;</span></span><br><span class="line"><span class="javascript">			msg: <span class="keyword">new</span> <span class="built_in">Date</span>() + <span class="string">""</span>,</span></span><br><span class="line"><span class="javascript">			enabled: <span class="literal">true</span></span></span><br><span class="line">		&#125;;</span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">		data: obj,</span><br><span class="line">		watch: &#123;</span><br><span class="line">			msg()&#123;</span><br><span class="line"><span class="javascript">				<span class="built_in">console</span>.log(<span class="string">'msg changed in watch property'</span>);</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		computed: &#123;</span><br><span class="line">			reverseMsg()&#123;</span><br><span class="line"><span class="javascript">				<span class="keyword">let</span> r = <span class="keyword">this</span>.msg.split(<span class="string">''</span>).reverse().join(<span class="string">''</span>);</span></span><br><span class="line"><span class="javascript">				<span class="built_in">console</span>.log(<span class="string">'reverse msg changed'</span>);</span></span><br><span class="line"><span class="javascript">				<span class="keyword">return</span> r;</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		created() &#123;</span><br><span class="line"><span class="javascript">			<span class="keyword">this</span>.$watch(<span class="string">'msg'</span>, ()=&gt;&#123;</span></span><br><span class="line"><span class="javascript">				<span class="built_in">console</span>.log(<span class="string">'msg changed from created'</span>);</span></span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;,</span><br><span class="line">		mounted()&#123;</span><br><span class="line"><span class="javascript">			<span class="keyword">this</span>.msg = <span class="keyword">new</span> <span class="built_in">Date</span>() + <span class="string">"1"</span>;</span></span><br><span class="line">		&#125;,</span><br><span class="line">		beforeUpdate()&#123;</span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="string">'beforeUpdate'</span>);</span></span><br><span class="line">		&#125;,</span><br><span class="line">		updated()&#123;</span><br><span class="line"><span class="javascript">			<span class="built_in">console</span>.log(<span class="string">'updated'</span>);</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	vue.$mount(<span class="string">'#vue'</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">	<span class="comment">//reverse msg changed</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">//msg changed in watch property</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">//msg changed from created</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">//beforeUpdate</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">//reverse msg changed</span></span></span><br><span class="line"><span class="javascript">	<span class="comment">//updated</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="2-6-0新增的动态参数属性"><a href="#2-6-0新增的动态参数属性" class="headerlink" title="2.6.0新增的动态参数属性"></a>2.6.0新增的动态参数属性</h2><p>2.6.0开始，模板里面bind元素的attributes，可以使用动态参数了，不过这个动态参数跟通常取值的模板语法不太一样。先来看它正常的使用：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">v-bind:</span>[<span class="attr">titlename</span>]=<span class="string">"titleValue"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">		data: &#123;</span><br><span class="line"><span class="javascript">			titlename: <span class="string">'title'</span>,</span></span><br><span class="line"><span class="javascript">			titleValue: <span class="string">'this is a test'</span></span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	vue.$mount(<span class="string">'#vue'</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>最后dom里面会输出：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">title</span>=<span class="string">"this is a test"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>bind动态参数的用法，与bind常规参数的区别就是中括号，<code>v-bind:[titlename]</code>，表示最终要bind的属性名称，由<code>vm</code>实例的titlename属性值来决定。动态参数的值如果是一个非空字符串，就以该字符串作为attribute的名称，如果是null值，表示移除该attribute。</p>
+<p>直接在html中书写<code>vm</code>实例的模板（<code>el</code>option或通过<code>vm.$mount</code>与html中的元素挂载），要注意：当html被浏览器加载完，<code>vm</code>实例还没构建前，html中与<code>vm</code>实例对应的元素，如果使用了动态参数绑定attributes，动态参数名称会全部转为小写，导致一些意外的情况。比如：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">v-bind:</span>[<span class="attr">titleName</span>]=<span class="string">"titleValue"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">		data: &#123;</span><br><span class="line"><span class="javascript">			titleName: <span class="string">'title'</span>,</span></span><br><span class="line"><span class="javascript">			titleValue: <span class="string">'this is a test'</span></span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	vue.$mount(<span class="string">'#vue'</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>上面这个代码在浏览器运行会报错<code>Property or method &quot;titlename&quot; is not defined on the instance but referenced during render</code>。因为它是直接在html中运行的，<code>div#vue</code>加载到dom以后，被实例化为<code>vm</code>实例前，这个元素上所有的属性名称都会被转为小写：<code>v-bind:[titleName]</code>=&gt;<code>v-bind:[titleName]</code>，导致最后参与<code>vm</code>实例化的时候，这个元素的outerHTML实际上是：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">v-bind:</span>[<span class="attr">titlename</span>]=<span class="string">"titleValue"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>而不是<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">v-bind:</span>[<span class="attr">titleName</span>]=<span class="string">"titleValue"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>最后<code>vm</code>实例就把<code>&lt;div id=&quot;vue&quot; v-bind:[titlename]=&quot;titleValue&quot;&gt;&lt;/div&gt;</code>编译为了渲染模板，当实际渲染的时候，<code>[titlename]</code>就变为了取<code>vm</code>实例<code>titlename</code>属性的值，而<code>vm</code>实例的<code>data</code>里面只定义了<code>titleName</code>，没有<code>titlename</code>，所以导致报错。</p>
+<p>如果直接通过<code>template</code>option指定模板，就不会有这个问题：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">		data: &#123;</span><br><span class="line"><span class="javascript">			titleName: <span class="string">'title'</span>,</span></span><br><span class="line"><span class="javascript">			titleValue: <span class="string">'this is a test'</span></span></span><br><span class="line">		&#125;,</span><br><span class="line"><span class="xml">		template: `<span class="tag">&lt;<span class="name">div</span> <span class="attr">v-bind:</span>[<span class="attr">titleName</span>]=<span class="string">"titleValue"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	vue.$mount(<span class="string">'#vue'</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>所以单文件的Vue组件也不会有这个问题，因为它本质上利用template来构造<code>vm</code>实例的。</p>
+<p>同理，下面的写法如果直接放在html里面也是有问题的：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">v-bind:</span>['<span class="attr">title</span>' + <span class="attr">Name</span>]=<span class="string">"titleValue"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">		data: &#123;</span><br><span class="line"><span class="javascript">			titleName: <span class="string">'title'</span>,</span></span><br><span class="line"><span class="javascript">			name: <span class="string">'Name'</span>,</span></span><br><span class="line"><span class="javascript">			titleValue: <span class="string">'this is a test'</span></span></span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	vue.$mount(<span class="string">'#vue'</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><code>div#vue</code>的<code>v-bind:[&#39;title&#39; + Name]</code>这个名称，违背了html5文档的规范：属性名不能出现空格、引号。 这种改用template写法也是不行的，Vue严格规定了动态参数不能使用一些特殊字符，否则会出现下面的警告：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invalid dynamic argument expression: attribute names cannot contain spaces, quotes, &lt;, &gt;, / or =.</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue指南要点笔记/" rel="tag"># Vue指南要点笔记</a>
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/27/理解css中perspective的特性/" rel="next" title="理解css中perspective的特性">
+                <i class="fa fa-chevron-left"></i> 理解css中perspective的特性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期图示中要点"><span class="nav-number">1.</span> <span class="nav-text">生命周期图示中要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-0新增的动态参数属性"><span class="nav-number">2.</span> <span class="nav-text">2.6.0新增的动态参数属性</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
