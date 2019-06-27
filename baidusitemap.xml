@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://blog.liuyunzhuge.com/2019/06/27/%E7%90%86%E8%A7%A3css%E4%B8%ADperspective%E7%9A%84%E7%89%B9%E6%80%A7/</loc>
-    <lastmod>2019-06-26</lastmod>
+    <lastmod>2019-06-27</lastmod>
   </url>  <url>
     <loc>http://blog.liuyunzhuge.com/2019/06/25/%E5%AD%A6%E4%B9%A0%E5%8A%A8%E7%94%BB%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2019-06-24</lastmod>
@@ -58,10 +58,10 @@
     <loc>http://blog.liuyunzhuge.com/2019/05/18/ES6-Module%E7%9A%84%E8%AF%AD%E6%B3%95/</loc>
     <lastmod>2019-06-14</lastmod>
   </url>  <url>
-    <loc>http://blog.liuyunzhuge.com/2019/05/18/ES6-Generator%E5%87%BD%E6%95%B0%E7%9A%84%E5%BC%82%E6%AD%A5%E5%BA%94%E7%94%A8%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
+    <loc>http://blog.liuyunzhuge.com/2019/05/18/ES6-async%E5%87%BD%E6%95%B0/</loc>
     <lastmod>2019-06-14</lastmod>
   </url>  <url>
-    <loc>http://blog.liuyunzhuge.com/2019/05/18/ES6-async%E5%87%BD%E6%95%B0/</loc>
+    <loc>http://blog.liuyunzhuge.com/2019/05/18/ES6-Generator%E5%87%BD%E6%95%B0%E7%9A%84%E5%BC%82%E6%AD%A5%E5%BA%94%E7%94%A8%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
     <lastmod>2019-06-14</lastmod>
   </url>  <url>
     <loc>http://blog.liuyunzhuge.com/2019/05/18/ES6-Iterator%E5%92%8Cfor-of%E5%BE%AA%E7%8E%AF/</loc>
