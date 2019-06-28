@@ -38,56 +38,84 @@
 		}
 
 
-		#box1 {
+		.box:nth-child(3n+1) {
 			background-color: #f77333;
 		}
 
-		#box2 {
+		.box:nth-child(3n+2) {
+			background-color: blue;
+		}
+
+		.box:nth-child(3n+3) {
 			background-color: green;
 		}
+
 	</style>
 </head>
 <body>
+<form id="form" action="" onsubmit="return false">
+	<div><label>边数：</label><input type="number" value="3" name="sides" placeholder="输入正多边形边数">
+		<button type="button" onclick="makePolygon()">重新生成</button></div>
+</form>
 <div id="container">
-<a href="javascript:;" id="box1" class="box">1</a>
-<a href="javascript:;" id="box2" class="box">2</a>
 </div>
 <div>
 	<button type="button" onclick="left()">left</button>
 	<button type="button" onclick="right()">right</button>
 </div>
 <script type="text/javascript">
-	var box1 = document.getElementById('box1');
-	var box2 = document.getElementById('box2');
-	var degree = 40;
-	var translateZ = box1.getBoundingClientRect().width / 2 * Math.tan((90 - degree/2) * Math.PI / 180);
+	var form = document.getElementById('form');
+	var container = document.getElementById('container');
+	var polygon = null;
 
-	var rotateMap = {
-		1: 0,
-		2: 0,
-	};
+	function generate(){
+		var sides = parseInt(form.sides.value);
+		var degree = 360 / sides;
+		var translateZ = container.getBoundingClientRect().width / 2 * Math.tan((90 - degree/2) * Math.PI / 180);
 
-	let keys = Object.keys(rotateMap);
-	for(let k of keys) {
-		rotateMap[k] = rotateMap[k-1] !== undefined ? (rotateMap[k-1] + degree) : 0;
-		window['box'+k].style.transformOrigin = '50% 50% -'+ translateZ +'px';
-		window['box'+k].style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
-		window['box'+k].style.transition = 'all 1s';
+		container.innerHTML = '';
+
+		var rotateMap = {};
+
+		var html = [];
+		for(var i = 0; i < sides; i++) {
+			rotateMap[i] = rotateMap[i-1] !== undefined ? (rotateMap[i-1] + degree) : 0;
+			html.push('<a href="javascript:;" style="transform-origin:' +
+			 	'50% 50% -'+ translateZ +'px' + '; transform: ' + 
+			 	'translate(0, 0) rotateY('+rotateMap[i]+'deg); transition: all 1s' + 
+				 ';" class="box">' + (i+1) + '</a>');
+		}
+
+		container.innerHTML = html.join('');
+
+		return {
+			rotateMap,
+			degree
+		}
 	}
 
+	polygon = generate();
+
+	function makePolygon() {
+		polygon = generate();
+	}
+
+
 	function left() {
-		let keys = Object.keys(rotateMap);
+		let keys = Object.keys(polygon.rotateMap);
+		let boxes = [].slice.call(container.children);
 		for(let k of keys) {
-			rotateMap[k]-=degree;
-			window['box'+k].style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
+			polygon.rotateMap[k]-=polygon.degree;
+			boxes[k].style.transform = 'translate(0, 0) rotateY('+polygon.rotateMap[k]+'deg)';
 		}
 	}
 
 	function right() {
-		let keys = Object.keys(rotateMap);
+		let keys = Object.keys(polygon.rotateMap);
+		let boxes = [].slice.call(container.children);
 		for(let k of keys) {
-			rotateMap[k]+=degree;
-			window['box'+k].style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
+			polygon.rotateMap[k]+=polygon.degree;
+			boxes[k].style.transform = 'translate(0, 0) rotateY('+polygon.rotateMap[k]+'deg)';
 		}
 	}
 </script>
