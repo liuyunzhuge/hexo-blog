@@ -5,6 +5,7 @@
 		06
 	</title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
 
 	<style type="text/css">
 		body {
@@ -185,7 +186,10 @@
 		}
 
 		var addListener = function() {
-			container.addEventListener(dragStartEvent, dragStart, false);
+			container.addEventListener(dragStartEvent, dragStart, {
+			    capture: false,
+			    passive: false
+			});
 			interval && !touchMode && container.addEventListener('mouseenter', mouseEnter, false);
 			interval && !touchMode && container.addEventListener('mouseleave', mouseLeave, false);
 		}
@@ -199,15 +203,21 @@
 		var touchMode = 'ontouchstart' in document.documentElement;
 		var dragStartEvent = touchMode ? 'touchstart' : 'mousedown';
 		var dragMoveEvent = touchMode ? 'touchmove' : 'mousemove';
-		var dragUpEvent = touchMode ? 'mouseup' : 'mouseup';
+		var dragUpEvent = touchMode ? 'touchend' : 'mouseup';
 		var dragStartPosition = null;
 		var dragging = false;
 
 		var dragStart = function(e) {
 			document.removeEventListener(dragMoveEvent, dragMove);
 			document.removeEventListener(dragUpEvent, dragUp);
-			document.addEventListener(dragMoveEvent, dragMove, false);
-			document.addEventListener(dragUpEvent, dragUp, false);
+			document.addEventListener(dragMoveEvent, dragMove, {
+			    capture: false,
+			    passive: false
+			});
+			document.addEventListener(dragUpEvent, dragUp, {
+			    capture: false,
+			    passive: false
+			});
 		}
 
 		var dragMove = function(e) {
@@ -217,9 +227,9 @@
 				document.documentElement.style.cursor = 'grabbing';
 				container.classList.add('dragging');
 
-				let event = touchMode ? e.touches[0] : e;
+				let event = touchMode ? e.changedTouches[0] : e;
 				dragStartPosition = {
-					x: e.clientX,
+					x: event.clientX,
 					activeSlideDegree: rotateMap[activeIndex]
 				};
 
@@ -239,7 +249,7 @@
 		}
 
 		var resolveKeyParamsDragMove = function(e){
-			let event = touchMode ? e.touches[0] : e;
+			let event = touchMode ? e.changedTouches[0] : e;
 			let slideToLeft = (dragStartPosition.x - event.clientX) > 0;
 
 			let boxes = [].slice.call(container.children);
