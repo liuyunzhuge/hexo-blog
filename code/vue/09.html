@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>06</title>
+	<script type="text/javascript" src="./lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+	<p>{{reverseMsg()}}</p>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			msg: new Date() + ''
+		},
+		created() {
+			setTimeout(() => {
+				this.msg = new Date() + '';
+			}, 1000);
+		},
+		methods: {
+			reverseMsg() {
+				console.log('vm.reverseMsg called')
+				return this.msg.split('').reverse().join('');
+			}
+		},
+		beforeUpdate() {
+			console.log('beforeUpdate');
+		},
+		updated() {
+			console.log('updated');
+		}
+	});
+
+</script>
+</body>
+</html>
