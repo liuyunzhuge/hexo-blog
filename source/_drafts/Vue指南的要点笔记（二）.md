@@ -14,6 +14,7 @@ categories:
 2. `vm`实例方法用在模板中取值时执行的时机
 3. template元素在条件渲染和列表渲染中的作用
 4. 列表渲染中的注意点
+5. 响应式数据的动态变化注意点
 
 <!-- more -->
 
@@ -49,10 +50,6 @@ categories:
 			setTimeout(() => {
 				this.msg = new Date() + '';
 			}, 1000);
-
-			console.log(this.reverseMsg);
-			console.log(this.reverseMsg);
-			console.log(this.reverseMsg);
 
 			//timer2
 			setTimeout(() => {
@@ -225,5 +222,209 @@ updated
 第1条log是`vm`实例初始化渲染时调用`reverseMsg`方法打印的，后面的3条打印可以看出，实例方法在模板中取值时调用的时机是位于beforeUpdate这个hook之后，以及updated这个hook之前的。
 
 ## template元素在条件渲染和列表渲染中的作用
+template元素可以在不增加真实的dom元素的前提下，对多个元素进行条件渲染：
+```html
+<div id="vue">
+	<div>
+		<label>
+			<input type="checkbox" v-model="useMobile">
+		</label>
+	</div>
+	<template v-if="useMobile">
+		<div>
+			<label>mobile:</label>
+			<input type="text" v-model="mobile">
+		</div>
+		<div>
+			<label>password:</label>
+			<input type="text" v-model="password">
+		</div>
+	</template>
+	<template v-else>
+		<div>
+			<label>email:</label>
+			<input type="text" v-model="email">
+		</div>
+		<div>
+			<label>password:</label>
+			<input type="text" v-model="password">
+		</div>
+	</template>
+	<div>
+		{{JSON.stringify({username: username, password: password})}}
+	</div>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			useMobile: true,
+			logon: true,
+			mobile: '',
+			email: '',
+			password: ''
+		},
+		computed:{
+			username() {
+				return this.useMobile ? this.mobile : this.email;
+			}
+		}
+	});
+
+</script>
+```
+也可以同时应用于列表渲染中：
+```html
+<style type="text/css">
+	.content {
+		font-size: 14px;color: #2f2f2f;line-height: 1.5;padding: 10px;
+	}
+
+	.gap {
+		height: 2px; background-color: #eee;
+	}
+</style>
+<div id="vue">
+	<div>
+		<input type="text" v-model.trim="newText">
+		<button type="button" @click="addNew">add</button>
+	</div>
+	<template v-for="(item, index) in items">
+		<div class="gap" v-if="index > 0"></div>
+		<div class="content">{{item.text}}</div>
+	</template>
+</div>
+
+<script type="text/javascript">
+	let id = 1;
+
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			newText: '',
+			items: []
+		},
+		methods: {
+			addNew() {
+				this.items.push({
+					id: id++,
+					text: this.newText
+				});
+			}
+		}
+	});
+
+</script>
+```
+template用于v-for指令时，template元素上不能设置key属性。
 
 ## 列表渲染中的注意点
+遍历字符串:
+```html
+<div id="vue">
+	<div v-for="(item, index) in items">{{item}}</div>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			items: 'hello vue'
+		}
+	});
+</script>
+```
+`v-for`遍历字符串，把字符串当字符数组来遍历，`item`指向单个字符元素，`index`指向字符位置，不支持第三个参数。
+
+
+遍历数字：
+```html
+<div id="vue">
+	<div v-for="(item, index) in items">{{item}}\{{index}}</div>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			items: 5
+		}
+	});
+</script>
+```
+`v-for`遍历数字，数字必须大于0，它会生成一个从1增长到指定数字的number数组，来进行渲染。`item`指向数组内的元素，`index`指向数组元素位置。 不支持第三个参数。
+
+
+遍历iterator对象：
+```html
+<div id="vue">
+	<div v-for="(item, index) in items">{{item}}\{{index}}</div>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			items: {
+				* [Symbol.iterator]() {
+					yield {lang: 'css'};
+					yield {lang: 'html'};
+					yield {lang: 'js'};
+					yield {lang: 'php'};
+				}
+			}
+		}
+	});
+</script>
+```
+iterator对象，在v-for中渲染，item指向iterator.next()返回的`value`数组，index指向迭代的索引位置。 不支持第三个参数。
+
+
+数组也是iterator对象，所以与iterator对象迭代特性相同：
+```html
+<div id="vue">
+	<div v-for="(item, index) in items">{{item}}\{{index}}</div>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			items: [
+				{lang: 'css'},
+				{lang: 'html'},
+				{lang: 'js'},
+				{lang: 'php'}
+			]
+		}
+	});
+</script>
+```
+
+遍历普通对象：
+```html
+<div id="vue">
+	<div v-for="(value, key, index) in items">{{key}}:{{value}}/{{index}}</div>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			items: {
+				lang: 'php',
+				type: 'backend',
+				level: 'middle',
+				like: 'yes'
+			}
+		}
+	});
+</script>
+```
+`v-for`渲染object,最多支持三个参数，第一个参数是object属性的value，第二个参数是object属性名称，第三个参数是属性的索引位置。 v-for内部通过Object.keys返回对象的属性数组，所以遍历顺序也跟Object.keys返回的属性顺序一致。
+
+
+将以上示例中的`in`全部替换为`of`，结果完全一致，在实际使用中，更推荐使用`of`。
+
+## 响应式数据的动态变化注意点
