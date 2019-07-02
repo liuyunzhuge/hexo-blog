@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>06</title>
+	<script type="text/javascript" src="./lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+	<h1>{{course.title}}</h1>
+	<p v-if="course.teacher">teacher: {{course.teacher.name}}</p>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			course: {
+				title: 'css'
+			}
+		},
+		created(){
+			setTimeout(()=>{
+				this.course.teacher = {
+					name: 'w3c'
+				};
+			}, 1000);
+		}
+	});
+</script>
+</body>
+</html>
