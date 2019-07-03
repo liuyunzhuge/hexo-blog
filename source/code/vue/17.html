@@ -7,7 +7,7 @@
 <body>
 <div id="vue">
 	<h1>{{course.title}}</h1>
-	<p v-if="course.teacher">teacher: {{course.teacher.name}}</p>
+	<p>teacher: {{course.teacher.name}}<span>，({{course.teacher.site}})</span></p>
 </div>
 
 <script type="text/javascript">
@@ -15,14 +15,17 @@
 		el: '#vue',
 		data: {
 			course: {
-				title: 'css'
+				title: 'css入门',
+				teacher: {
+					name: 'w3school'
+				}
 			}
 		},
-		created(){
+		mounted() {
 			setTimeout(()=>{
-				this.course.teacher = {
-					name: 'w3c'
-				};
+				delete this.course.teacher;
+
+				this.course.title = 'php';
 			}, 1000);
 		}
 	});

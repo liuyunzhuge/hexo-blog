@@ -428,33 +428,265 @@ iterator对象，在v-for中渲染，item指向iterator.next()返回的`value`�
 将以上示例中的`in`全部替换为`of`，结果完全一致，在实际使用中，更推荐使用`of`。
 
 ## 对象和数组作为响应式属性的注意点
-Vue不能检测对象属性的添加或删除, 对于已经创建的实例，Vue不允许动态添加根级别的响应式属性。
+### 对象
+对象作为响应式数据，一定要记住Vue不能检测对象属性的添加或删除。 
 ```html
 <div id="vue">
-	a: {{a.name}},
-	b: {{b && b.name}}
+	<h1>{{course.title}}</h1>
+	<p>teacher: {{course.teacher.name}}<span>，({{course.teacher.site}})</span></p>
 </div>
 
 <script type="text/javascript">
 	let vue = new Vue({
 		el: '#vue',
 		data: {
-			a: {
-				name: 'a'
+			course: {
+				title: 'css入门',
+				teacher: {
+					name: 'w3school'
+				}
+			}
+		},
+		created() {
+			setTimeout(()=>{
+				this.course.teacher.name = 'w3c';
+				this.course.teacher.site = 'http://demo.com';
+				//console.log(this.course);
+
+				setTimeout(()=>{
+					this.course.teacher.site = '3333';
+				}, 1000);
+			}, 1000);
+		}
+	});
+</script>
+```
+上面这个示例中，给响应式数据`course.teacher`，新增了一个site属性，设置为了`http://demo.com`，并且页面上渲染出这个字符串，但是当`created`里面的定时器执行的时候，修改了`course.teacher.site`的值，页面上没有渲染出这个数据的最新值。 这是因为vue不能检测到对象属性的新增，尽管给`course.teacher.site`第一次赋值的时候，页面上渲染了这个数据，那是因为`this.course.teacher.name = 'w3c';`这行代码的作用了， 触发了`vm`实例的重新渲染，如果把`name`赋值这行代码去掉，再运行的话，`site`这个数据一次都不会被渲染。
+
+对象新增属性，可以通过2种方法，来让它变为响应式的。第一种：
+```html
+<div id="vue">
+	<h1>{{course.title}}</h1>
+	<p>teacher: {{course.teacher.name}}<span>，({{course.teacher.site}})</span></p>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			course: {
+				title: 'css入门',
+				teacher: {
+					name: 'w3school'
+				}
+			}
+		},
+		created() {
+			setTimeout(()=>{
+				this.course.teacher = Object.assign({}, this.course.teacher, {
+					name: 'php',
+					site: 'http://demo.com'
+				});
+				//console.log(this.course);
+
+				setTimeout(()=>{
+					this.course.teacher.site = '3333';
+				}, 1000);
+			}, 1000);
+		}
+	});
+</script>
+```
+这种是利用`course.teacher`这个属性是响应式的，所以对它进行整体替换，引发`vm`的响应式更新。第二种：
+```html
+<div id="vue">
+	<h1>{{course.title}}</h1>
+	<p>teacher: {{course.teacher.name}}<span>，({{course.teacher.site}})</span></p>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			course: {
+				title: 'css入门',
+				teacher: {
+					name: 'w3school'
+				}
+			}
+		},
+		created() {
+			setTimeout(()=>{
+				this.course.teacher.name = 'php';
+				this.$set(this.course.teacher, 'site', 'http://demo.com');
+				//console.log(this.course);
+
+				setTimeout(()=>{
+					this.course.teacher.site = '3333';
+				}, 1000);
+			}, 1000);
+		}
+	});
+</script>
+```
+这是利用Vue的api`Vue.$set`方法，手工添加响应式数据。 相比之下，第1种更加简单粗放，第2种更加严谨，用哪种视情况而定。
+
+要判断一个对象属性，是否是响应式的，有一个很简单的办法，就是在控制台打印响应数据，看看没有被vue添加相应的`getter setter observer`这些data对象上原本没有的东西，如下图所示：
+<img src="{% asset_path "01.png" %}" width="500">
+
+删除对象的属性同理，也是非响应式的：
+```html
+<div id="vue">
+	<h1>{{course.title}}</h1>
+	<p>teacher: {{course.teacher.name}}<span>，({{course.teacher.site}})</span></p>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			course: {
+				title: 'css入门',
+				teacher: {
+					name: 'w3school'
+				}
+			}
+		},
+		mounted() {
+			setTimeout(()=>{
+				delete this.course.teacher;
+
+				this.course.title = 'php';
+			}, 1000);
+		}
+	});
+</script>
+```
+这个示例里面，在`mounted`这个hook里面，做了`delete this.course.teacher;`操作，如果这个是响应式的，那么立马就会报错；但是并没有，而是在后面的定时器执行后，因为`title`变更，引发`vm`的响应式更新，这时才提示报错。
+
+`Vue.$set`这个api不支持如下类似操作（因为之前看到微信小程序支持这个方式，所以才想去试验一下）：
+```js
+this.$set(this.course, 'teacher.site', 'http://demo.com');
+```
+这个并不会在`this.course.teacher`上面添加`site`属性；而是在`this.course`上面添加了`"teacher.site"`属性。
+
+### 数组
+数组作为响应式数据，以下几个方法调用后，会引发响应式更新：
+```js
+push()
+pop()
+shift()
+unshift()
+splice()
+sort()
+reverse()
+```
+因为这些方法都会改变原数组内容。
+
+不会改变数组内容的方法，如`filter()、concat() 和 slice()`，不会引发响应式更新，所以如果要更新，可以把这些方法返回的结果，覆盖原来的数组：
+```js
+example1.items = example1.items.filter(function (item) {
+  return item.message.match(/Foo/)
+})
+```
+
+由于 JavaScript 的限制，Vue 不能检测以下数组的变动：
+1. 当你利用索引直接设置一个数组项时，例如：`vm.items[indexOfItem] = newValue`
+2. 当你修改数组的长度时，例如：`vm.items.length = newLength`
+
+第1个问题，可以用下面的方式解决：
+```js
+// Vue.set
+Vue.set(vm.items, indexOfItem, newValue)
+//或
+// Array.prototype.splice
+vm.items.splice(indexOfItem, 1, newValue)
+```
+
+第2个问题，可以用下面的方式解决：
+```js
+vm.items.splice(newLength)
+```
+
+运行下面的示例：
+```html
+<div id="vue">
+	<h1>todos</h1>
+	<ul>
+		<li v-for="item of items" :key="item.id">
+			{{item.content}}
+		</li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			items: [
+				{
+					id: 1,
+					content: 'ES入门01let和const声明变量'
+				},
+				{
+					id: 2,
+					content: 'ES入门02解构赋值'
+				},
+				{
+					id: 3,
+					content: 'ES入门03函数的扩展'
+				}
+			]
+		}
+	});
+</script>
+```
+然后在控制台查看`vue._data`，结果如下：
+<img src="{% asset_path "02.png" %}" width="500">
+看到这个就能明白：
+1. 因为items作为一个属性，有被添加`setter getter`，所以如果把一个新数组覆盖items，肯定是响应式的；
+2. 因为items作为一个数组，有被添加`observer`，所以调用它的变异方法，也能引发响应式更新；
+3. items的每个子元素，都是对象级别的响应式数据，适用于前面掌握的对象响应式相关的特性。
+
+再看另外一个例子：
+```html
+<div id="vue">
+	<h1>{{pageData.title}}</h1>
+	<ul>
+		<li v-for="item of pageData.items" :key="item.id">
+			{{item.content}}
+		</li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			pageData: {
+				title: 'list of blogs',
+				items: [
+					{
+						id: 1,
+						content: 'ES入门01let和const声明变量'
+					},
+					{
+						id: 2,
+						content: 'ES入门02解构赋值'
+					},
+					{
+						id: 3,
+						content: 'ES入门03函数的扩展'
+					}
+				]
 			}
 		}
 	});
-
-	vue.b = {
-		name: 'b'
-	};//此处控制台会有警告
-
-	delete vue.a;
 </script>
 ```
-a在`vm`实例化期间经过生命周期的injections处理，成为了响应式属性，b是`vm`实例化之后添加的，不会成为响应式属性。a属性删除并不会引发响应式的渲染。
+在控制台查看`vue._data`，结果如下：
+<img src="{% asset_path "03.png" %}" width="500">
+这个例子中，尽管`items`不是作为根级别的响应式数据，它嵌套在`pageData`里面，但它让符合数组的响应式数据相关的特性。
 
-虽然不能增删跟级别的响应式属性，但是对已存在的响应式数据进行修改、增删属性，是可以的。
-
-
-
+### 小结
+明白了对象与数组的响应式的一些注意点，在遇到“我明明数据都修改成了，为什么dom不更新”这种问题的时候，就很好解决了。
