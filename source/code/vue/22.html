@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>06</title>
+	<script type="text/javascript" src="./lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+	<ul class="tabs"> 
+		<li :style="{fontWeight: active === 1 ? 'bold' : ''}">
+			<a href="javascript:;" @click="switchTab(1, $event)">标签1</a>
+		</li>
+		<li :style="{fontWeight: active === 2 ? 'bold' : ''}">
+			<a href="javascript:;" @click="switchTab(2, $event)">标签2</a>
+		</li>
+		<li :style="{fontWeight: active === 3 ? 'bold' : ''}">
+			<a href="javascript:;" @click="switchTab(3, $event)">标签3</a>
+		</li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			active: 1
+		},
+		methods: {
+			switchTab(index, event){
+				//event is a dom event
+				this.active = index;
+				if(event) {
+					//special logic can write here
+					console.log(event);
+				}
+			}
+		}
+	});
+</script>
+</body>
+</html>
