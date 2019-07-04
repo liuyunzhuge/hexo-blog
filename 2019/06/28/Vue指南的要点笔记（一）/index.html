@@ -108,7 +108,7 @@
 <meta property="og:description" content="本篇开始，仔细地阅读Vue官方指南，并记录学习过程中思考、实践、总结的要点。 本篇包含的主要是内容是：  生命周期图示中要点 2.6.0新增的动态参数属性">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://cn.vuejs.org/images/lifecycle.png">
-<meta property="og:updated_time" content="2019-06-27T13:08:53.966Z">
+<meta property="og:updated_time" content="2019-07-04T13:23:46.955Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue指南的要点笔记（一）">
 <meta name="twitter:description" content="本篇开始，仔细地阅读Vue官方指南，并记录学习过程中思考、实践、总结的要点。 本篇包含的主要是内容是：  生命周期图示中要点 2.6.0新增的动态参数属性">
@@ -318,7 +318,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">37</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">38</span></a>
 
   </li>
         
@@ -548,6 +548,7 @@
 <p>所以单文件的Vue组件也不会有这个问题，因为它本质上利用template来构造<code>vm</code>实例的。</p>
 <p>同理，下面的写法如果直接放在html里面也是有问题的：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span> <span class="attr">v-bind:</span>['<span class="attr">title</span>' + <span class="attr">Name</span>]=<span class="string">"titleValue"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">		data: &#123;</span><br><span class="line"><span class="javascript">			titleName: <span class="string">'title'</span>,</span></span><br><span class="line"><span class="javascript">			name: <span class="string">'Name'</span>,</span></span><br><span class="line"><span class="javascript">			titleValue: <span class="string">'this is a test'</span></span></span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	vue.$mount(<span class="string">'#vue'</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p><code>div#vue</code>的<code>v-bind:[&#39;title&#39; + Name]</code>这个名称，违背了html5文档的规范：属性名不能出现空格、引号。 这种改用template写法也是不行的，Vue严格规定了动态参数不能使用一些特殊字符，否则会出现下面的警告：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invalid dynamic argument expression: attribute names cannot contain spaces, quotes, &lt;, &gt;, / or =.</span><br></pre></td></tr></table></figure></p>
+<p><strong>动态参数不仅只有v-bind指令可以用，其它指令都能用；v-on指令使用动态参数时，修饰符不能用动态参数</strong></p>
 
       
     </div>
@@ -669,7 +670,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">38</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

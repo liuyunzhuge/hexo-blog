@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>06</title>
+	<script type="text/javascript" src="./lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+	<h1>todos</h1>
+	<ul>
+		<li v-for="item of items" :key="item.id">
+			{{item.content}}
+		</li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			items: [
+				{
+					id: 1,
+					content: 'ES入门01let和const声明变量'
+				},
+				{
+					id: 2,
+					content: 'ES入门02解构赋值'
+				},
+				{
+					id: 3,
+					content: 'ES入门03函数的扩展'
+				}
+			]
+		}
+	});
+</script>
+</body>
+</html>
