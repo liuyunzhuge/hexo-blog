@@ -243,4 +243,124 @@ vue内置了一套别名，用于常用的按键，举例：
 * .alt
 * .shift
 * .meta
+```html
+<div id="vue">
+	<input type="text" @keypress.ctrl.enter="keypress" @click.alt="click" @keyup.18="pressAlt">
+</div>
 
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			log: ''
+		},
+		methods: {
+			keypress(event){
+				console.log(event.key)
+			},
+			click(){
+				console.log('click');
+			},
+			pressAlt(){
+				console.log(event.key)
+			}
+		}
+	});
+</script>
+```
+这个示例中，`keypress`事件必须按住`ctrl`键，再按`enter`事件才会触发；`click`事件也必须按住`alt`键，再点击才能触发。注意：`keyup.alt`并不会在`alt`键被按的时候触发事件，`alt ctrl shit meta`这四个修饰键，跟keyCode代表的按键以及前面介绍的按键别名不一样。如果要识别`alt`键按下的`keyup`事件，可以使用`alt`键的按键码：18。（官方文档里说按键码要废弃了，结果这里又建议使用。。。）
+
+系统修饰键，并不是仅仅应用于键盘事件，而是应用于所有事件类型，它代表的就是只有当指定修饰键按住的时候，其它事件才能按约定的逻辑触发。
+
+### .exact修饰符
+这个修饰符允许你控制由精确的系统修饰符组合触发的事件。
+```html
+<!-- 即使 Alt 或 Shift 被一同按下时也会触发 -->
+<button @click.ctrl="onClick">A</button>
+
+<!-- 有且只有 Ctrl 被按下的时候才触发 -->
+<button @click.ctrl.exact="onCtrlClick">A</button>
+
+<!-- 没有任何系统修饰符被按下的时候才触发 -->
+<button @click.exact="onClick">A</button>
+```
+实际举例：
+``html
+<div id="vue">
+	<input type="text" @keypress.ctrl="keypress" @keypress.ctrl.exact="keypress2" @keypress.exact="keypress3">
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			log: ''
+		},
+		methods: {
+			keypress(event){
+				console.log('keypress', event.key)
+			},
+			keypress2(event){
+				console.log('keypress2', event.key)
+			},
+			keypress3(event){
+				console.log('keypress3',event.key)
+			}
+		}
+	});
+</script>
+```
+这个例子中，主事件是`keypress`，考虑到`ctrl`键跟很多字符结合起来按，容易与系统或浏览器的快捷键冲突，所以建议用`ctrl + S`组合来测试，这个组合应该没有冲突的：
+* 当按住`ctrl`，再按`S`，keypress keypress2都会回调；
+* 当按住`ctrl shift`，再按`S`，仅keypress会回调；keypress2只有仅按住`ctrl`一个修饰键的时候才会回调；
+* 当直接按`S`的时候，keypress3会回调。
+* 前面2种情况，keypress3不会回调的原因就是因为.exact修饰符的作用，它控制事件在没有修饰键被按下的时候才会触发。
+
+修饰键可以组合使用：
+```html
+<div id="vue">
+	<input type="text" @keypress.shift.ctrl="keypress">
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			log: ''
+		},
+		methods: {
+			keypress(event){
+				console.log('keypress', event.key)
+			}
+		}
+	});
+</script>
+```
+这个示例中，只有`ctrl shift`同时按下，再按`S`等字符键才会触发事件。
+
+### 鼠标按键修饰符
+* left
+* right
+* middle
+```html
+<div id="vue">
+	<input type="text" @click.right.prevent="click">
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			log: ''
+		},
+		methods: {
+			click(event){
+				console.log(event)
+			}
+		}
+	});
+</script>
+```
+这个示例中，监听了鼠标右键的事件，同时做了`prevent`处理，所以默认的右键菜单不会弹出来。
+
+鼠标按键修饰符只适用于鼠标事件中。
