@@ -108,7 +108,7 @@
 <meta property="og:description" content="本篇原本是要总结Vue官方指南中“组件基础”这一部分的要点，但是阅读下来，发现内容都很简单，没有很重要的点需要记录，唯一一个需要注意的应该就是v-model在自定义组件里面的用法，所以本篇记录下这个内容的一些要点。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2019/07/08/Vue指南的要点笔记（五）/01.png">
-<meta property="og:updated_time" content="2019-07-07T15:20:54.611Z">
+<meta property="og:updated_time" content="2019-07-07T15:22:58.534Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue指南的要点笔记（五）">
 <meta name="twitter:description" content="本篇原本是要总结Vue官方指南中“组件基础”这一部分的要点，但是阅读下来，发现内容都很简单，没有很重要的点需要记录，唯一一个需要注意的应该就是v-model在自定义组件里面的用法，所以本篇记录下这个内容的一些要点。">
@@ -510,7 +510,7 @@
 <a id="more"></a>
 <h2 id="认识v-model在标准表单元素的作用机制"><a href="#认识v-model在标准表单元素的作用机制" class="headerlink" title="认识v-model在标准表单元素的作用机制"></a>认识v-model在标准表单元素的作用机制</h2><p>官方指南里说，在原生的表单元素上：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-model</span>=<span class="string">"searchText"</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>等价于：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-bind:value</span>=<span class="string">"searchText"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-on:input</span>=<span class="string">"searchText = $event.target.value"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>也就是说v-model会把它绑定的数据属性（如searchText），动态地绑定到表单元素的input属性上，然后监听表单元素的input事件，在事件触发的时候将表单元素的value值赋值给v-model绑定的数据属性。我们从这个形式看v-model，会发现它真的只是语法糖，它依赖于Vue本身的响应式能力和事件机制，完成了所谓的双向绑定功能。</p>
+<p>也就是说v-model会把它绑定的数据属性（如searchText），动态地绑定到表单元素的value属性上，然后监听表单元素的input事件，在事件触发的时候将表单元素的value值赋值给v-model绑定的数据属性。我们从这个形式看v-model，会发现它真的只是语法糖，它依赖于Vue本身的响应式能力和事件机制，完成了所谓的双向绑定功能。</p>
 <p>官方文档里没有更多去介绍v-model的实现原理，真实的v-model机制比上面的例子复杂一些，因为v-model要处理地可不是只有普通的input元素：</p>
 <blockquote>
 <p>v-model 在内部为不同的输入元素使用不同的属性并抛出不同的事件：<br>text 和 textarea 元素使用 value 属性和 input 事件；<br>checkbox 和 radio 使用 checked 属性和 change 事件；<br>select 字段将 value 作为 prop 并将 change 作为事件。</p>
