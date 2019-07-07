@@ -151,14 +151,9 @@ function genSelect (
 	});
 </script>
 ```
+看到这里，我的疑问是：为什么自定义组件使用v-model需要的一定是`value`prop和`input`事件，能不能换为别的？
 
-当时看到这里，我有两个疑问：
-1. 为什么自定义组件使用v-model需要的一定是`value`prop和`input`事件，能不能换为别的？
-2. checkbox radio和select要定义为自定义组件的时候，怎么做才是最佳实现？
-
-### 第1个问题
-
-第1个问题还需要回到源码才能找到答案。在[v-model的核心源码](https://github.com/vuejs/vue/blob/dev/src/platforms/web/compiler/directives/model.js)中，发现它依赖了[另外一个文件](https://github.com/vuejs/vue/blob/dev/src/compiler/directives/model.js)来处理自定义组件的使用：
+这个问题还需要回到源码才能找到答案。在[v-model的核心源码](https://github.com/vuejs/vue/blob/dev/src/platforms/web/compiler/directives/model.js)中，发现它依赖了[另外一个文件](https://github.com/vuejs/vue/blob/dev/src/compiler/directives/model.js)来处理自定义组件的使用：
 ```js
 export function genComponentModel (
   el: ASTElement,
@@ -218,8 +213,4 @@ function transformModel (options, data) {
 }
 ```
 这个函数很清晰地说明了自定义组件的v-model就是要利用`value`prop和`input`事件来实现的。
-
-### 第2个问题
-
-
 
