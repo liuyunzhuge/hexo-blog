@@ -1,0 +1,225 @@
+---
+title: Vue指南的要点笔记（五）
+tags:
+  - Vue指南要点笔记
+  - Vue
+categories:
+  - Javascript
+  - Vue
+  - 指南要点
+---
+
+本篇原本是要总结Vue官方指南中“组件基础”这一部分的要点，但是阅读下来，发现内容都很简单，没有很重要的点需要记录，唯一一个需要注意的应该就是v-model在自定义组件里面的用法，所以本篇记录下这个内容的一些要点。
+
+<!-- more -->
+
+## 认识v-model在标准表单元素的作用机制
+官方指南里说，在原生的表单元素上：
+```html
+<input v-model="searchText">
+```
+等价于：
+```html
+<input
+  v-bind:value="searchText"
+  v-on:input="searchText = $event.target.value"
+>
+```
+
+也就是说v-model会把它绑定的数据属性（如searchText），动态地绑定到表单元素的input属性上，然后监听表单元素的input事件，在事件触发的时候将表单元素的value值赋值给v-model绑定的数据属性。我们从这个形式看v-model，会发现它真的只是语法糖，它依赖于Vue本身的响应式能力和事件机制，完成了所谓的双向绑定功能。
+
+官方文档里没有更多去介绍v-model的实现原理，真实的v-model机制比上面的例子复杂一些，因为v-model要处理地可不是只有普通的input元素：
+> v-model 在内部为不同的输入元素使用不同的属性并抛出不同的事件：
+text 和 textarea 元素使用 value 属性和 input 事件；
+checkbox 和 radio 使用 checked 属性和 change 事件；
+select 字段将 value 作为 prop 并将 change 作为事件。
+
+不仅如此，除了标准的表单元素，v-model还要考虑自定义组件下的使用场景。先不考虑它在自定义组件下怎么用，在[v-model的核心源码](https://github.com/vuejs/vue/blob/dev/src/platforms/web/compiler/directives/model.js)中，能够看到v-model对于标准表单元素区分了普通的input&textarea、checkbox、radio和select这四种情形：
+<img src="{% asset_path "01.png" %}" width="700">
+所以上面例子的形式：
+```html
+<input
+  v-bind:value="searchText"
+  v-on:input="searchText = $event.target.value"
+>
+```
+仅仅只是说明了普通input&textarea元素的处理机制。checkbox radio和select是有所区别的，比如这是checkbox的：
+```js
+function genCheckboxModel (
+  el: ASTElement,
+  value: string,
+  modifiers: ?ASTModifiers
+) {
+  const number = modifiers && modifiers.number
+  const valueBinding = getBindingAttr(el, 'value') || 'null'
+  const trueValueBinding = getBindingAttr(el, 'true-value') || 'true'
+  const falseValueBinding = getBindingAttr(el, 'false-value') || 'false'
+  addProp(el, 'checked',
+    `Array.isArray(${value})` +
+    `?_i(${value},${valueBinding})>-1` + (
+      trueValueBinding === 'true'
+        ? `:(${value})`
+        : `:_q(${value},${trueValueBinding})`
+    )
+  )
+  addHandler(el, 'change',
+    `var $$a=${value},` +
+        '$$el=$event.target,' +
+        `$$c=$$el.checked?(${trueValueBinding}):(${falseValueBinding});` +
+    'if(Array.isArray($$a)){' +
+      `var $$v=${number ? '_n(' + valueBinding + ')' : valueBinding},` +
+          '$$i=_i($$a,$$v);' +
+      `if($$el.checked){$$i<0&&(${genAssignmentCode(value, '$$a.concat([$$v])')})}` +
+      `else{$$i>-1&&(${genAssignmentCode(value, '$$a.slice(0,$$i).concat($$a.slice($$i+1))')})}` +
+    `}else{${genAssignmentCode(value, '$$c')}}`,
+    null, true
+  )
+}
+```
+即使没有专门学习vue的源码，我们也能理解这个代码大概含义，很明显v-model在处理checkbox的时候，利用的checked这个属性以及change事件来完成v-model的功能的。`addProp`和`addHandler`这两个函数的作用含义也很明显，前者用来注册属性以及属性赋值的表达式；后者用来注册事件及回调。下面的是radio和select的：
+```js
+function genRadioModel (
+  el: ASTElement,
+  value: string,
+  modifiers: ?ASTModifiers
+) {
+  const number = modifiers && modifiers.number
+  let valueBinding = getBindingAttr(el, 'value') || 'null'
+  valueBinding = number ? `_n(${valueBinding})` : valueBinding
+  addProp(el, 'checked', `_q(${value},${valueBinding})`)
+  addHandler(el, 'change', genAssignmentCode(value, valueBinding), null, true)
+}
+
+function genSelect (
+  el: ASTElement,
+  value: string,
+  modifiers: ?ASTModifiers
+) {
+  const number = modifiers && modifiers.number
+  const selectedVal = `Array.prototype.filter` +
+    `.call($event.target.options,function(o){return o.selected})` +
+    `.map(function(o){var val = "_value" in o ? o._value : o.value;` +
+    `return ${number ? '_n(val)' : 'val'}})`
+
+  const assignment = '$event.target.multiple ? $$selectedVal : $$selectedVal[0]'
+  let code = `var $$selectedVal = ${selectedVal};`
+  code = `${code} ${genAssignmentCode(value, assignment)}`
+  addHandler(el, 'change', code, null, true)
+}
+```
+普通input&textarea元素的实现也能在源码中看到（`genDefaultModel`），但是代码比其它几个都多，这里就不粘贴出来了，它的核心逻辑与官方指南介绍的形式是一致的：
+```html
+<input
+  v-bind:value="searchText"
+  v-on:input="searchText = $event.target.value"
+>
+```
+官方指南为了简化对v-model的说明，所以没有把源码里面考虑的逻辑全部都表现出来。
+
+了解了v-model在标准表单元素下的作用机制，我认为有2个作用：
+1. 是自己对这个东西的认识更清晰，在将来有必要的情况下，你也可以自己编写新的v-model指令，来完成特殊的功能；
+2. 帮助自己思考v-model在自定义组件，尤其是自定义checkbox radio和select的时候，是不是也如下面要引入的官方指南介绍的方式一样做就可以了？
+
+## 官方指南中v-model在自定义组件下的使用
+官方指南中说明，v-model在自定义组件下使用，必须：
+1. 自定义组件定义一个名为`value`的prop
+2. 在合适的时机内部派发一个`input`事件，并向外传递`value`这个prop的最新值。
+
+示例如下：
+```html
+<div id="vue">
+	<custom-input v-model="searchText"></custom-input>
+	<p>{{searchText}}</p>
+</div>
+
+<script type="text/javascript">
+	Vue.component('custom-input', {
+	  props: ['value'],
+	  template: `
+	    <input
+	      v-bind:value="value"
+	      v-on:input="$emit('input', $event.target.value)"
+	    >
+	  `
+	});
+
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			searchText: ''
+		}
+	});
+</script>
+```
+
+当时看到这里，我有两个疑问：
+1. 为什么自定义组件使用v-model需要的一定是`value`prop和`input`事件，能不能换为别的？
+2. checkbox radio和select要定义为自定义组件的时候，怎么做才是最佳实现？
+
+### 第1个问题
+
+第1个问题还需要回到源码才能找到答案。在[v-model的核心源码](https://github.com/vuejs/vue/blob/dev/src/platforms/web/compiler/directives/model.js)中，发现它依赖了[另外一个文件](https://github.com/vuejs/vue/blob/dev/src/compiler/directives/model.js)来处理自定义组件的使用：
+```js
+export function genComponentModel (
+  el: ASTElement,
+  value: string,
+  modifiers: ?ASTModifiers
+): ?boolean {
+  const { number, trim } = modifiers || {}
+
+  const baseValueExpression = '$$v'
+  let valueExpression = baseValueExpression
+  if (trim) {
+    valueExpression =
+      `(typeof ${baseValueExpression} === 'string'` +
+      `? ${baseValueExpression}.trim()` +
+      `: ${baseValueExpression})`
+  }
+  if (number) {
+    valueExpression = `_n(${valueExpression})`
+  }
+  const assignment = genAssignmentCode(value, valueExpression)
+
+  el.model = {
+    value: `(${value})`,
+    expression: JSON.stringify(value),
+    callback: `function (${baseValueExpression}) {${assignment}}`
+  }
+}
+```
+但令人意外的是，这个`genComponentModel`，并不像标准表单元素一样直接就包含了`addHandler`和`addProp`的逻辑，所以从这两个文件看不出，v-model在自定义组件下是否使用了`value`prop和`input`事件。仅仅能看到的是，它把核心的数据存储到了自定义组件的model属性上：
+```js
+  el.model = {
+    value: `(${value})`,
+    expression: JSON.stringify(value),
+    callback: `function (${baseValueExpression}) {${assignment}}`
+  }
+```
+但是可以肯定这个el.model一定是某个地方要使用的，所以我直接在vue源码里面搜索`model`这个关键词，最后发现在`createComponent`这个创建自定义组件的函数里面，调用了`transformModel`这个函数，在这个函数里面找到了v-model对于`el.model`这个数据的使用：
+```js
+function transformModel (options, data) {
+  var prop = (options.model && options.model.prop) || 'value';
+  var event = (options.model && options.model.event) || 'input'
+  ;(data.attrs || (data.attrs = {}))[prop] = data.model.value;
+  var on = data.on || (data.on = {});
+  var existing = on[event];
+  var callback = data.model.callback;
+  if (isDef(existing)) {
+    if (
+      Array.isArray(existing)
+        ? existing.indexOf(callback) === -1
+        : existing !== callback
+    ) {
+      on[event] = [callback].concat(existing);
+    }
+  } else {
+    on[event] = callback;
+  }
+}
+```
+这个函数很清晰地说明了自定义组件的v-model就是要利用`value`prop和`input`事件来实现的。
+
+### 第2个问题
+
+
+
