@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>06</title>
+	<script type="text/javascript" src="./lib/vue.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body>
+<div id="vue">
+	<input type="text" v-model="title"><br>
+	<textarea v-model=content></textarea>
+	<div>
+		<label>
+			<input type="checkbox" v-model="agree"  :true-value="1" :false-value="2">
+			是否同意
+		</label>
+	</div>
+	<div>
+		<label>
+			<input type="radio" v-model="paymethod" value="wechat">
+			微信支付
+		</label>
+		<label>
+			<input type="radio" v-model="paymethod" value="alipay">
+			支付宝
+		</label>
+	</div>
+	<div>
+		<select v-model="college">
+			<option></option>
+			<option>北京大学</option>
+			<option>清华大学</option>
+		</select>
+	</div>
+	<p>{{$data}}</p>
+</div>
+
+<script type="text/javascript">
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			title: '',
+			content: '',
+			agree: '2',
+			paymethod: '',
+			college: ''
+		}
+	});
+</script>
+</body>
+</html>

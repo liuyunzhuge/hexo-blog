@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇原本是要总结Vue官方指南中“组件基础”这一部分的要点，但是阅读下来，发现内容都很简单，没有很重要的点需要记录，唯一一个需要注意的应该就是v-model在自定义组件里面的用法，所以本篇记录下这个内容的一些要点。">
+<meta name="keywords" content="Vue指南要点笔记,Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue指南的要点笔记（五）">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/07/08/Vue指南的要点笔记（五）/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇原本是要总结Vue官方指南中“组件基础”这一部分的要点，但是阅读下来，发现内容都很简单，没有很重要的点需要记录，唯一一个需要注意的应该就是v-model在自定义组件里面的用法，所以本篇记录下这个内容的一些要点。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/07/08/Vue指南的要点笔记（五）/01.png">
+<meta property="og:updated_time" content="2019-07-07T15:20:54.611Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue指南的要点笔记（五）">
+<meta name="twitter:description" content="本篇原本是要总结Vue官方指南中“组件基础”这一部分的要点，但是阅读下来，发现内容都很简单，没有很重要的点需要记录，唯一一个需要注意的应该就是v-model在自定义组件里面的用法，所以本篇记录下这个内容的一些要点。">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2019/07/08/Vue指南的要点笔记（五）/01.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/07/08/Vue指南的要点笔记（五）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Vue指南的要点笔记（五） | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">41</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/07/08/Vue指南的要点笔记（五）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue指南的要点笔记（五）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-07 23:20:54" itemprop="dateCreated datePublished" datetime="2019-07-07T23:20:54Z">2019-07-07</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/指南要点/" itemprop="url" rel="index"><span itemprop="name">指南要点</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇原本是要总结Vue官方指南中“组件基础”这一部分的要点，但是阅读下来，发现内容都很简单，没有很重要的点需要记录，唯一一个需要注意的应该就是v-model在自定义组件里面的用法，所以本篇记录下这个内容的一些要点。</p>
+<a id="more"></a>
+<h2 id="认识v-model在标准表单元素的作用机制"><a href="#认识v-model在标准表单元素的作用机制" class="headerlink" title="认识v-model在标准表单元素的作用机制"></a>认识v-model在标准表单元素的作用机制</h2><p>官方指南里说，在原生的表单元素上：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-model</span>=<span class="string">"searchText"</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>等价于：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-bind:value</span>=<span class="string">"searchText"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-on:input</span>=<span class="string">"searchText = $event.target.value"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>也就是说v-model会把它绑定的数据属性（如searchText），动态地绑定到表单元素的input属性上，然后监听表单元素的input事件，在事件触发的时候将表单元素的value值赋值给v-model绑定的数据属性。我们从这个形式看v-model，会发现它真的只是语法糖，它依赖于Vue本身的响应式能力和事件机制，完成了所谓的双向绑定功能。</p>
+<p>官方文档里没有更多去介绍v-model的实现原理，真实的v-model机制比上面的例子复杂一些，因为v-model要处理地可不是只有普通的input元素：</p>
+<blockquote>
+<p>v-model 在内部为不同的输入元素使用不同的属性并抛出不同的事件：<br>text 和 textarea 元素使用 value 属性和 input 事件；<br>checkbox 和 radio 使用 checked 属性和 change 事件；<br>select 字段将 value 作为 prop 并将 change 作为事件。</p>
+</blockquote>
+<p>不仅如此，除了标准的表单元素，v-model还要考虑自定义组件下的使用场景。先不考虑它在自定义组件下怎么用，在<a href="https://github.com/vuejs/vue/blob/dev/src/platforms/web/compiler/directives/model.js" target="_blank" rel="noopener">v-model的核心源码</a>中，能够看到v-model对于标准表单元素区分了普通的input&amp;textarea、checkbox、radio和select这四种情形：<br><img src="/2019/07/08/Vue指南的要点笔记（五）/01.png" width="700"><br>所以上面例子的形式：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-bind:value</span>=<span class="string">"searchText"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-on:input</span>=<span class="string">"searchText = $event.target.value"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>仅仅只是说明了普通input&amp;textarea元素的处理机制。checkbox radio和select是有所区别的，比如这是checkbox的：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">genCheckboxModel</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el: ASTElement,</span></span></span><br><span class="line"><span class="function"><span class="params">  value: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  modifiers: ?ASTModifiers</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> number = modifiers &amp;&amp; modifiers.number</span><br><span class="line">  <span class="keyword">const</span> valueBinding = getBindingAttr(el, <span class="string">'value'</span>) || <span class="string">'null'</span></span><br><span class="line">  <span class="keyword">const</span> trueValueBinding = getBindingAttr(el, <span class="string">'true-value'</span>) || <span class="string">'true'</span></span><br><span class="line">  <span class="keyword">const</span> falseValueBinding = getBindingAttr(el, <span class="string">'false-value'</span>) || <span class="string">'false'</span></span><br><span class="line">  addProp(el, <span class="string">'checked'</span>,</span><br><span class="line">    <span class="string">`Array.isArray(<span class="subst">$&#123;value&#125;</span>)`</span> +</span><br><span class="line">    <span class="string">`?_i(<span class="subst">$&#123;value&#125;</span>,<span class="subst">$&#123;valueBinding&#125;</span>)&gt;-1`</span> + (</span><br><span class="line">      trueValueBinding === <span class="string">'true'</span></span><br><span class="line">        ? <span class="string">`:(<span class="subst">$&#123;value&#125;</span>)`</span></span><br><span class="line">        : <span class="string">`:_q(<span class="subst">$&#123;value&#125;</span>,<span class="subst">$&#123;trueValueBinding&#125;</span>)`</span></span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  addHandler(el, <span class="string">'change'</span>,</span><br><span class="line">    <span class="string">`var $$a=<span class="subst">$&#123;value&#125;</span>,`</span> +</span><br><span class="line">        <span class="string">'$$el=$event.target,'</span> +</span><br><span class="line">        <span class="string">`$$c=$$el.checked?(<span class="subst">$&#123;trueValueBinding&#125;</span>):(<span class="subst">$&#123;falseValueBinding&#125;</span>);`</span> +</span><br><span class="line">    <span class="string">'if(Array.isArray($$a))&#123;'</span> +</span><br><span class="line">      <span class="string">`var $$v=<span class="subst">$&#123;number ? <span class="string">'_n('</span> + valueBinding + <span class="string">')'</span> : valueBinding&#125;</span>,`</span> +</span><br><span class="line">          <span class="string">'$$i=_i($$a,$$v);'</span> +</span><br><span class="line">      <span class="string">`if($$el.checked)&#123;$$i&lt;0&amp;&amp;(<span class="subst">$&#123;genAssignmentCode(value, <span class="string">'$$a.concat([$$v])'</span>)&#125;</span>)&#125;`</span> +</span><br><span class="line">      <span class="string">`else&#123;$$i&gt;-1&amp;&amp;(<span class="subst">$&#123;genAssignmentCode(value, <span class="string">'$$a.slice(0,$$i).concat($$a.slice($$i+1))'</span>)&#125;</span>)&#125;`</span> +</span><br><span class="line">    <span class="string">`&#125;else&#123;<span class="subst">$&#123;genAssignmentCode(value, <span class="string">'$$c'</span>)&#125;</span>&#125;`</span>,</span><br><span class="line">    <span class="literal">null</span>, <span class="literal">true</span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>即使没有专门学习vue的源码，我们也能理解这个代码大概含义，很明显v-model在处理checkbox的时候，利用的checked这个属性以及change事件来完成v-model的功能的。<code>addProp</code>和<code>addHandler</code>这两个函数的作用含义也很明显，前者用来注册属性以及属性赋值的表达式；后者用来注册事件及回调。下面的是radio和select的：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">genRadioModel</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el: ASTElement,</span></span></span><br><span class="line"><span class="function"><span class="params">  value: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  modifiers: ?ASTModifiers</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> number = modifiers &amp;&amp; modifiers.number</span><br><span class="line">  <span class="keyword">let</span> valueBinding = getBindingAttr(el, <span class="string">'value'</span>) || <span class="string">'null'</span></span><br><span class="line">  valueBinding = number ? <span class="string">`_n(<span class="subst">$&#123;valueBinding&#125;</span>)`</span> : valueBinding</span><br><span class="line">  addProp(el, <span class="string">'checked'</span>, <span class="string">`_q(<span class="subst">$&#123;value&#125;</span>,<span class="subst">$&#123;valueBinding&#125;</span>)`</span>)</span><br><span class="line">  addHandler(el, <span class="string">'change'</span>, genAssignmentCode(value, valueBinding), <span class="literal">null</span>, <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">genSelect</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el: ASTElement,</span></span></span><br><span class="line"><span class="function"><span class="params">  value: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  modifiers: ?ASTModifiers</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> number = modifiers &amp;&amp; modifiers.number</span><br><span class="line">  <span class="keyword">const</span> selectedVal = <span class="string">`Array.prototype.filter`</span> +</span><br><span class="line">    <span class="string">`.call($event.target.options,function(o)&#123;return o.selected&#125;)`</span> +</span><br><span class="line">    <span class="string">`.map(function(o)&#123;var val = "_value" in o ? o._value : o.value;`</span> +</span><br><span class="line">    <span class="string">`return <span class="subst">$&#123;number ? <span class="string">'_n(val)'</span> : <span class="string">'val'</span>&#125;</span>&#125;)`</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> assignment = <span class="string">'$event.target.multiple ? $$selectedVal : $$selectedVal[0]'</span></span><br><span class="line">  <span class="keyword">let</span> code = <span class="string">`var $$selectedVal = <span class="subst">$&#123;selectedVal&#125;</span>;`</span></span><br><span class="line">  code = <span class="string">`<span class="subst">$&#123;code&#125;</span> <span class="subst">$&#123;genAssignmentCode(value, assignment)&#125;</span>`</span></span><br><span class="line">  addHandler(el, <span class="string">'change'</span>, code, <span class="literal">null</span>, <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>普通input&amp;textarea元素的实现也能在源码中看到（<code>genDefaultModel</code>），但是代码比其它几个都多，这里就不粘贴出来了，它的核心逻辑与官方指南介绍的形式是一致的：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-bind:value</span>=<span class="string">"searchText"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-on:input</span>=<span class="string">"searchText = $event.target.value"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>官方指南为了简化对v-model的说明，所以没有把源码里面考虑的逻辑全部都表现出来。</p>
+<p>了解了v-model在标准表单元素下的作用机制，我认为有2个作用：</p>
+<ol>
+<li>是自己对这个东西的认识更清晰，在将来有必要的情况下，你也可以自己编写新的v-model指令，来完成特殊的功能；</li>
+<li>帮助自己思考v-model在自定义组件，尤其是自定义checkbox radio和select的时候，是不是也如下面要引入的官方指南介绍的方式一样做就可以了？</li>
+</ol>
+<h2 id="官方指南中v-model在自定义组件下的使用"><a href="#官方指南中v-model在自定义组件下的使用" class="headerlink" title="官方指南中v-model在自定义组件下的使用"></a>官方指南中v-model在自定义组件下的使用</h2><p>官方指南中说明，v-model在自定义组件下使用，必须：</p>
+<ol>
+<li>自定义组件定义一个名为<code>value</code>的prop</li>
+<li>在合适的时机内部派发一个<code>input</code>事件，并向外传递<code>value</code>这个prop的最新值。</li>
+</ol>
+<p>示例如下：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">custom-input</span> <span class="attr">v-model</span>=<span class="string">"searchText"</span>&gt;</span><span class="tag">&lt;/<span class="name">custom-input</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123;searchText&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">	Vue.component(<span class="string">'custom-input'</span>, &#123;</span></span><br><span class="line"><span class="javascript">	  props: [<span class="string">'value'</span>],</span></span><br><span class="line">	  template: `</span><br><span class="line">	    &lt;input</span><br><span class="line"><span class="javascript">	      v-bind:value=<span class="string">"value"</span></span></span><br><span class="line"><span class="javascript">	      v-on:input=<span class="string">"$emit('input', $event.target.value)"</span></span></span><br><span class="line">	    &gt;</span><br><span class="line">	  `</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">	<span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">		el: <span class="string">'#vue'</span>,</span></span><br><span class="line">		data: &#123;</span><br><span class="line"><span class="javascript">			searchText: <span class="string">''</span></span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>看到这里，我的疑问是：为什么自定义组件使用v-model需要的一定是<code>value</code>prop和<code>input</code>事件，能不能换为别的？</p>
+<p>这个问题还需要回到源码才能找到答案。在<a href="https://github.com/vuejs/vue/blob/dev/src/platforms/web/compiler/directives/model.js" target="_blank" rel="noopener">v-model的核心源码</a>中，发现它依赖了<a href="https://github.com/vuejs/vue/blob/dev/src/compiler/directives/model.js" target="_blank" rel="noopener">另外一个文件</a>来处理自定义组件的使用：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">genComponentModel</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el: ASTElement,</span></span></span><br><span class="line"><span class="function"><span class="params">  value: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  modifiers: ?ASTModifiers</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): ?<span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; number, trim &#125; = modifiers || &#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> baseValueExpression = <span class="string">'$$v'</span></span><br><span class="line">  <span class="keyword">let</span> valueExpression = baseValueExpression</span><br><span class="line">  <span class="keyword">if</span> (trim) &#123;</span><br><span class="line">    valueExpression =</span><br><span class="line">      <span class="string">`(typeof <span class="subst">$&#123;baseValueExpression&#125;</span> === 'string'`</span> +</span><br><span class="line">      <span class="string">`? <span class="subst">$&#123;baseValueExpression&#125;</span>.trim()`</span> +</span><br><span class="line">      <span class="string">`: <span class="subst">$&#123;baseValueExpression&#125;</span>)`</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (number) &#123;</span><br><span class="line">    valueExpression = <span class="string">`_n(<span class="subst">$&#123;valueExpression&#125;</span>)`</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> assignment = genAssignmentCode(value, valueExpression)</span><br><span class="line"></span><br><span class="line">  el.model = &#123;</span><br><span class="line">    value: <span class="string">`(<span class="subst">$&#123;value&#125;</span>)`</span>,</span><br><span class="line">    expression: <span class="built_in">JSON</span>.stringify(value),</span><br><span class="line">    callback: <span class="string">`function (<span class="subst">$&#123;baseValueExpression&#125;</span>) &#123;<span class="subst">$&#123;assignment&#125;</span>&#125;`</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但令人意外的是，这个<code>genComponentModel</code>，并不像标准表单元素一样直接就包含了<code>addHandler</code>和<code>addProp</code>的逻辑，所以从这两个文件看不出，v-model在自定义组件下是否使用了<code>value</code>prop和<code>input</code>事件。仅仅能看到的是，它把核心的数据存储到了自定义组件的model属性上：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">el.model = &#123;</span><br><span class="line">  value: <span class="string">`(<span class="subst">$&#123;value&#125;</span>)`</span>,</span><br><span class="line">  expression: <span class="built_in">JSON</span>.stringify(value),</span><br><span class="line">  callback: <span class="string">`function (<span class="subst">$&#123;baseValueExpression&#125;</span>) &#123;<span class="subst">$&#123;assignment&#125;</span>&#125;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是可以肯定这个el.model一定是某个地方要使用的，所以我直接在vue源码里面搜索<code>model</code>这个关键词，最后发现在<code>createComponent</code>这个创建自定义组件的函数里面，调用了<code>transformModel</code>这个函数，在这个函数里面找到了v-model对于<code>el.model</code>这个数据的使用：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">transformModel</span> (<span class="params">options, data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> prop = (options.model &amp;&amp; options.model.prop) || <span class="string">'value'</span>;</span><br><span class="line">  <span class="keyword">var</span> event = (options.model &amp;&amp; options.model.event) || <span class="string">'input'</span></span><br><span class="line">  ;(data.attrs || (data.attrs = &#123;&#125;))[prop] = data.model.value;</span><br><span class="line">  <span class="keyword">var</span> on = data.on || (data.on = &#123;&#125;);</span><br><span class="line">  <span class="keyword">var</span> existing = on[event];</span><br><span class="line">  <span class="keyword">var</span> callback = data.model.callback;</span><br><span class="line">  <span class="keyword">if</span> (isDef(existing)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (</span><br><span class="line">      <span class="built_in">Array</span>.isArray(existing)</span><br><span class="line">        ? existing.indexOf(callback) === <span class="number">-1</span></span><br><span class="line">        : existing !== callback</span><br><span class="line">    ) &#123;</span><br><span class="line">      on[event] = [callback].concat(existing);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    on[event] = callback;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个函数很清晰地说明了自定义组件的v-model就是要利用<code>value</code>prop和<code>input</code>事件来实现的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue指南要点笔记/" rel="tag"># Vue指南要点笔记</a>
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/07/Vue指南的要点笔记（四）/" rel="next" title="Vue指南的要点笔记（四）">
+                <i class="fa fa-chevron-left"></i> Vue指南的要点笔记（四）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">41</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#认识v-model在标准表单元素的作用机制"><span class="nav-number">1.</span> <span class="nav-text">认识v-model在标准表单元素的作用机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#官方指南中v-model在自定义组件下的使用"><span class="nav-number">2.</span> <span class="nav-text">官方指南中v-model在自定义组件下的使用</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
