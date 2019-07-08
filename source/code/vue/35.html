@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>06</title>
+	<script type="text/javascript" src="./lib/vue.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body>
+<div id="vue">
+	<checkbox v-model="agree1" label="是否同意" true-value="yes" false-value="no"></checkbox>
+	<p>{{agree1}}</p>
+	<checkbox v-model="agree" label="是否同意"></checkbox>
+	<p>{{agree}}</p>
+	<checkbox v-model="paymethod" label="微信支付" form-value="wechat"></checkbox>
+	<checkbox v-model="paymethod" label="支付宝" form-value="alipay"></checkbox>
+	<checkbox v-model="paymethod" label="银联" form-value="yinlian"></checkbox>
+	<p>{{paymethod}}</p>
+	<checkbox v-for="item of rooms" :key="item.id" :label="item.name" :form-value="item" v-model="selectedRooms"></checkbox>
+	<p>{{selectedRooms}}</p>
+</div>
+
+<script type="text/javascript">
+	Vue.component('checkbox', {
+	  props: ['label', 'value', 'formValue','trueValue', 'falseValue'],
+	  data(){
+	  	return {
+	  		model: false//内部checkbox通过v-model绑定的数据始终为Boolean类型
+	  	};
+	  },
+	  template: `
+	    <label><input
+	      type="checkbox"
+	      :value="formValue"
+	      v-model="model"
+	    >{{label}}</label>
+	  `,
+	  created(){
+	  	this.setModel(this.value);
+	  	this.watchModel();
+	  },
+	  watch: {
+	  	value(newVal){
+	  		this.unWatchModel();
+	  		this.setModel(newVal);
+	  		this.watchModel();
+	  	}
+	  },
+	  methods: {
+	  	setModel(value){
+	  		if(Array.isArray(value)) {
+	  			this.model = value.indexOf(this.formValue) > -1;
+	  		} else {
+	  			this.model = this.isBooleanTrueValue() ? value : value === this.trueValue;
+	  		}
+	  	},
+	  	isBooleanTrueValue(){
+	  		return this.trueValue === 'true' || this.trueValue === undefined;
+	  	},
+	  	unWatchModel(){
+	  		this._watchModel && this._watchModel();
+	  	},
+	  	watchModel(){
+	  		this._watchModel = this.$watch('model', (model)=> {
+	  			//model为true表示checked为true  model为false表示checked为false
+	  			if(Array.isArray(this.value)) {
+	  				let copy = [...this.value];
+	  				let i = copy.indexOf(this.formValue);
+
+	  				if(model) {
+	  					i === -1 && copy.push(this.formValue);
+	  				} else {
+	  					i > -1 && copy.splice(i, 1);
+	  				}
+	  				//派发自定义组件的input事件
+	  				this.$emit('input', copy);
+	  			} else {
+	  				//派发自定义组件的input事件
+	  				this.$emit('input', model ? this.isBooleanTrueValue() ? true : this.trueValue : this.isBooleanTrueValue() ? false : this.falseValue);
+	  			}
+	  		});
+	  	}
+	  }
+	});
+
+	let vue = new Vue({
+		el: '#vue',
+		data: {
+			agree: true,
+			agree1: 'yes',
+			paymethod: ['alipay'],
+			selectedRooms: [],
+			rooms: [
+				{name: 'A教室', id: 1, user_limit: 9},
+				{name: 'B教室', id: 2, user_limit: 10},
+				{name: 'C教室', id: 3, user_limit: 11}
+			]
+		}
+	});
+</script>
+</body>
+</html>
