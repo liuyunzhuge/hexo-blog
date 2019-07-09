@@ -8,7 +8,7 @@
 </head>
 <body>
 <div id="vue">
-	<checkbox v-model="agree1" label="是否同意" true-value="yes" false-value="no"></checkbox>
+	<checkbox @input="showModelEvent" v-model="agree1" label="是否同意" true-value="yes" false-value="no"></checkbox>
 	<p>{{agree1}}</p>
 	<checkbox v-model="agree" label="是否同意"></checkbox>
 	<p>{{agree}}</p>
@@ -47,6 +47,9 @@
 	  	}
 	  },
 	  methods: {
+	  	aaa(){
+	  		alert(1)
+	  	},
 	  	setModel(value){
 	  		if(Array.isArray(value)) {
 	  			this.model = value.indexOf(this.formValue) > -1;
@@ -95,6 +98,11 @@
 				{name: 'B教室', id: 2, user_limit: 10},
 				{name: 'C教室', id: 3, user_limit: 11}
 			]
+		},
+		methods: {
+			showModelEvent(){
+				console.log('model event');
+			}
 		}
 	});
 </script>
