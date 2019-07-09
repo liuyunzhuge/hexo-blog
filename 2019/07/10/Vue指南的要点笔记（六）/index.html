@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇开始重点学习组件开发的要点：  非prop的特性 自定义事件">
+<meta name="keywords" content="Vue指南要点笔记,Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue指南的要点笔记（六）">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/07/10/Vue指南的要点笔记（六）/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇开始重点学习组件开发的要点：  非prop的特性 自定义事件">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-09T14:37:28.649Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue指南的要点笔记（六）">
+<meta name="twitter:description" content="本篇开始重点学习组件开发的要点：  非prop的特性 自定义事件">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/07/10/Vue指南的要点笔记（六）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Vue指南的要点笔记（六） | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">42</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/07/10/Vue指南的要点笔记（六）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue指南的要点笔记（六）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-09 22:37:28" itemprop="dateCreated datePublished" datetime="2019-07-09T22:37:28Z">2019-07-09</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/指南要点/" itemprop="url" rel="index"><span itemprop="name">指南要点</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇开始重点学习组件开发的要点：</p>
+<ol>
+<li>非prop的特性</li>
+<li>自定义事件</li>
+</ol>
+<a id="more"></a>
+<h2 id="非prop的特性"><a href="#非prop的特性" class="headerlink" title="非prop的特性"></a>非prop的特性</h2><p>prop类型的特性用的比较多，也很好理解，所以不重复记录学习内容。非prop特性用得少，不是很熟悉，所以本篇也重点学习。一个非 prop 特性是指传向一个组件，但是该组件并没有相应 prop 定义的特性。如：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">checkbox</span> <span class="attr">:value</span>=<span class="string">"agree"</span> <span class="attr">label</span>=<span class="string">"是否同意"</span>&gt;</span><span class="tag">&lt;/<span class="name">checkbox</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>checkbox这个组件，可能定义了value这个prop，所以value是一个prop类型的特性；而不一定定义了label这个prop，label是一个非prop类型的特性。<strong>非prop的特性，会自动添加到组件的根元素上。</strong></p>
+<h3 id="替换-合并已有的特性"><a href="#替换-合并已有的特性" class="headerlink" title="替换/合并已有的特性"></a>替换/合并已有的特性</h3><p>假设有一个自定义的<code>bootstrap-date-input</code>组件，模板为：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"date"</span> <span class="attr">class</span>=<span class="string">"form-control"</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>如果外部使用的时候，加了下面的特性：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bootstrap-date-input</span></span></span><br><span class="line"><span class="tag">  <span class="attr">data-date-picker</span>=<span class="string">"activated"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">class</span>=<span class="string">"date-picker-theme-dark"</span></span></span><br><span class="line"><span class="tag">&gt;</span><span class="tag">&lt;/<span class="name">bootstrap-date-input</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>在外部使用组件时，附加了class这个特性，同时组件内部也有自带的class特性。<strong>对于大部分特性，如果同时存在于：外部使用的组件元素和组件定义内部的根元素，那么外部特性值会覆盖内部根元素上定义的值，比如<code>type=&quot;text&quot;</code>如果附加到外部使用的组件元素上，组件内部的<code>type=&quot;date&quot;</code>就会被替换掉；class和style除外，vue会采用合并的机制，保证这两个特性的内外部值都能存在。</strong></p>
+<h3 id="禁用非prop特性继承"><a href="#禁用非prop特性继承" class="headerlink" title="禁用非prop特性继承"></a>禁用非prop特性继承</h3><p>假如不想根元素，自动继承非prop的特性，可以将组件定义的<code>inheritAttrs</code>设置为false。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Vue.component(<span class="string">'my-component'</span>, &#123;</span><br><span class="line">  inheritAttrs: <span class="literal">false</span>,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>根元素不想继承的特性，可以转移到需要的子元素上面去，这对于编写更加与标准html元素具备一致性的页面组件很有意义：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Vue.component(<span class="string">'base-input'</span>, &#123;</span><br><span class="line">  inheritAttrs: <span class="literal">false</span>,</span><br><span class="line">  props: [<span class="string">'label'</span>, <span class="string">'value'</span>],</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;label&gt;</span></span><br><span class="line"><span class="string">      &#123;&#123; label &#125;&#125;</span></span><br><span class="line"><span class="string">      &lt;input</span></span><br><span class="line"><span class="string">        v-bind="$attrs"</span></span><br><span class="line"><span class="string">        v-bind:value="value"</span></span><br><span class="line"><span class="string">        v-on:input="$emit('input', $event.target.value)"</span></span><br><span class="line"><span class="string">      &gt;</span></span><br><span class="line"><span class="string">    &lt;/label&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>这样编写出来的自定义组件，在使用起来更像在使用原生元素一样：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">base-input</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-model</span>=<span class="string">"username"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">required</span></span></span><br><span class="line"><span class="tag">  <span class="attr">placeholder</span>=<span class="string">"Enter your username"</span></span></span><br><span class="line"><span class="tag">&gt;</span><span class="tag">&lt;/<span class="name">base-input</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>注意：class与style始终会作用到自定义组件的根元素上，即使设置了<code>inheritAttrs: false</code>。</p>
+<h2 id="自定义事件"><a href="#自定义事件" class="headerlink" title="自定义事件"></a>自定义事件</h2><blockquote>
+<p>不同于组件和prop，自定义组件的事件名不存在任何自动化的大小写转换；所以自定义事件名官方推荐始终用kebab-case 的事件名，因为camelCase的事件名如myEvent，在模板中监听的时候<code>@myEvent</code>，如果模板是在html中，会被自动转为小写：<code>@myevent</code>，从而导致监听失败。</p>
+</blockquote>
+<h2 id="自定义组件的v-model"><a href="#自定义组件的v-model" class="headerlink" title="自定义组件的v-model"></a>自定义组件的v-model</h2><p>v-model需要用到一个<code>prop</code>和<code>event</code>，默认值是<code>value</code>和<code>input</code>，可以在定义Vue组件的时候，指定新的名称：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">checkbox</span> <span class="attr">v-model</span>=<span class="string">"agree"</span> @<span class="attr">model</span>=<span class="string">"showModel"</span> <span class="attr">label</span>=<span class="string">"是否同意"</span>&gt;</span><span class="tag">&lt;/<span class="name">checkbox</span>&gt;</span>&#123;&#123;agree&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">  Vue.component(<span class="string">'checkbox'</span>, &#123;</span></span><br><span class="line"><span class="javascript">    props: [<span class="string">'checked'</span>, <span class="string">'label'</span>],</span></span><br><span class="line">    model: &#123;</span><br><span class="line"><span class="javascript">      prop: <span class="string">'checked'</span>,</span></span><br><span class="line"><span class="javascript">      event: <span class="string">'model'</span></span></span><br><span class="line">    &#125;,</span><br><span class="line">    template: `</span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">:checked</span>=<span class="string">"checked"</span> @<span class="attr">change</span>=<span class="string">"$emit('model',$event.target.checked)"</span>&gt;</span>&#123;&#123;label&#125;&#125;<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span><br><span class="line">    `</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el: <span class="string">'#vue'</span>,</span></span><br><span class="line">    data: &#123;</span><br><span class="line"><span class="javascript">      agree: <span class="literal">true</span></span></span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">      showModel()&#123;</span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'model event'</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="原生事件绑定到组件"><a href="#原生事件绑定到组件" class="headerlink" title="原生事件绑定到组件"></a>原生事件绑定到组件</h3><p>如果要在自定义组件元素上，监听原生事件，可以使用.native修饰符，如：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">checkbox</span> @<span class="attr">click.native</span>=<span class="string">"testClick"</span> <span class="attr">v-model</span>=<span class="string">"agree"</span> @<span class="attr">model</span>=<span class="string">"showModel"</span> <span class="attr">label</span>=<span class="string">"是否同意"</span>&gt;</span><span class="tag">&lt;/<span class="name">checkbox</span>&gt;</span>&#123;&#123;agree&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>@click.native如果没有加.native，这个监听是不会生效的。自定义组件的原生事件，是在自定义组件的根元素上监听的。下面这个例子，会发现click这个原生事件是能监听到的，但是focus这个事件不会监听到：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">checkbox</span> @<span class="attr">click.native</span>=<span class="string">"testNativeClick"</span> @<span class="attr">focus.native</span>=<span class="string">"testNativeFocus"</span> <span class="attr">v-model</span>=<span class="string">"agree"</span> @<span class="attr">model</span>=<span class="string">"showModel"</span> <span class="attr">label</span>=<span class="string">"是否同意"</span>&gt;</span><span class="tag">&lt;/<span class="name">checkbox</span>&gt;</span>&#123;&#123;agree&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">  Vue.component(<span class="string">'checkbox'</span>, &#123;</span></span><br><span class="line"><span class="javascript">    props: [<span class="string">'checked'</span>, <span class="string">'label'</span>],</span></span><br><span class="line">    model: &#123;</span><br><span class="line"><span class="javascript">      prop: <span class="string">'checked'</span>,</span></span><br><span class="line"><span class="javascript">      event: <span class="string">'model'</span></span></span><br><span class="line">    &#125;,</span><br><span class="line">    template: `</span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">:checked</span>=<span class="string">"checked"</span> @<span class="attr">change</span>=<span class="string">"$emit('model',$event.target.checked)"</span>&gt;</span>&#123;&#123;label&#125;&#125;<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span><br><span class="line">    `</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el: <span class="string">'#vue'</span>,</span></span><br><span class="line">    data: &#123;</span><br><span class="line"><span class="javascript">      agree: <span class="literal">true</span></span></span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">      showModel()&#123;</span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'model event'</span>);</span></span><br><span class="line">      &#125;,</span><br><span class="line">      testNativeClick()&#123;</span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'native click'</span>);</span></span><br><span class="line">      &#125;,</span><br><span class="line">      testNativeFocus()&#123;</span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'native focus'</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这是因为这个组件的根元素是label，不支持focus事件。为了让focus事件能够在自定义组件上监听到，需要把focus事件的监听，添加到能被监听到的元素上，也就是内部的checkbox元素。Vue提供了一个<code>$listeners</code>属性，它是一个对象，里面包含了作用在这个组件上的所有监听器(不包含带.native修饰符的事件)。可以用下面的办法把父级响应不了的事件监听，移动到内部元素上：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">checkbox</span> @<span class="attr">click</span>=<span class="string">"testNativeClick"</span> @<span class="attr">focus</span>=<span class="string">"testNativeFocus"</span> <span class="attr">v-model</span>=<span class="string">"agree"</span> @<span class="attr">model</span>=<span class="string">"showModel"</span> <span class="attr">label</span>=<span class="string">"是否同意"</span>&gt;</span><span class="tag">&lt;/<span class="name">checkbox</span>&gt;</span>&#123;&#123;agree&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">  Vue.component(<span class="string">'checkbox'</span>, &#123;</span></span><br><span class="line"><span class="javascript">    props: [<span class="string">'checked'</span>, <span class="string">'label'</span>],</span></span><br><span class="line">    model: &#123;</span><br><span class="line"><span class="javascript">      prop: <span class="string">'checked'</span>,</span></span><br><span class="line"><span class="javascript">      event: <span class="string">'model'</span></span></span><br><span class="line">    &#125;,</span><br><span class="line">    computed: &#123;</span><br><span class="line">      checkboxListeners()&#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> events = [<span class="string">'focus'</span>, <span class="string">'click'</span>, <span class="string">'change'</span>];</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="built_in">Object</span>.fromEntries(events.filter(<span class="function"><span class="params">e</span>=&gt;</span>!!<span class="keyword">this</span>.$listeners[e]).map(<span class="function"><span class="params">e</span>=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">return</span> [e,<span class="keyword">this</span>.$listeners[e]];</span></span><br><span class="line">        &#125;));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    template: `</span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-on</span>=<span class="string">"checkboxListeners"</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">:checked</span>=<span class="string">"checked"</span> @<span class="attr">change</span>=<span class="string">"$emit('model',$event.target.checked)"</span>&gt;</span>&#123;&#123;label&#125;&#125;<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span><br><span class="line">    `</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el: <span class="string">'#vue'</span>,</span></span><br><span class="line">    data: &#123;</span><br><span class="line"><span class="javascript">      agree: <span class="literal">true</span></span></span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">      showModel()&#123;</span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'model event'</span>);</span></span><br><span class="line">      &#125;,</span><br><span class="line">      testNativeClick()&#123;</span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'native click'</span>);</span></span><br><span class="line">      &#125;,</span><br><span class="line">      testNativeFocus()&#123;</span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'native focus'</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这个例子中去掉了.native修饰符，这样$listeners属性就能包含click和focus两个事件，然后添加了一个计算属性：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">checkboxListeners()&#123;</span><br><span class="line">  <span class="keyword">let</span> events = [<span class="string">'focus'</span>, <span class="string">'click'</span>, <span class="string">'change'</span>];</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.fromEntries(events.filter(<span class="function"><span class="params">e</span>=&gt;</span>!!<span class="keyword">this</span>.$listeners[e]).map(<span class="function"><span class="params">e</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> [e,<span class="keyword">this</span>.$listeners[e]];</span><br><span class="line">  &#125;));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个计算属性试图从父级的$listeners那里拿到<code>focus click change</code>这几个原生事件的监听（没有就不拿），并组合成一个新对象，然后通过<code>v-on=&quot;checkboxListeners&quot;</code>把新的事件监听对象全部附加到内部的checkbox元素上。这样<code>focus change</code>这种在自定义组件根元素label上监听不到的事件，也能监听到了。</p>
+<h3 id="sync修饰符"><a href="#sync修饰符" class="headerlink" title=".sync修饰符"></a>.sync修饰符</h3><p>自定义组件的prop是不允许在组件内部修改的，数据流只允许从上往下流动，如果某个组件内部的逻辑导致需要修改prop，Vue建议的方式是先派发一个：<code>update:propName</code>的事件，然后父级接收这个事件，同步数据，举例如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//title是一个prop,组件内派发update:title事件，父级接收title这个prop的最新值</span></span><br><span class="line"><span class="keyword">this</span>.$emit(<span class="string">'update:title'</span>, newTitle)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--父级接收update:title事件，并同步本地的数据，本地数据同步后，会向下流动更新组件title这个prop值，从而保证了数据流动的一致性 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">text-document</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-bind:title</span>=<span class="string">"doc.title"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-on:update:title</span>=<span class="string">"doc.title = $event"</span></span></span><br><span class="line"><span class="tag">&gt;</span><span class="tag">&lt;/<span class="name">text-document</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个模式有了一个简写的方式，就是使用.sync修饰符：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">text-document</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-bind:title.sync</span>=<span class="string">"doc.title"</span></span></span><br><span class="line"><span class="tag">&gt;</span><span class="tag">&lt;/<span class="name">text-document</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>有了<code>.sync</code>修饰符，等于自动帮你做了<code>v-on:update:title=&quot;doc.title = $event&quot;</code>这个逻辑。但是组件内部<code>update:title</code>事件还是少不了的。例子如下：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">blog-post</span> <span class="attr">:post.sync</span>=<span class="string">"doc"</span>&gt;</span><span class="tag">&lt;/<span class="name">blog-post</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">  Vue.component(<span class="string">'blog-post'</span>, &#123;</span></span><br><span class="line">    props: &#123;</span><br><span class="line">      post: &#123;</span><br><span class="line"><span class="javascript">        type: <span class="built_in">Object</span></span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    template: `</span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;&#123;post.title&#125;&#125;<span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"text-align:right"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> @<span class="attr">click.prevent.stop</span>=<span class="string">"next"</span>&gt;</span>下一篇<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">    `,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      next()&#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">"update:post"</span>, &#123;</span></span><br><span class="line"><span class="javascript">          title: <span class="string">'ES 入门02'</span></span></span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el: <span class="string">'#vue'</span>,</span></span><br><span class="line">    data: &#123;</span><br><span class="line">      doc: &#123;</span><br><span class="line"><span class="javascript">        title: <span class="string">'ES6 入门01'</span></span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>如果有多个prop，都需要做.sync，可以把多个prop写到一个对象里面，然后对象整体进行bind和sync：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">text-document</span> <span class="attr">v-bind.sync</span>=<span class="string">"propsCombinedObj"</span>&gt;</span><span class="tag">&lt;/<span class="name">text-document</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>举例如下：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">blog-post</span> <span class="attr">v-bind.sync</span>=<span class="string">"doc"</span>&gt;</span><span class="tag">&lt;/<span class="name">blog-post</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">  Vue.component(<span class="string">'blog-post'</span>, &#123;</span></span><br><span class="line">    props: &#123;</span><br><span class="line">      title: &#123;</span><br><span class="line"><span class="javascript">        type: <span class="built_in">String</span></span></span><br><span class="line">      &#125;,</span><br><span class="line">      id: &#123;</span><br><span class="line"><span class="javascript">        type: <span class="built_in">Number</span></span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    template: `</span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;&#123;title&#125;&#125;<span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"text-align:right"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> @<span class="attr">click.prevent.stop</span>=<span class="string">"next"</span>&gt;</span>下一篇<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">    `,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      next()&#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">"update:title"</span>, <span class="string">'ES 入门0'</span> + (<span class="keyword">this</span>.id+<span class="number">1</span>));</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">"update:id"</span>, <span class="keyword">this</span>.id+<span class="number">1</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el: <span class="string">'#vue'</span>,</span></span><br><span class="line">    data: &#123;</span><br><span class="line">      doc: &#123;</span><br><span class="line"><span class="javascript">        title: <span class="string">'ES6 入门01'</span>,</span></span><br><span class="line">        id: 1</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这个方式感觉还怪麻烦的，尤其是这个地方：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$emit(<span class="string">"update:title"</span>, <span class="string">'ES 入门0'</span> + (<span class="keyword">this</span>.id+<span class="number">1</span>));</span><br><span class="line"><span class="keyword">this</span>.$emit(<span class="string">"update:id"</span>, <span class="keyword">this</span>.id+<span class="number">1</span>);</span><br></pre></td></tr></table></figure></p>
+<p>用的时候还得考虑哪种用法更加简洁才行。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue指南要点笔记/" rel="tag"># Vue指南要点笔记</a>
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/08/Vue指南的要点笔记（五）/" rel="next" title="Vue指南的要点笔记（五）">
+                <i class="fa fa-chevron-left"></i> Vue指南的要点笔记（五）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#非prop的特性"><span class="nav-number">1.</span> <span class="nav-text">非prop的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#替换-合并已有的特性"><span class="nav-number">1.1.</span> <span class="nav-text">替换/合并已有的特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁用非prop特性继承"><span class="nav-number">1.2.</span> <span class="nav-text">禁用非prop特性继承</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义事件"><span class="nav-number">2.</span> <span class="nav-text">自定义事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义组件的v-model"><span class="nav-number">3.</span> <span class="nav-text">自定义组件的v-model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原生事件绑定到组件"><span class="nav-number">3.1.</span> <span class="nav-text">原生事件绑定到组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sync修饰符"><span class="nav-number">3.2.</span> <span class="nav-text">.sync修饰符</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
