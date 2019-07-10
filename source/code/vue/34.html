@@ -14,22 +14,22 @@
 
 <script type="text/javascript">
     Vue.component('custom-input', {
-      props: ['value'],
-      data(){
-          return {
-              innerValue: this.value
-          };
-      },
-      template: `
+        props: ['value'],
+        data() {
+            return {
+                innerValue: this.value
+            };
+        },
+        template: `
         <input
           v-model="innerValue"
         >
       `,
-      watch: {
-          innerValue(val){
-              this.$emit('input', val);
-          }
-      }
+        watch: {
+            innerValue(val) {
+                this.$emit('input', val);
+            }
+        }
     });
 
     let vue = new Vue({

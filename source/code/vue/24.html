@@ -6,10 +6,12 @@
 </head>
 <body>
 <div id="vue">
-    <a href="/" @click.self.prevent style="display: block; border: 1px solid #ccc; width: 200px; height: 200px;padding-top: 100px;">
+    <a href="/" @click.self.prevent
+       style="display: block; border: 1px solid #ccc; width: 200px; height: 200px;padding-top: 100px;">
         <span>click me won't prevent</span>
     </a>
-    <a href="/" @click.prevent.self style="display: block; border: 1px solid #ccc; width: 200px; height: 200px;padding-top: 100px;">
+    <a href="/" @click.prevent.self
+       style="display: block; border: 1px solid #ccc; width: 200px; height: 200px;padding-top: 100px;">
         <span>click me would prevent</span>
     </a>
 </div>
@@ -17,8 +19,7 @@
 <script type="text/javascript">
     let vue = new Vue({
         el: '#vue',
-        data: {
-        }
+        data: {}
     });
 </script>
 </body>

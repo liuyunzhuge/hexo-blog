@@ -28,28 +28,28 @@
     </style>
 </head>
 <body>
-    <div id="box" class="box"></div>
-    <form action="" id="form" onsubmit="return false;">
-        <input type="number" id="duration" value="0.6">
-        <label ><input type="radio" name="position" value="start">position: start</label>
-        <label ><input type="radio" name="position" value="end" checked="">position: end</label>
-        <button type="button" onclick="start()">开始</button>
-        <button type="button" onclick="stop()">停止</button>
-    </form>
+<div id="box" class="box"></div>
+<form action="" id="form" onsubmit="return false;">
+    <input type="number" id="duration" value="0.6">
+    <label><input type="radio" name="position" value="start">position: start</label>
+    <label><input type="radio" name="position" value="end" checked="">position: end</label>
+    <button type="button" onclick="start()">开始</button>
+    <button type="button" onclick="stop()">停止</button>
+</form>
 
-    <script type="text/javascript">
-        let box = document.getElementById("box");
-        let form = document.getElementById("form");
+<script type="text/javascript">
+    let box = document.getElementById("box");
+    let form = document.getElementById("form");
 
-        function start(){
-            box.style.animationDuration = parseFloat(form.duration.value) + 's';
-            box.style.animationTimingFunction = 'steps(6, '+form.position.value+')';
-            box.classList.add('move');
-        }
+    function start() {
+        box.style.animationDuration = parseFloat(form.duration.value) + 's';
+        box.style.animationTimingFunction = 'steps(6, ' + form.position.value + ')';
+        box.classList.add('move');
+    }
 
-        function stop(){
-            box.classList.remove('move');
-        }
-    </script>
+    function stop() {
+        box.classList.remove('move');
+    }
+</script>
 </body>
 </html>

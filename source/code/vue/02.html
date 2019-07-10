@@ -11,13 +11,13 @@
 
 <script type="text/javascript">
     let obj = {
-            msg: new Date(),
-            enabled: true
-        };
+        msg: new Date(),
+        enabled: true
+    };
     let vue = new Vue({
         data: obj,
         beforeCreate() {
-            this.$on('hook:created', ()=>{
+            this.$on('hook:created', () => {
                 console.log('another created hook');
                 //another created hook
             })

@@ -22,14 +22,14 @@
             }
         },
         created() {
-            setTimeout(()=>{
+            setTimeout(() => {
                 this.course.teacher = Object.assign({}, this.course.teacher, {
                     name: 'php',
                     site: 'http://demo.com'
                 });
                 //console.log(this.course);
 
-                setTimeout(()=>{
+                setTimeout(() => {
                     this.course.teacher.site = '3333';
                 }, 1000);
             }, 1000);

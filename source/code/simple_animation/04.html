@@ -64,10 +64,10 @@
 </head>
 <body>
 <div id="container">
-<a href="javascript:;" class="box box1">1</a>
-<a href="javascript:;" class="box box2">2</a>
-<a href="javascript:;" class="box box3">3</a>
-<a href="javascript:;" class="box box4">4</a>
+    <a href="javascript:;" class="box box1">1</a>
+    <a href="javascript:;" class="box box2">2</a>
+    <a href="javascript:;" class="box box3">3</a>
+    <a href="javascript:;" class="box box4">4</a>
 </div>
 <div>
     <button type="button" onclick="left()">left</button>
@@ -78,10 +78,11 @@
     var value = 0;
 
     function left() {
-        container.style.transform = 'rotateY(' + (value -= 90) +'deg)';
+        container.style.transform = 'rotateY(' + (value -= 90) + 'deg)';
     }
+
     function right() {
-        container.style.transform = 'rotateY(' + (value += 90) +'deg)';
+        container.style.transform = 'rotateY(' + (value += 90) + 'deg)';
     }
 </script>
 </body>

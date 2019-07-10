@@ -12,23 +12,23 @@
 
 <script type="text/javascript">
     Vue.component('blog-post', {
-      props: {
-          title: {
-              type: String
-          },
-          id: {
-              type: Number
-          }
-      },
-      template: `
+        props: {
+            title: {
+                type: String
+            },
+            id: {
+                type: Number
+            }
+        },
+        template: `
         <div>{{title}}<div style="text-align:right"><a href="#" @click.prevent.stop="next">下一篇</a></div></div>
       `,
-      methods:{
-          next(){
-              this.$emit("update:title", 'ES 入门0' + (this.id+1));
-              this.$emit("update:id", this.id+1);
-          }
-      }
+        methods: {
+            next() {
+                this.$emit("update:title", 'ES 入门0' + (this.id + 1));
+                this.$emit("update:id", this.id + 1);
+            }
+        }
     });
 
     let vue = new Vue({

@@ -14,8 +14,8 @@
 
 <script type="text/javascript">
     Vue.component('custom-input', {
-      props: ['value'],
-      template: `
+        props: ['value'],
+        template: `
         <input
           v-bind:value="value"
           v-on:input="$emit('input', $event.target.value)"

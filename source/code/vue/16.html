@@ -22,12 +22,12 @@
             }
         },
         created() {
-            setTimeout(()=>{
+            setTimeout(() => {
                 this.course.teacher.name = 'php';
                 this.$set(this.course.teacher, 'site', 'http://demo.com');
                 //console.log(this.course);
 
-                setTimeout(()=>{
+                setTimeout(() => {
                     this.course.teacher.site = '3333';
                 }, 1000);
             }, 1000);

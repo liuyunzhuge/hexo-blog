@@ -42,31 +42,31 @@
 
         #box1 {
             background-color: #f77333;
-            transform: translate(0, 0) rotateY(0) ;
+            transform: translate(0, 0) rotateY(0);
         }
 
         #box2 {
             background-color: green;
-            transform: translate(0, 0) rotateY(-90deg) ;
+            transform: translate(0, 0) rotateY(-90deg);
         }
 
         #box3 {
             background-color: silver;
-            transform: translate(0, 0) rotateY(-180deg) ;
+            transform: translate(0, 0) rotateY(-180deg);
         }
 
         #box4 {
             background-color: blue;
-            transform: translate(0, 0) rotateY(90deg) ;
+            transform: translate(0, 0) rotateY(90deg);
         }
     </style>
 </head>
 <body>
 <div id="container">
-<a href="javascript:;" id="box1" class="box">1</a>
-<a href="javascript:;" id="box2" class="box">2</a>
-<a href="javascript:;" id="box3" class="box">3</a>
-<a href="javascript:;" id="box4" class="box">4</a>
+    <a href="javascript:;" id="box1" class="box">1</a>
+    <a href="javascript:;" id="box2" class="box">2</a>
+    <a href="javascript:;" id="box3" class="box">3</a>
+    <a href="javascript:;" id="box4" class="box">4</a>
 </div>
 <div>
     <button type="button" onclick="left()">left</button>
@@ -87,17 +87,17 @@
 
     function left() {
         let keys = Object.keys(rotateMap);
-        for(let k of keys) {
-            rotateMap[k]-=90;
-            window['box'+k].style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
+        for (let k of keys) {
+            rotateMap[k] -= 90;
+            window['box' + k].style.transform = 'translate(0, 0) rotateY(' + rotateMap[k] + 'deg)';
         }
     }
 
     function right() {
         let keys = Object.keys(rotateMap);
-        for(let k of keys) {
-            rotateMap[k]+=90;
-            window['box'+k].style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
+        for (let k of keys) {
+            rotateMap[k] += 90;
+            window['box' + k].style.transform = 'translate(0, 0) rotateY(' + rotateMap[k] + 'deg)';
         }
     }
 </script>

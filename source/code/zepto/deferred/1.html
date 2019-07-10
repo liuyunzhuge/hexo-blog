@@ -13,12 +13,12 @@
 
         let counter = 1;
         let timer = setInterval(function () {
-            if(counter > n) {
-                deferred.resolve("success", {data: [1,2,3]});
+            if (counter > n) {
+                deferred.resolve("success", {data: [1, 2, 3]});
                 return clearInterval(timer);
             }
 
-            if(counter == (n - 1) && (Math.random() * 10 > 7)) {
+            if (counter == (n - 1) && (Math.random() * 10 > 7)) {
                 deferred.reject("fail", new Error('random number gt 7'));
                 return clearInterval(timer);
             }
@@ -32,15 +32,15 @@
 
     let deferred = createAsyncTask(5);
 
-    deferred.done(function(state, data){
+    deferred.done(function (state, data) {
         console.log(state, data);
     });
 
-    deferred.fail(function(state, error){
+    deferred.fail(function (state, error) {
         console.error(state, error);
     });
 
-    deferred.progress(function(state, progress){
+    deferred.progress(function (state, progress) {
         console.log(state, progress);
     });
 

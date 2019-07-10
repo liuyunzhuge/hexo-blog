@@ -13,21 +13,21 @@
 
 <script type="text/javascript">
     Vue.component('blog-post', {
-      props: {
-          post: {
-              type: Object
-          }
-      },
-      template: `
+        props: {
+            post: {
+                type: Object
+            }
+        },
+        template: `
         <div>{{post.title}}<div style="text-align:right"><a href="#" @click.prevent.stop="next">下一篇</a></div></div>
       `,
-      methods:{
-          next(){
-              this.$emit("update:post", {
-                  title: 'ES 入门02'
-              });
-          }
-      }
+        methods: {
+            next() {
+                this.$emit("update:post", {
+                    title: 'ES 入门02'
+                });
+            }
+        }
     });
 
     let vue = new Vue({

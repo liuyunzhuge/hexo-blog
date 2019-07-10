@@ -8,25 +8,27 @@
 </head>
 <body>
 <div id="vue">
-    <checkbox @click="testNativeClick" @focus="testNativeFocus" v-model="agree" @model="showModel" label="是否同意"></checkbox>{{agree}}
+    <checkbox @click="testNativeClick" @focus="testNativeFocus" v-model="agree" @model="showModel"
+              label="是否同意"></checkbox>
+    {{agree}}
 </div>
 
 <script type="text/javascript">
     Vue.component('checkbox', {
-      props: ['checked', 'label'],
-      model: {
-          prop: 'checked',
-          event: 'model'
-      },
-      computed: {
-          checkboxListeners(){
-              let events = ['focus', 'click', 'change'];
-              return Object.fromEntries(events.filter(e=>!!this.$listeners[e]).map(e=>{
-                  return [e,this.$listeners[e]];
-              }));
-          }
-      },
-      template: `
+        props: ['checked', 'label'],
+        model: {
+            prop: 'checked',
+            event: 'model'
+        },
+        computed: {
+            checkboxListeners() {
+                let events = ['focus', 'click', 'change'];
+                return Object.fromEntries(events.filter(e => !!this.$listeners[e]).map(e => {
+                    return [e, this.$listeners[e]];
+                }));
+            }
+        },
+        template: `
         <label><input v-on="checkboxListeners" type="checkbox" :checked="checked" @change="$emit('model',$event.target.checked)">{{label}}</label>
       `
     });
@@ -37,13 +39,13 @@
             agree: true
         },
         methods: {
-            showModel(){
+            showModel() {
                 console.log('model event');
             },
-            testNativeClick(){
+            testNativeClick() {
                 console.log('native click');
             },
-            testNativeFocus(){
+            testNativeFocus() {
                 console.log('native focus');
             }
         }

@@ -11,13 +11,13 @@
 
 <script type="text/javascript">
     let obj = {
-            msg: new Date(),
-            enabled: true
-        };
+        msg: new Date(),
+        enabled: true
+    };
     let vue = new Vue({
         data: obj,
         beforeCreate() {
-            console.log('beforeCreate', this.$el, this.$data, this.$data === obj );
+            console.log('beforeCreate', this.$el, this.$data, this.$data === obj);
             //beforeCreate undefined undefined false
 
             console.log(this.updateMsg);
@@ -36,14 +36,14 @@
             console.log(this.$refs.content);
             //undefined
         },
-        beforeMount(){
+        beforeMount() {
             console.log('beforeMount', this.$el);
             //beforeMount div#vue
 
             console.log(this.$refs.content);
             //undefined
         },
-        mounted(){
+        mounted() {
             console.log('mounted', this.$el);
             //mounted div#vue
 
@@ -51,7 +51,7 @@
             //<p></p>
         },
         methods: {
-            updateMsg(){
+            updateMsg() {
                 this.msg = new Date();
             }
         }

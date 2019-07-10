@@ -11,37 +11,37 @@
 
 <script type="text/javascript">
     let obj = {
-            msg: new Date() + "",
-            enabled: true
-        };
+        msg: new Date() + "",
+        enabled: true
+    };
     let vue = new Vue({
         data: obj,
         watch: {
-            msg(){
+            msg() {
                 console.log('msg changed in watch property');
             }
         },
         computed: {
-            reverseMsg(){
+            reverseMsg() {
                 let r = this.msg.split('').reverse().join('');
                 console.log('reverse msg changed');
                 return r;
             }
         },
         created() {
-            this.$watch('msg', ()=>{
+            this.$watch('msg', () => {
                 console.log('msg changed from created');
             });
         },
-        beforeMount(){
+        beforeMount() {
         },
-        mounted(){
+        mounted() {
             this.msg = new Date() + "1";
         },
-        beforeUpdate(){
+        beforeUpdate() {
             console.log('beforeUpdate');
         },
-        updated(){
+        updated() {
             console.log('updated');
         }
     });

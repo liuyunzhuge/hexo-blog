@@ -4,10 +4,11 @@
     <title></title>
     <meta charset="utf-8">
     <style type="text/css">
-        body{
+        body {
             margin: 40px auto;
             width: 1024px;
         }
+
         .container {
             position: relative;
             width: 100px;
@@ -67,7 +68,7 @@
             animation: move;
         }
 
-        @keyframes move{
+        @keyframes move {
             0% {
                 left: 0;
             }
@@ -80,73 +81,73 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div id="target_start" class="target box">start</div>
+<div class="container">
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div id="target_start" class="target box">start</div>
+</div>
+<div class="container">
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div id="target_end" class="target box">end</div>
+</div>
+<div class="container">
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div id="target_ease" class="target box">ease</div>
+</div>
+<form action="" id="form" onsubmit="return false;">
+    <div>时长：<input type="number" name="duration" value="6"></div>
+    <div>动画次数：<input type="text" name="iterationCount" value="infinite"></div>
+    <div>方向：
+        <select name="direction">
+            <option value="normal" selected="">normal</option>
+            <option value="alternate">alternate</option>
+            <option value="reverse">reverse</option>
+            <option value="alternate-reverse">alternate-reverse</option>
+        </select>
     </div>
-    <div class="container">
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div id="target_end" class="target box">end</div>
-    </div>
-    <div class="container">
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div class="holder box"></div>
-        <div id="target_ease" class="target box">ease</div>
-    </div>
-    <form action="" id="form" onsubmit="return false;">
-        <div>时长：<input type="number" name="duration" value="6"></div>
-        <div>动画次数：<input type="text" name="iterationCount" value="infinite"></div>
-        <div>方向：
-            <select name="direction">
-                <option value="normal" selected="">normal</option>
-                <option value="alternate">alternate</option>
-                <option value="reverse">reverse</option>
-                <option value="alternate-reverse">alternate-reverse</option>
-            </select>
-        </div>
-        <button type="button" onclick="start()">开始</button>
-        <button type="button" onclick="stop()">停止</button>
-    </form>
+    <button type="button" onclick="start()">开始</button>
+    <button type="button" onclick="stop()">停止</button>
+</form>
 
-    <script type="text/javascript">
-        let target_start = document.getElementById("target_start");
-        let target_end = document.getElementById("target_end");
-        let target_ease = document.getElementById("target_ease");
-        let form = document.getElementById("form");
+<script type="text/javascript">
+    let target_start = document.getElementById("target_start");
+    let target_end = document.getElementById("target_end");
+    let target_ease = document.getElementById("target_ease");
+    let form = document.getElementById("form");
 
-        function addAnimation(box, timingFunction, duration, iterationCount, direction) {
-            box.style.animationDuration = parseFloat(duration) + 's';
-            box.style.animationTimingFunction = timingFunction;
-            box.style.animationIterationCount = iterationCount;
-            box.style.animationDirection = direction;
-            box.classList.add('move');
-        }
+    function addAnimation(box, timingFunction, duration, iterationCount, direction) {
+        box.style.animationDuration = parseFloat(duration) + 's';
+        box.style.animationTimingFunction = timingFunction;
+        box.style.animationIterationCount = iterationCount;
+        box.style.animationDirection = direction;
+        box.classList.add('move');
+    }
 
-        function start(){
-            addAnimation(target_start, 'steps(6, start)', form.duration.value, form.iterationCount.value, form.direction.value);
-            addAnimation(target_end, 'steps(6, end)', form.duration.value, form.iterationCount.value, form.direction.value);
-            addAnimation(target_ease, 'ease', form.duration.value, form.iterationCount.value, form.direction.value);
-        }
+    function start() {
+        addAnimation(target_start, 'steps(6, start)', form.duration.value, form.iterationCount.value, form.direction.value);
+        addAnimation(target_end, 'steps(6, end)', form.duration.value, form.iterationCount.value, form.direction.value);
+        addAnimation(target_ease, 'ease', form.duration.value, form.iterationCount.value, form.direction.value);
+    }
 
-        function stop(){
-            target_start.classList.remove('move');
-            target_end.classList.remove('move');
-            target_ease.classList.remove('move');
-        }
-    </script>
+    function stop() {
+        target_start.classList.remove('move');
+        target_end.classList.remove('move');
+        target_ease.classList.remove('move');
+    }
+</script>
 </body>
 </html>

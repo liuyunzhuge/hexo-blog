@@ -26,12 +26,12 @@
             active: 1
         },
         methods: {
-            switchTab(event){
+            switchTab(event) {
                 //event is a dom event
                 let ul = event.target.parentNode.parentNode;
                 let li = event.target.parentNode;
-                for(let [index, child] of [].slice.call(ul.children).entries()) {
-                    if(li === child) {
+                for (let [index, child] of [].slice.call(ul.children).entries()) {
+                    if (li === child) {
                         this.active = index + 1;
                     }
                 }
