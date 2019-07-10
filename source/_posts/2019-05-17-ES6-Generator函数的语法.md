@@ -18,11 +18,11 @@ Generator函数是一种函数，不过是特殊的。以下是这两种函数�
 <!-- more -->
 ```js
 function * genFunc(){
-	yield 1;
+    yield 1;
 }
 
 function commonFunc() {
-	return 1;
+    return 1;
 }
 
 console.log(genFunc());//genFunc {<suspended>}
@@ -44,19 +44,19 @@ next方法的返回值，包含了value和done属性，value属性用来存放yi
 Generator函数简单举例如下：
 ```js
 function* genFunc() {
-	//start
-	console.log('range 0');
-	yield (Math.random() * 10) > 5 ? 'first lucky' : 'first unlucky';
+    //start
+    console.log('range 0');
+    yield (Math.random() * 10) > 5 ? 'first lucky' : 'first unlucky';
 
-	console.log('range 1');
-	yield (Math.random() * 10) > 5 ? 'second lucky' : 'second unlucky';
-	
-	console.log('range 2');
-	yield (Math.random() * 10) > 5 ? 'third lucky' : 'third unlucky';
+    console.log('range 1');
+    yield (Math.random() * 10) > 5 ? 'second lucky' : 'second unlucky';
+    
+    console.log('range 2');
+    yield (Math.random() * 10) > 5 ? 'third lucky' : 'third unlucky';
 
-	console.log('range 3');
-	// end
-	return true;
+    console.log('range 3');
+    // end
+    return true;
 }
 
 let gen = genFunc();
@@ -109,13 +109,13 @@ next方法的参数会被传入到Generator函数体内，作为当前执行位�
 * yield表达式可以不出现在Generator函数，这样Generator函数就变成了一个延迟执行的函数
 ```js
 function delayFunc(gen){
-	return function(){
-		return gen.next().value;
-	};
+    return function(){
+        return gen.next().value;
+    };
 }
 
 function *genFunc(x,y,z){
-	return x+y+z;
+    return x+y+z;
 }
 
 let delayGen = delayFunc(genFunc(1,2,3));
@@ -215,7 +215,7 @@ var g = function* () {
   console.log('ready');
   yield 'start';
   try {
-  	console.log('try block');
+      console.log('try block');
   } catch (e) {
     console.log('catch block', e);
   }
@@ -238,7 +238,7 @@ var g = function* () {
   console.log('ready');
   yield 'start';
   try {
-  	console.log('try block');
+      console.log('try block');
   } catch (e) {
     console.log('catch block', e);
   }
@@ -262,8 +262,8 @@ try {
 var g = function* () {
   console.log('ready');
   try {
-  	console.log('try block');
-  	yield 'start';
+      console.log('try block');
+      yield 'start';
   } catch (e) {
     console.log('catch block', e);
   }
@@ -288,7 +288,7 @@ try {
 var g = function* () {
   console.log('ready');
   try {
-  	console.log('try block');
+      console.log('try block');
   } catch (e) {
     console.log('catch block', e);
   }
@@ -320,21 +320,21 @@ throw方法会内部再做一次next方法的处理，也是有道理的。因�
 
 ```js
 let machineFactory = function*(no){
-	let count = 0;
-	while(true) {
-		try {
-			count++;
-			yield `No.${no} has worked ${count} times`;
-		} catch(e) {
-			if(e instanceof NothingImportant) {
-				continue;
-			} else if(e instanceof BigAccident) {
-				break;
-			}
-		}
-	}
+    let count = 0;
+    while(true) {
+        try {
+            count++;
+            yield `No.${no} has worked ${count} times`;
+        } catch(e) {
+            if(e instanceof NothingImportant) {
+                continue;
+            } else if(e instanceof BigAccident) {
+                break;
+            }
+        }
+    }
 
-	return `No.${no} has stopped.`
+    return `No.${no} has stopped.`
 };
 
 class NothingImportant extends Error {
@@ -364,9 +364,9 @@ Generator函数返回的Iterator对象还有一个return实例方法，它调用
 
 ```js
 var genFunc = function* () {
-	yield 'state1';
-	yield 'state2';
-	return 'state3';
+    yield 'state1';
+    yield 'state2';
+    return 'state3';
 };
 
 var gen = genFunc();
@@ -380,13 +380,13 @@ return方法其实也跟Generator函数体的执行位置有关系。调用retur
 
 ```js
 var genFunc = function* () {
-	try {
-		yield 'state1';
-	} finally {
-		yield 'state2';
-		console.log('return after me');
-	}
-	return 'state3';
+    try {
+        yield 'state1';
+    } finally {
+        yield 'state2';
+        console.log('return after me');
+    }
+    return 'state3';
 };
 
 var gen = genFunc();
@@ -402,14 +402,14 @@ console.log(gen.next());
 这个代码等效于：
 ```js
 var genFunc = function* () {
-	try {
-		yield 'state1';
-	} finally {
-		yield 'state2';
-		console.log('return after me');
-		return 'no state';
-	}
-	return 'state3';
+    try {
+        yield 'state1';
+    } finally {
+        yield 'state2';
+        console.log('return after me');
+        return 'no state';
+    }
+    return 'state3';
 };
 
 var gen = genFunc();
@@ -425,15 +425,15 @@ console.log(gen.next());
 
 ```js
 var genFunc = function* () {
-	try {
-		yield 'state1';
-	} catch(e) {
-		yield 'state2';
-	} finally {
-		yield 'state3';
-		console.log('return after me');
-	}
-	return 'state4';
+    try {
+        yield 'state1';
+    } catch(e) {
+        yield 'state2';
+    } finally {
+        yield 'state3';
+        console.log('return after me');
+    }
+    return 'state4';
 };
 
 var gen = genFunc();
@@ -451,14 +451,14 @@ console.log(gen.next());
 
 ```js
 var genFunc = function* () {
-	try {
-		yield 'state1';
-	} finally {
-		yield 'state2';
-		console.log('return after me');
-		yield 'state3';
-	}
-	return 'state4';
+    try {
+        yield 'state1';
+    } finally {
+        yield 'state2';
+        console.log('return after me');
+        yield 'state3';
+    }
+    return 'state4';
 };
 
 var gen = genFunc();
@@ -473,7 +473,7 @@ console.log(gen.return('no state'));
 
 ```js
 var genFunc = function* () {
-	yield 'state1';
+    yield 'state1';
 };
 
 var gen = genFunc();
@@ -493,17 +493,17 @@ console.log(gen.return(3));
 
 ```js
 function *inner(){
-	yield 2;
-	console.log('before inner return');
-	return 3;
+    yield 2;
+    console.log('before inner return');
+    return 3;
 }
 
 function *outer(){
-	yield 1;
-	let ret = yield* inner();
-	console.log('after inner return');
-	yield ret;
-	return 4;
+    yield 1;
+    let ret = yield* inner();
+    console.log('after inner return');
+    yield ret;
+    return 4;
 }
 
 let gen = outer();
@@ -524,20 +524,20 @@ console.log(gen.next());
 当Generator函数作为一个对象的属性部署的时候，Generator函数执行时this指向它所在的对象。
 ```js
 let machineFactory = function*(){
-	while(this.times--) {
-		this.count++;
-		yield `No.${this.no} has worked ${this.count} times`;
-	}
+    while(this.times--) {
+        this.count++;
+        yield `No.${this.no} has worked ${this.count} times`;
+    }
 };
 
 let machine = {
-	count: 0,
-	no: 1,
-	times: 5,
-	[Symbol.iterator]: machineFactory
+    count: 0,
+    no: 1,
+    times: 5,
+    [Symbol.iterator]: machineFactory
 };
 for(let v of machine) {
-	console.log(v);
+    console.log(v);
 }
 
 //No.1 has worked 1 times
@@ -564,20 +564,20 @@ obj.hello() // 'hi!'
 
 ```js
 let machineFactory = function*(){
-	while(this.times--) {
-		this.count++;
-		yield `No.${this.no} has worked ${this.count} times`;
-	}
+    while(this.times--) {
+        this.count++;
+        yield `No.${this.no} has worked ${this.count} times`;
+    }
 };
 
 let machine = machineFactory.call({
-	count: 0,
-	no: 1,
-	times: 5
+    count: 0,
+    no: 1,
+    times: 5
 });
 
 for(let v of machine) {
-	console.log(v);
+    console.log(v);
 }
 
 //No.1 has worked 1 times

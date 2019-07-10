@@ -26,10 +26,10 @@ let与const基本上没区别；只是const声明的是常量，它后面的变�
 var a = [];
 for (let i = 0, tom = {}; i < 10; i++) {
   a[i] = {
-  	sayHi: function(){
-  		console.log('I \'m ' + (i+1));
-  	},
-  	tom: tom
+      sayHi: function(){
+          console.log('I \'m ' + (i+1));
+      },
+      tom: tom
   };
 }
 a[6].sayHi(); // I 'm 7
@@ -40,12 +40,12 @@ console.log(a[5].tom === a[6].tom); // true
 var a = [];
 for (var i = 0, tom = {}; i < 10; i++) {
   a[i] = {
-  	sayHi: (function(i){
-  		return function(){
-	  		console.log('I \'m ' + (i+1));
-	  	}
-  	})(i),
-  	tom: tom
+      sayHi: (function(i){
+          return function(){
+              console.log('I \'m ' + (i+1));
+          }
+      })(i),
+      tom: tom
   };
 }
 a[6].sayHi(); // I 'm 7

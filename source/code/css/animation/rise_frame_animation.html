@@ -1,55 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<meta charset="utf-8">
-	<style type="text/css">
-		.box {
-			width: 98px;
-			height: 103px;
-		}
+    <title></title>
+    <meta charset="utf-8">
+    <style type="text/css">
+        .box {
+            width: 98px;
+            height: 103px;
+        }
 
-		.box.move {
-			background-image: url(./rise_animation_demo.jpg);
-			background-repeat: no-repeat;
-			animation-name: move;
-			animation-iteration-count: infinite;
-		}
+        .box.move {
+            background-image: url(./rise_animation_demo.jpg);
+            background-repeat: no-repeat;
+            animation-name: move;
+            animation-iteration-count: infinite;
+        }
 
-		@keyframes move {
-			from {
-				background-position: 0 0;
-			}
+        @keyframes move {
+            from {
+                background-position: 0 0;
+            }
 
-			to {
-				background-position: -590px 0;
-			}
-		}
-	</style>
+            to {
+                background-position: -590px 0;
+            }
+        }
+    </style>
 </head>
 <body>
-	<div id="box" class="box"></div>
-	<form action="" id="form" onsubmit="return false;">
-		<input type="number" id="duration" value="0.6">
-		<label ><input type="radio" name="position" value="start">position: start</label>
-		<label ><input type="radio" name="position" value="end" checked="">position: end</label>
-		<button type="button" onclick="start()">开始</button>
-		<button type="button" onclick="stop()">停止</button>
-	</form>
+    <div id="box" class="box"></div>
+    <form action="" id="form" onsubmit="return false;">
+        <input type="number" id="duration" value="0.6">
+        <label ><input type="radio" name="position" value="start">position: start</label>
+        <label ><input type="radio" name="position" value="end" checked="">position: end</label>
+        <button type="button" onclick="start()">开始</button>
+        <button type="button" onclick="stop()">停止</button>
+    </form>
 
-	<script type="text/javascript">
-		let box = document.getElementById("box");
-		let form = document.getElementById("form");
+    <script type="text/javascript">
+        let box = document.getElementById("box");
+        let form = document.getElementById("form");
 
-		function start(){
-			box.style.animationDuration = parseFloat(form.duration.value) + 's';
-			box.style.animationTimingFunction = 'steps(6, '+form.position.value+')';
-			box.classList.add('move');
-		}
+        function start(){
+            box.style.animationDuration = parseFloat(form.duration.value) + 's';
+            box.style.animationTimingFunction = 'steps(6, '+form.position.value+')';
+            box.classList.add('move');
+        }
 
-		function stop(){
-			box.classList.remove('move');
-		}
-	</script>
+        function stop(){
+            box.classList.remove('move');
+        }
+    </script>
 </body>
 </html>

@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
 <div id="vue">
-	<custom-input v-model.trim="searchText"></custom-input>
-	<p>{{searchText}}</p>
+    <custom-input v-model.trim="searchText"></custom-input>
+    <p>{{searchText}}</p>
 </div>
 
 <script type="text/javascript">
-	Vue.component('custom-input', {
-	  props: ['value'],
-	  data(){
-	  	return {
-	  		innerValue: this.value
-	  	};
-	  },
-	  template: `
-	    <input
-	      v-model="innerValue"
-	    >
-	  `,
-	  watch: {
-	  	innerValue(val){
-	  		this.$emit('input', val);
-	  	}
-	  }
-	});
+    Vue.component('custom-input', {
+      props: ['value'],
+      data(){
+          return {
+              innerValue: this.value
+          };
+      },
+      template: `
+        <input
+          v-model="innerValue"
+        >
+      `,
+      watch: {
+          innerValue(val){
+              this.$emit('input', val);
+          }
+      }
+    });
 
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			searchText: '1212'
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            searchText: '1212'
+        }
+    });
 </script>
 </body>
 </html>

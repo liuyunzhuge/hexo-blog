@@ -1,55 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<script src="../zepto/dist/zepto.js"></script>
-	<script type="text/javascript" src="../callback/callback.js"></script>
-	<script type="text/javascript" src="./deferred.js"></script>
+    <title></title>
+    <script src="../zepto/dist/zepto.js"></script>
+    <script type="text/javascript" src="../callback/callback.js"></script>
+    <script type="text/javascript" src="./deferred.js"></script>
 </head>
 <body>
 <script type="text/javascript">
-	function createAsyncTask(n) {
-		let deferred = $.Deferred();
+    function createAsyncTask(n) {
+        let deferred = $.Deferred();
 
-		let counter = 1;
-		let timer = setInterval(function () {
-			if(counter > n) {
-				deferred.resolve("success", {data: [1,2,3]});
-				return clearInterval(timer);
-			}
+        let counter = 1;
+        let timer = setInterval(function () {
+            if(counter > n) {
+                deferred.resolve("success", {data: [1,2,3]});
+                return clearInterval(timer);
+            }
 
-			if(counter == (n - 1) && (Math.random() * 10 > 7)) {
-				deferred.reject("fail", new Error('random number gt 7'));
-				return clearInterval(timer);
-			}
+            if(counter == (n - 1) && (Math.random() * 10 > 7)) {
+                deferred.reject("fail", new Error('random number gt 7'));
+                return clearInterval(timer);
+            }
 
-			deferred.notify('progressUpdate', (1.0 * counter++ / n));
+            deferred.notify('progressUpdate', (1.0 * counter++ / n));
 
-		}, 1000);
+        }, 1000);
 
-		return deferred;
-	}
+        return deferred;
+    }
 
-	let deferred = createAsyncTask(5);
+    let deferred = createAsyncTask(5);
 
-	deferred.done(function(state, data){
-		console.log(state, data);
-	});
+    deferred.done(function(state, data){
+        console.log(state, data);
+    });
 
-	deferred.fail(function(state, error){
-		console.error(state, error);
-	});
+    deferred.fail(function(state, error){
+        console.error(state, error);
+    });
 
-	deferred.progress(function(state, progress){
-		console.log(state, progress);
-	});
+    deferred.progress(function(state, progress){
+        console.log(state, progress);
+    });
 
-	//progressUpdate 0.2
-	//progressUpdate 0.4
-	//progressUpdate 0.6
-	//progressUpdate 0.8
-	//progressUpdate 1
-	//success {data: Array(3)}
+    //progressUpdate 0.2
+    //progressUpdate 0.4
+    //progressUpdate 0.6
+    //progressUpdate 0.8
+    //progressUpdate 1
+    //success {data: Array(3)}
 
 </script>
 </body>

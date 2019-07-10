@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
 <div id="vue">
-	<checkbox @click="testNativeClick" @focus="testNativeFocus" v-model="agree" @model="showModel" label="是否同意"></checkbox>{{agree}}
+    <checkbox @click="testNativeClick" @focus="testNativeFocus" v-model="agree" @model="showModel" label="是否同意"></checkbox>{{agree}}
 </div>
 
 <script type="text/javascript">
-	Vue.component('checkbox', {
-	  props: ['checked', 'label'],
-	  model: {
-	  	prop: 'checked',
-	  	event: 'model'
-	  },
-	  computed: {
-	  	checkboxListeners(){
-	  		let events = ['focus', 'click', 'change'];
-	  		return Object.fromEntries(events.filter(e=>!!this.$listeners[e]).map(e=>{
-	  			return [e,this.$listeners[e]];
-	  		}));
-	  	}
-	  },
-	  template: `
-	    <label><input v-on="checkboxListeners" type="checkbox" :checked="checked" @change="$emit('model',$event.target.checked)">{{label}}</label>
-	  `
-	});
+    Vue.component('checkbox', {
+      props: ['checked', 'label'],
+      model: {
+          prop: 'checked',
+          event: 'model'
+      },
+      computed: {
+          checkboxListeners(){
+              let events = ['focus', 'click', 'change'];
+              return Object.fromEntries(events.filter(e=>!!this.$listeners[e]).map(e=>{
+                  return [e,this.$listeners[e]];
+              }));
+          }
+      },
+      template: `
+        <label><input v-on="checkboxListeners" type="checkbox" :checked="checked" @change="$emit('model',$event.target.checked)">{{label}}</label>
+      `
+    });
 
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			agree: true
-		},
-		methods: {
-			showModel(){
-				console.log('model event');
-			},
-			testNativeClick(){
-				console.log('native click');
-			},
-			testNativeFocus(){
-				console.log('native focus');
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            agree: true
+        },
+        methods: {
+            showModel(){
+                console.log('model event');
+            },
+            testNativeClick(){
+                console.log('native click');
+            },
+            testNativeFocus(){
+                console.log('native focus');
+            }
+        }
+    });
 </script>
 </body>
 </html>

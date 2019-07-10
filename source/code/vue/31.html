@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
 <div id="vue">
-	<input type="text" @keypress.left="keypress">
+    <input type="text" @keypress.left="keypress">
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-		},
-		methods: {
-			keypress(event){
-				console.log(event.key);
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+        },
+        methods: {
+            keypress(event){
+                console.log(event.key);
+            }
+        }
+    });
 </script>
 </body>
 </html>

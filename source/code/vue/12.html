@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
 <div id="vue">
-	<div v-for="(value, key, index) of items">{{key}}:{{value}}/{{index}}</div>
+    <div v-for="(value, key, index) of items">{{key}}:{{value}}/{{index}}</div>
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			items: {
-				lang: 'php',
-				type: 'backend',
-				level: 'middle',
-				like: 'yes'
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            items: {
+                lang: 'php',
+                type: 'backend',
+                level: 'middle',
+                like: 'yes'
+            }
+        }
+    });
 </script>
 </body>
 </html>

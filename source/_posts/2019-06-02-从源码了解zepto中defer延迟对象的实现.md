@@ -25,56 +25,56 @@ let deferred = $.Deferred();
 
 let counter = 1;
 let timer = setInterval(function () {
-	if(counter > 5) {
-		deferred.resolve("success", {data: [1,2,3]});
-		return clearInterval(timer);
-	}
+    if(counter > 5) {
+        deferred.resolve("success", {data: [1,2,3]});
+        return clearInterval(timer);
+    }
 
-	if(counter == 4 && (Math.random() * 10 > 7)) {
-		deferred.reject("fail", new Error('random number gt 7'));
-		return clearInterval(timer);
-	}
+    if(counter == 4 && (Math.random() * 10 > 7)) {
+        deferred.reject("fail", new Error('random number gt 7'));
+        return clearInterval(timer);
+    }
 
-	deferred.notify('progressUpdate', (counter++ / 5.0));
+    deferred.notify('progressUpdate', (counter++ / 5.0));
 
 }, 1000);
 ```
 上面这个例子模拟了一个异步任务，包含了有异步任务成功完成、异常结束以及分步调用的逻辑。 其它位置拿到deferred实例后，可通过另外三个实例方法，done()、fail()、progress()来分别添加异步任务完成、出错以及分步进行的回调函数，resolve()、reject()、notify()这三个方法调用时传入的参数，都会相应的传入done()、fail()、progress()注册的回调函数。 
 ```js
 function createAsyncTask(n) {
-	let deferred = $.Deferred();
+    let deferred = $.Deferred();
 
-	let counter = 1;
-	let timer = setInterval(function () {
-		if(counter > n) {
-			deferred.resolve("success", {data: [1,2,3]});
-			return clearInterval(timer);
-		}
+    let counter = 1;
+    let timer = setInterval(function () {
+        if(counter > n) {
+            deferred.resolve("success", {data: [1,2,3]});
+            return clearInterval(timer);
+        }
 
-		if(counter == (n - 1) && (Math.random() * 10 > 7)) {
-			deferred.reject("fail", new Error('random number gt 7'));
-			return clearInterval(timer);
-		}
+        if(counter == (n - 1) && (Math.random() * 10 > 7)) {
+            deferred.reject("fail", new Error('random number gt 7'));
+            return clearInterval(timer);
+        }
 
-		deferred.notify('progressUpdate', ((1.0 * counter++) / n));
+        deferred.notify('progressUpdate', ((1.0 * counter++) / n));
 
-	}, 1000);
+    }, 1000);
 
-	return deferred;
+    return deferred;
 }
 
 let deferred = createAsyncTask(5);
 
 deferred.done(function(state, data){
-	console.log(state, data);
+    console.log(state, data);
 });
 
 deferred.fail(function(state, error){
-	console.error(state, error);
+    console.error(state, error);
 });
 
 deferred.progress(function(state, progress){
-	console.log(state, progress);
+    console.log(state, progress);
 });
 
 //progressUpdate 0.2
@@ -87,40 +87,40 @@ deferred.progress(function(state, progress){
 上面把写法改地更加符合实际的工作场景，把异步任务用一个函数封装起来，这样外部看不到异步任务的内在逻辑，只需要和异步任务返回的deferred实例打交道即可。 由于deferred实例，具备resolve、reject这些直接能够改变异步任务状态的方法，所以在createAsyncTask函数内，更好的做法，不是返回deferred实例，而是return deferred.promise()，它通过调用自身的promise方法返回一个不具备resolve、reject等这些可改变状态方法的promise对象，外部拿到这个promise对象之后，仅能使用done、fail等添加回调函数的api。这一点跟标准的Promise特性是一致的。
 ```js
 function createAsyncTask(n) {
-	let deferred = $.Deferred();
+    let deferred = $.Deferred();
 
-	let counter = 1;
-	let timer = setInterval(function () {
-		if(counter > n) {
-			deferred.resolve("success", {data: [1,2,3]});
-			return clearInterval(timer);
-		}
+    let counter = 1;
+    let timer = setInterval(function () {
+        if(counter > n) {
+            deferred.resolve("success", {data: [1,2,3]});
+            return clearInterval(timer);
+        }
 
-		if(counter == (n - 1) && (Math.random() * 10 > 7)) {
-			deferred.reject("fail", new Error('random number gt 7'));
-			return clearInterval(timer);
-		}
+        if(counter == (n - 1) && (Math.random() * 10 > 7)) {
+            deferred.reject("fail", new Error('random number gt 7'));
+            return clearInterval(timer);
+        }
 
-		deferred.notify('progressUpdate', ((1.0 * counter++) / n));
+        deferred.notify('progressUpdate', ((1.0 * counter++) / n));
 
-	}, 1000);
+    }, 1000);
 
-	//将原先的 return deferred 改为下面的这个
-	return deferred.promise();
+    //将原先的 return deferred 改为下面的这个
+    return deferred.promise();
 }
 
 let deferred = createAsyncTask(5);
 
 deferred.done(function(state, data){
-	console.log(state, data);
+    console.log(state, data);
 });
 
 deferred.fail(function(state, error){
-	console.error(state, error);
+    console.error(state, error);
 });
 
 deferred.progress(function(state, progress){
-	console.log(state, progress);
+    console.log(state, progress);
 });
 
 //progressUpdate 0.2
@@ -133,52 +133,52 @@ deferred.progress(function(state, progress){
 不管是deferred对象，还是deferred.promise()返回的promise对象，都还有一个让它跟Promise规范非常类似的一个实例方法，就是then。这个then可以同时接收三个回调函数，作为参数，分别会在deferred实例resolve、reject、notify的时候调用，一个then方法等同于同时调用了done、fail、progress方法。不过它的作用还不止这么简单，这个then可以让deferred实例实现类似Promise规范的异步任务链。
 ```js
 function createAsyncTask(taskId, n) {
-	let deferred = $.Deferred();
+    let deferred = $.Deferred();
 
-	let counter = 1;
-	let timer = setInterval(function () {
-		if(counter > n) {
-			deferred.resolve("success task: " + taskId, {data: [1,2,3]});
-			return clearInterval(timer);
-		}
+    let counter = 1;
+    let timer = setInterval(function () {
+        if(counter > n) {
+            deferred.resolve("success task: " + taskId, {data: [1,2,3]});
+            return clearInterval(timer);
+        }
 
-		if(counter == (n - 1) && (Math.random() * 10 > 7)) {
-			deferred.reject("fail task: " + taskId, new Error('random number gt 7'));
-			return clearInterval(timer);
-		}
+        if(counter == (n - 1) && (Math.random() * 10 > 7)) {
+            deferred.reject("fail task: " + taskId, new Error('random number gt 7'));
+            return clearInterval(timer);
+        }
 
-		deferred.notify('progressUpdate task: ' + taskId, ((1.0 * counter++) / n));
+        deferred.notify('progressUpdate task: ' + taskId, ((1.0 * counter++) / n));
 
-	}, 1000);
+    }, 1000);
 
-	return deferred;
+    return deferred;
 }
 
 let deferred = createAsyncTask('1', 3);
 
 deferred
-	//这里添加的回调会在deferred状态变化时才会调用
-	.then(function fnDone(state, data){
-		console.log(state, data);
-		//此处返回一个新的异步任务
-		return createAsyncTask('2', 4);
-	}, function fnFail(state, error){
-		console.error(state, error);
-	})
-	//这里添加的回调会在上一个then的fnDone内返回的异步任务状态变化时才会调用
-	.then(function fnDone(state, data){
-		console.log(state, data);
-		//此处返回一个新的异步任务
-		return createAsyncTask('3', 4);
-	}, function fnFail(state, error){
-		console.error(state, error);
-	})
-	//这里添加的回调会在上一个then的fnDone内返回的异步任务状态变化时才会调用
-	.then(function fnDone(state, data){
-		console.log(state, data);
-	}, function fnFail(state, error){
-		console.error(state, error);
-	});
+    //这里添加的回调会在deferred状态变化时才会调用
+    .then(function fnDone(state, data){
+        console.log(state, data);
+        //此处返回一个新的异步任务
+        return createAsyncTask('2', 4);
+    }, function fnFail(state, error){
+        console.error(state, error);
+    })
+    //这里添加的回调会在上一个then的fnDone内返回的异步任务状态变化时才会调用
+    .then(function fnDone(state, data){
+        console.log(state, data);
+        //此处返回一个新的异步任务
+        return createAsyncTask('3', 4);
+    }, function fnFail(state, error){
+        console.error(state, error);
+    })
+    //这里添加的回调会在上一个then的fnDone内返回的异步任务状态变化时才会调用
+    .then(function fnDone(state, data){
+        console.log(state, data);
+    }, function fnFail(state, error){
+        console.error(state, error);
+    });
 
 //success task: 1 {data: Array(3)}
 //success task: 2 {data: Array(3)}
@@ -220,7 +220,7 @@ function createAsyncTask(n) {
 
   function Deferred(func) {
 
-  	//这个tuples是一个配置表
+      //这个tuples是一个配置表
 
     var tuples = [
           // action, add listener, listener list, final state

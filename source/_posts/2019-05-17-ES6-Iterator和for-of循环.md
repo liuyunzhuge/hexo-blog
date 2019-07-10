@@ -40,33 +40,33 @@ interface IterationResult {
 举例：
 ```js
 let obj = {
-	0: 'tom',
-	1: 'jerry',
-	2: 'jim',
-	length: 3,
-	[Symbol.iterator]() {
-		let curIndex = 0;
-		return {
-			next: ()=> {
-				if(curIndex === this.length) {
-					return {done: true};
-				}
+    0: 'tom',
+    1: 'jerry',
+    2: 'jim',
+    length: 3,
+    [Symbol.iterator]() {
+        let curIndex = 0;
+        return {
+            next: ()=> {
+                if(curIndex === this.length) {
+                    return {done: true};
+                }
 
-				return {value: this[curIndex++]};
-			}
-		}
-	}
+                return {value: this[curIndex++]};
+            }
+        }
+    }
 };
 
 let iterator = obj[Symbol.iterator]();
 
 let result;
 while((result = iterator.next()) && !result.done) {
-	log(result);
+    log(result);
 }
 
 function log(result) {
-	console.log('当前值：' + result.value);
+    console.log('当前值：' + result.value);
 }
 ```
 
@@ -82,52 +82,52 @@ js中，实现了Iterator接口的内置对象：
 这些内置对象的[Symbol.iterator]方法有时候可以借用，比如数组的Iterator接口可以借給类数组对象（含数值键和length属性）使用：
 ```js
 let obj = {
-	0: 'tom',
-	1: 'jerry',
-	2: 'jim',
-	length: 3,
-	[Symbol.iterator]: Array.prototype[Symbol.iterator]
+    0: 'tom',
+    1: 'jerry',
+    2: 'jim',
+    length: 3,
+    [Symbol.iterator]: Array.prototype[Symbol.iterator]
 };
 
 let iterator = obj[Symbol.iterator]();
 
 let result;
 while((result = iterator.next()) && !result.done) {
-	log(result);
+    log(result);
 }
 
 function log(result) {
-	console.log('当前值：' + result.value);
+    console.log('当前值：' + result.value);
 }
 ```
 
 ES新增for-of循环，专门用来遍历Iterator接口：
 ```js
 let obj = {
-	0: 'tom',
-	1: 'jerry',
-	2: 'jim',
-	length: 3,
-	[Symbol.iterator]() {
-		let curIndex = 0;
-		return {
-			next: ()=> {
-				if(curIndex === this.length) {
-					return {done: true};
-				}
+    0: 'tom',
+    1: 'jerry',
+    2: 'jim',
+    length: 3,
+    [Symbol.iterator]() {
+        let curIndex = 0;
+        return {
+            next: ()=> {
+                if(curIndex === this.length) {
+                    return {done: true};
+                }
 
-				return {value: this[curIndex++]};
-			}
-		}
-	}
+                return {value: this[curIndex++]};
+            }
+        }
+    }
 };
 
 for(let value of obj) {
-	log(value);
+    log(value);
 }
 
 function log(value) {
-	console.log('当前值：' + value);
+    console.log('当前值：' + value);
 }
 ```
 可想而知, for-of循环内部一定会通过[Symbol.iterator]方法，拿到遍历器对象，然后反复调用next方法实现遍历。即使没有for-of循环，我们也能使用while来实现遍历，for-of只是语言级别上提供的一个遍历而已。
@@ -142,24 +142,24 @@ function log(value) {
 由于后面要学习的Generator函数，返回的就是一个Iterator对象，所以如果要实现一个类或对象的遍历器，也可以直接在[System.iterator]上部署一个Generator函数。
 ```js
 let obj = {
-	0: 'tom',
-	1: 'jerry',
-	2: 'jim',
-	length: 3,
-	*[Symbol.iterator]() {
-		let curIndex = 0;
-		while(curIndex < this.length) {
-			yield this[curIndex++];
-		}
-	}
+    0: 'tom',
+    1: 'jerry',
+    2: 'jim',
+    length: 3,
+    *[Symbol.iterator]() {
+        let curIndex = 0;
+        while(curIndex < this.length) {
+            yield this[curIndex++];
+        }
+    }
 };
 
 for(let value of obj) {
-	log(value);
+    log(value);
 }
 
 function log(value) {
-	console.log('当前值：' + value);
+    console.log('当前值：' + value);
 }
 ```
 
@@ -169,42 +169,42 @@ function log(value) {
 * return方法会在for-of循环出现break，或for-of循环体内抛出异常时调用
 ```js
 let obj = {
-	0: 'tom',
-	1: 'jerry',
-	2: 'jim',
-	length: 3,
-	[Symbol.iterator]() {
-		let curIndex = 0;
-		return {
-			next: ()=> {
-				if(curIndex === this.length) {
-					return {done: true};
-				}
+    0: 'tom',
+    1: 'jerry',
+    2: 'jim',
+    length: 3,
+    [Symbol.iterator]() {
+        let curIndex = 0;
+        return {
+            next: ()=> {
+                if(curIndex === this.length) {
+                    return {done: true};
+                }
 
-				return {value: this[curIndex++]};
-			},
-			return: ()=> {
-				console.log('return');
-				return {done: true};
-			}
-		}
-	}
+                return {value: this[curIndex++]};
+            },
+            return: ()=> {
+                console.log('return');
+                return {done: true};
+            }
+        }
+    }
 };
 
 
 function log(value) {
-	console.log('当前值：' + value);
+    console.log('当前值：' + value);
 }
 
 for(let value of obj) {
-	if(value === 'jerry') break;
-	log(value);
+    if(value === 'jerry') break;
+    log(value);
 }
 
 
 for(let value of obj) {
-	if(value === 'jerry') throw new Error('sth wrong');
-	log(value);
+    if(value === 'jerry') throw new Error('sth wrong');
+    log(value);
 }
 // 执行以上语句会发现打印了2次return
 ```
@@ -229,31 +229,31 @@ v这个变量就是对象(arr)的Iterator对象next方法返回值的value属性
 注意：Iterator对象最后一次next方法，返回的value如果有值，会被for-of循环给忽略：
 ```js
 let obj = {
-	0: 'tom',
-	1: 'jerry',
-	2: 'jim',
-	length: 3,
-	[Symbol.iterator]() {
-		let curIndex = 0;
-		return {
-			next: ()=> {
-				if(curIndex === this.length) {
-					return {done: true, value: 'end'};
-				}
+    0: 'tom',
+    1: 'jerry',
+    2: 'jim',
+    length: 3,
+    [Symbol.iterator]() {
+        let curIndex = 0;
+        return {
+            next: ()=> {
+                if(curIndex === this.length) {
+                    return {done: true, value: 'end'};
+                }
 
-				return {value: this[curIndex++]};
-			}
-		}
-	}
+                return {value: this[curIndex++]};
+            }
+        }
+    }
 };
 
 
 function log(value) {
-	console.log('当前值：' + value);
+    console.log('当前值：' + value);
 }
 
 for(let value of obj) {
-	log(value);
+    log(value);
 }
 ```
 这是合理的，最后一次next方法调用，返回值的done属性，必定为true，它表达的含义就是遍历结束，所以它的value值会被忽略。

@@ -1,55 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
 <div id="vue">
-	<div>
-		1. <input type="text" @keyup.enter="keyup(1, $event)">
-	</div>
-	<div>
-		2. <input type="text" @keyup.tab="keyup(2, $event)">
-	</div>
-	<div>
-		3. <input type="text" @keyup.delete="keyup(3, $event)">
-	</div>
-	<div>
-		4. <input type="text" @keyup.esc="keyup(4, $event)">
-	</div>
-	<div>
-		5. <input type="text" @keyup.space="keyup(5, $event)">
-	</div>
-	<div>
-		6. <input type="text" @keyup.up="keyup(6, $event)">
-	</div>
-	<div>
-		7. <input type="text" @keyup.down="keyup(7, $event)">
-	</div>
-	<div>
-		8. <input type="text" @keyup.left="keyup(8, $event)">
-	</div>
-	<div>
-		9. <input type="text" @keyup.right="keyup(9, $event)">
-	</div>
-	<p>{{log}}</p>
+    <div>
+        1. <input type="text" @keyup.enter="keyup(1, $event)">
+    </div>
+    <div>
+        2. <input type="text" @keyup.tab="keyup(2, $event)">
+    </div>
+    <div>
+        3. <input type="text" @keyup.delete="keyup(3, $event)">
+    </div>
+    <div>
+        4. <input type="text" @keyup.esc="keyup(4, $event)">
+    </div>
+    <div>
+        5. <input type="text" @keyup.space="keyup(5, $event)">
+    </div>
+    <div>
+        6. <input type="text" @keyup.up="keyup(6, $event)">
+    </div>
+    <div>
+        7. <input type="text" @keyup.down="keyup(7, $event)">
+    </div>
+    <div>
+        8. <input type="text" @keyup.left="keyup(8, $event)">
+    </div>
+    <div>
+        9. <input type="text" @keyup.right="keyup(9, $event)">
+    </div>
+    <p>{{log}}</p>
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			log: ''
-		},
-		methods: {
-			keyup(index, event){
-				this.log = 'clicked No.' + index + ' input, event key is ' + event.key;
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            log: ''
+        },
+        methods: {
+            keyup(index, event){
+                this.log = 'clicked No.' + index + ' input, event key is ' + event.key;
+            }
+        }
+    });
 </script>
 </body>
 </html>

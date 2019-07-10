@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
 <style type="text/css">
-	.content {
-		font-size: 14px;color: #2f2f2f;line-height: 1.5;padding: 10px;
-	}
+    .content {
+        font-size: 14px;color: #2f2f2f;line-height: 1.5;padding: 10px;
+    }
 
-	.gap {
-		height: 2px; background-color: #eee;
-	}
+    .gap {
+        height: 2px; background-color: #eee;
+    }
 </style>
 <div id="vue">
-	<div>
-		<input type="text" v-model.trim="newText">
-		<button type="button" @click="addNew">add</button>
-	</div>
-	<template v-for="(item, index) in items">
-		<div class="gap" v-if="index > 0"></div>
-		<div class="content">{{item.text}}</div>
-	</template>
+    <div>
+        <input type="text" v-model.trim="newText">
+        <button type="button" @click="addNew">add</button>
+    </div>
+    <template v-for="(item, index) in items">
+        <div class="gap" v-if="index > 0"></div>
+        <div class="content">{{item.text}}</div>
+    </template>
 </div>
 
 <script type="text/javascript">
-	let id = 1;
+    let id = 1;
 
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			newText: '',
-			items: []
-		},
-		methods: {
-			addNew() {
-				this.items.push({
-					id: id++,
-					text: this.newText
-				});
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            newText: '',
+            items: []
+        },
+        methods: {
+            addNew() {
+                this.items.push({
+                    id: id++,
+                    text: this.newText
+                });
+            }
+        }
+    });
 
 </script>
 </body>

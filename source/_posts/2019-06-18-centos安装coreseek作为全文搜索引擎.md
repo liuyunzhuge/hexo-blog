@@ -171,8 +171,8 @@ can't find file to patch at input line 3
 Perhaps you used the wrong -p or --strip option?
 The text leading up to this was:
 --------------------------
-|--- /home/mac/tmp/sphinxexpr.cpp	2010-05-07 01:07:49.000000000 +0800
-|+++ sphinxexpr.cpp	2012-04-16 13:43:22.015859399 +0800
+|--- /home/mac/tmp/sphinxexpr.cpp    2010-05-07 01:07:49.000000000 +0800
+|+++ sphinxexpr.cpp    2012-04-16 13:43:22.015859399 +0800
 --------------------------
 File to patch: /home/downloads/coreseek-3.2.14/csft-3.2.14/src/sphinxexpr.cpp
 patching file /home/downloads/coreseek-3.2.14/csft-3.2.14/src/sphinxexpr.cpp

@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
 <div id="vue">
-	<form action="" method="get" @submit.prevent>
-		<input type="text" name="title">
-		<button type="submit">submit</button>
-	</form>
+    <form action="" method="get" @submit.prevent>
+        <input type="text" name="title">
+        <button type="submit">submit</button>
+    </form>
 
-	<a href="/" @click.prevent>回到首页</a>
+    <a href="/" @click.prevent>回到首页</a>
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+        }
+    });
 </script>
 </body>
 </html>

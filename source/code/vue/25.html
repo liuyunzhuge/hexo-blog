@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
 <div id="vue" @touchmove.passive="move" style="width: 200px;height: 200px;border: 1px solid #ccc;">
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-		},
-		methods: {
-			move(event){
-				event.preventDefault();
-				console.log(event);
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+        },
+        methods: {
+            move(event){
+                event.preventDefault();
+                console.log(event);
+            }
+        }
+    });
 </script>
 </body>
 </html>

@@ -168,10 +168,10 @@ new Promise(function(resolve, reject){})
 这个里面的resolve和reject就是tryCallTwo的第二个参数和第三个参数！done变量的作用是为了防止fn，也就是Promise构造函数的参数内部，多次调用resolve或reject的情况，比如这种：
 ```js
 new Promise(function(resolve, reject){
-	resolve();
-	resolve();
-	resolve();
-	resolve();
+    resolve();
+    resolve();
+    resolve();
+    resolve();
 });
 ```
 doResolve内部的resolve方法和reject方法，又是这个库的另外两个核心方法，它们跟doResolve方法一样，没有与任何Promise实例绑定，可以认为是静态方法。
@@ -197,25 +197,25 @@ function resolve(self, newValue) {
     (typeof newValue === 'object' || typeof newValue === 'function')
   ) {
 
-  	//看看能否拿到newValue的then属性
+      //看看能否拿到newValue的then属性
     var then = getThen(newValue);
     if (then === IS_ERROR) {
-    	//拿的过程出错了，都会跳到将self给reject掉的逻辑
+        //拿的过程出错了，都会跳到将self给reject掉的逻辑
       return reject(self, LAST_ERROR);
     }
 
-	//这个if判断用来判断newValue是否是这个库写的Promise类的实例
+    //这个if判断用来判断newValue是否是这个库写的Promise类的实例
     if (
       then === self.then &&
       newValue instanceof Promise
     ) {
 
-  	  //此处把self这个实例的状态设置为3了，只有当newValue是另外一个Promise实例的时候
-  	  // state才会变为3，并且self的_value也会保存newValue对应的那个Promise实例
-  	  // 这么做的目的是为啥呢？
-  	  // 它是为了把self身上保存的所有handler实例，通通都转移到newValue去处理
-  	  // 由newValue的状态，来决定handler的回调及promise的调用
-  	  // 这也是Promise标准特性的实现
+        //此处把self这个实例的状态设置为3了，只有当newValue是另外一个Promise实例的时候
+        // state才会变为3，并且self的_value也会保存newValue对应的那个Promise实例
+        // 这么做的目的是为啥呢？
+        // 它是为了把self身上保存的所有handler实例，通通都转移到newValue去处理
+        // 由newValue的状态，来决定handler的回调及promise的调用
+        // 这也是Promise标准特性的实现
       self._state = 3;
       self._value = newValue;
       //finale核心方法
@@ -254,7 +254,7 @@ function reject(self, newValue) {
 ```js
 function finale(self) {
   if (self._deferredState === 1) {
-  	//核心方法
+      //核心方法
     handle(self, self._deferreds);
     self._deferreds = null;
   }

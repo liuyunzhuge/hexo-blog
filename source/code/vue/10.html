@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
 <div id="vue">
-	<div>
-		<label>
-			<input type="checkbox" v-model="useMobile">
-		</label>
-	</div>
-	<template v-if="useMobile">
-		<div>
-			<label>mobile:</label>
-			<input type="text" v-model="mobile">
-		</div>
-		<div>
-			<label>password:</label>
-			<input type="text" v-model="password">
-		</div>
-	</template>
-	<template v-else>
-		<div>
-			<label>email:</label>
-			<input type="text" v-model="email">
-		</div>
-		<div>
-			<label>password:</label>
-			<input type="text" v-model="password">
-		</div>
-	</template>
-	<div>
-		{{JSON.stringify({username: username, password: password})}}
-	</div>
+    <div>
+        <label>
+            <input type="checkbox" v-model="useMobile">
+        </label>
+    </div>
+    <template v-if="useMobile">
+        <div>
+            <label>mobile:</label>
+            <input type="text" v-model="mobile">
+        </div>
+        <div>
+            <label>password:</label>
+            <input type="text" v-model="password">
+        </div>
+    </template>
+    <template v-else>
+        <div>
+            <label>email:</label>
+            <input type="text" v-model="email">
+        </div>
+        <div>
+            <label>password:</label>
+            <input type="text" v-model="password">
+        </div>
+    </template>
+    <div>
+        {{JSON.stringify({username: username, password: password})}}
+    </div>
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			useMobile: true,
-			logon: true,
-			mobile: '',
-			email: '',
-			password: ''
-		},
-		computed:{
-			username() {
-				return this.useMobile ? this.mobile : this.email;
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            useMobile: true,
+            logon: true,
+            mobile: '',
+            email: '',
+            password: ''
+        },
+        computed:{
+            username() {
+                return this.useMobile ? this.mobile : this.email;
+            }
+        }
+    });
 
 </script>
 </body>

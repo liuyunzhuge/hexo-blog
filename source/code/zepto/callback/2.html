@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<script src="../zepto/dist/zepto.js"></script>
-	<script type="text/javascript" src="./callback.js"></script>
+    <title></title>
+    <script src="../zepto/dist/zepto.js"></script>
+    <script type="text/javascript" src="./callback.js"></script>
 </head>
 <body>
 <script type="text/javascript">
-	let foo = (msg)=>{
-		console.log('foo says: ' + msg);
-	};
-	let bar = (msg)=>{
-		console.log('bar says: ' + msg);
-	};
-	let callbacks = $.Callbacks({
-		once: true
-	});
+    let foo = (msg)=>{
+        console.log('foo says: ' + msg);
+    };
+    let bar = (msg)=>{
+        console.log('bar says: ' + msg);
+    };
+    let callbacks = $.Callbacks({
+        once: true
+    });
 
-	callbacks.add(foo);
-	callbacks.fire('bingo'); 
-	// foo says: binggo
+    callbacks.add(foo);
+    callbacks.fire('bingo');
+    // foo says: binggo
 
-	callbacks.add(bar);
-	callbacks.fire('bingo');
-	// 没有打印
+    callbacks.add(bar);
+    callbacks.fire('bingo');
+    // 没有打印
 
-	// once这个option让callbacks只能被fire一次
+    // once这个option让callbacks只能被fire一次
 </script>
 </body>
 </html>

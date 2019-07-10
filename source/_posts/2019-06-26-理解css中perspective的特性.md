@@ -28,67 +28,67 @@ perspective是利用css做3d效果必不可少的一个属性，本篇记录理�
 它的代码如下：
 ```html
 <div class="box">
-		<div>1</div>
-	</div>
-	<div class="box">
-		<div>2</div>
-	</div>
-	<div class="box">
-		<div>3</div>
-	</div>
+        <div>1</div>
+    </div>
+    <div class="box">
+        <div>2</div>
+    </div>
+    <div class="box">
+        <div>3</div>
+    </div>
 </div>
 ```
 ```css
-.container	{
-	display: flex;
-	width: 1200px;
-	height: 200px;
-	justify-content: space-between;
-	margin: 50px auto;
+.container    {
+    display: flex;
+    width: 1200px;
+    height: 200px;
+    justify-content: space-between;
+    margin: 50px auto;
 }
 
 .box {
-	width: 200px;
-	height: 200px;
-	background-color: #f77333;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: #fff;
-	font-size: 80px;
+    width: 200px;
+    height: 200px;
+    background-color: #f77333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 80px;
 }
 ```
 为了通过它演示perspective的作用，我把container设置了`perspective: 800px`，然后分别对第二个盒子和第三个盒子，分别设置了`translateZ(400px)`和`translateZ(-400px)`，效果如下：
 <img src="{% asset_path "06.png" %}" width="900">
 ```css
-.container	{
-	display: flex;
-	width: 1200px;
-	height: 200px;
-	justify-content: space-between;
-	margin: 50px auto;
-	perspective: 800px;
+.container    {
+    display: flex;
+    width: 1200px;
+    height: 200px;
+    justify-content: space-between;
+    margin: 50px auto;
+    perspective: 800px;
 }
 
 .box {
-	width: 200px;
-	height: 200px;
-	background-color: #f77333;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: #fff;
-	font-size: 80px;
+    width: 200px;
+    height: 200px;
+    background-color: #f77333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 80px;
 }
 
 .box:nth-child(1) {
-	
+    
 }
 .box:nth-child(2) {
-	transform: translateZ(400px);
+    transform: translateZ(400px);
 }
 .box:nth-child(3) {
-	transform: translateZ(-400px);
+    transform: translateZ(-400px);
 }
 ```
 通过开发者工具，可以查看到三个box最后的尺寸分别是：`200px * 200px`，`400px * 400px`，`133.33px * 133.33px`。第一个元素没有设置`translateZ`，所以尺寸没变化，第二个元素的尺寸变为了原本的2倍，第三个元素的尺寸变为了原本的2/3倍。这其中起到关键作用的就是`perspective`，虽然translateZ可以把元素从默认的2d平面渲染，沿着z轴的方向进行平移（正的translateZ的值，让渲染平面沿z轴的正方向平移，负值让渲染平面沿着z轴负方向平移），但是只有当设置了`perspective`，这个平移的作用才会显现出来，也就是最后看到第二个box会变大，第三个box会变小。
