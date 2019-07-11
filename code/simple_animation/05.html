@@ -1,105 +1,105 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>
-		
-	</title>
+    <title>
 
-	<style type="text/css">
-		body {
-			width: 400px;
-			height: 400px;
-			margin: 100px auto;
-			perspective: 1200px;
-			position: relative;
-			transform-style: preserve-3d;
-		}
+    </title>
 
-		#container {
-			position: relative;
-			width: 100%;
-			height: 100%;
-		}
+    <style type="text/css">
+        body {
+            width: 400px;
+            height: 400px;
+            margin: 100px auto;
+            perspective: 1200px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
 
-		.box {
-			display: block;
-			width: 100%;
-			height: 100%;
-			position: absolute;
-			top: 0;
-			left: 0;
-			opacity: .8;
-			line-height: 400px;
-			text-align: center;
-			font-size: 100px;
-			font-weight: bold;
-			color: white;
-			text-decoration: none;
-			transition: all 1s;
-			transform-origin: 50% 50% -200px;
-		}
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .box {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: .8;
+            line-height: 400px;
+            text-align: center;
+            font-size: 100px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: all 1s;
+            transform-origin: 50% 50% -200px;
+        }
 
 
-		#box1 {
-			background-color: #f77333;
-			transform: translate(0, 0) rotateY(0) ;
-		}
+        #box1 {
+            background-color: #f77333;
+            transform: translate(0, 0) rotateY(0);
+        }
 
-		#box2 {
-			background-color: green;
-			transform: translate(0, 0) rotateY(-90deg) ;
-		}
+        #box2 {
+            background-color: green;
+            transform: translate(0, 0) rotateY(-90deg);
+        }
 
-		#box3 {
-			background-color: silver;
-			transform: translate(0, 0) rotateY(-180deg) ;
-		}
+        #box3 {
+            background-color: silver;
+            transform: translate(0, 0) rotateY(-180deg);
+        }
 
-		#box4 {
-			background-color: blue;
-			transform: translate(0, 0) rotateY(90deg) ;
-		}
-	</style>
+        #box4 {
+            background-color: blue;
+            transform: translate(0, 0) rotateY(90deg);
+        }
+    </style>
 </head>
 <body>
 <div id="container">
-<a href="javascript:;" id="box1" class="box">1</a>
-<a href="javascript:;" id="box2" class="box">2</a>
-<a href="javascript:;" id="box3" class="box">3</a>
-<a href="javascript:;" id="box4" class="box">4</a>
+    <a href="javascript:;" id="box1" class="box">1</a>
+    <a href="javascript:;" id="box2" class="box">2</a>
+    <a href="javascript:;" id="box3" class="box">3</a>
+    <a href="javascript:;" id="box4" class="box">4</a>
 </div>
 <div>
-	<button type="button" onclick="left()">left</button>
-	<button type="button" onclick="right()">right</button>
+    <button type="button" onclick="left()">left</button>
+    <button type="button" onclick="right()">right</button>
 </div>
 <script type="text/javascript">
-	var box1 = document.getElementById('box1');
-	var box2 = document.getElementById('box2');
-	var box3 = document.getElementById('box3');
-	var box4 = document.getElementById('box4');
+    var box1 = document.getElementById('box1');
+    var box2 = document.getElementById('box2');
+    var box3 = document.getElementById('box3');
+    var box4 = document.getElementById('box4');
 
-	var rotateMap = {
-		1: 0,
-		2: -90,
-		3: -180,
-		4: 90
-	};
+    var rotateMap = {
+        1: 0,
+        2: -90,
+        3: -180,
+        4: 90
+    };
 
-	function left() {
-		let keys = Object.keys(rotateMap);
-		for(let k of keys) {
-			rotateMap[k]-=90;
-			window['box'+k].style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
-		}
-	}
+    function left() {
+        let keys = Object.keys(rotateMap);
+        for (let k of keys) {
+            rotateMap[k] -= 90;
+            window['box' + k].style.transform = 'translate(0, 0) rotateY(' + rotateMap[k] + 'deg)';
+        }
+    }
 
-	function right() {
-		let keys = Object.keys(rotateMap);
-		for(let k of keys) {
-			rotateMap[k]+=90;
-			window['box'+k].style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
-		}
-	}
+    function right() {
+        let keys = Object.keys(rotateMap);
+        for (let k of keys) {
+            rotateMap[k] += 90;
+            window['box' + k].style.transform = 'translate(0, 0) rotateY(' + rotateMap[k] + 'deg)';
+        }
+    }
 </script>
 </body>
 </html>

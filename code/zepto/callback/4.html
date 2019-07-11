@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<script src="../zepto/dist/zepto.js"></script>
-	<script type="text/javascript" src="./callback.js"></script>
+    <title></title>
+    <script src="../zepto/dist/zepto.js"></script>
+    <script type="text/javascript" src="./callback.js"></script>
 </head>
 <body>
 <script type="text/javascript">
-	let foo = (msg)=>{
-		console.log('foo says: ' + msg);
-	};
-	let bar = (msg)=>{
-		console.log('bar says: ' + msg);
-	};
-	let callbacks = $.Callbacks({
-		unique: true
-	});
+    let foo = (msg) => {
+        console.log('foo says: ' + msg);
+    };
+    let bar = (msg) => {
+        console.log('bar says: ' + msg);
+    };
+    let callbacks = $.Callbacks({
+        unique: true
+    });
 
-	callbacks.add(foo);
-	callbacks.fire('bingo'); 
-	// foo says: binggo
+    callbacks.add(foo);
+    callbacks.fire('bingo');
+    // foo says: binggo
 
-	callbacks.add(bar);
-	callbacks.add(foo);
-	callbacks.fire('bingo');
-	// foo says: binggo
-	// bar says: bingo
+    callbacks.add(bar);
+    callbacks.add(foo);
+    callbacks.fire('bingo');
+    // foo says: binggo
+    // bar says: bingo
 
-	// unique这个option控制callbacks不能加入重复的回调函数
+    // unique这个option控制callbacks不能加入重复的回调函数
 </script>
 </body>
 </html>

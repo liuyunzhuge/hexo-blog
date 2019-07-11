@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<script src="../zepto/dist/zepto.js"></script>
-	<script type="text/javascript" src="./callback.js"></script>
+    <title></title>
+    <script src="../zepto/dist/zepto.js"></script>
+    <script type="text/javascript" src="./callback.js"></script>
 </head>
 <body>
 <script type="text/javascript">
-	let foo = (msg)=>{
-		console.log('foo says: ' + msg);
-		return false;
-	};
-	let bar = (msg)=>{
-		console.log('bar says: ' + msg);
-	};
-	let callbacks = $.Callbacks({
-		stopOnFalse: true
-	});
+    let foo = (msg) => {
+        console.log('foo says: ' + msg);
+        return false;
+    };
+    let bar = (msg) => {
+        console.log('bar says: ' + msg);
+    };
+    let callbacks = $.Callbacks({
+        stopOnFalse: true
+    });
 
-	callbacks.add(foo);
-	callbacks.add(foo);
-	callbacks.fire('bingo'); 
-	// foo says: binggo
+    callbacks.add(foo);
+    callbacks.add(foo);
+    callbacks.fire('bingo');
+    // foo says: binggo
 
 
-	// stopOnFalse这个option在fire的时候，如果某一个回调返回false，则后面所有回调都不会执行
+    // stopOnFalse这个option在fire的时候，如果某一个回调返回false，则后面所有回调都不会执行
 </script>
 </body>
 </html>

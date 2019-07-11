@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>01</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>01</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
 <div id="vue" :class="{enabled: enabled}">
-	<p ref="content">{{msg}}</p>
+    <p ref="content">{{msg}}</p>
 </div>
 
 <script type="text/javascript">
-	let obj = {
-			msg: new Date(),
-			enabled: true
-		};
-	let vue = new Vue({
-		data: obj,
-		beforeCreate() {
-			console.log('beforeCreate', this.$el, this.$data, this.$data === obj );
-			//beforeCreate undefined undefined false
+    let obj = {
+        msg: new Date(),
+        enabled: true
+    };    
+    let vue = new Vue({
+        data: obj,
+        beforeCreate() {
+            console.log('beforeCreate', this.$el, this.$data, this.$data === obj);
+            //beforeCreate undefined undefined false
 
-			console.log(this.updateMsg);
-			//undefined
+            console.log(this.updateMsg);
+            //undefined
 
-			console.log(this.$refs.content);
-			//undefined
-		},
-		created() {
-			console.log('created', this.$el, this.$data, this.$data === obj);
-			//created undefined {__ob__: Observer} true
-			
-			console.log(this.updateMsg);
-			//function updateMsg
+            console.log(this.$refs.content);
+            //undefined
+        },
+        created() {
+            console.log('created', this.$el, this.$data, this.$data === obj);
+            //created undefined {__ob__: Observer} true
 
-			console.log(this.$refs.content);
-			//undefined
-		},
-		beforeMount(){
-			console.log('beforeMount', this.$el);
-			//beforeMount div#vue
+            console.log(this.updateMsg);
+            //function updateMsg
 
-			console.log(this.$refs.content);
-			//undefined
-		},
-		mounted(){
-			console.log('mounted', this.$el);
-			//mounted div#vue
+            console.log(this.$refs.content);
+            //undefined
+        },
+        beforeMount() {
+            console.log('beforeMount', this.$el);
+            //beforeMount div#vue
 
-			console.log(this.$refs.content);
-			//<p></p>
-		},
-		methods: {
-			updateMsg(){
-				this.msg = new Date();
-			}
-		}
-	});
+            console.log(this.$refs.content);
+            //undefined
+        },
+        mounted() {
+            console.log('mounted', this.$el);
+            //mounted div#vue
 
-	vue.$mount('#vue');
+            console.log(this.$refs.content);
+            //<p></p>
+        },
+        methods: {
+            updateMsg() {
+                this.msg = new Date();
+            }
+        }
+    });
+
+    vue.$mount('#vue');
 
 </script>
 </body>

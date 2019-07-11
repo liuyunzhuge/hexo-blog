@@ -1,359 +1,360 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>
-		06
-	</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>
+        06
+    </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
 
-	<style type="text/css">
-		body {
-			width: 400px;
-			margin: 150px auto 0;
-			perspective: 1200px;
-			position: relative;
-			display: flex;
-			justify-content: center;
-			flex-direction: column;
-			align-items: center;
-		}
+    <style type="text/css">
+        body {
+            width: 400px;
+            margin: 150px auto 0;
+            perspective: 1200px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
 
-		#container {
-			position: relative;
-			width: 300px;
-			height: 300px;
-			transform-style: preserve-3d;
-		}
+        #container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            transform-style: preserve-3d;
+        }
 
-		.box {
-			display: block;
-			width: 100%;
-			height: 100%;
-			position: absolute;
-			top: 0;
-			left: 0;
-			opacity: .8;
-			line-height: 300px;
-			text-align: center;
-			font-size: 70px;
-			font-weight: bold;
-			color: white;
-			text-decoration: none;
-		}
+        .box {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: .8;
+            line-height: 300px;
+            text-align: center;
+            font-size: 70px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
 
-		.dragging .box {
-			cursor: grabbing;
-		}
+        .dragging .box {
+            cursor: grabbing;
+        }
 
 
-		.box:nth-child(3n+1) {
-			background-color: #f77333;
-		}
+        .box:nth-child(3n+1) {
+            background-color: #f77333;
+        }
 
-		.box:nth-child(3n+2) {
-			background-color: blue;
-		}
+        .box:nth-child(3n+2) {
+            background-color: blue;
+        }
 
-		.box:nth-child(3n+3) {
-			background-color: green;
-		}
+        .box:nth-child(3n+3) {
+            background-color: green;
+        }
 
-	</style>
+    </style>
 </head>
 <body>
 <div id="container">
 </div>
 <form id="form" action="" onsubmit="return false">
-	<div><label>边数：</label><input type="number" value="5" name="sides" placeholder="输入正多边形边数">
-		<button type="button" onclick="makePolygon3DSlide()">重新生成</button></div>
+    <div><label>边数：</label><input type="number" value="5" name="sides" placeholder="输入正多边形边数">
+        <button type="button" onclick="makePolygon3DSlide()">重新生成</button>
+    </div>
 </form>
 <div>
-	<button type="button" onclick="left()">left</button>
-	<button type="button" onclick="right()">right</button>
+    <button type="button" onclick="left()">left</button>
+    <button type="button" onclick="right()">right</button>
 </div>
 <script type="text/javascript">
-	var form = document.getElementById('form');
-	var container = document.getElementById('container');
-	var polygon = null;
+    var form = document.getElementById('form');
+    var container = document.getElementById('container');
+    var polygon = null;
 
-	function Polygon3DSlide(sides, duration = .6, interval = 3000){
-		var degree = 360 / sides;
-		var boxWidth =  container.getBoundingClientRect().width ;
-		var translateZ = container.getBoundingClientRect().width / 2 * Math.tan((90 - degree/2) * Math.PI / 180);
-		var rotateMap = {};
-		var activeIndex = 0;
-		var timerForDegreeRotateFix = 0;
-		var timerForAutoSlide = 0;
-		var render = function(){
-			container.innerHTML = '';
-			rotateMap = {};
-			var html = [];
-			for(var i = 0; i < sides; i++) {
-				rotateMap[i] = rotateMap[i-1] !== undefined ? (rotateMap[i-1] + degree) : 0;
-				html.push('<a href="javascript:;" index="'+i+'" style="transform-origin:' +
-				 	'50% 50% -'+ translateZ +'px' + '; transform: ' + 
-				 	'translate(0, 0) rotateY('+rotateMap[i]+'deg); transition: all ' + duration + 's' + 
-					 ';" class="box">' + (i+1) + '</a>');
-			}
+    function Polygon3DSlide(sides, duration = .6, interval = 3000) {
+        var degree = 360 / sides;
+        var boxWidth = container.getBoundingClientRect().width;
+        var translateZ = container.getBoundingClientRect().width / 2 * Math.tan((90 - degree / 2) * Math.PI / 180);
+        var rotateMap = {};
+        var activeIndex = 0;
+        var timerForDegreeRotateFix = 0;
+        var timerForAutoSlide = 0;
+        var render = function () {
+            container.innerHTML = '';
+            rotateMap = {};
+            var html = [];
+            for (var i = 0; i < sides; i++) {
+                rotateMap[i] = rotateMap[i - 1] !== undefined ? (rotateMap[i - 1] + degree) : 0;
+                html.push('<a href="javascript:;" index="' + i + '" style="transform-origin:' +
+                    '50% 50% -' + translateZ + 'px' + '; transform: ' +
+                    'translate(0, 0) rotateY(' + rotateMap[i] + 'deg); transition: all ' + duration + 's' +
+                    ';" class="box">' + (i + 1) + '</a>');
+            }
 
-			container.innerHTML = html.join('');
-		}
+            container.innerHTML = html.join('');
+        }
 
-		render();
+        render();
 
-		var resolveTargetIndex = function(targetIndex) {
-			if(targetIndex % sides === 0) {
-				targetIndex = 0;
-			} else {
-				targetIndex = targetIndex % sides;
+        var resolveTargetIndex = function (targetIndex) {
+            if (targetIndex % sides === 0) {
+                targetIndex = 0;
+            } else {
+                targetIndex = targetIndex % sides;
 
-				if(targetIndex < 0) {
-					targetIndex = sides + targetIndex;
-				}
-			}
+                if (targetIndex < 0) {
+                    targetIndex = sides + targetIndex;
+                }
+            }
 
-			return targetIndex;
-		}
+            return targetIndex;
+        }
 
-		//切换到指定位置的slide
-		var slideTo = function(targetIndex){
-			if(dragging) return;
+        //切换到指定位置的slide
+        var slideTo = function (targetIndex) {
+            if (dragging) return;
 
-			targetIndex = resolveTargetIndex(targetIndex);
+            targetIndex = resolveTargetIndex(targetIndex);
 
-			if(targetIndex === activeIndex) return;
+            if (targetIndex === activeIndex) return;
 
-			//判断方向 比较targetIndex与activeIndex，是往左旋转更近还是往右旋转更近
-			let slideToLeft = targetIndex > activeIndex;
-			let slidesCount = Math.abs(targetIndex - activeIndex);
+            //判断方向 比较targetIndex与activeIndex，是往左旋转更近还是往右旋转更近
+            let slideToLeft = targetIndex > activeIndex;
+            let slidesCount = Math.abs(targetIndex - activeIndex);
 
-			if(slideToLeft) {
-				//targetIndex - sides对应targetIndex
-				if(Math.abs(activeIndex - (targetIndex - sides)) < Math.abs(targetIndex - activeIndex)) {
-					slideToLeft = false;
-					slidesCount = activeIndex - (targetIndex - sides);
-				}
-			} else {
-				if(Math.abs(targetIndex + sides - activeIndex) < Math.abs(targetIndex - activeIndex)) {
-					slideToLeft = true;
-					slidesCount = targetIndex + sides - activeIndex;
-				}
-			}
+            if (slideToLeft) {
+                //targetIndex - sides对应targetIndex
+                if (Math.abs(activeIndex - (targetIndex - sides)) < Math.abs(targetIndex - activeIndex)) {
+                    slideToLeft = false;
+                    slidesCount = activeIndex - (targetIndex - sides);
+                }
+            } else {
+                if (Math.abs(targetIndex + sides - activeIndex) < Math.abs(targetIndex - activeIndex)) {
+                    slideToLeft = true;
+                    slidesCount = targetIndex + sides - activeIndex;
+                }
+            }
 
-			let boxes = [].slice.call(container.children);
-			for(let [k, box] of boxes.entries()) {
-				let degreeRotateTotal = degree * slidesCount * (slideToLeft ? -1 : 1);
-				rotateMap[k]+=degreeRotateTotal;
-				box.style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
-			}
+            let boxes = [].slice.call(container.children);
+            for (let [k, box] of boxes.entries()) {
+                let degreeRotateTotal = degree * slidesCount * (slideToLeft ? -1 : 1);
+                rotateMap[k] += degreeRotateTotal;
+                box.style.transform = 'translate(0, 0) rotateY(' + rotateMap[k] + 'deg)';
+            }
 
-			activeIndex =  targetIndex;
-		}
+            activeIndex = targetIndex;
+        }
 
-		var initAutoSlide = function() {
-			stopAutoSlide();
-			if(interval) {
-				timerForAutoSlide = setInterval(function(){
-					slideTo(activeIndex + 1);
-				}, interval);
-			}
-		}
+        var initAutoSlide = function () {
+            stopAutoSlide();
+            if (interval) {
+                timerForAutoSlide = setInterval(function () {
+                    slideTo(activeIndex + 1);
+                }, interval);
+            }
+        }
 
-		var stopAutoSlide = function(){
-			if(interval) {
-				if(timerForAutoSlide) clearInterval(timerForAutoSlide);
-				timerForAutoSlide = 0;
-			}
-		}
+        var stopAutoSlide = function () {
+            if (interval) {
+                if (timerForAutoSlide) clearInterval(timerForAutoSlide);
+                timerForAutoSlide = 0;
+            }
+        }
 
-		initAutoSlide();
+        initAutoSlide();
 
-		var mousehover = false;
+        var mousehover = false;
 
-		var mouseEnter = function(e) {
-			stopAutoSlide();
-			mousehover = true;
-		}
+        var mouseEnter = function (e) {
+            stopAutoSlide();
+            mousehover = true;
+        }
 
-		var mouseLeave = function(e) {
-			if(dragging) return;
+        var mouseLeave = function (e) {
+            if (dragging) return;
 
-			if(timerForAutoSlide) return;
+            if (timerForAutoSlide) return;
 
-			initAutoSlide();
-			mousehover = false;
-		}
+            initAutoSlide();
+            mousehover = false;
+        }
 
-		var addListener = function() {
-			container.addEventListener(dragStartEvent, dragStart, {
-			    capture: false,
-			    passive: false
-			});
-			interval && !touchMode && container.addEventListener('mouseenter', mouseEnter, false);
-			interval && !touchMode && container.addEventListener('mouseleave', mouseLeave, false);
-		}
+        var addListener = function () {
+            container.addEventListener(dragStartEvent, dragStart, {
+                capture: false,
+                passive: false
+            });
+            interval && !touchMode && container.addEventListener('mouseenter', mouseEnter, false);
+            interval && !touchMode && container.addEventListener('mouseleave', mouseLeave, false);
+        }
 
-		var removeListener = function() {
-			container.removeEventListener(dragStartEvent, dragStart);
-			interval && !touchMode && container.removeEventListener('mouseenter', mouseEnter);
-			interval && !touchMode && container.removeEventListener('mouseleave', mouseLeave);
-		}
+        var removeListener = function () {
+            container.removeEventListener(dragStartEvent, dragStart);
+            interval && !touchMode && container.removeEventListener('mouseenter', mouseEnter);
+            interval && !touchMode && container.removeEventListener('mouseleave', mouseLeave);
+        }
 
-		var touchMode = 'ontouchstart' in document.documentElement;
-		var dragStartEvent = touchMode ? 'touchstart' : 'mousedown';
-		var dragMoveEvent = touchMode ? 'touchmove' : 'mousemove';
-		var dragUpEvent = touchMode ? 'touchend' : 'mouseup';
-		var dragStartPosition = null;
-		var dragging = false;
+        var touchMode = 'ontouchstart' in document.documentElement;
+        var dragStartEvent = touchMode ? 'touchstart' : 'mousedown';
+        var dragMoveEvent = touchMode ? 'touchmove' : 'mousemove';
+        var dragUpEvent = touchMode ? 'touchend' : 'mouseup';
+        var dragStartPosition = null;
+        var dragging = false;
 
-		var dragStart = function(e) {
-			document.removeEventListener(dragMoveEvent, dragMove);
-			document.removeEventListener(dragUpEvent, dragUp);
-			document.addEventListener(dragMoveEvent, dragMove, {
-			    capture: false,
-			    passive: false
-			});
-			document.addEventListener(dragUpEvent, dragUp, {
-			    capture: false,
-			    passive: false
-			});
-		}
+        var dragStart = function (e) {
+            document.removeEventListener(dragMoveEvent, dragMove);
+            document.removeEventListener(dragUpEvent, dragUp);
+            document.addEventListener(dragMoveEvent, dragMove, {
+                capture: false,
+                passive: false
+            });
+            document.addEventListener(dragUpEvent, dragUp, {
+                capture: false,
+                passive: false
+            });
+        }
 
-		var dragMove = function(e) {
-			e.preventDefault();
-			if(!dragging) {
-				dragging = true;
-				document.documentElement.style.cursor = 'grabbing';
-				container.classList.add('dragging');
+        var dragMove = function (e) {
+            e.preventDefault();
+            if (!dragging) {
+                dragging = true;
+                document.documentElement.style.cursor = 'grabbing';
+                container.classList.add('dragging');
 
-				let event = touchMode ? e.changedTouches[0] : e;
-				dragStartPosition = {
-					x: event.clientX,
-					activeSlideDegree: rotateMap[activeIndex]
-				};
+                let event = touchMode ? e.changedTouches[0] : e;
+                dragStartPosition = {
+                    x: event.clientX,
+                    activeSlideDegree: rotateMap[activeIndex]
+                };
 
-				let boxes = [].slice.call(container.children);
-				for(let [k, box] of boxes.entries()) {
-					box.style.transition = '';
-				}
+                let boxes = [].slice.call(container.children);
+                for (let [k, box] of boxes.entries()) {
+                    box.style.transition = '';
+                }
 
-				stopAutoSlide();
-			}
+                stopAutoSlide();
+            }
 
-			let {boxes, degreeRotateTotal} = resolveKeyParamsDragMove(e)
+            let {boxes, degreeRotateTotal} = resolveKeyParamsDragMove(e)
 
-			for(let [k, box] of boxes.entries()) {
-				box.style.transform = 'translate(0, 0) rotateY('+(rotateMap[k]+degreeRotateTotal)+'deg)';
-			}
-		}
+            for (let [k, box] of boxes.entries()) {
+                box.style.transform = 'translate(0, 0) rotateY(' + (rotateMap[k] + degreeRotateTotal) + 'deg)';
+            }
+        }
 
-		var resolveKeyParamsDragMove = function(e){
-			let event = touchMode ? e.changedTouches[0] : e;
-			let slideToLeft = (dragStartPosition.x - event.clientX) > 0;
+        var resolveKeyParamsDragMove = function (e) {
+            let event = touchMode ? e.changedTouches[0] : e;
+            let slideToLeft = (dragStartPosition.x - event.clientX) > 0;
 
-			let boxes = [].slice.call(container.children);
-			let degreeRotateTotal = ( Math.abs((dragStartPosition.x - event.clientX)) / boxWidth * degree ) * (slideToLeft ? -1 : 1);
+            let boxes = [].slice.call(container.children);
+            let degreeRotateTotal = (Math.abs((dragStartPosition.x - event.clientX)) / boxWidth * degree) * (slideToLeft ? -1 : 1);
 
-			return {
-				slideToLeft,
-				degreeRotateTotal,
-				boxes
-			};
-		}
+            return {
+                slideToLeft,
+                degreeRotateTotal,
+                boxes
+            };
+        }
 
-		var dragUp = function(e) {
-			document.removeEventListener(dragMoveEvent, dragMove);
-			document.removeEventListener(dragUpEvent, dragUp);
+        var dragUp = function (e) {
+            document.removeEventListener(dragMoveEvent, dragMove);
+            document.removeEventListener(dragUpEvent, dragUp);
 
-			if(!dragging) return;
-			let {slideToLeft, boxes, degreeRotateTotal} = resolveKeyParamsDragMove(e);
+            if (!dragging) return;
+            let {slideToLeft, boxes, degreeRotateTotal} = resolveKeyParamsDragMove(e);
 
-			//degreeRotateTotal表示拖拽结束后每个面旋转的角度值
+            //degreeRotateTotal表示拖拽结束后每个面旋转的角度值
 
-			document.documentElement.style.cursor = '';
-			container.classList.remove('dragging');
+            document.documentElement.style.cursor = '';
+            container.classList.remove('dragging');
 
-			// 将slide选装角度归正
-			let baseDegreeRotate = Math.abs(degreeRotateTotal % degree);
-			let degreeRotateFix = 0;
-			if(baseDegreeRotate > (degree / 2)) {
-				degreeRotateFix = (degree * 1000000 - baseDegreeRotate * 1000000)/1000000;
-			} else {
-				degreeRotateFix = -1 * baseDegreeRotate;
-			}
+            // 将slide选装角度归正
+            let baseDegreeRotate = Math.abs(degreeRotateTotal % degree);
+            let degreeRotateFix = 0;
+            if (baseDegreeRotate > (degree / 2)) {
+                degreeRotateFix = (degree * 1000000 - baseDegreeRotate * 1000000) / 1000000;
+            } else {
+                degreeRotateFix = -1 * baseDegreeRotate;
+            }
 
-			degreeRotateFix =  (slideToLeft ? -1 : 1) * degreeRotateFix;
+            degreeRotateFix = (slideToLeft ? -1 : 1) * degreeRotateFix;
 
-			//degreeRotateFix表示每个面在停止旋转时为了让最接近正面的那个面调整到正面
-			//而计算出来的应该多旋转或少旋转的角度值
+            //degreeRotateFix表示每个面在停止旋转时为了让最接近正面的那个面调整到正面
+            //而计算出来的应该多旋转或少旋转的角度值
 
-			//计算degreeRotateFix这个旋转角度占用的过渡时间
-			let transDuration = Math.abs(degreeRotateFix)/degree * duration;
+            //计算degreeRotateFix这个旋转角度占用的过渡时间
+            let transDuration = Math.abs(degreeRotateFix) / degree * duration;
 
-			for(let [k, box] of boxes.entries()) {
-				rotateMap[k] = rotateMap[k] + degreeRotateTotal + degreeRotateFix;
-				box.style.transition = ' all '+(transDuration)+'s';
-				box.style.transform = 'translate(0, 0) rotateY('+rotateMap[k]+'deg)';
-			}
+            for (let [k, box] of boxes.entries()) {
+                rotateMap[k] = rotateMap[k] + degreeRotateTotal + degreeRotateFix;
+                box.style.transition = ' all ' + (transDuration) + 's';
+                box.style.transform = 'translate(0, 0) rotateY(' + rotateMap[k] + 'deg)';
+            }
 
-			//设置一个定时器用来恢复每个box的初始过渡时间
-			setDegreeRotateFixTransTimer(transDuration);
+            //设置一个定时器用来恢复每个box的初始过渡时间
+            setDegreeRotateFixTransTimer(transDuration);
 
-			let activeSlideRotateDegree = rotateMap[activeIndex] - dragStartPosition.activeSlideDegree;
-			let activeSlideCount = Math.floor((rotateMap[activeIndex] - dragStartPosition.activeSlideDegree) / degree);
+            let activeSlideRotateDegree = rotateMap[activeIndex] - dragStartPosition.activeSlideDegree;
+            let activeSlideCount = Math.floor((rotateMap[activeIndex] - dragStartPosition.activeSlideDegree) / degree);
 
-			activeIndex = resolveTargetIndex(activeIndex - activeSlideCount);
-			dragStartPosition = null;
-			dragging = false;
-		}
+            activeIndex = resolveTargetIndex(activeIndex - activeSlideCount);
+            dragStartPosition = null;
+            dragging = false;
+        }
 
-		var setDegreeRotateFixTransTimer = function(transDuration) {
-			if(timerForDegreeRotateFix) clearTimeout(timerForDegreeRotateFix);
+        var setDegreeRotateFixTransTimer = function (transDuration) {
+            if (timerForDegreeRotateFix) clearTimeout(timerForDegreeRotateFix);
 
-			timerForDegreeRotateFix = setTimeout(function() {
-				let boxes = [].slice.call(container.children);
-				for(let [k, box] of boxes.entries()) {
-					box.style.transition = ' all '+(duration)+'s';
-				}
+            timerForDegreeRotateFix = setTimeout(function () {
+                let boxes = [].slice.call(container.children);
+                for (let [k, box] of boxes.entries()) {
+                    box.style.transition = ' all ' + (duration) + 's';
+                }
 
-				!mousehover && initAutoSlide();
-			}, transDuration * 1000);
-		}
+                !mousehover && initAutoSlide();
+            }, transDuration * 1000);
+        }
 
-		addListener();
+        addListener();
 
-		return {
-			slideTo: slideTo,
-			prev: function(){
-				return this.slideTo(activeIndex-1);
-			},
-			next: function(){
-				return this.slideTo(activeIndex+1);
-			},
-			destroy: function(){
-				removeListener();
-				stopAutoSlide();
-			}
-		}
-	}
+        return {
+            slideTo: slideTo,
+            prev: function () {
+                return this.slideTo(activeIndex - 1);
+            },
+            next: function () {
+                return this.slideTo(activeIndex + 1);
+            },
+            destroy: function () {
+                removeListener();
+                stopAutoSlide();
+            }
+        }
+    }
 
-	polygon = new Polygon3DSlide(parseInt(form.sides.value));
+    polygon = new Polygon3DSlide(parseInt(form.sides.value));
 
-	function makePolygon3DSlide() {
-		if(polygon) {
-			polygon.destroy();
-		}
-		polygon =  new Polygon3DSlide(parseInt(form.sides.value));
-	}
+    function makePolygon3DSlide() {
+        if (polygon) {
+            polygon.destroy();
+        }
+        polygon = new Polygon3DSlide(parseInt(form.sides.value));
+    }
 
-	function left() {
-		polygon.prev();
-	}
+    function left() {
+        polygon.prev();
+    }
 
-	function right() {
-		polygon.next();
-	}
+    function right() {
+        polygon.next();
+    }
 </script>
 </body>
 </html>

@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
 <div id="vue">
-	<blog-post :post.sync="doc"></blog-post>
+    <blog-post :post.sync="doc"></blog-post>
 </div>
 
 <script type="text/javascript">
-	Vue.component('blog-post', {
-	  props: {
-	  	post: {
-	  		type: Object
-	  	}
-	  },
-	  template: `
-	    <div>{{post.title}}<div style="text-align:right"><a href="#" @click.prevent.stop="next">下一篇</a></div></div>
-	  `,
-	  methods:{
-	  	next(){
-	  		this.$emit("update:post", {
-	  			title: 'ES 入门02'
-	  		});
-	  	}
-	  }
-	});
+    Vue.component('blog-post', {
+        props: {
+            post: {
+                type: Object
+            }
+        },
+        template: `
+        <div>{{post.title}}<div style="text-align:right"><a href="#" @click.prevent.stop="next">下一篇</a></div></div>
+      `,
+        methods: {
+            next() {
+                this.$emit("update:post", {
+                    title: 'ES 入门02'
+                });
+            }
+        }
+    });
 
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			doc: {
-				title: 'ES6 入门01'
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            doc: {
+                title: 'ES6 入门01'
+            }
+        }
+    });
 </script>
 </body>
 </html>

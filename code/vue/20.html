@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
 <div id="vue">
-	<div class="dropdown" :class="{open: open}">
-		<a class="drop_toggle" href="javascript:;" @click="open=!open">更多操作</a>
-	</div>
+    <div class="dropdown" :class="{open: open}">
+        <a class="drop_toggle" href="javascript:;" @click="open=!open">更多操作</a>
+    </div>
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			open: false
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            open: false
+        }
+    });
 </script>
 </body>
 </html>

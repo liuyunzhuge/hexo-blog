@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
 <div id="vue">
-	<p>{{reverseMsg}}</p>
-	<p>{{flag}}</p>
-	<p>{{timestamp}}</p>
+    <p>{{reverseMsg}}</p>
+    <p>{{flag}}</p>
+    <p>{{timestamp}}</p>
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			msg: new Date() + '',
-			flag: true
-		},
-		computed: {
-			reverseMsg() {
-				console.log('reverseMsg recomputed');
-				return this.msg.split('').reverse().join('');
-			},
-			timestamp() {
-				console.log('timestamp recomputed');
-				return Date.now();
-			}
-		},
-		created() {
-			setTimeout(() => {
-				this.msg = new Date() + '';
-			}, 1000);
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            msg: new Date() + '',
+            flag: true
+        },
+        computed: {
+            reverseMsg() {
+                console.log('reverseMsg recomputed');
+                return this.msg.split('').reverse().join('');
+            },
+            timestamp() {
+                console.log('timestamp recomputed');
+                return Date.now();
+            }
+        },
+        created() {
+            setTimeout(() => {
+                this.msg = new Date() + '';
+            }, 1000);
 
-			setTimeout(() => {
-				this.flag = !this.flag;
-			}, 2000);
-		}
-	});
+            setTimeout(() => {
+                this.flag = !this.flag;
+            }, 2000);
+        }
+    });
 
 </script>
 </body>

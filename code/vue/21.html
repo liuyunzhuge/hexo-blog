@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
 <div id="vue">
-	<ul class="tabs"> 
-		<li :style="{fontWeight: active === 1 ? 'bold' : ''}">
-			<a href="javascript:;" @click="switchTab">标签1</a>
-		</li>
-		<li :style="{fontWeight: active === 2 ? 'bold' : ''}">
-			<a href="javascript:;" @click="switchTab">标签2</a>
-		</li>
-		<li :style="{fontWeight: active === 3 ? 'bold' : ''}">
-			<a href="javascript:;" @click="switchTab">标签3</a>
-		</li>
-	</ul>
+    <ul class="tabs">
+        <li :style="{fontWeight: active === 1 ? 'bold' : ''}">
+            <a href="javascript:;" @click="switchTab">标签1</a>
+        </li>
+        <li :style="{fontWeight: active === 2 ? 'bold' : ''}">
+            <a href="javascript:;" @click="switchTab">标签2</a>
+        </li>
+        <li :style="{fontWeight: active === 3 ? 'bold' : ''}">
+            <a href="javascript:;" @click="switchTab">标签3</a>
+        </li>
+    </ul>
 </div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			active: 1
-		},
-		methods: {
-			switchTab(event){
-				//event is a dom event
-				let ul = event.target.parentNode.parentNode;
-				let li = event.target.parentNode;
-				for(let [index, child] of [].slice.call(ul.children).entries()) {
-					if(li === child) {
-						this.active = index + 1;
-					}
-				}
-			}
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            active: 1
+        },
+        methods: {
+            switchTab(event) {
+                //event is a dom event
+                let ul = event.target.parentNode.parentNode;
+                let li = event.target.parentNode;
+                for (let [index, child] of [].slice.call(ul.children).entries()) {
+                    if (li === child) {
+                        this.active = index + 1;
+                    }
+                }
+            }
+        }
+    });
 </script>
 </body>
 </html>

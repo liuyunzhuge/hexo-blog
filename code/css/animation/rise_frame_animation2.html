@@ -1,152 +1,153 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<meta charset="utf-8">
-	<style type="text/css">
-		body{
-			margin: 40px auto;
-			width: 1024px;
-		}
-		.container {
-			position: relative;
-			width: 100px;
-			height: 100px;
-			margin-bottom: 10px;
-			box-sizing: border-box;
-		}
+    <title></title>
+    <meta charset="utf-8">
+    <style type="text/css">
+        body {
+            margin: 40px auto;
+            width: 1024px;
+        }
 
-		.box {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			box-sizing: border-box;
-		}
+        .container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
 
-		.holder {
-			border: 1px dotted #f77333;
-		}
+        .box {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            box-sizing: border-box;
+        }
 
-		.holder:nth-child(1) {
-			left: 0;
-		}
+        .holder {
+            border: 1px dotted #f77333;
+        }
 
-		.holder:nth-child(2) {
-			left: 100%;
-		}
+        .holder:nth-child(1) {
+            left: 0;
+        }
 
-
-		.holder:nth-child(3) {
-			left: 200%;
-		}
+        .holder:nth-child(2) {
+            left: 100%;
+        }
 
 
-		.holder:nth-child(4) {
-			left: 300%;
-		}
-
-		.holder:nth-child(5) {
-			left: 400%;
-		}
-
-		.holder:nth-child(6) {
-			left: 500%;
-		}
-
-		.target {
-			background-color: #f77333;
-			line-height: 100px;
-			text-align: center;
-			color: #fff;
-    		visibility: hidden;
-		}
-
-		.target.move {
-			visibility: visible;
-			animation: move;
-		}
-
-		@keyframes move{
-			0% {
-				left: 0;
-			}
+        .holder:nth-child(3) {
+            left: 200%;
+        }
 
 
-			100% {
-				left: 600%;
-			}
-		}
-	</style>
+        .holder:nth-child(4) {
+            left: 300%;
+        }
+
+        .holder:nth-child(5) {
+            left: 400%;
+        }
+
+        .holder:nth-child(6) {
+            left: 500%;
+        }
+
+        .target {
+            background-color: #f77333;
+            line-height: 100px;
+            text-align: center;
+            color: #fff;
+            visibility: hidden;
+        }
+
+        .target.move {
+            visibility: visible;
+            animation: move;
+        }
+
+        @keyframes move {
+            0% {
+                left: 0;
+            }
+
+
+            100% {
+                left: 600%;
+            }
+        }
+    </style>
 </head>
 <body>
-	<div class="container">
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div id="target_start" class="target box">start</div>
-	</div>
-	<div class="container">
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div id="target_end" class="target box">end</div>
-	</div>
-	<div class="container">
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div class="holder box"></div>
-		<div id="target_ease" class="target box">ease</div>
-	</div>
-	<form action="" id="form" onsubmit="return false;">
-		<div>时长：<input type="number" name="duration" value="6"></div>
-		<div>动画次数：<input type="text" name="iterationCount" value="infinite"></div>
-		<div>方向：
-			<select name="direction">
-				<option value="normal" selected="">normal</option>
-				<option value="alternate">alternate</option>
-				<option value="reverse">reverse</option>
-				<option value="alternate-reverse">alternate-reverse</option>
-			</select>
-		</div>
-		<button type="button" onclick="start()">开始</button>
-		<button type="button" onclick="stop()">停止</button>
-	</form>
+<div class="container">
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div id="target_start" class="target box">start</div>
+</div>
+<div class="container">
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div id="target_end" class="target box">end</div>
+</div>
+<div class="container">
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div class="holder box"></div>
+    <div id="target_ease" class="target box">ease</div>
+</div>
+<form action="" id="form" onsubmit="return false;">
+    <div>时长：<input type="number" name="duration" value="6"></div>
+    <div>动画次数：<input type="text" name="iterationCount" value="infinite"></div>
+    <div>方向：
+        <select name="direction">
+            <option value="normal" selected="">normal</option>
+            <option value="alternate">alternate</option>
+            <option value="reverse">reverse</option>
+            <option value="alternate-reverse">alternate-reverse</option>
+        </select>
+    </div>
+    <button type="button" onclick="start()">开始</button>
+    <button type="button" onclick="stop()">停止</button>
+</form>
 
-	<script type="text/javascript">
-		let target_start = document.getElementById("target_start");
-		let target_end = document.getElementById("target_end");
-		let target_ease = document.getElementById("target_ease");
-		let form = document.getElementById("form");
+<script type="text/javascript">
+    let target_start = document.getElementById("target_start");
+    let target_end = document.getElementById("target_end");
+    let target_ease = document.getElementById("target_ease");
+    let form = document.getElementById("form");
 
-		function addAnimation(box, timingFunction, duration, iterationCount, direction) {
-			box.style.animationDuration = parseFloat(duration) + 's';
-			box.style.animationTimingFunction = timingFunction;
-			box.style.animationIterationCount = iterationCount;
-			box.style.animationDirection = direction;
-			box.classList.add('move');
-		}
+    function addAnimation(box, timingFunction, duration, iterationCount, direction) {
+        box.style.animationDuration = parseFloat(duration) + 's';
+        box.style.animationTimingFunction = timingFunction;
+        box.style.animationIterationCount = iterationCount;
+        box.style.animationDirection = direction;
+        box.classList.add('move');
+    }
 
-		function start(){
-			addAnimation(target_start, 'steps(6, start)', form.duration.value, form.iterationCount.value, form.direction.value);
-			addAnimation(target_end, 'steps(6, end)', form.duration.value, form.iterationCount.value, form.direction.value);
-			addAnimation(target_ease, 'ease', form.duration.value, form.iterationCount.value, form.direction.value);
-		}
+    function start() {
+        addAnimation(target_start, 'steps(6, start)', form.duration.value, form.iterationCount.value, form.direction.value);
+        addAnimation(target_end, 'steps(6, end)', form.duration.value, form.iterationCount.value, form.direction.value);
+        addAnimation(target_ease, 'ease', form.duration.value, form.iterationCount.value, form.direction.value);
+    }
 
-		function stop(){
-			target_start.classList.remove('move');
-			target_end.classList.remove('move');
-			target_ease.classList.remove('move');
-		}
-	</script>
+    function stop() {
+        target_start.classList.remove('move');
+        target_end.classList.remove('move');
+        target_ease.classList.remove('move');
+    }
+</script>
 </body>
 </html>

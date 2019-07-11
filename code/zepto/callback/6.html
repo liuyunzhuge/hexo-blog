@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<script src="../zepto/dist/zepto.js"></script>
-	<script type="text/javascript" src="./callback.js"></script>
+    <title></title>
+    <script src="../zepto/dist/zepto.js"></script>
+    <script type="text/javascript" src="./callback.js"></script>
 </head>
 <body>
 <script type="text/javascript">
-	let foo = (msg)=>{
-		console.log('foo says: ' + msg);
-	};
-	let bar = (msg)=>{
-		console.log('bar says: ' + msg);
-	};
-	let callbacks = $.Callbacks({
-		memory: true
-	});
+    let foo = (msg) => {
+        console.log('foo says: ' + msg);
+    };
+    let bar = (msg) => {
+        console.log('bar says: ' + msg);
+    };
+    let callbacks = $.Callbacks({
+        memory: true
+    });
 
-	callbacks.add(foo);
-	callbacks.add(bar);
-	callbacks.fire('bingo'); 
+    callbacks.add(foo);
+    callbacks.add(bar);
+    callbacks.fire('bingo');
 
-	callbacks.lock();
+    callbacks.lock();
 
-	callbacks.add(foo);// foo says: bingo
-	callbacks.add(bar);// bar says: bingo
-	callbacks.add(foo);// foo says: bingo
-	callbacks.add(bar);// bar says: bingo
+    callbacks.add(foo);// foo says: bingo
+    callbacks.add(bar);// bar says: bingo
+    callbacks.add(foo);// foo says: bingo
+    callbacks.add(bar);// bar says: bingo
 
-	callbacks.fire('aaa');// 无效了
+    callbacks.fire('aaa');// 无效了
 </script>
 </body>
 </html>

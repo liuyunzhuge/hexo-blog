@@ -108,7 +108,7 @@
 <meta property="og:description" content="coreseek是sphinx全文搜索引擎的带有中文分词的版本。目前coreseek官网已经停止访问了，不知道为啥，我这边产品还在使用着它提供检索服务，前2年记下的笔记还在，这次正好重新准备centos环境，所以在博客中再记录一遍。我安装的是coreseek3.2.14，这是它最稳定的一个版本。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2019/06/19/centos安装coreseek作为全文搜索引擎/01.png">
-<meta property="og:updated_time" content="2019-06-22T09:26:14.858Z">
+<meta property="og:updated_time" content="2019-07-11T12:55:53.219Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="centos安装coreseek作为全文搜索引擎">
 <meta name="twitter:description" content="coreseek是sphinx全文搜索引擎的带有中文分词的版本。目前coreseek官网已经停止访问了，不知道为啥，我这边产品还在使用着它提供检索服务，前2年记下的笔记还在，这次正好重新准备centos环境，所以在博客中再记录一遍。我安装的是coreseek3.2.14，这是它最稳定的一个版本。">
@@ -318,7 +318,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">42</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">43</span></a>
 
   </li>
         
@@ -516,7 +516,7 @@
 <h2 id="检查gcc版本"><a href="#检查gcc版本" class="headerlink" title="检查gcc版本"></a>检查gcc版本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc --version</span><br></pre></td></tr></table></figure>
 <p>结果是：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-36)</span><br><span class="line">Copyright © 2015 Free Software Foundation, Inc.</span><br><span class="line">本程序是自由软件；请参看源代码的版权声明。本软件没有任何担保；</span><br><span class="line">包括没有适销性和某一专用目的下的适用性担保。</span><br></pre></td></tr></table></figure></p>
 <p>coreseek在gcc大于4.7的环境，安装会出错，需要打一个补丁。下载补丁包，存放到/home/downloads目录，并解压：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /home/downloads</span><br><span class="line">wget https://vifix.cn/blog/wp-content/uploads/2012/04/sphinxexpr.cpp_.patch_.zip</span><br><span class="line"> </span><br><span class="line">unzip sphinxexpr.cpp_.patch_.zip</span><br></pre></td></tr></table></figure></p>
-<p>打补丁方法：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost downloads]<span class="comment"># patch -p1 &lt; sphinxexpr.cpp-csft-3.2.13.patch</span></span><br><span class="line">can<span class="string">'t find file to patch at input line 3</span></span><br><span class="line"><span class="string">Perhaps you used the wrong -p or --strip option?</span></span><br><span class="line"><span class="string">The text leading up to this was:</span></span><br><span class="line"><span class="string">--------------------------</span></span><br><span class="line"><span class="string">|--- /home/mac/tmp/sphinxexpr.cpp	2010-05-07 01:07:49.000000000 +0800</span></span><br><span class="line"><span class="string">|+++ sphinxexpr.cpp	2012-04-16 13:43:22.015859399 +0800</span></span><br><span class="line"><span class="string">--------------------------</span></span><br><span class="line"><span class="string">File to patch: /home/downloads/coreseek-3.2.14/csft-3.2.14/src/sphinxexpr.cpp</span></span><br><span class="line"><span class="string">patching file /home/downloads/coreseek-3.2.14/csft-3.2.14/src/sphinxexpr.cpp</span></span><br></pre></td></tr></table></figure></p>
+<p>打补丁方法：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost downloads]<span class="comment"># patch -p1 &lt; sphinxexpr.cpp-csft-3.2.13.patch</span></span><br><span class="line">can<span class="string">'t find file to patch at input line 3</span></span><br><span class="line"><span class="string">Perhaps you used the wrong -p or --strip option?</span></span><br><span class="line"><span class="string">The text leading up to this was:</span></span><br><span class="line"><span class="string">--------------------------</span></span><br><span class="line"><span class="string">|--- /home/mac/tmp/sphinxexpr.cpp    2010-05-07 01:07:49.000000000 +0800</span></span><br><span class="line"><span class="string">|+++ sphinxexpr.cpp    2012-04-16 13:43:22.015859399 +0800</span></span><br><span class="line"><span class="string">--------------------------</span></span><br><span class="line"><span class="string">File to patch: /home/downloads/coreseek-3.2.14/csft-3.2.14/src/sphinxexpr.cpp</span></span><br><span class="line"><span class="string">patching file /home/downloads/coreseek-3.2.14/csft-3.2.14/src/sphinxexpr.cpp</span></span><br></pre></td></tr></table></figure></p>
 <p>关键命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">patch -p1 &lt; sphinxexpr.cpp-csft-3.2.13.patch</span><br></pre></td></tr></table></figure></p>
 <p>然后它会提示：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">File to patch:</span><br></pre></td></tr></table></figure></p>
 <p>输入coreseek解压目录的csft-3.2.14/src/sphinxexpr.cpp文件，也就是：/home/downloads/coreseek-3.2.14/csft-3.2.14/src/sphinxexpr.cpp。</p>
@@ -667,7 +667,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-count">43</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

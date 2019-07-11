@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<script src="../zepto/dist/zepto.js"></script>
-	<script type="text/javascript" src="./callback.js"></script>
+    <title></title>
+    <script src="../zepto/dist/zepto.js"></script>
+    <script type="text/javascript" src="./callback.js"></script>
 </head>
 <body>
 <script type="text/javascript">
-	let foo = (msg)=>{
-		console.log('foo says: ' + msg);
-	};
-	let bar = (msg)=>{
-		console.log('bar says: ' + msg);
-	};
-	let callbacks = $.Callbacks({
-	});
+    let foo = (msg) => {
+        console.log('foo says: ' + msg);
+    };
+    let bar = (msg) => {
+        console.log('bar says: ' + msg);
+    };
+    let callbacks = $.Callbacks({});
 
-	callbacks.add(foo);
-	callbacks.fire('bingo'); 
-	// foo says: binggo
+    callbacks.add(foo);
+    callbacks.fire('bingo');
+    // foo says: binggo
 
-	callbacks.add(bar);
-	callbacks.add(foo);
-	callbacks.fire('bingo');
-	// foo says: binggo
-	// bar says: bingo
-	// foo says: binggo
+    callbacks.add(bar);
+    callbacks.add(foo);
+    callbacks.fire('bingo');
+    // foo says: binggo
+    // bar says: bingo
+    // foo says: binggo
 
-	callbacks.remove(foo);//移除所有的foo回调
-	callbacks.fire('bingo');
-	// bar says: bingo
+    callbacks.remove(foo);//移除所有的foo回调
+    callbacks.fire('bingo');
+    // bar says: bingo
 
-	// 一般情况下callbacks每次fire都会把所有的回调都执行一遍
+    // 一般情况下callbacks每次fire都会把所有的回调都执行一遍
 </script>
 </body>
 </html>

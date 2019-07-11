@@ -2,12 +2,12 @@ let _continueStart = Symbol('continueStart');
 
 export default class Animation {
     constructor({
-                       duration,
-                       iterationCount = 1,
-                       ease = Animation.EASE.LINEAR,
-                       direction = Animation.DIRECTION.NORMAL,
-                       onProgress = Animation.noop
-                   } = {}) {
+                    duration,
+                    iterationCount = 1,
+                    ease = Animation.EASE.LINEAR,
+                    direction = Animation.DIRECTION.NORMAL,
+                    onProgress = Animation.noop
+                } = {}) {
         this.id = Animation.nextId();
         this.duration = duration;
         this.ease = ease;
@@ -34,10 +34,10 @@ export default class Animation {
             };
 
             this[_continueStart] = () => {
-                if( this.playState === Animation.playState.DESTROYED ) {
+                if (this.playState === Animation.playState.DESTROYED) {
                     return reject(new Error('animation destroyed...'));
                 }
-                
+
                 let currentTime = Date.now();
                 this.progress = Math.min(1.0, (currentTime - this.startTime) / this.duration);
                 this.onProgress(this.ease(isPositiveDirection ? this.progress : (1 - this.progress)));
@@ -84,16 +84,16 @@ export default class Animation {
 
     //恢复
     resume() {
-        if(this.playState === Animation.playState.PAUSED) {
-            this.startTime = (Date.now() * 100000 - this.duration * this.progress * 100000)/100000;
-            this.playState = Animation.playState.RUNNING;   
+        if (this.playState === Animation.playState.PAUSED) {
+            this.startTime = (Date.now() * 100000 - this.duration * this.progress * 100000) / 100000;
+            this.playState = Animation.playState.RUNNING;
             this[_continueStart]();
         }
     }
 
     //暂停
     pause() {
-        if(this.playState === Animation.playState.RUNNING) {
+        if (this.playState === Animation.playState.RUNNING) {
             this.playState = Animation.playState.PAUSED;
         }
     }
@@ -120,7 +120,7 @@ export default class Animation {
     static noop() {
     }
 
-    static nextId = (function() {
+    static nextId = (function () {
         let id = 0;
         return function () {
             return ++id;

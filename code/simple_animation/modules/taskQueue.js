@@ -1,9 +1,9 @@
 export default class {
-    constructor(){
+    constructor() {
         this.tasks = [];
     }
 
-    push (...tasks) {
+    push(...tasks) {
         this.tasks.push(...tasks);
         return this;
     }

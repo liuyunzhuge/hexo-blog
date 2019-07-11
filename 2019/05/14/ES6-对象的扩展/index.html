@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中函数的扩展我的ES6入门学习规划  平常所说的对象属性，似乎都是指对象的那些跟值对应的属性，实际上属性除了有值属性，还有方法属性，这也是为啥在遍历对象的时候，能遍历出来的不单是那些值，还有对象的方法。 在掌握了属性描述符（PropertyDescriptor）之后">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-14T13:57:46.171Z">
+<meta property="og:updated_time" content="2019-07-11T12:55:53.212Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ES6 对象的扩展">
 <meta name="twitter:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中函数的扩展我的ES6入门学习规划  平常所说的对象属性，似乎都是指对象的那些跟值对应的属性，实际上属性除了有值属性，还有方法属性，这也是为啥在遍历对象的时候，能遍历出来的不单是那些值，还有对象的方法。 在掌握了属性描述符（PropertyDescriptor）之后">
@@ -316,7 +316,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">42</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">43</span></a>
 
   </li>
         
@@ -517,7 +517,7 @@
 <li>setters, getters如何处理</li>
 <li>symbol值如何处理</li>
 </ol>
-<h2 id="属性的简洁表示法。"><a href="#属性的简洁表示法。" class="headerlink" title="属性的简洁表示法。"></a>属性的简洁表示法。</h2><p>ES6在给对象定义值或方法的时，有更简洁的写法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="string">'bar'</span>;</span><br><span class="line"><span class="keyword">let</span> baz = &#123;foo&#125;;</span><br><span class="line">baz.foo;<span class="comment">//bar</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> o = &#123;</span><br><span class="line">	method() &#123;</span><br><span class="line">	    <span class="comment">//...</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="属性的简洁表示法。"><a href="#属性的简洁表示法。" class="headerlink" title="属性的简洁表示法。"></a>属性的简洁表示法。</h2><p>ES6在给对象定义值或方法的时，有更简洁的写法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="string">'bar'</span>;</span><br><span class="line"><span class="keyword">let</span> baz = &#123;foo&#125;;</span><br><span class="line">baz.foo;<span class="comment">//bar</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> o = &#123;</span><br><span class="line">    method() &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>setters, getters:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> card = &#123;</span><br><span class="line">    _wheels: <span class="number">4</span>,</span><br><span class="line">    <span class="keyword">get</span> wheels() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>._wheels;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">set</span> wheels(value) &#123;</span><br><span class="line">        <span class="keyword">this</span>._wheels = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>generator函数，加星号：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">    * method() &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="属性名表达式"><a href="#属性名表达式" class="headerlink" title="属性名表达式"></a>属性名表达式</h2><p>在定义属性的时候，可以通过中括号使用表达式来表示属性名称：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> propKey = <span class="string">'foo'</span>;</span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    [propKey]: <span class="literal">true</span>,</span><br><span class="line">    [<span class="string">'a'</span> + <span class="string">'bc'</span>]: <span class="number">123</span>,</span><br><span class="line">    [propKey + <span class="string">'_yes'</span>]() &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;,</span><br><span class="line">    * [propKey + <span class="string">'_no'</span>]() &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -757,7 +757,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-count">43</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

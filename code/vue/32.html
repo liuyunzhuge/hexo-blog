@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>06</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>06</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
 <div id="vue">
-	<custom-input v-model="searchText"></custom-input>
-	<p>{{searchText}}</p>
+    <custom-input v-model="searchText"></custom-input>
+    <p>{{searchText}}</p>
 </div>
 
 <script type="text/javascript">
-	Vue.component('custom-input', {
-	  props: ['value'],
-	  template: `
-	    <input
-	      v-bind:value="value"
-	      v-on:input="$emit('input', $event.target.value)"
-	    >
-	  `
-	});
+    Vue.component('custom-input', {
+        props: ['value'],
+        template: `
+        <input
+          v-bind:value="value"
+          v-on:input="$emit('input', $event.target.value)"
+        >
+      `
+    });
 
-	let vue = new Vue({
-		el: '#vue',
-		data: {
-			searchText: ''
-		}
-	});
+    let vue = new Vue({
+        el: '#vue',
+        data: {
+            searchText: ''
+        }
+    });
 </script>
 </body>
 </html>

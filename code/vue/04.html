@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>04</title>
-	<script type="text/javascript" src="./lib/vue.js"></script>
+    <title>04</title>
+    <script type="text/javascript" src="./lib/vue.js"></script>
 </head>
 <body>
-<div id="vue" v-bind:['title' + Name]="titleValue"></div>
+<div id="vue" v-bind:[
+'title' + Name]="titleValue"></div>
 
 <script type="text/javascript">
-	let vue = new Vue({
-		data: {
-			titleName: 'title',
-			name: 'Name',
-			titleValue: 'this is a test'
-		},
-	});
+    let vue = new Vue({
+        data: {
+            titleName: 'title',
+            name: 'Name',
+            titleValue: 'this is a test'
+        },
+    });
 
-	vue.$mount('#vue');
+    vue.$mount('#vue');
 </script>
 </body>
 </html>
