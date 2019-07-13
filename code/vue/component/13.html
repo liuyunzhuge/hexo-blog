@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <register-form></register-form>
+</div>
+
+<script type="text/javascript">
+    let vue = new Vue({
+        data: {
+        },
+        el: '#vue',
+        components: {
+            'register-form': ()=>({
+                component: new Promise(resolve=>{
+                    setTimeout(()=>{
+                        resolve(import('./register-form.js'));
+                    },3001);
+                }),
+                loading: {
+                    template: `<div>加载中...</div>`
+                },
+                error: {
+                    template: `<div>加载出错</div>`
+                },
+                delay: 200,
+                timeout: 3000
+            })
+        }
+    });
+</script>
+</body>
+</html>

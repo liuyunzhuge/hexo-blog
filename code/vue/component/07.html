@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <register-form></register-form>
+</div>
+
+<script type="text/javascript">
+    Vue.component('register-form',function(resolve){
+        //模拟异步加载
+        setTimeout(function(){
+            resolve({
+                data(){
+                    return {
+                        email: '',
+                        password: '',
+                        passwordConfirm: ''
+                    }
+                },
+                template: `<div>
+                <div><label>注册邮箱：</label><input type="email" v-model="email" placeholder="输入有效的邮箱" /></div>
+                <div><label>注册密码：</label><input type="password" v-model="password" placeholder="输入密码" /></div>
+                <div><label>确认密码：</label><input type="password" v-model="passwordConfirm" placeholder="再次输入密码" /></div>
+                </div>`
+            })
+        },1000);
+    });
+
+    let vue = new Vue({
+        data: {
+        },
+        el: '#vue'
+    });
+</script>
+</body>
+</html>

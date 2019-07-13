@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <register-form></register-form>
+</div>
+
+<script type="text/javascript">
+    let vue = new Vue({
+        data: {
+        },
+        el: '#vue',
+        components: {
+            'register-form': ()=>import('./register-form.js')
+        }
+    });
+</script>
+</body>
+</html>

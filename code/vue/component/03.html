@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <component v-bind:is="component"></component>
+</div>
+
+<script type="text/javascript">
+    let CardA = Vue.component('card-a', {
+        data(){
+            return {}
+        },
+        template: `<div>1</div>`
+    });
+
+    console.log(CardA === Vue.component('card-a'));//true
+
+    let vue = new Vue({
+        data: {
+            component: CardA
+        },
+        el: '#vue'
+    });
+</script>
+</body>
+</html>
