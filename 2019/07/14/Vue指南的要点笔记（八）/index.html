@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇记录动态组件和异步组件的要点。 包括：  component标签的使用 keep-alive标签的使用 异步组件的定义和使用 异步组件的加载过程控制">
+<meta name="keywords" content="Vue指南要点笔记,Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue指南的要点笔记（八）">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/07/14/Vue指南的要点笔记（八）/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇记录动态组件和异步组件的要点。 包括：  component标签的使用 keep-alive标签的使用 异步组件的定义和使用 异步组件的加载过程控制">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-13T12:24:36.937Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue指南的要点笔记（八）">
+<meta name="twitter:description" content="本篇记录动态组件和异步组件的要点。 包括：  component标签的使用 keep-alive标签的使用 异步组件的定义和使用 异步组件的加载过程控制">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/07/14/Vue指南的要点笔记（八）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Vue指南的要点笔记（八） | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">44</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/07/14/Vue指南的要点笔记（八）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue指南的要点笔记（八）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-13 20:24:36" itemprop="dateCreated datePublished" datetime="2019-07-13T20:24:36Z">2019-07-13</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/指南要点/" itemprop="url" rel="index"><span itemprop="name">指南要点</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇记录动态组件和异步组件的要点。 包括：</p>
+<ol>
+<li>component标签的使用</li>
+<li>keep-alive标签的使用</li>
+<li>异步组件的定义和使用</li>
+<li>异步组件的加载过程控制</li>
+</ol>
+<a id="more"></a>
+<h2 id="component标签的使用"><a href="#component标签的使用" class="headerlink" title="component标签的使用"></a>component标签的使用</h2><p>component是一个虚拟标签，用来支持动态组件，在一些场景中，同一个数据可能有不同的展现形式，这个时候就很适合用动态组件来处理。它可以利用<code>is</code>这个prop，绑定需要真实渲染的组件id：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">component</span> <span class="attr">v-bind:is</span>=<span class="string">"component"</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    Vue.component(<span class="string">'card-a'</span>, &#123;</span></span><br><span class="line">        data()&#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;&#125;</span></span><br><span class="line">        &#125;,</span><br><span class="line"><span class="xml">        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span>1<span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="javascript">    Vue.component(<span class="string">'card-b'</span>, &#123;</span></span><br><span class="line">        data()&#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;&#125;</span></span><br><span class="line">        &#125;,</span><br><span class="line"><span class="xml">        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span>2<span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line"><span class="javascript">            component: <span class="string">'card-a'</span></span></span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span></span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><code>is</code>prop绑定的值，可以是像上面例子中展示的某个全局或局部注册的组件名称，也可以是一个可以表示组件定义的<code>javascript options</code>对象，比如这样：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">component</span> <span class="attr">v-bind:is</span>=<span class="string">"component"</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line">            component: &#123;</span><br><span class="line">                data()&#123;</span><br><span class="line"><span class="javascript">                    <span class="keyword">return</span> &#123;&#125;</span></span><br><span class="line">                &#125;,</span><br><span class="line"><span class="xml">                template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span>1<span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span></span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>还可以是某个组件的构造函数：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">component</span> <span class="attr">v-bind:is</span>=<span class="string">"component"</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> CardA = Vue.component(<span class="string">'card-a'</span>, &#123;</span></span><br><span class="line">        data()&#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;&#125;</span></span><br><span class="line">        &#125;,</span><br><span class="line"><span class="xml">        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span>1<span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(CardA === Vue.component(<span class="string">'card-a'</span>));<span class="comment">//true</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line">            component: CardA</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span></span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>或者是：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">component</span> <span class="attr">v-bind:is</span>=<span class="string">"component"</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> CardA = Vue.extend(&#123;</span></span><br><span class="line">        data()&#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;&#125;</span></span><br><span class="line">        &#125;,</span><br><span class="line"><span class="xml">        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span>1<span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line">            component: CardA</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span></span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这是<code>is</code>prop在vue的api文档中的说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">is - string | ComponentDefinition | ComponentConstructor</span><br></pre></td></tr></table></figure></p>
+<h2 id="keep-alive标签的使用"><a href="#keep-alive标签的使用" class="headerlink" title="keep-alive标签的使用"></a>keep-alive标签的使用</h2><p>keep-alive标签也是一个虚拟标签，用于需要将<code>vm</code>实例缓存的场景。Vue默认情况下，会根据逻辑，销毁和重建组件实例，尤其是在<code>v-if</code>结构下。</p>
+<p>这个方式不利于缓存页面UI状态，比如用户之前在A页面填写了筛选条件，然后路由到了B页面，在B页面做了些操作，返回A页面，由于A页面和B页面是两个不同的组件，所以在路由切换后，两个页面的组件实例默认会重新创建，从而导致一开始的A页面写过的筛选条件无法再展示出来。这样不利于用户的使用。</p>
+<p>如果不想每次UI更新时某些组件都会被销毁然后重建，简单地做法是使用<code>v-show</code>指令而不是<code>v-if</code>指令，但是组件多的话，这个方式不好管理；另外一种做法就是利用<code>keep-alive</code>标签。在<code>keep-alive</code>标签之间的组件实例在满足<code>keep-alive</code>的缓存规则时，当它们被销毁的时候，不会真正意义上的进行销毁，而是被缓存起来，当之后需要再次渲染的时候，会用之前的实例进行渲染，从而实现组件实例状态的保存。看下面这个示例：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">keep-alive</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">login-form</span> <span class="attr">v-if</span>=<span class="string">"isLogin"</span>&gt;</span><span class="tag">&lt;/<span class="name">login-form</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">register-form</span> <span class="attr">v-else</span>&gt;</span><span class="tag">&lt;/<span class="name">register-form</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">keep-alive</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"isLogin"</span>&gt;</span>&#123;&#123;isLogin ? '切换到注册' : '切换到登录'&#125;&#125;<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> LoginForm = Vue.extend(&#123;</span></span><br><span class="line">        data()&#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">                email: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                password: <span class="string">''</span></span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="xml">        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>用户名：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"email"</span> <span class="attr">v-model</span>=<span class="string">"email"</span> <span class="attr">placeholder</span>=<span class="string">"输入登录邮箱"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"password"</span> <span class="attr">placeholder</span>=<span class="string">"输入登录密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> RegisterForm = Vue.extend(&#123;</span></span><br><span class="line">        data()&#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">                email: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                password: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                passwordConfirm: <span class="string">''</span></span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="xml">        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>注册邮箱：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"email"</span> <span class="attr">v-model</span>=<span class="string">"email"</span> <span class="attr">placeholder</span>=<span class="string">"输入有效的邮箱"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>注册密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"password"</span> <span class="attr">placeholder</span>=<span class="string">"输入密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>确认密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"passwordConfirm"</span> <span class="attr">placeholder</span>=<span class="string">"再次输入密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line"><span class="javascript">            isLogin: <span class="literal">true</span></span></span><br><span class="line">        &#125;,</span><br><span class="line">        components: &#123;</span><br><span class="line">            LoginForm,</span><br><span class="line">            RegisterForm</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span></span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>点击<a href="/code/vue/component/05.html">这个链接</a>查看这个例子的使用效果：首先在登录模式随便输入一些内容，然后切换到注册，输入一些内容，最后通过切换登录或注册，来检查登录和注册的组件实例状态是否有恢复。<code>keep-alive</code>标签内一定只能有一个组件是激活的，比如像上面例子中，<code>v-if</code>结构的做法，保证了只有一个组件是要被激活渲染的。</p>
+<p><code>keep-alive</code>非常适合与动态组件标签一起搭配使用，目前已知的动态组件标签有两个，一个是本篇前面学习的<code>component</code>标签，另一个是vue-router里面的<code>router-view</code>标签，这些标签都不会绑定到某个固定的组件实例，而是动态地展示不同的组件，<code>keep-alive</code>与它们结合起来使用，可以帮助它们缓存从激活状态切换到非激活状态的组件，当这些组件再次从非激活状态切换到激活状态时，就不需要重新创建实例就可以立即渲染出来了。</p>
+<p>比如上面的例子，可以用<code>component</code>标签改写为：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">keep-alive</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">"authForm"</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">keep-alive</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"authForm"</span> <span class="attr">true-value</span>=<span class="string">"login-form"</span> <span class="attr">false-value</span>=<span class="string">"register-form"</span>&gt;</span>&#123;&#123;authForm === 'login-form' ? '切换到注册' : '切换到登录'&#125;&#125;<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> LoginForm = Vue.extend(&#123;</span></span><br><span class="line">        data()&#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">                email: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                password: <span class="string">''</span></span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="xml">        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>用户名：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"email"</span> <span class="attr">v-model</span>=<span class="string">"email"</span> <span class="attr">placeholder</span>=<span class="string">"输入登录邮箱"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"password"</span> <span class="attr">placeholder</span>=<span class="string">"输入登录密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> RegisterForm = Vue.extend(&#123;</span></span><br><span class="line">        data()&#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">                email: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                password: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                passwordConfirm: <span class="string">''</span></span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="xml">        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>注册邮箱：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"email"</span> <span class="attr">v-model</span>=<span class="string">"email"</span> <span class="attr">placeholder</span>=<span class="string">"输入有效的邮箱"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>注册密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"password"</span> <span class="attr">placeholder</span>=<span class="string">"输入密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>确认密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"passwordConfirm"</span> <span class="attr">placeholder</span>=<span class="string">"再次输入密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line"><span class="javascript">            authForm: <span class="string">'login-form'</span></span></span><br><span class="line">        &#125;,</span><br><span class="line">        components: &#123;</span><br><span class="line">            LoginForm,</span><br><span class="line">            RegisterForm</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span></span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>点击<a href="/code/vue/component/06.html">这个链接</a>查看上面代码的使用效果。</p>
+<p><code>keep-alive</code>标签支持以下三个prop:</p>
+<ul>
+<li>include - 字符串或正则表达式。只有名称匹配的组件会被缓存。</li>
+<li>exclude - 字符串或正则表达式。任何名称匹配的组件都不会被缓存。</li>
+<li>max - 数字。最多可以缓存多少组件实例。<br>前两个用于控制允许和不允许哪些组件实例被缓存，最后一个控制最多可缓存的组件实例个数，以免内存占用过高。</li>
+</ul>
+<blockquote>
+<p>当组件在 &lt;keep-alive&gt; 内被切换，它的 activated 和 deactivated 这两个生命周期钩子函数将会被对应执行。在 2.2.0 及其更高版本中，activated 和 deactivated 将会在 &lt;keep-alive&gt; 树内的所有嵌套组件中触发。</p>
+</blockquote>
+<h2 id="异步组件的定义和使用"><a href="#异步组件的定义和使用" class="headerlink" title="异步组件的定义和使用"></a>异步组件的定义和使用</h2><p>vue开发的基本都是单页应用，单页应用最大的性能问题，就是首屏加载的问题，而首屏加载优化的关键，就是尽可能地减小首屏加载的资源文件大小。将组件变为异步加载再使用，是减少首屏加载资源大小的一个有效方式。</p>
+<p>异步组件的定义可以用在全局注册和局部注册当中。Vue.component这个api用来定义全局组件，这是它的声明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Vue.component( id, [definition] )</span><br><span class="line">参数：</span><br><span class="line"></span><br><span class="line">&#123;string&#125; id</span><br><span class="line">&#123;Function | Object&#125; [definition]</span><br></pre></td></tr></table></figure></p>
+<p>它的第二个参数支持Function类型，这个类型就是用来定义异步的全局组件用的。当第二个参数是一个函数的时候，它与Promise类的构造函数参数有相同的签名，都支持两个参数，分别是是resolve和reject，从官方的例子来看，第2个参数在Vue内部应该会调用Promise.resolve来处理。 以下是在定义全局的异步组件的例子：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">register-form</span>&gt;</span><span class="tag">&lt;/<span class="name">register-form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    Vue.component(<span class="string">'register-form'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">//模拟异步加载</span></span></span><br><span class="line"><span class="javascript">        setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line">            resolve(&#123;</span><br><span class="line">                data()&#123;</span><br><span class="line"><span class="javascript">                    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">                        email: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                        password: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                        passwordConfirm: <span class="string">''</span></span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line"><span class="xml">                template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>注册邮箱：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"email"</span> <span class="attr">v-model</span>=<span class="string">"email"</span> <span class="attr">placeholder</span>=<span class="string">"输入有效的邮箱"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>注册密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"password"</span> <span class="attr">placeholder</span>=<span class="string">"输入密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>确认密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"passwordConfirm"</span> <span class="attr">placeholder</span>=<span class="string">"再次输入密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;,1000);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span></span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><a href="/code/vue/component/07.html">查看演示</a>。上面的是模拟的一个异步组件，真实项目，肯定不会这么干，这么搞的话，组件的代码并没有变为异步加载的。想要在真实环境中异步加载组件，有两个做法，第一个是利用webpack这个构建工具提供的<code>require</code>api来加载异步组件的文件：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Vue.component(<span class="string">'register-form'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">require</span>([<span class="string">'./register-form.js'</span>], resolve);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    data: &#123;</span><br><span class="line">    &#125;,</span><br><span class="line">    el: <span class="string">'#vue'</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上面的示例没法在博客中提供演示，因为还需要用到webpack工具，我已经在项目中验证过这个方法的有效性。在这个做法中，<code>register-form</code>需要单独放到一个文件里面定义，定义的方式既可以是es6的模块，也可以是cmd规范的模块：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    data() &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            email: <span class="string">''</span>,</span><br><span class="line">            password: <span class="string">''</span>,</span><br><span class="line">            passwordConfirm: <span class="string">''</span></span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">    template: <span class="string">`&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;div&gt;&lt;label&gt;注册邮箱：&lt;/label&gt;&lt;input type="email" v-model="email" placeholder="输入有效的邮箱" /&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div&gt;&lt;label&gt;注册密码：&lt;/label&gt;&lt;input type="password" v-model="password" placeholder="输入密码" /&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div&gt;&lt;label&gt;确认密码：&lt;/label&gt;&lt;input type="password" v-model="passwordConfirm" placeholder="再次输入密码" /&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;`</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>第二个做法，是利用目前还处于提案阶段的ES6的异步module加载的api：<code>import()</code>：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">register-form</span>&gt;</span><span class="tag">&lt;/<span class="name">register-form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    Vue.component(<span class="string">'register-form'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">import</span>(<span class="string">'./register-form.js'</span>);</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span></span></span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><code>register-form</code>这个组件被移动到一个单独的文件里面定义了：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    data()&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            email: <span class="string">''</span>,</span><br><span class="line">            password: <span class="string">''</span>,</span><br><span class="line">            passwordConfirm: <span class="string">''</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    template: <span class="string">`&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;div&gt;&lt;label&gt;注册邮箱：&lt;/label&gt;&lt;input type="email" v-model="email" placeholder="输入有效的邮箱" /&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div&gt;&lt;label&gt;注册密码：&lt;/label&gt;&lt;input type="password" v-model="password" placeholder="输入密码" /&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div&gt;&lt;label&gt;确认密码：&lt;/label&gt;&lt;input type="password" v-model="passwordConfirm" placeholder="再次输入密码" /&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;`</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><a href="/code/vue/component/08.html">查看演示</a>。</p>
+<p>在局部注册中，异步组件的使用方式，跟全局注册里面几乎是一致的：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">register-form</span>&gt;</span><span class="tag">&lt;/<span class="name">register-form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span>,</span></span><br><span class="line">        components: &#123;</span><br><span class="line"><span class="javascript">            <span class="string">'register-form'</span>: <span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="comment">//模拟异步加载</span></span></span><br><span class="line"><span class="javascript">                setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line">                    resolve(&#123;</span><br><span class="line">                        data()&#123;</span><br><span class="line"><span class="javascript">                            <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">                                email: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                                password: <span class="string">''</span>,</span></span><br><span class="line"><span class="javascript">                                passwordConfirm: <span class="string">''</span></span></span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;,</span><br><span class="line"><span class="xml">                        template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">                        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>注册邮箱：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"email"</span> <span class="attr">v-model</span>=<span class="string">"email"</span> <span class="attr">placeholder</span>=<span class="string">"输入有效的邮箱"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">                        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>注册密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"password"</span> <span class="attr">placeholder</span>=<span class="string">"输入密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">                        <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">label</span>&gt;</span>确认密码：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">v-model</span>=<span class="string">"passwordConfirm"</span> <span class="attr">placeholder</span>=<span class="string">"再次输入密码"</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">                    &#125;)</span><br><span class="line">                &#125;,1000);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><a href="/code/vue/component/10.html">查看演示</a>。</p>
+<p>一样可以使用webpack提供的<code>require</code>api:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    data: &#123;</span><br><span class="line">    &#125;,</span><br><span class="line">    el: <span class="string">'#vue'</span>,</span><br><span class="line">    components: &#123;</span><br><span class="line">        <span class="string">'register-form'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">require</span>([<span class="string">'./register-form.js'</span>], resolve);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>以及es6的<code>import()</code>api：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">register-form</span>&gt;</span><span class="tag">&lt;/<span class="name">register-form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span>,</span></span><br><span class="line">        components: &#123;</span><br><span class="line"><span class="javascript">            <span class="string">'register-form'</span>: <span class="function"><span class="params">()</span>=&gt;</span><span class="keyword">import</span>(<span class="string">'./register-form.js'</span>)</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><a href="/code/vue/component/11.html">查看演示</a>。</p>
+<h2 id="异步组件的加载过程控制"><a href="#异步组件的加载过程控制" class="headerlink" title="异步组件的加载过程控制"></a>异步组件的加载过程控制</h2><p>为了提升用户体验，同时也考虑到可能有加载错误和超时的问题，vue提供了更精细地对异步组件加载的控制方式：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> AsyncComponent = <span class="function"><span class="params">()</span> =&gt;</span> (&#123;</span><br><span class="line">  <span class="comment">// 需要加载的组件 (应该是一个 `Promise` 对象)</span></span><br><span class="line">  component: promise,<span class="comment">//eg: import('./MyComponent.vue')</span></span><br><span class="line">  <span class="comment">// 异步组件加载时使用的组件</span></span><br><span class="line">  loading: LoadingComponent,</span><br><span class="line">  <span class="comment">// 加载失败时使用的组件</span></span><br><span class="line">  error: ErrorComponent,</span><br><span class="line">  <span class="comment">// 展示加载时组件的延时时间。默认值是 200 (毫秒)</span></span><br><span class="line">  delay: <span class="number">200</span>,</span><br><span class="line">  <span class="comment">// 如果提供了超时时间且组件加载也超时了，</span></span><br><span class="line">  <span class="comment">// 则使用加载失败时使用的组件。默认值是：`Infinity`</span></span><br><span class="line">  timeout: <span class="number">3000</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>简而言之，就是把上一个部分介绍的异步组件的加载函数，改成上面的一个函数形式。使用例子：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"vue"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">register-form</span>&gt;</span><span class="tag">&lt;/<span class="name">register-form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vue = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line">        data: &#123;</span><br><span class="line">        &#125;,</span><br><span class="line"><span class="javascript">        el: <span class="string">'#vue'</span>,</span></span><br><span class="line">        components: &#123;</span><br><span class="line"><span class="javascript">            <span class="string">'register-form'</span>: <span class="function"><span class="params">()</span>=&gt;</span>(&#123;</span></span><br><span class="line"><span class="javascript">                component: <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span>=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">                    setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span></span><br><span class="line"><span class="javascript">                        resolve(<span class="keyword">import</span>(<span class="string">'./register-form.js'</span>));</span></span><br><span class="line">                    &#125;,2000);</span><br><span class="line">                &#125;),</span><br><span class="line">                loading: &#123;</span><br><span class="line"><span class="xml">                    template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span>加载中...<span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">                &#125;,</span><br><span class="line">                error: &#123;</span><br><span class="line"><span class="xml">                    template: `<span class="tag">&lt;<span class="name">div</span>&gt;</span>加载出错<span class="tag">&lt;/<span class="name">div</span>&gt;</span>`</span></span><br><span class="line">                &#125;,</span><br><span class="line">                delay: 200,</span><br><span class="line">                timeout: 3000</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><a href="/code/vue/component/12.html">查看演示</a>。这个例子中为了演示<code>loading</code>的效果，故意把component做成了下面的形式：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span>=&gt;</span>&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">        resolve(<span class="keyword">import</span>(<span class="string">'./register-form.js'</span>));</span><br><span class="line">    &#125;,<span class="number">2000</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>如果想看timeout的演示，可以点击<a href="/code/vue/component/13.html">这个例子</a>。 如果因为超时导致组件加载失败，控制台会提示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[Vue warn]: Failed to resolve async component: ()=&gt;(&#123;</span><br><span class="line">                component: new Promise(resolve=&gt;&#123;</span><br><span class="line">                    setTimeout(()=&gt;&#123;</span><br><span class="line">                        resolve(import(&apos;./register-form.js&apos;));</span><br><span class="line">                    &#125;,3001);</span><br><span class="line">                &#125;),</span><br><span class="line">                loading: &#123;</span><br><span class="line">                    template: `&lt;div&gt;加载中...&lt;/div&gt;`</span><br><span class="line">                &#125;,</span><br><span class="line">                error: &#123;</span><br><span class="line">                    template: `&lt;div&gt;加载出错&lt;/div&gt;`</span><br><span class="line">                &#125;,</span><br><span class="line">                delay: 200,</span><br><span class="line">                timeout: 3000</span><br><span class="line">            &#125;)</span><br><span class="line">Reason: timeout (3000ms)</span><br></pre></td></tr></table></figure></p>
+<p>以上就是本篇的全部内容。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue指南要点笔记/" rel="tag"># Vue指南要点笔记</a>
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/12/Vue指南的要点笔记（七）/" rel="next" title="Vue指南的要点笔记（七）">
+                <i class="fa fa-chevron-left"></i> Vue指南的要点笔记（七）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">44</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#component标签的使用"><span class="nav-number">1.</span> <span class="nav-text">component标签的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#keep-alive标签的使用"><span class="nav-number">2.</span> <span class="nav-text">keep-alive标签的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步组件的定义和使用"><span class="nav-number">3.</span> <span class="nav-text">异步组件的定义和使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步组件的加载过程控制"><span class="nav-number">4.</span> <span class="nav-text">异步组件的加载过程控制</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
