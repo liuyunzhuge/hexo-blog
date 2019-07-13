@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <keep-alive>
+        <component :is="authForm"></component>
+    </keep-alive>
+    <div><label><input type="checkbox" v-model="authForm" true-value="login-form" false-value="register-form">{{authForm === 'login-form' ? '切换到注册' : '切换到登录'}}</label></div>
+</div>
+
+<script type="text/javascript">
+    let LoginForm = Vue.extend({
+        data(){
+            return {
+                email: '',
+                password: ''
+            }
+        },
+        template: `<div>
+        <div><label>用户名：</label><input type="email" v-model="email" placeholder="输入登录邮箱" /></div>
+        <div><label>密码：</label><input type="password" v-model="password" placeholder="输入登录密码" /></div>
+        </div>`
+    });
+
+    let RegisterForm = Vue.extend({
+        data(){
+            return {
+                email: '',
+                password: '',
+                passwordConfirm: ''
+            }
+        },
+        template: `<div>
+        <div><label>注册邮箱：</label><input type="email" v-model="email" placeholder="输入有效的邮箱" /></div>
+        <div><label>注册密码：</label><input type="password" v-model="password" placeholder="输入密码" /></div>
+        <div><label>确认密码：</label><input type="password" v-model="passwordConfirm" placeholder="再次输入密码" /></div>
+        </div>`
+    });
+
+    let vue = new Vue({
+        data: {
+            authForm: 'login-form'
+        },
+        components: {
+            LoginForm,
+            RegisterForm
+        },
+        el: '#vue'
+    });
+</script>
+</body>
+</html>
