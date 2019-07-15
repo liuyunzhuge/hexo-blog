@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+<google-map>
+    <google-map-region>
+        <google-map-markers></google-map-markers>
+    </google-map-region>
+</google-map>
+</div>
+
+<script type="text/javascript">
+    let map = Symbol();
+
+    Vue.component('google-map', {
+        data(){
+            return {}
+        },
+        provide: {
+            [map]: parseInt(Date.now() / 1000)
+        },
+        template: `<div><slot></slot></div>`
+    });
+
+    Vue.component('google-map-region', {
+        data(){
+            return {}
+        },
+        inject: {
+            m1: map
+        },
+        template: `<div>{{m1}}<slot></slot></div>`
+    });
+
+    Vue.component('google-map-markers', {
+        data(){
+            return {}
+        },
+        inject: {
+            m2: {
+                from: map
+            }
+        },
+        template: `<div>{{m2}}</div>`
+    });
+
+    let vue = new Vue({
+        data: {
+        },
+        el: '#vue'
+    });
+</script>
+</body>
+</html>

@@ -123,4 +123,67 @@ inject: ['getMap']
 provide：Object | () => Object
 inject：Array<string> | { [key: string]: string | Symbol | Object }
 ```
-`provide`比较好理解，它支持对象或者是一个返回对象的函数。
+`provide`比较好理解，它支持对象或者是一个返回对象的函数。`inject`稍微复杂一下，选项是：
+> 一个字符串数组，或
+> 一个对象，对象的 key 是本地的绑定名，value 是：
+> 在可用的注入内容中搜索用的 key (字符串或 Symbol)，或一个对象，该对象的：
+>   from 属性是在可用的注入内容中搜索用的 key (字符串或 Symbol)
+>   default 属性是降级情况下使用的 value
+示例如下：
+```html
+<div id="vue">
+<google-map>
+    <google-map-region>
+        <google-map-markers></google-map-markers>
+    </google-map-region>
+</google-map>
+</div>
+
+<script type="text/javascript">
+    let map = Symbol();
+
+    Vue.component('google-map', {
+        data(){
+            return {}
+        },
+        provide: {
+            [map]: parseInt(Date.now() / 1000)
+        },
+        template: `<div><slot></slot></div>`
+    });
+
+    Vue.component('google-map-region', {
+        data(){
+            return {}
+        },
+        inject: {
+            m1: map
+        },
+        template: `<div>{{m1}}<slot></slot></div>`
+    });
+
+    Vue.component('google-map-markers', {
+        data(){
+            return {}
+        },
+        inject: {
+            m2: {
+                from: map
+            }
+        },
+        template: `<div>{{m2}}</div>`
+    });
+
+    let vue = new Vue({
+        data: {
+        },
+        el: '#vue'
+    });
+</script>
+```
+
+## 组件之间的循环引用
+组件之间的循环引用可以通过异步组件来解决。
+
+
+
