@@ -1,5 +1,6 @@
 ---
 title: Vue指南的要点笔记（九）
+tags:
   - Vue指南要点笔记
   - Vue
 categories:
@@ -13,3 +14,113 @@ categories:
 <!-- more -->
 
 
+## 访问元素&组件
+
+### 访问根实例
+使用`vm.$root`，它是所有vue实例都共享的一个对象，可以作为一个全局的store来使用，同时也可借助它实现全局的event bus。
+
+### 访问父组件
+使用`vm.$parent`可以访问到父级组件，拿到父组件实例以后，可以访问它的数据，调用它的方法。 虽然vue允许这么做，但是从编程的方式来说，这样的父子组件交互方式，会造成父子组件之间形成非常强的耦合，所以不是一个推荐的使用方式。
+
+### 访问子组件实例或子元素
+如果想访问子组件的实例或者是某个子dom元素，需要先给子组件或子元素用`ref`属性，起一个名字，它类似html中id属性的作用，如：
+```html
+<page ref="page">
+    <div class="main" ref="main"></div>
+</page>
+```
+然后在组件中通过`vm.$refs`这个属性结合子组件实例和子元素的ref名称，就能访问到它们：
+```js
+this.$refs.page;//将访问到page这个子组件实例
+this.$refs.main;//将访问到div.main这个dom元素
+```
+`vm.$refs`会把组件模板中`ref`有值的子组件和子元素都收集到一起，便于使用，如果`ref`对应的是一个自定义组件，那么访问它时就会访问这个组件的实例独享；如果`ref`对应的是一个dom元素，访问它时就会访问到这个dom对象。
+
+当`ref`和`v-for`一起使用的时候，得到的引用将会是一个包含了对应数据源的这些子组件的数组。 `$refs`至少要在mounted这个生命周期钩子才能访问到，而且不是响应式的，所以如果在模板或计算属性中直接使用的话， 要注意到它是非响应式的这一点。
+
+### 依赖注入
+在官方的例子中：
+```html
+<google-map>
+  <google-map-region v-bind:shape="cityBoundaries">
+    <google-map-markers v-bind:places="iceCreamShops"></google-map-markers>
+  </google-map-region>
+</google-map>
+```
+说了这样一个场景，就是`google-map`可能会给所有的后代组件都提供一个`map`对象，如果所有后代元素都非得通过$parent才能访问到这个对象的话，那么层级越深的后代组件，就要使用多层$parent才能访问到：
+```js
+this.$parent.$parent;
+```
+而且强耦合组件的层级位置，增加或减少层级都可能导致访问出错。 vue提供了依赖注入的方式，来给后代组件提供数据和方法，它实际上是借助vue框架充当了中间平台的角色，父组件把数据和方法提供给平台，平台把数据和方法注入到后代组件，这样父组件无需关系要把数据和方法给谁，后代组件也不用考虑层级，不用考虑这些数据和方法是哪来的，这是一项代码的设计原则。
+
+使用方法是：首先在父组件，通过`provide`这个option说明父组件要给后代组件提供的数据和方法：
+```js
+provide: function () {
+  return {
+    getMap: this.getMap
+  }
+}
+```
+然后后代组件，通过`inject`这个option，说明自己想要平台注入的数据和方法，它是一个数组：
+```js
+inject: ['getMap']
+```
+后代组件可以直接通过`vm.getMap`访问注入的数据和方法，举例如下：
+```html
+<div id="vue">
+<google-map>
+    <google-map-region>
+        <google-map-markers></google-map-markers>
+    </google-map-region>
+</google-map>
+</div>
+
+<script type="text/javascript">
+    Vue.component('google-map', {
+        data(){
+            return {}
+        },
+        provide: {
+            getMap: function () {
+                return {
+                    render(){
+                        return 'render';
+                    }
+                };
+            }
+        },
+        template: `<div><slot></slot></div>`
+    });
+
+    Vue.component('google-map-region', {
+        data(){
+            return {}
+        },
+        inject: ['getMap'],
+        template: `<div><slot></slot></div>`
+    });
+
+    Vue.component('google-map-markers', {
+        data(){
+            return {}
+        },
+        inject: ['getMap'],
+        template: `<div>{{getMap().render()}}</div>`
+    });
+
+    let vue = new Vue({
+        data: {
+        },
+        el: '#vue'
+    });
+</script>
+```
+
+`provide`与`inject`在api文档中的类型说明为：
+```
+类型：
+
+provide：Object | () => Object
+inject：Array<string> | { [key: string]: string | Symbol | Object }
+```
+`provide`比较好理解，它支持对象或者是一个返回对象的函数。
