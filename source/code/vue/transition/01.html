@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+    <style type="text/css">
+        .content-wrapper {
+            background-color: #eee;
+            padding: 15px;
+        }
+
+        .demo-enter-active,.demo-leave-active {
+            transition: opacity 1s;
+        }
+
+        .demo-enter,.demo-leave-to {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="vue">
+    <div>
+        <button @click="demo1=!demo1">v-if</button>
+        <div class="content-wrapper">
+            <transition name="demo">
+                <p v-if="demo1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </transition>
+        </div>
+    </div>
+    <div>
+        <button @click="demo2=!demo2">v-show</button>
+        <div class="content-wrapper">
+            <transition name="demo">
+                <p v-show="demo2">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </transition>
+        </div>
+    </div>
+    <div>
+        <button @click="demo3=!demo3">动态组件</button>
+        <div class="content-wrapper">
+            <transition name="demo">
+                <component :is="demo3 ? 'card-a' : 'card-b'"></component>
+            </transition>
+        </div>
+    </div>
+    <div>
+        <span>组件根节点</span>
+        <div class="content-wrapper">
+            <transition appear name="demo">
+                <card-c></card-c>
+            </transition>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    let vue = new Vue({
+        data: {
+            'demo1': true,
+            'demo2': true,
+            'demo3': true
+        },
+        el: '#vue',
+        components: {
+            'card-a': {
+                template: `<div>this is card-a component</div>`
+            },
+            'card-b': {
+                template: `<div>this is card-b component</div>`
+            },
+            'card-c': {
+                template: `<div>this is card-c component</div>`
+            }
+        }
+    });
+</script>
+</body>
+</html>
