@@ -55,11 +55,9 @@
         </div>
     </div>
     <div>
-        <span>组件根节点</span>
+        <button @click="demo4=!demo4">组件根元素</button>
         <div class="content-wrapper">
-            <transition appear name="demo">
-                <card-c></card-c>
-            </transition>
+            <card-c v-if="demo4"><div>this is card-c component</div></card-c>
         </div>
     </div>
 </div>
@@ -68,7 +66,8 @@
         data: {
             'demo1': true,
             'demo2': true,
-            'demo3': true
+            'demo3': true,
+            'demo4': true
         },
         el: '#vue',
         components: {
@@ -79,7 +78,7 @@
                 template: `<div>this is card-b component</div>`
             },
             'card-c': {
-                template: `<div>this is card-c component</div>`
+                template: `<transition name="demo"><slot></slot></transition>`
             }
         }
     });

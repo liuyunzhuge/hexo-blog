@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+    <style type="text/css">
+        .content-wrapper {
+            background-color: #eee;
+            padding: 15px;
+        }
+
+        .demo-enter-active {
+            animation: demo 2s;
+        }
+
+        .demo-leave-active {
+            animation: demo 2s reverse;
+        }
+
+        @keyframes demo {
+            from {
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.5);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="vue">
+    <div>
+        <button @click="demo1=!demo1">v-if</button>
+        <div class="content-wrapper">
+            <transition name="demo" 
+                    v-on:before-enter="beforeEnter"
+                    v-on:enter="enter"
+                    v-on:after-enter="afterEnter"
+                    v-on:enter-cancelled="enterCancelled"
+                    v-on:before-leave="beforeLeave"
+                    v-on:leave="leave"
+                    v-on:after-leave="afterLeave"
+                    v-on:leave-cancelled="leaveCancelled">
+                <p v-show="demo1" >Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </transition>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    let vue = new Vue({
+        data: {
+            'demo1': false
+        },
+        el: '#vue',
+        methods: {
+            beforeEnter(el) {
+                console.log('beforeEnter');
+            },
+            // 不能在使用css方式的过渡中定义enter钩子的第二个参数done
+            // enter(el, done) {
+            //     console.log('enter');
+            // },
+            enter(el) {
+                console.log('enter');
+            },
+            afterEnter(el) {
+                console.log('afterEnter');
+            },
+            enterCancelled(el) {
+                console.log('enterCancelled');
+            },
+            beforeLeave(el){
+                console.log('beforeLeave');
+            },
+            // 不能在使用css方式的过渡中定义leave钩子的第二个参数done
+            // leave(el, done) {
+            //     console.log('leave');
+            // },
+            leave(el){
+                console.log('leave');
+            },
+            afterLeave(el){
+                console.log('afterLeave');
+            },
+            leaveCancelled(el){
+                console.log('leaveCancelled');
+            }
+        }
+    });
+</script>
+</body>
+</html>
