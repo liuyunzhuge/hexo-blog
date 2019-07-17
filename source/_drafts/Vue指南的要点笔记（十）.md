@@ -227,7 +227,6 @@ vue进入和离开过渡一共有6个钩子方法，分别是：
 <style type="text/css">
     .fade-enter-active,.fade-leave-active {
         transition: all 1s;
-        position: absolute;
     }
     .fade-enter,.fade-leave-to {
         opacity: 0;
@@ -239,7 +238,7 @@ vue进入和离开过渡一共有6个钩子方法，分别是：
         <label><input type="radio" v-model="docState" value="edited"> edited</label>
         <label><input type="radio" v-model="docState" value="editing"> editing</label>
     </div>
-    <transition name="fade">
+    <transition name="fade" mode="out-in">
         <button v-bind:key="docState">
             {{ buttonMessage }}
         </button>
