@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<style type="text/css">
+    .container {
+        width: 500px;
+        text-align: center;
+    }
+
+    .toast_container {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .toast_item {
+        background-color: rgba(0, 0, 0, .9);
+        color: #fff;
+        font-size: 14px;
+        line-height: 1.5;
+        padding: 10px;
+        text-align: center;
+        width: fit-content;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .toast_trans-enter-active, .toast_trans-leave-active, .toast_trans-move {
+        transition: all .5s;
+    }
+
+    .toast_trans-enter {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    .toast_trans-leave-to {
+        opacity: 0;
+        margin-top: -40px;
+    }
+
+</style>
+<div id="vue">
+    <div class="container">
+        <input type="text" v-model.trim="toast" placeholder="input toast content">
+        <button @click.stop="addToast({text: toast})">add</button>
+    </div>
+    <transition-group name="toast_trans" tag="div" class="toast_container" @after-leave="afterLeave">
+        <div class="toast_item" v-for="item of items" :key="item.id">{{item.text}}</div>
+    </transition-group>
+</div>
+<script type="text/javascript">
+    let id = 1;
+    let getId = () => {
+        return id++;
+    };
+
+    let vue = new Vue({
+        data: {
+            toast: '',
+            items: [],
+            transitionDuration: 500
+        },
+        el: '#vue',
+        methods: {
+            addToast({text = '', duration = 1500} = {}) {
+                let id = getId();
+                let start_at = Math.floor(Date.now());
+                let dismiss = () => {
+                    let index = this.items.findIndex(item => item.id === id);
+                    if (index > -1) {
+                        this.items.splice(index, 1);
+                    }
+                };
+                this.items.push({text, duration, id, dismiss, start_at});
+
+                if (this.items.length === 1) {
+                    setTimeout(dismiss, duration + this.transitionDuration)
+                }
+            },
+            afterLeave() {
+                if (this.items.length) {
+                    let next = this.items[0];
+                    let current_time = Math.floor(Date.now());
+                    let existed_duration = current_time - next.start_at;
+                    let left_duration = (next.duration + this.transitionDuration) - existed_duration;
+                    let delay = Math.max(left_duration, 0);
+                    if(delay > 20) {
+                        setTimeout(next.dismiss, delay);
+                    } else {
+                        // if left valid duration is less then 20, we just start dismiss of the next item
+                        // not necessary to use a timer
+                        next.dismiss();
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
