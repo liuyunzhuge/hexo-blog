@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<style type="text/css">
+    .fade-enter-active,.fade-leave-active {
+        transition: all 1s;
+    }
+    .fade-enter,.fade-leave-to {
+        opacity: 0;
+    }
+</style>
+<div id="vue">
+    <div>
+        <label><input type="radio" v-model="docState" value="saved"> saved</label>
+        <label><input type="radio" v-model="docState" value="edited"> edited</label>
+        <label><input type="radio" v-model="docState" value="editing"> editing</label>
+    </div>
+    <transition name="fade" mode="out-in">
+        <button v-bind:key="docState">
+            {{ buttonMessage }}
+        </button>
+    </transition>
+</div>
+<script type="text/javascript">
+    let vue = new Vue({
+        data: {
+            'docState': 'saved'
+        },
+        computed: {
+            buttonMessage: function () {
+                switch (this.docState) {
+                    case 'saved': return 'Edit'
+                    case 'edited': return 'Save'
+                    case 'editing': return 'Cancel'
+                }
+            }
+        },
+        el: '#vue'
+    });
+</script>
+</body>
+</html>

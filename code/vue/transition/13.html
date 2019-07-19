@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <meta charset="utf8">
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<style type="text/css">
+    .tabs {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        width: fit-content;
+    }
+
+    .tabs li {
+        display: inline-block;
+        width: 100px;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+    }
+
+    .tabs li.active {
+        color: blue;
+    }
+
+    .tab_content {
+        position: relative;
+        background-color: #f0f0f0;
+        width: 300px;
+        height: 300px;
+    }
+
+    .tab_pane {
+        padding: 10px;
+    }
+
+    .tab_slide_left-enter-active, .tab_slide_left-leave-active,
+    .tab_slide_right-enter-active, .tab_slide_right-leave-active {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        transition: all .5s;
+    }
+
+    .tab_slide_left-enter,.tab_slide_right-leave-to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    .tab_slide_left-leave-to,.tab_slide_right-enter {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+</style>
+<div id="vue">
+    <ul class="tabs">
+        <li @click="active=item" v-for="item of 4" :key="item" :class="{active:active === item}">标签{{item}}</li>
+    </ul>
+    <tab-content :current="active">
+        <tab-pane v-if="active === item" v-for="item of 4" :key="item" :index="item">内容{{item}}</tab-pane>
+    </tab-content>
+</div>
+<script type="text/javascript">
+
+    Vue.component('tab-content', {
+        props: {
+            current: {
+                type: Number,
+                required: true
+            }
+        },
+        data() {
+            return {
+                transition: ''
+            }
+        },
+        watch: {
+            current(nv, ov) {
+                if (nv > ov) {
+                    this.transition = 'tab_slide_left';
+                } else {
+                    this.transition = 'tab_slide_right';
+                }
+            }
+        },
+        template: `<transition-group tag="div" class="tab_content" :name="transition"><slot></slot></transition-group>`
+    });
+
+    Vue.component('tab-pane', {
+        props: {
+            index: {
+                type: Number,
+                required: true
+            }
+        },
+        template: `<div class="tab_pane"><slot></slot></div>`
+    });
+
+    let vue = new Vue({
+        data() {
+            return {
+                active: 1
+            };
+        },
+        el: '#vue'
+    });
+</script>
+</body>
+</html>

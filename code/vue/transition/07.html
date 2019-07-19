@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<style type="text/css">
+    .container {
+        width: 500px;
+        text-align: center;
+    }
+
+    .toast_container {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .toast_item {
+        background-color: rgba(0, 0, 0, .9);
+        color: #fff;
+        font-size: 14px;
+        line-height: 1.5;
+        padding: 10px;
+        text-align: center;
+        width: fit-content;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .toast_trans-enter-active, .toast_trans-leave-active, .toast_trans-move {
+        transition: all .4s;
+    }
+
+    /*
+        use `position: absolute` of `v-leave-active` state
+        so that layout of left elements will be affected
+        and `v-move` will make effects.
+    */
+    .toast_trans-leave-active {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .toast_trans-enter {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+
+    .toast_trans-leave-to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-100%);
+    }
+
+</style>
+<div id="vue">
+    <div class="container">
+        <input type="text" v-model.trim="toast" placeholder="input toast content">
+        <button @click.stop="addToast({text: toast + Math.random()})">add</button>
+    </div>
+    <transition-group name="toast_trans" tag="div" class="toast_container" @after-leave="afterLeave" @after-enter="afterEnter">
+        <div class="toast_item" :data-id="item.id" v-for="item of items" :key="item.id">{{item.text}}</div>
+    </transition-group>
+</div>
+<script type="text/javascript">
+    let id = 1;
+    let getId = () => {
+        return id++;
+    };
+
+    let vue = new Vue({
+        data: {
+            toast: '',
+            items: []
+        },
+        el: '#vue',
+        methods: {
+            // every toast will exists for at least `duration + transition-duration` millisecond.
+            addToast({text = '', duration = 1500} = {}) {
+                let id = getId();
+                let start_at = Math.floor(Date.now());
+                let dismiss = () => {
+                    let index = this.items.findIndex(item => item.id === id);
+                    if (index > -1) {
+                        this.items.splice(index, 1);
+                    }
+                };
+                this.items.push({text, duration, id, dismiss, start_at});
+            },
+            afterEnter(el){
+                if(this.del) return;
+                this.del = setTimeout(this.items[0].dismiss, this.items[0].duration);
+            },
+            afterLeave() {
+                if (this.items.length) {
+                    let next = this.items[0];
+                    let existed_duration = Math.floor(Date.now()) - next.start_at;
+                    setTimeout(next.dismiss, Math.max(next.duration - existed_duration, 0));
+                } else {
+                    this.del = 0;
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

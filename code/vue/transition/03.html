@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+    <style type="text/css">
+        .content-wrapper {
+            background-color: #eee;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="vue">
+    <div>
+        <button @click="demo1=!demo1">v-if</button>
+        <div class="content-wrapper">
+            <transition 
+                    v-on:enter="enter"
+                    v-on:after-enter="afterEnter"
+                    v-on:leave="leave"
+                    v-on:after-leave="afterLeave">
+                <p v-show="demo1" >Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </transition>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    let vue = new Vue({
+        data: {
+            'demo1': false
+        },
+        el: '#vue',
+        methods: {
+            enter(el, done) {
+                let startTime = Date.now();
+                let duration = 1000;
+                let _enter = ()=>{
+                    let currentTime = Date.now();
+                    let p = Math.min((currentTime - startTime) / duration, 1);
+                    el.style.opacity = p;
+                    if(p === 1) {
+                        done();
+                    }
+                    p<1 && requestAnimationFrame(_enter);
+                };
+
+                requestAnimationFrame(_enter);
+            },
+            afterEnter(){
+                console.log('afterEnter');
+            },
+            leave(el, done){
+                let startTime = Date.now();
+                let duration = 1000;
+                let _leave = ()=>{
+                    let currentTime = Date.now();
+                    let p = Math.min((currentTime - startTime) / duration, 1);
+                    el.style.opacity = 1 - p;
+                    if(p === 1) {
+                        done();
+                    }
+                    p<1 && requestAnimationFrame(_leave);
+                };
+
+                requestAnimationFrame(_leave);
+            },
+            afterLeave(){
+                console.log('afterLeave');
+            }
+        }
+    });
+</script>
+</body>
+</html>

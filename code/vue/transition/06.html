@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<style type="text/css">
+    .container {
+        width: 500px;
+        text-align: center;
+    }
+
+    .box {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        display: inline-block;
+        line-height: 100px;
+        text-align: center;
+        border: 1px solid #ccc;
+        color: #666;
+        font-size: 60px;
+        margin-left: -1px;
+    }
+
+    .box a {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        font-size: 14px;
+        text-align: center;
+        line-height: 20px;
+        color: #fff;
+        background-color: #666;
+        text-decoration: none;
+    }
+
+    .demo-enter-active,.demo-leave-active, .demo-move {
+        transition: all 1s;
+    }
+
+    .demo-leave-active {
+        /* why need this ?*/
+        /* when a element leave, it is set to be absolute so that left elements layout could be affected */
+        /* if elements layout change, means `v-move` will make effects */
+        position: absolute;
+    }
+
+    .demo-enter, .demo-leave-to {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+</style>
+<div id="vue">
+    <div class="container">
+        <label><input type="checkbox" v-model="state[1]" >1</label>
+        <label><input type="checkbox" v-model="state[2]" >2</label>
+        <label><input type="checkbox" v-model="state[3]" >3</label>
+        <label><input type="checkbox" v-model="state[4]" >4</label>
+    </div>
+    <transition-group name="demo" tag="div" class="container">
+        <div class="box" key="1" v-if="state[1]">
+           1<a href="#" @click.prevent="state[1]=false">x</a>
+        </div>
+        <div class="box" key="2" v-if="state[2]">
+           2<a href="#" @click.prevent="state[2]=false">x</a>
+        </div>
+        <div class="box" key="3" v-if="state[3]">
+           3<a href="#" @click.prevent="state[3]=false">x</a>
+        </div>
+        <div class="box" key="4" v-if="state[4]">
+           4<a href="#" @click.prevent="state[4]=false">x</a>
+        </div>
+    </transition-group>
+</div>
+<script type="text/javascript">
+    let vue = new Vue({
+        data: {
+            'state': {
+                1: true,
+                2: false,
+                3: true,
+                4: true
+            }
+        },
+        el: '#vue'
+    });
+</script>
+</body>
+</html>

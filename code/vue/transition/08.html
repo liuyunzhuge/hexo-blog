@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<style type="text/css">
+    .container {
+        width: 500px;
+        text-align: center;
+    }
+
+    .date_range_area {
+         width: 200px;
+         height: 40px;
+         line-height: 40px;
+         text-align: center;
+         background-color: #eee;
+         margin-left: 200px;
+         position: relative;
+    }
+
+    .prev-enter-active, .prev-leave-active,
+    .next-enter-active, .next-leave-active {
+        transition: all .4s;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+    }
+
+    .next-enter,.prev-leave-to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    .next-leave-to,.prev-enter {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+
+</style>
+<div id="vue">
+    <div class="container">
+        <button @click.stop="prev">prev</button>
+        <button @click.stop="next">next</button>
+    </div>
+    <transition-group :name="transition" class="date_range_area" tag="div">
+        <div class="date_range" v-for="item of date_ranges" :key="item">{{item}}</div>
+    </transition-group>
+</div>
+<script type="text/javascript">
+
+    let vue = new Vue({
+        data(){
+            return {
+                current: new Date(),
+                date_ranges: [this.formatDate(new Date())],
+                transition: ''
+            };
+        },
+        el: '#vue',
+        methods: {
+            formatDate(date){
+                return `${date.getFullYear()}.${date.getMonth() + 1}`;
+            },
+            prev(){
+                this.current.setMonth(this.current.getMonth() - 1);
+                this.date_ranges.unshift(this.formatDate(this.current));
+                this.date_ranges.pop();
+                this.transition = 'prev';
+            },
+            next(){
+                this.current.setMonth(this.current.getMonth() + 1);
+                this.date_ranges.push(this.formatDate(this.current));
+                this.date_ranges.shift();
+                this.transition = 'next';
+            }
+        }
+    });
+</script>
+</body>
+</html>
