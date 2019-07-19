@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<style type="text/css">
+    .container {
+        width: 500px;
+        text-align: center;
+    }
+
+    .fade-enter-active,.fade-leave-active{
+        transition: opacity 1s;
+    }
+
+    .fade-enter,.fade-leave-to {
+        opacity: 0;
+    }
+</style>
+<div id="vue">
+    <div class="container">
+        <button @click.stop="show=!show">toggle</button>
+    </div>
+    <div class="container">
+        <fade>
+            <p v-if="show">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci alias aliquid consequatur ducimus enim hic in laborum molestiae, nisi. Hic illum iusto nam nesciunt quae quasi reprehenderit saepe suscipit totam?</p>
+        </fade>
+    </div>
+</div>
+<script type="text/javascript">
+
+    Vue.component('fade', {
+       template: `<transition name="fade"><slot></slot></transition>`
+    });
+
+    let vue = new Vue({
+        data(){
+            return {
+                show: false
+            };
+        },
+        el: '#vue'
+    });
+</script>
+</body>
+</html>
