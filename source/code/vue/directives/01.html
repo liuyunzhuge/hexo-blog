@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <input type="text" v-focus>
+</div>
+<script type="text/javascript">
+    Vue.directive('focus', {
+        inserted(el) {
+            el.focus();
+        }
+    });
+
+    new Vue({
+        el: '#vue'
+    });
+</script>
+</body>
+</html>
