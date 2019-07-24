@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue" >
+    <div>
+        <label for=""><input type="checkbox" v-model="arg" true-value="foo"> foo</label>
+        <label for=""><input type="checkbox" v-model="arg" true-value="bar"> bar</label>
+    </div>
+    <div v-demo:[arg].a.b="message"></div>
+</div>
+<script type="text/javascript">
+    Vue.directive('demo', {
+        bind: function (el, binding, vnode) {
+            var s = JSON.stringify
+            el.innerHTML =
+                'name: ' + s(binding.name) + '<br>' +
+                'value: ' + s(binding.value) + '<br>' +
+                'expression: ' + s(binding.expression) + '<br>' +
+                'argument: ' + s(binding.arg) + '<br>' +
+                'modifiers: ' + s(binding.modifiers) + '<br>' +
+                'vnode keys: ' + Object.keys(vnode).join(', ')
+        },
+        update(el, binding){
+            console.log(binding.arg)
+        },
+        componentUpdated(el, binding){
+            console.log(binding.arg)
+        }
+    })
+
+    new Vue({
+        el: '#vue',
+        data: {
+            arg: 'foo',
+            message: 'hello!'
+        }
+    })
+</script>
+</body>
+</html>
