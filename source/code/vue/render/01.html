@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <ul>
+        <li>
+            <a href="#" @click="index=0">1</a>
+            <a href="#" @click="index=1">2</a>
+            <a href="#" @click="index=2">3</a>
+            <a href="#" @click="index=3">4</a>
+        </li>
+    </ul>
+    <tab-content :index="index">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+    </tab-content>
+</div>
+<script type="text/javascript">
+    Vue.component('tab-pane', {
+        props: {
+            visible: Boolean
+        },
+        name: 'tab-pane',
+        template: `<div v-if="visible"><slot></slot></div>`
+    });
+
+    Vue.component('tab-content', {
+        props: {
+            index: {
+                type: Number,
+                required: true
+            },
+            tag: {
+                type: String,
+                default: 'div'
+            },
+            name: {
+                type: String,
+                default: 'v'
+            }
+        },
+        render(h) {
+            let tabPaneNodes = this.$slots.default.filter(n => n.tag);
+            return h('transition-group', {
+                props: {
+                    tag: this.tag,
+                    name: this.name
+                }
+            }, tabPaneNodes.map((vnode, index) => {
+                return h('tab-pane', {
+                    key:  'tab-pane' + index,
+                    props: {
+                        visible: index === this.index
+                    }
+                }, [vnode]);
+            }));
+        }
+    });
+
+    new Vue({
+        el: '#vue',
+        data(){
+            return {
+                index: 0
+            }
+        }
+    });
+</script>
+</body>
+</html>
