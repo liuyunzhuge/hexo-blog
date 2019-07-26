@@ -3,63 +3,146 @@
 <head>
     <title>01</title>
     <script type="text/javascript" src="../lib/vue.js"></script>
+    <style type="text/css">
+        .tabs {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            width: 400px;
+        }
+
+        .tabs > li {
+            flex: 1;
+        }
+
+        .tabs > li,.tabs > li > a {
+            display: block;
+            text-align: center;
+        }
+
+        .tabs > li > a {
+            padding: 10px 20px;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .tabs > li > a.active {
+            background-color: #eee;
+            color: red;
+            font-weight: bold;
+        }
+
+        .tab_content {
+            min-height: 200px;
+            border: 1px solid #eee;
+            position: relative;
+        }
+
+        .tab_pane {
+            padding: 10px;
+        }
+
+        .tab-enter-active,.tab-leave-active {
+            transition:  all .5s;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .tab-enter,.tab-leave-to {
+            opacity: 0;
+        }
+    </style>
 </head>
 <body>
 <div id="vue">
-    <ul>
+    <ul class="tabs">
         <li>
-            <a href="#" @click="index=0">1</a>
-            <a href="#" @click="index=1">2</a>
-            <a href="#" @click="index=2">3</a>
-            <a href="#" @click="index=3">4</a>
+            <a href="#" @click="index=0" :class="{active: index === 0}">1</a>
+        </li>
+        <li>
+            <a href="#" @click="index=1" :class="{active: index === 1}">2</a>
+        </li>
+        <li>
+            <a href="#" @click="index=2" :class="{active: index === 2}">3</a>
+        </li>
+        <li>
+            <a href="#" @click="index=3" :class="{active: index === 3}">4</a>
         </li>
     </ul>
-    <tab-content :index="index">
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
+    <tab-content :index="index" tag="div" name="tab" mode="show">
+        <tab-pane>
+            <textarea cols="50" rows="3"></textarea>
+        </tab-pane>
+        <tab-pane>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </tab-pane>
+        <tab-pane>
+            <textarea cols="50" rows="3"></textarea>
+        </tab-pane>
+        <tab-pane>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </tab-pane>
     </tab-content>
 </div>
 <script type="text/javascript">
-    Vue.component('tab-pane', {
-        props: {
-            visible: Boolean
-        },
+    TabPane = {
         name: 'tab-pane',
-        template: `<div v-if="visible"><slot></slot></div>`
-    });
+        template: `<div class="tab_pane"><slot></slot></div>`
+    };
 
     Vue.component('tab-content', {
+        inheritAttrs: false,
         props: {
             index: {
                 type: Number,
                 required: true
             },
-            tag: {
+            mode: {
                 type: String,
-                default: 'div'
-            },
-            name: {
-                type: String,
-                default: 'v'
+                default: 'if' // if show
             }
+        },
+        components: {
+            TabPane
         },
         render(h) {
             let tabPaneNodes = this.$slots.default.filter(n => n.tag);
-            return h('transition-group', {
-                props: {
-                    tag: this.tag,
-                    name: this.name
+            let children = [];
+            for(let [index,vnode] of tabPaneNodes.entries()) {
+                vnode.key = 'tab_pane_' + index; 
+                if(this.index === index && this.mode === 'if') {
+                    children.push(vnode);
+                } else if(this.mode === 'show') {
+                    children.push(h('tab-pane', {
+                        key: vnode.key,
+                        directives: [
+                            {
+                                name: 'show',
+                                value: this.index === index
+                            }
+                        ]
+                    }, [vnode.children || vnode.componentOptions.children]));
                 }
-            }, tabPaneNodes.map((vnode, index) => {
-                return h('tab-pane', {
-                    key:  'tab-pane' + index,
-                    props: {
-                        visible: index === this.index
-                    }
-                }, [vnode]);
-            }));
+            }
+            return h('transition-group', {
+                attrs: this.$attrs,
+                class: {
+                    'tab_content': true
+                }
+            }, children);
         }
     });
 
@@ -69,6 +152,9 @@
             return {
                 index: 0
             }
+        },
+        components: {
+            TabPane
         }
     });
 </script>
