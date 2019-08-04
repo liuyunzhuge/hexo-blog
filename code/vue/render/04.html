@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <layout></layout>
+</div>
+<script type="text/javascript">
+    Vue.component('layout', {
+        render(createElement) {
+            return createElement('div', {
+                style: {
+                    'fontSize': '14px'
+                }
+            }, this.$slots.default);
+        }
+    });
+
+    new Vue({
+        el: '#vue',
+        data() {
+            return {}
+        }
+    });
+</script>
+</body>
+</html>

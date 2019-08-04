@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <page>
+        <p>lorem</p>
+    </page>
+</div>
+<script type="text/javascript">
+    Vue.component('layout', {
+        render(createElement){
+            return createElement('div', this.$slots.main);//注意此处不是this.$slots.default
+        }
+
+        // 等价于
+        // <div><slot name="main"></slot></div>
+    });
+
+    Vue.component('page', {
+        render(createElement){
+            return createElement('layout', this.$slots.default.map(vnode=>{
+                return createElement(vnode.tag, {
+                    slot: 'main'
+                }, vnode.children)
+            }));
+        }
+    });
+
+    new Vue({
+        el: '#vue',
+        data() {
+            return {}
+        }
+    });
+</script>
+</body>
+</html>
