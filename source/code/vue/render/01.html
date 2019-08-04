@@ -16,7 +16,7 @@
             flex: 1;
         }
 
-        .tabs > li,.tabs > li > a {
+        .tabs > li, .tabs > li > a {
             display: block;
             text-align: center;
         }
@@ -43,15 +43,15 @@
             padding: 10px;
         }
 
-        .tab-enter-active,.tab-leave-active {
-            transition:  all .5s;
+        .tab-enter-active, .tab-leave-active {
+            transition: all .5s;
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
         }
 
-        .tab-enter,.tab-leave-to {
+        .tab-enter, .tab-leave-to {
             opacity: 0;
         }
     </style>
@@ -72,7 +72,7 @@
             <a href="#" @click="index=3" :class="{active: index === 3}">4</a>
         </li>
     </ul>
-    <tab-content :index="index" tag="div" name="tab" mode="show">
+    <tab-content :index="index" tag="div" name="tab" mode="show" @show="show" @load="load">
         <tab-pane>
             <textarea cols="50" rows="3"></textarea>
         </tab-pane>
@@ -98,10 +98,10 @@
     </tab-content>
 </div>
 <script type="text/javascript">
-    TabPane = {
-        name: 'tab-pane',
+
+    Vue.component('tab-pane', {
         template: `<div class="tab_pane"><slot></slot></div>`
-    };
+    });
 
     Vue.component('tab-content', {
         inheritAttrs: false,
@@ -115,17 +115,35 @@
                 default: 'if' // if show
             }
         },
-        components: {
-            TabPane
+        created() {
+            this.events = {};
+        },
+        watch: {
+            index(newIndex) {
+                this.changeIndex(newIndex);
+            }
+        },
+        mounted() {
+            this.changeIndex(this.index);
+        },
+        methods: {
+            changeIndex(newIndex) {
+                if (this.events[newIndex]) {
+                    this.$emit('show', newIndex);
+                } else {
+                    this.$emit('load', newIndex);
+                    this.events[newIndex] = true;
+                }
+            }
         },
         render(h) {
             let tabPaneNodes = this.$slots.default.filter(n => n.tag);
             let children = [];
-            for(let [index,vnode] of tabPaneNodes.entries()) {
-                vnode.key = 'tab_pane_' + index; 
-                if(this.index === index && this.mode === 'if') {
+            for (let [index, vnode] of tabPaneNodes.entries()) {
+                vnode.key = 'tab_pane_' + index;
+                if (this.index === index && this.mode === 'if') {
                     children.push(vnode);
-                } else if(this.mode === 'show') {
+                } else if (this.mode === 'show') {
                     children.push(h('tab-pane', {
                         key: vnode.key,
                         directives: [
@@ -148,13 +166,18 @@
 
     new Vue({
         el: '#vue',
-        data(){
+        data() {
             return {
                 index: 0
             }
         },
-        components: {
-            TabPane
+        methods: {
+            show(index) {
+                console.log('show', index);
+            },
+            load(index) {
+                console.log('load', index);
+            }
         }
     });
 </script>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <msg-list :items="[{msg: '1'}, {msg: '2'}]"></msg-list>
+</div>
+<script type="text/javascript">
+
+    Vue.component('msg-list', {
+        props: ['items'],
+        mounted() {
+            console.log(this.$refs.nodes);// [li, li]
+        },
+        render(createElement) {
+            return createElement('div', [createElement('ul', this.items.map(item =>
+                createElement('li', {ref: 'nodes', refInFor: true}, item.msg)
+            ))]);
+        }
+    });
+
+    let vm = new Vue({
+        el: '#vue',
+        data() {
+            return {}
+        }
+    });
+</script>
+</body>
+</html>
+
+

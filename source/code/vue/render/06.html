@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <page>
+        <template v-slot:title>page title</template>
+        <p>lorem</p>
+    </page>
+</div>
+<script type="text/javascript">
+    Vue.component('heading', {
+        props: {
+          level: Number
+        },
+        render(createElement) {
+            return createElement('h'+this.level, this.$slots.default);
+        }
+    });
+
+
+    Vue.component('page', {
+        render(createElement) {
+            return createElement('div', [
+                createElement('heading', {
+                    props: {
+                        level: 1
+                    }
+                }, this.$slots.title),
+                this.$slots.default
+            ]);
+        }
+    });
+
+    new Vue({
+        el: '#vue',
+        data() {
+            return {}
+        }
+    });
+</script>
+</body>
+</html>
