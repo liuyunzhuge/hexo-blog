@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <layout direction="horizontal" width="100px" height="200px">
+        <aside>aside</aside>
+        <main>main</main>
+    </layout>
+</div>
+<script type="text/javascript">
+    Vue.component('layout', {
+        functional: true,
+        props: ['direction', 'width', 'height'],
+        render(createElement, context) {
+            console.log(context.children);
+            // [VNode, VNode, VNode]
+        }
+    });
+
+    let vm = new Vue({
+        el: '#vue'
+    });
+</script>
+</body>
+</html>
+
+

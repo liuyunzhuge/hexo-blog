@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <custom-input v-model="name"></custom-input>
+    <p>{{name}}</p>
+</div>
+<script type="text/javascript">
+
+    Vue.component('custom-input', {
+        model: {
+            event: 'model',
+            value: 'value',
+        },
+        props: ['value'],
+        render(createElement) {
+            return createElement('input', {
+                attrs: this.$attrs,
+                domProps: {
+                    value: this.value
+                },
+                on: {
+                    input: ($event) => {
+                        this.$emit('model', $event.target.value);
+                    }
+                }
+            })
+        }
+    });
+
+    let vm = new Vue({
+        el: '#vue',
+        data() {
+            return {
+                name: '1111'
+            }
+        }
+    });
+</script>
+</body>
+</html>
+
+
