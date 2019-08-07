@@ -8,56 +8,28 @@
 <body>
 <div id="vue">
     <page>
-        <layout direction="horizontal" @expand="expand">
-            <side-bar>side-bar</side-bar>
-            <main-area>main-area</main-area>
-        </layout>
     </page>
 </div>
 <script type="text/javascript">
 
-    Vue.component('page', {
-        render(createElement) {
-            return createElement('div', this.$slots.default);
-        }
-    });
-
-    Vue.component('side-bar', {
-        render(createElement) {
-            return createElement('div', this.$slots.default);
-        }
-    });
-
-    Vue.component('main-area', {
-        render(createElement) {
-            return createElement('div', this.$slots.default);
-        }
-    });
-
-    Vue.component('layout-h', {
-        render(createElement) {
-            return createElement('div', {
-                style: {
-                    'display': 'flex'
-                }
-            }, this.$slots.default);
-        }
-    });
-
-    Vue.component('layout-v', {
-        render(createElement) {
-            return createElement('div', {}, this.$slots.default);
-        }
-    });
-
     Vue.component('layout', {
         functional: true,
-        props: ['direction'],
         render(createElement, context) {
-            if (context.props.direction === 'horizontal') {
-                return createElement('layout-h', context.data, context.children);
-            } else {
-                return createElement('layout-v', context.data, context.children);
+            console.log(context.parent.test()); // i'm page component
+        }
+    });
+
+    Vue.component('page', {
+        render(createElement) {
+            return createElement('layout', {
+                props: {
+                    direction: 'horizontal'
+                }
+            }, this.$slots.default);
+        },
+        methods: {
+            test(){
+                console.log('i\'m page component');
             }
         }
     });
@@ -65,18 +37,9 @@
     let vm = new Vue({
         el: '#vue',
         data() {
-            return {
-                name: '1111'
-            }
-        },
-        methods: {
-            expand() {
-
-            }
+            return {}
         }
     });
 </script>
 </body>
 </html>
-
-
