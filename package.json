@@ -6,6 +6,8 @@
     "version": "3.8.0"
   },
   "dependencies": {
+    "core-js-bundle": "^3.2.1",
+    "core-js-pure": "^3.2.1",
     "hexo": "^3.8.0",
     "hexo-deployer-git": "^1.0.0",
     "hexo-generator-archive": "^0.1.5",
@@ -17,5 +19,8 @@
     "hexo-renderer-marked": "^0.3.2",
     "hexo-renderer-stylus": "^0.3.3",
     "hexo-server": "^0.3.3"
+  },
+  "devDependencies": {
+    "core-js": "^3.2.1"
   }
 }
