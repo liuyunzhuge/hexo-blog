@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>01</title>
+    <script type="text/javascript" src="../lib/vue.js"></script>
+</head>
+<body>
+<div id="vue">
+    <layout direction="horizontal" width="100px" height="200px">
+        <side v-slot:aside="item">{{item.menus}}</side>
+        <main>main</main>
+        <template v-slot:footer></template>
+        <template v-slot:popup="user">
+            <img :src="user.avatar" alt="">
+        </template>
+    </layout>
+</div>
+<script type="text/javascript">
+    Vue.component('side', {
+        render(h){
+            return h('div', this.$slots.default);
+        }
+    });
+
+    Vue.component('layout', {
+        functional: true,
+        props: ['direction', 'width', 'height'],
+        render(createElement, context) {
+            console.log(context.scopedSlots);
+            // {default() ..., footer() ..., aside() ...};
+        }
+    });
+
+    let vm = new Vue({
+        el: '#vue'
+    });
+</script>
+</body>
+</html>
+
+
