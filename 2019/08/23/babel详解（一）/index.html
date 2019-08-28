@@ -15,7 +15,7 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -100,14 +100,14 @@
 
 
   <meta name="description" content="babel已经推出7.x版本，与babel紧密关联的core-js也推出了3.x版本，与babel7.x和core-js3.x对应的是babel6.x和core-js2.x。babel7.x和core-js3.x有很多新变化，值得学习，并且考虑在现有项目中对babel6.x进行升级处理。 从本篇开始，我将尝试从细节方面来总结最新版本babel(7.x)的作用及用法。经过这几天了解babel和cor">
-<meta name="keywords" content="前端、产品">
+<meta name="keywords" content="babel,前端工程化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="babel详解（一）">
 <meta property="og:url" content="http://blog.liuyunzhuge.com/2019/08/23/babel详解（一）/index.html">
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="babel已经推出7.x版本，与babel紧密关联的core-js也推出了3.x版本，与babel7.x和core-js3.x对应的是babel6.x和core-js2.x。babel7.x和core-js3.x有很多新变化，值得学习，并且考虑在现有项目中对babel6.x进行升级处理。 从本篇开始，我将尝试从细节方面来总结最新版本babel(7.x)的作用及用法。经过这几天了解babel和cor">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-22T14:55:58.713Z">
+<meta property="og:updated_time" content="2019-08-23T14:01:13.790Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="babel详解（一）">
 <meta name="twitter:description" content="babel已经推出7.x版本，与babel紧密关联的core-js也推出了3.x版本，与babel7.x和core-js3.x对应的是babel6.x和core-js2.x。babel7.x和core-js3.x有很多新变化，值得学习，并且考虑在现有项目中对babel6.x进行升级处理。 从本篇开始，我将尝试从细节方面来总结最新版本babel(7.x)的作用及用法。经过这几天了解babel和cor">
@@ -278,7 +278,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">11</span></a>
 
   </li>
         
@@ -297,7 +297,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">9</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">10</span></a>
 
   </li>
         
@@ -316,7 +316,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">53</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">54</span></a>
 
   </li>
         
@@ -443,6 +443,31 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/babel/" itemprop="url" rel="index"><span itemprop="name">babel</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -617,6 +642,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/babel/" rel="tag"># babel</a>
+          
+            <a href="/tags/前端工程化/" rel="tag"># 前端工程化</a>
+          
+        </div>
+      
 
       
       
@@ -635,6 +668,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/29/babel详解（二）-plugins/" rel="prev" title="babel详解（二）:plugins">
+                babel详解（二）:plugins <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -705,7 +742,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-count">54</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -740,7 +777,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -775,7 +814,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
