@@ -6,7 +6,9 @@ tags:
 categories:
   - Javascript
   - babel
+date: 2019-08-28 22:32:21
 ---
+
 
 开箱即用的babel，什么也不做。如果要让它对代码进行转换，就得配置plugins才能有效。本篇说明babel的plugins的用法以及babel7中plugin的一些变化。
 <!-- more -->
@@ -308,11 +310,113 @@ babel的transform plugins主要分为以下一些类别：
 [点击了解以上分类的明细](https://babeljs.io/docs/en/plugins#transform-plugins)
 
 ## syntax plugins
+babel的syntax plugins不是用来转换代码的，而是用来对ES6新的语法特性进行解析的，如果直接使用syntax plugin，代码不会有任何转换。要对新语法进行转换，就必须使用对应的transform plugins。syntax plugin会被transform plugin依赖，用于语法解析。
 
 ## plugin的启用顺序
+前面了解到babel是基于plugin来使用的，plugin可以配置多个；同时babel还提供了preset，preset基本上可以看作是一组plugin。如果有这么多个plugin，对源代码进行解析，肯定要有一个处理的先后顺序，前一个plugin的处理结果，将作为下一个plugin的输入。所以babel规定了plugin的启用顺序：
+1. 配置中plugins内直接配置的plugin，先于presets中的plugin；
+2. 配置中plugins数组内的plugin，按照数组索引顺序启用；
+3. 配置中presets数组内的presets，按照数组索引顺序逆序启用，也就是先应用后面的presets，再应用前面的preset。
+
+如：
+```json
+{
+  "plugins": ["transform-decorators-legacy", "transform-class-properties"]
+}
+```
+先启用`transform-decorators-legacy`，然后才是`transform-class-properties`。
+```json
+{
+  "presets": ["es2015", "react", "stage-2"]
+}
+```
+preset的启用顺序：`stage-2` `react` `es2015`
 
 ## plugin的options
+前面介绍plugins如何配置时，简化了这个部分的说明，babel官方文档对plugin和preset的配置，有明确的声明，而且plugin和preset的配置方式是一致的：
+* EntryTarget - Individual plugin
+* [EntryTarget, EntryOptions] - Individual plugin w/ options
+* [EntryTarget, EntryOptions, string] - Individual plugin with options and name (see merging for more info on names)
+* ConfigItem - A plugin configuration item created by babel.createConfigItem()
 
-## 自定义plugin
+> EntryTarget
+> Type: string | {} | Function
+> 见后面举例中的形式
 
-## 其它
+> EntryOptions
+> Type: undefined | {} | false
+> undefined会被替换为一个empty object；所以undefined与{}是等效的；
+> false，表示不启用这个plugin。在一些场合下会有用，比如：
+```js
+plugins: [
+  'one',
+  ['two', false],
+  'three',
+],
+overrides: [{
+  test: "./src",
+  plugins: [
+    'two',
+  ]
+}]
+```
+> 上面这个场景中，two在默认情况下不启用，但是当babel转换的是`test`目录下的文件，则会被启用。
+
+举例如下：
+```js
+let plugins = [
+  // EntryTarget
+  '@babel/plugin-transform-classes',
+
+  // [EntryTarget, EntryOptions]
+  ['@babel/plugin-transform-arrow-functions', { spec: true }],
+
+  // [EntryTarget, EntryOptions, string]
+  ['@babel/plugin-transform-for-of', { loose: true }, "some-name"],
+
+  // ConfigItem
+  babel.createConfigItem(require("@babel/plugin-transform-spread"))
+];
+
+module.exports = {plugins};
+```
+
+每个plugin的options其实都不一样，本文记录几个在babel官方文档中经常出现的option:
+* loose
+    启用松散式的代码转换，假如某个插件支持这个option，转换后的代码，会更加简单，代码量更少，但是不会严格遵循ES的规格，通常默认是false
+* spec
+    启用更加符合ES规格的代码转换，默认也是false，转换后的代码，会增加很多helper函数，代码量更大，但是代码质量更好
+* legacy
+    启用旧的实现来对代码做转换。详见后面举例
+* useBuiltIns
+    如果为true，则在转换过程中，会尽可能地使用运行环境已经支持的实现，而不是引入polyfill
+    
+举例来说：`@babel/plugin-proposal-object-rest-spread`这个插件，在babel7里面，默认转换行为等同于`spec: true`，所以它不再提供`spec`这个option，它下面这段代码：
+```js
+let bar = {...obj};
+```
+转换为：
+```js
+function ownKeys(object, enumerableOnly) { ...; }
+
+function _objectSpread(target) { ...; }
+
+function _defineProperty() { ...; }
+
+let bar = _objectSpread({}, obj);
+```
+
+这个插件支持`loose`和`useBuiltIns`这两个option。如果启用`loose`则代码会转换为：
+```js
+function _extends() { ...; }
+
+let bar = _extends({}, obj);
+```
+如果同时启用`loose`和`useBuiltIns`，则代码会转换为：
+```js
+let bar = Object.assign({}, obj);
+```
+看！`loose`和`useBuiltIns`会让转换后的代码越来越简单，但是也跟ES规格表达的需求偏离地越来越远。
+
+### legacy
+由于ES6的decorators语法有了新的编写方式，所以babel7把`@babel/plugin-proposal-decorators`插件默认对ES6 decorators语法的转换，启用了新写法的转码，如果在编码时，还在使用旧的ES6的decorators语法，则在使用这个插件的时候，应该启用`legacy`option，以便这个插件，仍能对旧语法进行转码。
