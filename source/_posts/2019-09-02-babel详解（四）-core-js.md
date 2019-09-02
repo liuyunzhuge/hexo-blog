@@ -6,14 +6,16 @@ tags:
 categories:
   - Javascript
   - babel
+date: 2019-09-02 13:10:31
 ---
+
 
 
 本篇了解与babel高度集成的[core-js](https://github.com/zloirock/core-js)的要点。
 
 <!-- more -->
 ## 概述
-core-js是完全模块化的javascript标准库。 包含ECMA-262至今为止大部分特性的polyfill，如promises、symbols、collections、iterators、typed arrays、etc，以及一些跨平台的`WHATWG / W3C`特性的polyfill，如`WHATWG URL`。 它可以直接全部注入到全局环境里面，帮助开发者模拟一个包含众多新特性的运行环境，这样开发者仅需简单引入core-js，仍然使用最新特性的写法编码即可；也可以不直接注入到全局对象里面，这样对全局对象不会造成污染，但是需要开发者单独引入core-js的相关module，并可能还需要通过手工调用module完成编码，没法直接使用最新ES的写法。它是一个完全模块化的库，所有的polyfill实现，都有一个单独的module文件，既可以一劳永逸地把所有polyfill全部引入，也可以根据需要，在自己项目的每个文件，单独引入需要的core-js modules文件。
+core-js是完全模块化的javascript标准库。 包含ECMA-262至今为止大部分特性的polyfill，如promises、symbols、collections、iterators、typed arrays、etc，以及一些跨平台的`WHATWG / W3C`特性的polyfill，如`WHATWG URL`。 它可以直接全部注入到全局环境里面，帮助开发者模拟一个包含众多新特性的运行环境，这样开发者仅需简单引入core-js，仍然使用最新特性的ES写法编码即可；也可以不直接注入到全局对象里面，这样对全局对象不会造成污染，但是需要开发者单独引入core-js的相关module，并可能还需要通过手工调用module完成编码，没法直接使用最新ES的写法。它是一个完全模块化的库，所有的polyfill实现，都有一个单独的module文件，既可以一劳永逸地把所有polyfill全部引入，也可以根据需要，在自己项目的每个文件，单独引入需要的core-js的modules文件。
 
 core-js大部分的polyfill都是针对ESMAScript实现的，但是有几个polyfill是针对`W3C / WHATWG`这两个机构制定的web standards实现的，包括：
 * setTimeout and setInterval -- whatwg: [link](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#timers)
@@ -24,7 +26,7 @@ core-js大部分的polyfill都是针对ESMAScript实现的，但是有几个poly
 
 其中`URL and URLSearchParams`也被加入到了ECMA的proposals当中，目前是stage-0阶段，该proposal的git地址：[点此查看](https://github.com/jasnell/proposal-url)。
 
-core-js目前最新版是v3，v2还在用，但是不推荐继续用，v3才是下一步的主流。core-js@提供了三个版本：
+core-js目前最新版是v3，v2还在用，但是不推荐继续用，v3才是未来的主流。core-js@提供了三个版本：
 ```bash
 // global version
 npm install --save core-js@3.2.1
@@ -33,7 +35,7 @@ npm install --save core-js-pure@3.2.1
 // bundled global version
 npm install --save core-js-bundle@3.2.1
 ```
-第一个版本是最简单的使用版本，会直接把core-js所有的polyfill，直接扩展到代码运行的全局环境中。第二个版本core-js-pure，不会把polyfill注入全局环境，但是在使用的时候，需要单独引入polyfill的module，不能直接使用最新ES的写法；第三个版本是一个编译打包好的版本，包含全部的polyfill特性，适合在浏览器里面通过script直接加载。 显然第三个版本，不是一个值得推荐使用的版本，构建工具没法用它。
+第一个版本是最简单的使用版本，会直接把core-js所有的polyfill，直接扩展到代码运行的全局环境中。第二个版本core-js-pure，不会把polyfill注入全局环境，但是在使用的时候，需要单独引入polyfill的module，不能直接使用最新ES的写法；第三个版本是一个编译打包好的版本，包含全部的polyfill特性，适合在浏览器里面通过script直接加载。 前两个版本适合跟构建工具一起使用，第三个直接在浏览器里面用即可。
 
 1. 如果使用第一个版本，可以在代码中这样使用core-js：
 ```js
@@ -43,7 +45,7 @@ Array.from(new Set([1, 2, 3, 2, 1]));          // => [1, 2, 3]
 [1, [2, 3], [4, [5]]].flat(2);                 // => [1, 2, 3, 4, 5]
 Promise.resolve(32).then(x => console.log(x)); // => 32
 ```
-    只要在项目的入口文件中，引入`core-js`一次，就能把所有的polyfill注入到运行环境中。`Array.from Array.prototype.flat Promise`这些新的ES特性，就可以直接使用，就好像运行环境原生支持了它们一样。
+    只要在项目的入口文件中，引入`core-js`一次，就能把所有的polyfill注入到运行环境中。`Array.from Array.prototype.flat Promise`这些新的ES特性，在编码时可以放心大胆地编写，就好像运行环境原生支持了它们一样。
 
     也可以仅引入部分特性的polyfill：
 ```js
@@ -56,7 +58,7 @@ Array.from(new Set([1, 2, 3, 2, 1]));          // => [1, 2, 3]
 [1, [2, 3], [4, [5]]].flat(2);                 // => [1, 2, 3, 4, 5]
 Promise.resolve(32).then(x => console.log(x)); // => 32
 ```
-    这样的polyfill，依然会直接扩展到全局环境中。
+    以上部分引入的polyfill，依然会直接扩展到全局环境中。
 
 2. 如果使用第二个版本，需要在代码中这样使用core-js:
 ```js
@@ -69,10 +71,7 @@ from(new Set([1, 2, 3, 2, 1]));                // => [1, 2, 3]
 flat([1, [2, 3], [4, [5]]], 2);                // => [1, 2, 3, 4, 5]
 Promise.resolve(32).then(x => console.log(x)); // => 32
 ```
-    这个方式，不能一次性引入所有的polyfill，必须根据每个文件的需要，单独引入需要的modules。 除了Promise这种属于新构造函数的polyfill，像`Array.from Array.prototype`这种在内置类或内置对象上扩展出的新的实例方法或静态方法，都不能按照实例方法或静态方法直接调用，必须类似`from(new Set([1, 2, 3, 2, 1])); `这样手工使用。显然这个使用方式，会让我们使用最新的ES、web特性变得不符合规范，仅仅是帮助我们得到了一个工具库、工具函数而已。
-
-core-js对应的package源码：[package](https://github.com/zloirock/core-js/tree/master/packages/core-js);
-core-js-pure对应的package源码：[package](https://github.com/zloirock/core-js/tree/master/packages/core-js-pure);
+    这个方式，不能一次性引入所有的polyfill，必须根据每个文件的需要，单独引入需要的modules。 除了Promise这种属于新构造函数的polyfill，像`Array.from Array.prototype`这种在内置对象或内置类上扩展出的新的实例方法或静态方法，都不能按照实例方法或静态方法直接调用，必须类似`from(new Set([1, 2, 3, 2, 1])); `这样手工使用。这个使用方式，会让我们编码时使用最新的ES、web特性变得不符合规范，仅仅是帮助我们得到了一个工具库、工具函数而已。
 
 ## core-js的modules组织方式
 
@@ -116,29 +115,29 @@ import "core-js/stage/4";
 import "core-js/features"; // equivalent to ` import "core-js";
 ```
 上面的引入有一些等价关系，在注释中有说明。再补充一些：
-`import "core-js";`等价于：
+1. `import "core-js";`等价于：
 ```js
 import "core-js/es";
 import "core-js/web";
 import "core-js/proposals";
 ```
-也等价于:
+    也等价于:
 ```js
 import "core-js/stable";
 import "core-js/proposals";
 ```
-还等价于:
+    还等价于:
 ```js
 import "core-js/features"; 
 ```
-`import "core-js/proposals";`等价于:
+2. `import "core-js/proposals";`等价于:
 ```js
 import "core-js/stage"; 
 ```
-注意：`import "core-js/stage"`不等价于`import "core-js/stage/0"`。
+3. 注意：`import "core-js/stage"`不等价于`import "core-js/stage/0"`。
 
 core-js的modules分为两类：es和web standards。core-js的proposals都是针对es的，web standards没有所谓的proposals。core-js的stable，跟ECMA-262的标准规范不是一个等价的概念，core-js的stable要宽泛一些：
-1. core-js里所有web的modules，都属于stable，而这些web modules，现在在`w3c和whatwg`的工作流程中，也有的还处于draft阶段；那core-js为什么会认为这些modules应该划分到stable里面呢？这应该是根据这些modules的长远发展来考虑的。 到mdn查询`setImmediate`，目前这个特性还属于不完全标准化的阶段：
+1. core-js里所有web的modules，都属于stable，而这些web modules，现在在`w3c和whatwg`的工作流程中，也有的还处于draft阶段；那core-js为什么会认为这些modules应该划分到stable里面呢？这应该是根据这些modules的长远发展来考虑的。 到mdn查询`setImmediate`的文档，显示这个特性还属于不完全标准化的阶段：
 > 该特性是非标准的，请尽量不要在生产环境中使用它！
 
 2. core-js会把ECMA里面处于stage-4的proposals归类到stable里面。
@@ -190,11 +189,11 @@ core-js-pure与core-js在引用polyfill的主要区别就是core-js-pure需要�
 ```js
 import "core-js";
 ```
-这个在core-js里面是有用的，所有polyfill直接扩展到全局空间里。但是：
+上面这个在core-js里面是有用的，所有polyfill直接扩展到全局空间里。但是：
 ```js
 import "core-js-pure";
 ```
-这个就没有用了，因为它不对全局空间做扩展，所以只能通过直接使用模块的方式才能拿到modules内部定义好的api。
+这个就没有用了，因为它不对全局空间做扩展，所以只能通过直接使用模块的方式才能拿到module内部定义好的api。
 
 ### 单独引用
 core-js-pure只能通过两种形式来引用polyfill。
@@ -234,7 +233,7 @@ import { fill, findIndex } from 'core-js-pure/features/array/virtual';
 
 Array(10)::fill(0).map((a, b) => b * b)::findIndex(it => it && !(it % 8)); // => 4
 ```
-这个写法也是怪怪的。
+这个写法也不符合标准。
 
 第三种跟babel有关系，可以借助babel的runtime，在使用core-js-pure的时候，依然使用正常的ES标准写法，由babel将代码转换为上面的第1种使用方式。本篇后面的内容再介绍。
 
@@ -280,7 +279,7 @@ module.exports = require('./1');
 ```
 ...
 
-只有`es` `features` `stable`下面才有子文件夹，所有只有它们是三个才有子的命名空间：
+只有`es` `features` `stable`下面才有子文件夹，所有只有它们三个才有子的命名空间：
 <img src="{% asset_path "2.png" %}" width="200">
 
 有文件夹的，只要看看它下面有没有独立的index.js文件，有则代表它可以被直接引入。
@@ -288,7 +287,7 @@ module.exports = require('./1');
 `internals`和`modules`是core-js内部使用的文件夹，不建议在项目中直接引用：
 <img src="{% asset_path "3.png" %}" width="200">
 
-实际上所有core-js的polyfill，底层的机制都是由`internals`和`modules`内部的module来完成的。core-js官方不推荐直接引用这两个文件夹的module，因为它们是内部实现，很可能在版本迭代中发生变化。
+所有core-js的polyfill，底层的机制都是由`internals`和`modules`内部的module来完成的。core-js官方不推荐直接引用这两个文件夹的module，因为它们是内部实现，很可能在版本迭代中发生变化。
 
 `proposals`文件夹下的都是ES proposals阶段的特性的polyfill，但是其中有一个`url.js`：
 ```js
@@ -301,9 +300,9 @@ require('../modules/web.url-search-params');
 ## core-js-pure的源码结构
 core-js-pure对应的package源码：[package](https://github.com/zloirock/core-js/tree/master/packages/core-js-pure);
 
-core-js-pure的源码与core-js仅仅只有`internals`和`modules`两个文件夹有区别，其它的都是一样的。打开上面的源码库看到core-js-pure里面只有一个overrides文件夹，包含了`internals`和`modules`两个文件夹。很容易就能猜到，core-js-pure这个包是在复制了core-js的包，然后覆盖了`internals`和`modules`之后得到的。
+core-js-pure的源码与core-js仅仅只有`internals`和`modules`两个文件夹有区别，其它的都是一样的。打开上面的源码库看到core-js-pure里面只有一个overrides文件夹，包含了`internals`和`modules`两个文件夹。很容易就能猜到，core-js-pure这个包是在复制了core-js的包基础上，然后覆盖了`internals`和`modules`之后得到的。
 
-从core-js官方的构建文件配置可以验证上面这一点：[core-js的构建](https://github.com/zloirock/core-js/blob/master/Gruntfile.js)
+从core-js官方的构建文件配置可以验证上面这一点：[core-js的构建文件](https://github.com/zloirock/core-js/blob/master/Gruntfile.js)
 
 ## 与babel的集成使用
 有三方面：
@@ -313,7 +312,7 @@ core-js-pure的源码与core-js仅仅只有`internals`和`modules`两个文件�
 2. @babel/preset
 在{% post_link "babel详解（三）-presets" "上一篇博客" %}中对preset-env与core-js结合使用的方法和要点都记录地非常清晰了。在掌握了本篇的内容后，现在对于preset-env为什么会自动注入那些`core-js/modules/es.array.iterator`等等polyfill，就很好理解了。
 
-    为什么preset-env可以直接注入modules下的文件，而我们不建议直接引用呢？这是因为当core-js升级的时候，preset-env也会升级，所以能调整要注入的polyfill。 这一层都是babel在做的，开发者无需关系。
+    为什么preset-env可以直接注入modules下的文件，而我们不建议直接引用呢？这是因为当core-js升级的时候，preset-env也会升级，所以能调整要注入的polyfill。 这一层都是babel在做的，开发者无需关心。
 
 3. @babel/runtime
 @babel/runtime是下一篇文章的内容，但是在这里，也不难理解它能对core-js有什么作用。
@@ -340,8 +339,18 @@ Promise.resolve(32).then(x => console.log(x));
     默认情况下，@babel/runtime，只会注入stable的polyfill，但是只要修改`corejs`option，改为：`corejs: {version: 3, proposals: true}`，就能让它支持proposals的polyfill。
     
 ## 其它
-1. [官方的entry points列表](官方的entry points列表)，详细地列出了每一个polyfill的作用和引用方式。
-    
-2. core-js-compact
+1. core-js能够提供哪些polyfill，以及它们与features的对应关系，都可以从[官方的entry points列表](https://github.com/zloirock/core-js#features)中检阅，那里详细地列出了每一个polyfill的作用和引用方式。
 
-3. core-js-builder
+2. In core-js@3 all stable ECMAScript features are prefixed with es., while ECMAScript proposals with esnext. 这个可以通过源码的modules文件内的module来验证。
+
+3. 如果在每个细节中都无法按照规范实现某个功能，则core-js会向polyfill添加.sham属性。 例如，在IE11中，Symbol.sham为true。
+
+4. [core-js-builder](http://npmjs.com/package/core-js-builder)这个也是core-js提供的一个库，它是一个工具，可以基于browserslist配置，构建一个只支持指定环境的core-js版本。 这相当于就是提供给开发者一个可以自定义core-js-bundle的方法。
+
+5. [core-js-compat](http://npmjs.com/package/core-js-compat)是core-js提供的一个类似compat-table一样的库，基于它，能知道core-js的每个polyfill在不同的环境里面的兼容情况。  core-js-builder就是依赖于core-js-compat实现的。  另外在@babel/preset-env里面，如果使用了core-js@3，也会使用core-js-compat，而不是compact-table。
+
+6. 为什么要有core-js-compact，compact-table存在的问题：
+> 1. it contains data only about ECMAScript features and proposals, but not about web platform features like setImmediate or DOM collections iterators. So, up to now, @babel/preset-env added all web platform features from core-js even for targets where they are supported.
+> 2. it does not contain any information about (even serious) bugs in engines: for example, already mentioned Array#reverse broken in Safari 12 but it isn't marked as unsupported by compat-table. On the other hand, core-js correctly fixes broken implementations, but with compat-table this capability wasn't taken advantage of.
+> 3. it contains only some basic and naive tests, which do not check that features work as they should in real-word cases. For example, old Safari has broken iterators without .next method, but compat-table shows them as supported because it just check that typeof of methods which should return iterators is "function". Some features like typed arrays are almost completely not covered.
+> 4. compat-table is not designed for providing data for tools. I'm one of the compat-table maintainers, but some of the other maintainers are against maintaining this functionality.
