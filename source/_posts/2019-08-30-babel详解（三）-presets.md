@@ -334,14 +334,13 @@ var obj = _objectSpread({}, {});
 
 globalThis.obj = obj;
 ```
-这个结果有做省略，累计有500多行。 在`useBuiltIns: 'entry'`模式下，代码中对core-js的import：`import "core-js"`，会全部被替换为core-js的`modules`引用，如`require("core-js/modules/es.symbol")`。 core-js有很多个module，所以源代码只有一行`import "core-js"`，转换后的代码有500多行`require("core-js/modules/...")`。
+这个结果有做省略，累计有500多行。 在`useBuiltIns: 'entry'`模式下，代码中对core-js的import：`import "core-js"`，会根据`targets`的配置，替换为core-js最底层的`modules`引用，如`require("core-js/modules/es.symbol")`。 core-js有很多个module，虽然源代码只有一行`import "core-js"`，转换后的代码有500多行`require("core-js/modules/...")`。
 
-如果你想在项目中继续使用以前babel/polyfill的方式，那么上面这个形式，跟以前的babel/polyfill就是类似的。 只要把如下的两行代码加入到：
+如果你想在项目中继续使用以前babel/polyfill的方式，只需要引入下面的代码在入口文件即可：
 ```js
 import "core-js";
 import "regenerator-runtime/runtime";
 ```
-加入到你项目运行时的第1个文件中，就会在babel对转码后，将polyfill全部注入到运行环境中，而且这些polyfill的代码，会先与项目的其它代码执行，这样就能达到整体polyfill的目的。
 
 这个方式有问题吗？有的，就是使用的polyfill太多了，有的可能整个项目的逻辑都不需要它，这个方式最后生成代码比较大，对前端性能肯定是有影响的；唯一的优点就是省心，不要去考虑哪个文件需要引入哪些core-js的modules来作为polyfill。
 
@@ -393,16 +392,16 @@ var obj = _objectSpread({}, {});
 
 globalThis.obj = obj;
 ```
-这个结果虽然还是有很多，但是比直接import core-js要减少好多了。 它的机制也是类似的，就是把对core-js的import，转换为core-js的最小单位：modules。这两个：
+这个结果虽然还是有很多，但是比直接import core-js要减少好多了。 它的机制也是类似的，就是把对core-js的import，转换为core-js的最小单位：modules。：
 ```js
 import "core-js/es/promise";
 import "core-js/es/array";
 ```
-实际上代表的是core-js的两个命名空间：promise和array。 它们分别可能包含多个modules。 所以转码后，还是有好几十个core-js module的require语句。
+上面两个引用代表的是core-js的两个命名空间：promise和array。 它们分别可能包含多个modules， 所以转码后，还是有好几十个core-js module的require语句。
 
 虽然单独引用core-js的某一部分，能够减少最终的转码大小，但是要求开发人员对core-js和ES特性特别熟悉，否则你怎么知道当前文件需不需要polyfill，以及要哪些呢？ 所以这个做法，真正使用的时候，难度较大。
 
-假如把配置文件调整一下：
+`useBuiltIns: "entry"`对core-js的`import`替换，是根据`targets`配置的环境进行判断的。假如把配置文件调整一下：（`ios: 12`是非常新的环境了)
 ```js
 const presets = [ 
     [
@@ -422,7 +421,7 @@ const plugins = [
 
 module.exports = { presets, plugins };
 ```
-我把targets设置为非常新的环境，然后重新对以下代码：
+然后重新对以下代码：
 ```js
 import "core-js/es/promise";
 import "core-js/es/array";
@@ -450,8 +449,7 @@ let obj = { ...{}
 };
 globalThis.obj = obj;
 ```
-
-因为有browserslist等的加成，而且targets配置的很新，所以最终这个转码，变的小了不少。
+同样的代码，由于`targets`设置为了较新版本的环境，所以最终转码的结果减少很多。
 
 ##### usage
 usage比起entry，最大的好处就是，它会根据每个文件里面，用到了哪些es的新特性，然后根据我们设置的targets判断，是否需要polyfill，如果targets的最低环境不支持某个es特性，则这个es特性的core-js的对应module会被注入。

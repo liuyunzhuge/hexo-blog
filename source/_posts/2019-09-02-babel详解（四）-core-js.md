@@ -183,7 +183,7 @@ import "core-js/proposals/observable";
 `core-js`这个直接扩展全局空间的版本，适合与preset-env一起使用。 而下面的`core-js-pure`不适合。
 
 ## core-js-pure的modules组织方式
-core-js-pure与core-js在引用polyfill的主要区别就是core-js-pure需要采用带有接口名称的import语法，如`import Array from "core-js-pure/features/array"`。
+core-js-pure与core-js在引用polyfill时的主要区别就是core-js-pure需要采用带有接口名称的import语法，如`import Array from "core-js-pure/features/array"`。
 
 ### 整体引用
 在core-js-pure里面还存在整体引用吗？core-js大部分的整体引用在core-js-pure里面，已经没有什么意义了。
@@ -316,7 +316,7 @@ core-js-pure的源码与core-js仅仅只有`internals`和`modules`两个文件�
     为什么preset-env可以直接注入modules下的文件，而我们不建议直接引用呢？这是因为当core-js升级的时候，preset-env也会升级，所以能调整要注入的polyfill。 这一层都是babel在做的，开发者无需关心。
 
 3. @babel/runtime
-通过@babel/runtime，前面的代码：
+通过@babel/runtime，可以简化对于`core-js-pure`的使用。 下面的代码，是直接引入`core-js-pure`，然后在代码中使用的方式：
 ```js
 import from from 'core-js-pure/stable/array/from';
 import flat from 'core-js-pure/stable/array/flat';
@@ -327,13 +327,13 @@ from(new Set([1, 2, 3, 2, 1]));
 flat([1, [2, 3], [4, [5]]], 2);
 Promise.resolve(32).then(x => console.log(x));
 ```
-  只要按ES标准来编写即可：
+  有了@babel/runtime，上面的代码可以简化为下面的写法，完全遵循标准的ES写法：
 ```js
 Array.from(new Set([1, 2, 3, 2, 1]));          // => [1, 2, 3]
 [1, [2, 3], [4, [5]]].flat(2);                 // => [1, 2, 3, 4, 5]
 Promise.resolve(32).then(x => console.log(x)); // => 32
 ```
-  连那些`import`语句全都不要。 babel/runtime会把这份代码转换为：
+  这个写法连`core-js-pure`的引用都不需要。 babel/runtime会把这份代码转换为：
 ```js
 "use strict";
 
@@ -357,12 +357,12 @@ _promise.default.resolve(32).then(function (x) {
   return console.log(x);
 }); // => 32
 ```
-  要做到这个转换，需要安装：
+  要做到这个转换，需要执行以下依赖的安装：
 ```bash
 npm install --save-dev @babel/plugin-transform-runtime
 npm install --save @babel/runtime-corejs3
 ```
-  并如下配置`babel runtime`:
+  并配置好`transform-runtime`插件:
 ```js
 const presets = [ 
 ];
@@ -376,7 +376,7 @@ const plugins = [
 
 module.exports = { presets, plugins };
 ```
-  上面转换的结果中：`@babel/runtime-corejs3/core-js-stable`等价于`core-js-pure`。 通过查看源码，会看到@babel/runtime-corejs3的这个包依赖了`core-js-pure`。 
+  上面转换的结果中：`@babel/runtime-corejs3/core-js-stable`等价于`core-js-pure`。 通过查看源码，会看到@babel/runtime-corejs3的这个包依赖了`core-js-pure`。 所以`core-js-pure`不需要单独安装。
   **更多babel runtime的介绍，请前往阅读下一篇博客。**
 
     

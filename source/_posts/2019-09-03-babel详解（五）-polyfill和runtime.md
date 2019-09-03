@@ -6,7 +6,9 @@ tags:
 categories:
   - Javascript
   - babel
+date: 2019-09-03 21:37:46
 ---
+
 
 本篇记录polyfill以及@babel/runtime的要点。
 <!-- more -->
@@ -491,3 +493,16 @@ _promise.default.resolve(32).then(function (x) {
 
 ## runtime的options
 
+### corejs
+> false, 2, 3 or { version: 2 | 3, proposals: boolean }, defaults to false.
+这个option，决定了是否对`core-js`进行polyfill，以及用哪个版本的`core-js`进行polyfill。 除了通过`version`配置版本，还能通过`proposals`指定对`core-js`的proposals特性也提供polyfill支持。如果这个option没配置，或设置为false，则不会对`core-js`进行polyfill。
+
+同时它也决定了到底安装哪个runtime的版本，前面有记录过的。
+
+### helpers
+> boolean, defaults to true.
+这个option决定了是否对helpers函数进行优化处理。默认为true，如果为false，`transform-runtime`就不会对helpers函数进行去重提取的处理了。
+
+### regenerator
+> boolean, defaults to true.
+这个option决定了是否对`regenerator-runtime`进行polyfill。 默认为true，与preset-env搭配使用时，应该设置false。
