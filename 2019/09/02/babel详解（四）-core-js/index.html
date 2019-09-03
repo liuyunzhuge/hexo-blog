@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇了解与babel高度集成的core-js的要点。">
+<meta name="keywords" content="babel,前端工程化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="babel详解（四）:core-js">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/09/02/babel详解（四）-core-js/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇了解与babel高度集成的core-js的要点。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/09/02/babel详解（四）-core-js/1.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/09/02/babel详解（四）-core-js/2.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2019/09/02/babel详解（四）-core-js/3.png">
+<meta property="og:updated_time" content="2019-09-03T13:27:20.233Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="babel详解（四）:core-js">
+<meta name="twitter:description" content="本篇了解与babel高度集成的core-js的要点。">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2019/09/02/babel详解（四）-core-js/1.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/09/02/babel详解（四）-core-js/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>babel详解（四）:core-js | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">11</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">10</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">57</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/09/02/babel详解（四）-core-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">babel详解（四）:core-js
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-02 13:10:31" itemprop="dateCreated datePublished" datetime="2019-09-02T13:10:31Z">2019-09-02</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/babel/" itemprop="url" rel="index"><span itemprop="name">babel</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇了解与babel高度集成的<a href="https://github.com/zloirock/core-js" target="_blank" rel="noopener">core-js</a>的要点。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>core-js是完全模块化的javascript标准库。 包含ECMA-262至今为止大部分特性的polyfill，如promises、symbols、collections、iterators、typed arrays、etc，以及一些跨平台的<code>WHATWG / W3C</code>特性的polyfill，如<code>WHATWG URL</code>。 它可以直接全部注入到全局环境里面，帮助开发者模拟一个包含众多新特性的运行环境，这样开发者仅需简单引入core-js，仍然使用最新特性的ES写法编码即可；也可以不直接注入到全局对象里面，这样对全局对象不会造成污染，但是需要开发者单独引入core-js的相关module，并可能还需要通过手工调用module完成编码，没法直接使用最新ES的写法。它是一个完全模块化的库，所有的polyfill实现，都有一个单独的module文件，既可以一劳永逸地把所有polyfill全部引入，也可以根据需要，在自己项目的每个文件，单独引入需要的core-js的modules文件。</p>
+<p>core-js大部分的polyfill都是针对ESMAScript实现的，但是有几个polyfill是针对<code>W3C / WHATWG</code>这两个机构制定的web standards实现的，包括：</p>
+<ul>
+<li>setTimeout and setInterval – whatwg: <a href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#timers" target="_blank" rel="noopener">link</a></li>
+<li>setImmediate – w3c: <a href="http://w3c.github.io/setImmediate/" target="_blank" rel="noopener">link</a></li>
+<li>queueMicrotask – whatwg: <a href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-queuemicrotask" target="_blank" rel="noopener">link</a></li>
+<li>URL and URLSearchParams – whatwg: <a href="https://url.spec.whatwg.org/" target="_blank" rel="noopener">link</a></li>
+<li>iterable DOM collections – w3c: <a href="https://github.com/zloirock/core-js#iterable-dom-collections" target="_blank" rel="noopener">link</a></li>
+</ul>
+<p>其中<code>URL and URLSearchParams</code>也被加入到了ECMA的proposals当中，目前是stage-0阶段，该proposal的git地址：<a href="https://github.com/jasnell/proposal-url" target="_blank" rel="noopener">点此查看</a>。</p>
+<p>core-js目前最新版是v3，v2还在用，但是不推荐继续用，v3才是未来的主流。core-js@提供了三个版本：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// global version</span><br><span class="line">npm install --save core-js@3.2.1</span><br><span class="line">// version without global namespace pollution</span><br><span class="line">npm install --save core-js-pure@3.2.1</span><br><span class="line">// bundled global version</span><br><span class="line">npm install --save core-js-bundle@3.2.1</span><br></pre></td></tr></table></figure></p>
+<p>第一个版本是最简单的使用版本，会直接把core-js所有的polyfill，直接扩展到代码运行的全局环境中。第二个版本core-js-pure，不会把polyfill注入全局环境，但是在使用的时候，需要单独引入polyfill的module，不能直接使用最新ES的写法；第三个版本是一个编译打包好的版本，包含全部的polyfill特性，适合在浏览器里面通过script直接加载。 前两个版本适合跟构建工具一起使用，第三个直接在浏览器里面用即可。</p>
+<ol>
+<li><p>如果使用第一个版本，可以在代码中这样使用core-js：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'core-js'</span>; <span class="comment">// &lt;- at the top of your entry point</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]));          <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line">[<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]].flat(<span class="number">2</span>);                 <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">32</span>).then(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure>
+<p> 只要在项目的入口文件中，引入<code>core-js</code>一次，就能把所有的polyfill注入到运行环境中。<code>Array.from Array.prototype.flat Promise</code>这些新的ES特性，在编码时可以放心大胆地编写，就好像运行环境原生支持了它们一样。</p>
+<p> 也可以仅引入部分特性的polyfill：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'core-js/features/array/from'</span>; <span class="comment">// &lt;- at the top of your entry point</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'core-js/features/array/flat'</span>; <span class="comment">// &lt;- at the top of your entry point</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'core-js/features/set'</span>;        <span class="comment">// &lt;- at the top of your entry point</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'core-js/features/promise'</span>;    <span class="comment">// &lt;- at the top of your entry point</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]));          <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line">[<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]].flat(<span class="number">2</span>);                 <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">32</span>).then(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure>
+<p> 以上部分引入的polyfill，依然会直接扩展到全局环境中。</p>
+</li>
+<li><p>如果使用第二个版本，需要在代码中这样使用core-js:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">from</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/from'</span>;</span><br><span class="line"><span class="keyword">import</span> flat <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/flat'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Set</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/set'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Promise</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/promise'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span>(<span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]));                <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line">flat([<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]], <span class="number">2</span>);                <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">32</span>).then(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure>
+<p> 这个方式，不能一次性引入所有的polyfill，必须根据每个文件的需要，单独引入需要的modules。 除了Promise这种属于新构造函数的polyfill，像<code>Array.from Array.prototype</code>这种在内置对象或内置类上扩展出的新的实例方法或静态方法，都不能按照实例方法或静态方法直接调用，必须类似<code>from(new Set([1, 2, 3, 2, 1]));</code>这样手工使用。这个使用方式，会让我们编码时使用最新的ES、web特性变得不符合规范，仅仅是帮助我们得到了一个工具库、工具函数而已。</p>
+</li>
+</ol>
+<h2 id="core-js的modules组织方式"><a href="#core-js的modules组织方式" class="headerlink" title="core-js的modules组织方式"></a>core-js的modules组织方式</h2><h3 id="整体引用"><a href="#整体引用" class="headerlink" title="整体引用"></a>整体引用</h3><p>core-js有很多种使用的方式，可以根据每个场景的需要来选择：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// polyfill all `core-js` features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js"</span>; <span class="comment">// equivalent to `import "core-js/es; import "core-js/web; import "core-js/proposals"`;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all stable `core-js` features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stable"</span>; <span class="comment">// equivalent to `import "core-js/es; import "core-js/web";</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all stable `core-js` features - only ES:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all stable `core-js` features - only web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all `core-js` proposal features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/proposals"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all `core-js` proposal features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stage"</span>; <span class="comment">// equivalent to ` import "core-js/proposals"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all `core-js` stage0+ proposal features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stage/0"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all `core-js` stage1+ proposal features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stage/1"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all `core-js` stage2+ proposal features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stage/2"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all `core-js` stage3+ proposal features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stage/3"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all `core-js` stage4+ proposal features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stage/4"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// polyfill all `core-js` features - ES and web standards:</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/features"</span>; <span class="comment">// equivalent to ` import "core-js";</span></span><br></pre></td></tr></table></figure></p>
+<p>上面的引入有一些等价关系，在注释中有说明。再补充一些：</p>
+<ol>
+<li><p><code>import &quot;core-js&quot;;</code>等价于：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/proposals"</span>;</span><br></pre></td></tr></table></figure>
+<p> 也等价于:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stable"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/proposals"</span>;</span><br></pre></td></tr></table></figure>
+<p> 还等价于:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/features"</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>import &quot;core-js/proposals&quot;;</code>等价于:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stage"</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意：<code>import &quot;core-js/stage&quot;</code>不等价于<code>import &quot;core-js/stage/0&quot;</code>。</p>
+</li>
+</ol>
+<p>core-js的modules分为两类：es和web standards。core-js的proposals都是针对es的，web standards没有所谓的proposals。core-js的stable，跟ECMA-262的标准规范不是一个等价的概念，core-js的stable要宽泛一些：</p>
+<ol>
+<li><p>core-js里所有web的modules，都属于stable，而这些web modules，现在在<code>w3c和whatwg</code>的工作流程中，也有的还处于draft阶段；那core-js为什么会认为这些modules应该划分到stable里面呢？这应该是根据这些modules的长远发展来考虑的。 到mdn查询<code>setImmediate</code>的文档，显示这个特性还属于不完全标准化的阶段：</p>
+<blockquote>
+<p>该特性是非标准的，请尽量不要在生产环境中使用它！</p>
+</blockquote>
+</li>
+<li><p>core-js会把ECMA里面处于stage-4的proposals归类到stable里面。</p>
+<blockquote>
+<p>Stage 4 proposals already marked in core-js as stable ECMAScript, they will be removed from proposals namespace in the next major core-js version</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="单独引用"><a href="#单独引用" class="headerlink" title="单独引用"></a>单独引用</h3><p><code>features</code>是core-js包含所有modules(ES | Web Standards)的命名空间，如果想单独引入某些polyfill，都可以通过<code>features</code>空间下子的module或者子的空间来引用，如：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'core-js/features/set'</span>;        <span class="comment">// polyfill all `set` features of (ES | Web Standards), and proposals of ES</span></span><br></pre></td></tr></table></figure></p>
+<p>上面这个引用了<code>set</code>相关的所有polyfill。再比如：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'core-js/features/array/flat'</span>; <span class="comment">// polyfill only `Array.prototype.flat` feature</span></span><br></pre></td></tr></table></figure></p>
+<p>这个仅引用了数组新的原型方法<code>flat</code>的polyfill。</p>
+<p><code>es</code>是仅提供stable的ES的polyfill的命名空间。它跟<code>features</code>一样，也可以通过子空间或者子module来引用。它与<code>features</code>的区别就是<code>es</code>能提供的polyfill要少一些。</p>
+<p><code>web</code>是提供web standards的polyfill的命名空间。它下面目前没有子module，可以通过它引用特定的web standards polyfill:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web/timers"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web/dom-collections"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web/immediate"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web/queue-microtask"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web/url"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web/url-search-params"</span>;</span><br></pre></td></tr></table></figure></p>
+<p><code>stable</code>是提供stable的es和web standards的polyfill的命名空间。 它跟<code>es</code>、<code>features</code>是类似的，范围介于<code>es</code>和<code>features</code>之间，使用举例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stable/set-immediate"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stable/array"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stable/array/flat"</span>;</span><br></pre></td></tr></table></figure></p>
+<p><code>stage</code>也是一个命名空间。 它的子modules比较少，在前面的整体引用中，已经全部都展现出来了。</p>
+<p><code>proposals</code>是一个仅包含es proposals的polyfill的命名空间，它没有子空间，只有子modules，引用举例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/proposals/global-this"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/proposals/observable"</span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h3><p><code>core-js</code>这个直接扩展全局空间的版本，适合与preset-env一起使用。 而下面的<code>core-js-pure</code>不适合。</p>
+<h2 id="core-js-pure的modules组织方式"><a href="#core-js-pure的modules组织方式" class="headerlink" title="core-js-pure的modules组织方式"></a>core-js-pure的modules组织方式</h2><p>core-js-pure与core-js在引用polyfill时的主要区别就是core-js-pure需要采用带有接口名称的import语法，如<code>import Array from &quot;core-js-pure/features/array&quot;</code>。</p>
+<h3 id="整体引用-1"><a href="#整体引用-1" class="headerlink" title="整体引用"></a>整体引用</h3><p>在core-js-pure里面还存在整体引用吗？core-js大部分的整体引用在core-js-pure里面，已经没有什么意义了。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>上面这个在core-js里面是有用的，所有polyfill直接扩展到全局空间里。但是：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js-pure"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>这个就没有用了，因为它不对全局空间做扩展，所以只能通过直接使用模块的方式才能拿到module内部定义好的api。</p>
+<h3 id="单独引用-1"><a href="#单独引用-1" class="headerlink" title="单独引用"></a>单独引用</h3><p>core-js-pure只能通过两种形式来引用polyfill。</p>
+<ol>
+<li><p>直接引用一个类，如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="built_in">Set</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/set'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Promise</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/promise'</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>直接引用一个方法，如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">from</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/from'</span>;</span><br><span class="line"><span class="keyword">import</span> flat <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/flat'</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在单独引用时，上面core-js里面学到的命名空间，只有：<code>web</code> <code>es</code> <code>features</code> <code>stable</code>这四个命名空间可用，要点与上面介绍的一致。 说白了，某个module能不能在core-js-pure里面import出来，取决于这个module，有没有明确地对外定义了module.exports。 在core-js-pure的源码里面，<code>stage</code> 与 <code>proposal</code>命名空间下的module文件，都没有<code>module.exports</code>的定义，所以它们没法在core-js-pure里面被import使用。</p>
+<h3 id="使用core-js-pure引入的polyfill"><a href="#使用core-js-pure引入的polyfill" class="headerlink" title="使用core-js-pure引入的polyfill"></a>使用core-js-pure引入的polyfill</h3><p>有两种使用方式，第一种：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">from</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/from'</span>;</span><br><span class="line"><span class="keyword">import</span> flat <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/flat'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Set</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/set'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Promise</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/promise'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span>(<span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]));                <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line">flat([<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]], <span class="number">2</span>);                <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">32</span>).then(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure></p>
+<p>这种就是把polyfill当工具函数用，虽然可以用，但是写法不符合ES的语言规范。</p>
+<p>第二种：</p>
+<blockquote>
+<p>In the pure version, we can’t pollute prototypes of native constructors. Because of that, prototype methods transformed into static methods like in examples above. But with transpilers, we can use one more trick - bind operator and virtual methods. Special for that, available /virtual/ entry points. Example:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; fill, findIndex &#125; <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/virtual'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>(<span class="number">10</span>)::fill(<span class="number">0</span>).map(<span class="function">(<span class="params">a, b</span>) =&gt;</span> b * b)::findIndex(<span class="function"><span class="params">it</span> =&gt;</span> it &amp;&amp; !(it % <span class="number">8</span>)); <span class="comment">// =&gt; 4</span></span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>这个写法也不符合标准。</p>
+<p>我觉得在代码中，直接引用<code>core-js-pure</code>这个版本，是一件比较麻烦的事情，会让编码变得复杂。 所以<code>core-js-pure</code>不适合用到preset-env里面去做polyfill。 但是在后面与babel集成的内容里面，会介绍借助babel/runtime来简化使用<code>core-js-pure</code>的例子。</p>
+<h2 id="core-js的源码结构"><a href="#core-js的源码结构" class="headerlink" title="core-js的源码结构"></a>core-js的源码结构</h2><p>core-js对应的package源码：<a href="https://github.com/zloirock/core-js/tree/master/packages/core-js" target="_blank" rel="noopener">package</a>;<br>从core-js的源码结构，可以很清晰的看到前面提到的那些命名空间对应的文件夹：<br><img src="/2019/09/02/babel详解（四）-core-js/1.png" width="200"><br><code>core-js/index.js</code>等同于<code>import &quot;core-js&quot;</code>对应的模块文件。每个命名空间的文件夹下面也都有一个<code>index.js</code>文件，会依赖这个空间下，其它所有应该包含的modules。</p>
+<p><code>core-js/index.js</code>的源码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'./es'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'./proposals'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'./web'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="built_in">require</span>(<span class="string">'./internals/path'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>所以就这就是为啥上面介绍等价关系时，有<code>import &quot;core-js&quot;</code>等价于：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/web"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/proposals"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>其它的等价关系，都可以从源码里看的一清二楚。</p>
+<p><code>stage/</code>命名空间下的modules之间的关系实际上很简单，首先<code>stage/index.js</code>:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="built_in">require</span>(<span class="string">'./pre'</span>);</span><br></pre></td></tr></table></figure></p>
+<p><code>stage/pre.js</code>:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'../proposals/reflect-metadata'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="built_in">require</span>(<span class="string">'./0'</span>);</span><br></pre></td></tr></table></figure></p>
+<p><code>stage/0.js</code>:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'../proposals/efficient-64-bit-arithmetic'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'../proposals/string-at'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'../proposals/url'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="built_in">require</span>(<span class="string">'./1'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>…</p>
+<p>只有<code>es</code> <code>features</code> <code>stable</code>下面才有子文件夹，所有只有它们三个才有子的命名空间：<br><img src="/2019/09/02/babel详解（四）-core-js/2.png" width="200"></p>
+<p>有文件夹的，只要看看它下面有没有独立的index.js文件，有则代表它可以被直接引入。</p>
+<p><code>internals</code>和<code>modules</code>是core-js内部使用的文件夹，不建议在项目中直接引用：<br><img src="/2019/09/02/babel详解（四）-core-js/3.png" width="200"></p>
+<p>所有core-js的polyfill，底层的机制都是由<code>internals</code>和<code>modules</code>内部的module来完成的。core-js官方不推荐直接引用这两个文件夹的module，因为它们是内部实现，很可能在版本迭代中发生变化。</p>
+<p><code>proposals</code>文件夹下的都是ES proposals阶段的特性的polyfill，但是其中有一个<code>url.js</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'../modules/web.url'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'../modules/web.url.to-json'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'../modules/web.url-search-params'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这个<code>url</code>polyfill按理应该属于web standards的polyfill。为什么会放在这？本篇前面的内容也有介绍，这是因为ECMA把<code>whatwg</code>的<code>URL</code>也纳入了自己的proposals，当前阶段为stage-0。</p>
+<h2 id="core-js-pure的源码结构"><a href="#core-js-pure的源码结构" class="headerlink" title="core-js-pure的源码结构"></a>core-js-pure的源码结构</h2><p>core-js-pure对应的package源码：<a href="https://github.com/zloirock/core-js/tree/master/packages/core-js-pure" target="_blank" rel="noopener">package</a>;</p>
+<p>core-js-pure的源码与core-js仅仅只有<code>internals</code>和<code>modules</code>两个文件夹有区别，其它的都是一样的。打开上面的源码库看到core-js-pure里面只有一个overrides文件夹，包含了<code>internals</code>和<code>modules</code>两个文件夹。很容易就能猜到，core-js-pure这个包是在复制了core-js的包基础上，然后覆盖了<code>internals</code>和<code>modules</code>之后得到的。</p>
+<p>从core-js官方的构建文件配置可以验证上面这一点：<a href="https://github.com/zloirock/core-js/blob/master/Gruntfile.js" target="_blank" rel="noopener">core-js的构建文件</a></p>
+<h2 id="与babel的集成使用"><a href="#与babel的集成使用" class="headerlink" title="与babel的集成使用"></a>与babel的集成使用</h2><p>有三方面：</p>
+<ol>
+<li><p>@babel/polyfill<br>已经废弃，不继续学习。</p>
+</li>
+<li><p>@babel/preset<br>在<a href="/2019/08/31/babel详解（三）-presets/" title="上一篇博客">上一篇博客</a>中对preset-env与core-js结合使用的方法和要点都记录地非常清晰了。在掌握了本篇的内容后，现在对于preset-env为什么会自动注入那些<code>core-js/modules/es.array.iterator</code>等等polyfill，就很好理解了。</p>
+<p> 为什么preset-env可以直接注入modules下的文件，而我们不建议直接引用呢？这是因为当core-js升级的时候，preset-env也会升级，所以能调整要注入的polyfill。 这一层都是babel在做的，开发者无需关心。</p>
+</li>
+<li><p>@babel/runtime<br>通过@babel/runtime，可以简化对于<code>core-js-pure</code>的使用。 下面的代码，是直接引入<code>core-js-pure</code>，然后在代码中使用的方式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">from</span> <span class="keyword">from</span> <span class="string">'core-js-pure/stable/array/from'</span>;</span><br><span class="line"><span class="keyword">import</span> flat <span class="keyword">from</span> <span class="string">'core-js-pure/stable/array/flat'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Set</span> <span class="keyword">from</span> <span class="string">'core-js-pure/stable/set'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Promise</span> <span class="keyword">from</span> <span class="string">'core-js-pure/stable/promise'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span>(<span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]));</span><br><span class="line">flat([<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]], <span class="number">2</span>);</span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">32</span>).then(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
+<p>有了@babel/runtime，上面的代码可以简化为下面的写法，完全遵循标准的ES写法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]));          <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line">[<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]].flat(<span class="number">2</span>);                 <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">32</span>).then(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure>
+<p>这个写法连<code>core-js-pure</code>的引用都不需要。 babel/runtime会把这份代码转换为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _interopRequireDefault = <span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/helpers/interopRequireDefault"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _promise = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/promise"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _flat = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/instance/flat"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _set = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/set"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _from = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/array/from"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _context;</span><br><span class="line"></span><br><span class="line">(<span class="number">0</span>, _from.default)(<span class="keyword">new</span> _set.default([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>])); <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">(<span class="number">0</span>, _flat.default)(_context = [<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]]).call(_context, <span class="number">2</span>); <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"></span><br><span class="line">_promise.default.resolve(<span class="number">32</span>).then(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure>
+<p>要做到这个转换，需要执行以下依赖的安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/plugin-transform-runtime</span><br><span class="line">npm install --save @babel/runtime-corejs3</span><br></pre></td></tr></table></figure>
+<p>并配置好<code>transform-runtime</code>插件:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/plugin-transform-runtime"</span>, &#123;</span><br><span class="line">            corejs: <span class="number">3</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure>
+<p>上面转换的结果中：<code>@babel/runtime-corejs3/core-js-stable</code>等价于<code>core-js-pure</code>。 通过查看源码，会看到@babel/runtime-corejs3的这个包依赖了<code>core-js-pure</code>。 所以<code>core-js-pure</code>不需要单独安装。<br><strong>更多babel runtime的介绍，请前往阅读下一篇博客。</strong></p>
+</li>
+</ol>
+<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><ol>
+<li><p>core-js能够提供哪些polyfill，以及它们与features的对应关系，都可以从<a href="https://github.com/zloirock/core-js#features" target="_blank" rel="noopener">官方的entry points列表</a>中检阅，那里详细地列出了每一个polyfill的作用和引用方式。</p>
+</li>
+<li><p>In core-js@3 all stable ECMAScript features are prefixed with es., while ECMAScript proposals with esnext. 这个可以通过源码的modules文件内的module来验证。</p>
+</li>
+<li><p>如果在每个细节中都无法按照规范实现某个功能，则core-js会向polyfill添加.sham属性。 例如，在IE11中，Symbol.sham为true。</p>
+</li>
+<li><p><a href="http://npmjs.com/package/core-js-builder" target="_blank" rel="noopener">core-js-builder</a>这个也是core-js提供的一个库，它是一个工具，可以基于browserslist配置，构建一个只支持指定环境的core-js版本。 这相当于就是提供给开发者一个可以自定义core-js-bundle的方法。</p>
+</li>
+<li><p><a href="http://npmjs.com/package/core-js-compat" target="_blank" rel="noopener">core-js-compat</a>是core-js提供的一个类似compat-table一样的库，基于它，能知道core-js的每个polyfill在不同的环境里面的兼容情况。  core-js-builder就是依赖于core-js-compat实现的。  另外在@babel/preset-env里面，如果使用了core-js@3，也会使用core-js-compat，而不是compact-table。</p>
+</li>
+<li><p>为什么要有core-js-compact，compact-table存在的问题：</p>
+<ul>
+<li><p>它只包含了ES特性的兼容性数据，不包含web standards的特性（如setImmediate, DOM collections)相关的数据。所以<code>@babel/preset-env</code>只能把有用到的web standards的polyfill，不做判断地直接引入，即使开发者配置的目标环境不需要这个polyfill。</p>
+</li>
+<li><p>它没有包含任何已知的某些环境下存在的bug(甚至是严重的)的信息，比如safari 12里面的<code>Array#reverse broken</code>问题，它没有把这些环境下存在的问题标记为不支持。这会导致<code>@babel/preset-env</code>完全信赖它，导致<code>core-js</code>提供的专门针对这些问题做了修复的polyfill没有被引入。 </p>
+</li>
+<li><p>it contains only some basic and naive tests, which do not check that features work as they should in real-word cases. For example, old Safari has broken iterators without .next method, but compat-table shows them as supported because it just check that typeof of methods which should return iterators is “function”. Some features like typed arrays are almost completely not covered.</p>
+</li>
+<li><p><code>compat-table</code>的初衷不是为了给其它库提供数据支持。<code>core-js</code>的作者也是<code>compat-table</code>项目的参与者之一，他知道其它一些<code>compat-table</code>项目的参与者是反对给其它库提供数据支持的。</p>
+</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/babel/" rel="tag"># babel</a>
+          
+            <a href="/tags/前端工程化/" rel="tag"># 前端工程化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/31/babel详解（三）-presets/" rel="next" title="babel详解（三）:presets">
+                <i class="fa fa-chevron-left"></i> babel详解（三）:presets
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/04/babel详解（五）-polyfill和runtime/" rel="prev" title="babel详解（五）:polyfill和runtime">
+                babel详解（五）:polyfill和runtime <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">57</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#core-js的modules组织方式"><span class="nav-number">2.</span> <span class="nav-text">core-js的modules组织方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整体引用"><span class="nav-number">2.1.</span> <span class="nav-text">整体引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单独引用"><span class="nav-number">2.2.</span> <span class="nav-text">单独引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重点"><span class="nav-number">2.3.</span> <span class="nav-text">重点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#core-js-pure的modules组织方式"><span class="nav-number">3.</span> <span class="nav-text">core-js-pure的modules组织方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整体引用-1"><span class="nav-number">3.1.</span> <span class="nav-text">整体引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单独引用-1"><span class="nav-number">3.2.</span> <span class="nav-text">单独引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用core-js-pure引入的polyfill"><span class="nav-number">3.3.</span> <span class="nav-text">使用core-js-pure引入的polyfill</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#core-js的源码结构"><span class="nav-number">4.</span> <span class="nav-text">core-js的源码结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#core-js-pure的源码结构"><span class="nav-number">5.</span> <span class="nav-text">core-js-pure的源码结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与babel的集成使用"><span class="nav-number">6.</span> <span class="nav-text">与babel的集成使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其它"><span class="nav-number">7.</span> <span class="nav-text">其它</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

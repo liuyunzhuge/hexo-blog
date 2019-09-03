@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇记录polyfill以及@babel/runtime的要点。">
+<meta name="keywords" content="babel,前端工程化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="babel详解（五）:polyfill和runtime">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/09/04/babel详解（五）-polyfill和runtime/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇记录polyfill以及@babel/runtime的要点。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-03T13:37:46.250Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="babel详解（五）:polyfill和runtime">
+<meta name="twitter:description" content="本篇记录polyfill以及@babel/runtime的要点。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/09/04/babel详解（五）-polyfill和runtime/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>babel详解（五）:polyfill和runtime | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">11</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">10</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">57</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/09/04/babel详解（五）-polyfill和runtime/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">babel详解（五）:polyfill和runtime
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-03 21:37:46" itemprop="dateCreated datePublished" datetime="2019-09-03T21:37:46Z">2019-09-03</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/babel/" itemprop="url" rel="index"><span itemprop="name">babel</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇记录polyfill以及@babel/runtime的要点。<br><a id="more"></a></p>
+<h2 id="polyfill"><a href="#polyfill" class="headerlink" title="polyfill"></a>polyfill</h2><p><code>@babel/polyfill</code>这个库原本是babel提供polyfill的独立库。 但是因为这个库本身等价于：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/stable"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"regenerator-runtime/runtime"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>所以它独立存在的价值不大。 babel7.4开始就不支持使用这个库来完成polyfill了。<code>@babel/polyfill</code>被废弃，还有另外一个更重要的原因跟<code>core-js</code>和<code>@babel/preset-env</code>有关。</p>
+<p>首先babel提供的polyfill，都是通过间接引用<code>core-js</code>的模块来实现的，<code>core-js@3</code>现在是一个完全模块化的标准库，每个polyfill都是一个单独的文件，所以除了全部引入，还可以考虑单独引入，这样能够减少浏览器等运行环境已经实现了的特性的polyfill。<code>@babel/polyfill</code>是一个粗放的polyfill方式，它会无差别地引入所有的core-js的stable状态的特性，这是不符合未来浏览器等运行环境的。</p>
+<p>然后<code>@babel/preset-env</code>这个preset，现在提供了<code>useBuiltIns: &quot;entry&quot;</code>和<code>useBuiltIns: &quot;usage&quot;</code>两种polyfill的方式，这两种方式可根据开发者配置的<code>browserslist</code>的目标运行环境，自动引入<code>core-js</code>最小化的<code>polyfill modules</code>组合，更加符合实际需求。</p>
+<p>关于<code>@babel/preset-env</code>进行polyfill的要点，都在<a href="/2019/08/31/babel详解（三）-presets/" title="这一篇博客">这一篇博客</a>中有详细的说明，本篇不会再赘述。</p>
+<h3 id="其它要点"><a href="#其它要点" class="headerlink" title="其它要点"></a>其它要点</h3><p>现在<code>@babel/preset-env</code>在配置<code>corejs</code>option的时候，可以指定次要版本，从而支持<code>core-js</code>次要版本发布的新的polyfill。 比如现在core-js已经是3.2.1版本，那么<code>@babel/preset-env</code>就可以把<code>corejs</code>配置为<code>corejs: {version: &#39;3.2&#39;}</code>。</p>
+<p><code>@babel/preset-env</code>最重要的部分之一是需要有提供不同目标环境所支持的功能的数据源，以了解相应的特性是否需要由core-js进行polyfill。<code>caniuse</code> <code>mdn</code> <a href="http://kangax.github.io/compat-table/es6/" target="_blank" rel="noopener"><code>compat-table</code></a> 这三个都是很好的学习资源，但是不能真正意义上提供<code>core-js</code>这种库需要的数据源支持：只有<code>compat-table</code>包含了一个比较好的ES兼容性数据集，所以<code>@babel/preset</code>依赖了这个库进行是否polyfill的判断；但是<code>compat-table</code>有以下一些限制：</p>
+<ol>
+<li><p>它只包含了ES特性的兼容性数据，不包含web standards的特性（如setImmediate, DOM collections)相关的数据。所以<code>@babel/preset-env</code>只能把有用到的web standards的polyfill，不做判断地直接引入，即使开发者配置的目标环境不需要这个polyfill。</p>
+</li>
+<li><p>它没有包含任何已知的某些环境下存在的bug(甚至是严重的)的信息，比如safari 12里面的<code>Array#reverse broken</code>问题，它没有把这些环境下存在的问题标记为不支持。这会导致<code>@babel/preset-env</code>完全信赖它，导致<code>core-js</code>提供的专门针对这些问题做了修复的polyfill没有被引入。 </p>
+</li>
+<li><p>it contains only some basic and naive tests, which do not check that features work as they should in real-word cases. For example, old Safari has broken iterators without .next method, but compat-table shows them as supported because it just check that typeof of methods which should return iterators is “function”. Some features like typed arrays are almost completely not covered.</p>
+</li>
+<li><p><code>compat-table</code>的初衷不是为了给其它库提供数据支持。<code>core-js</code>的作者也是<code>compat-table</code>项目的参与者之一，他知道其它一些<code>compat-table</code>项目的参与者是反对给其它库提供数据支持的。</p>
+</li>
+</ol>
+<p>正是因为<code>compat-table</code>有以上的问题，所以<code>core-js</code>的作者，专门做了一个用于提供数据支持的库：<code>core-js-compat</code>。在<code>@babel/preset-env</code>里面，如果配置了<code>corejs:3</code>，那么<code>preset-env</code>就会用<code>core-js-compat</code>代替<code>compat-table</code>来做polyfill的环境判断。 总而言之，<code>core-js-compat</code>会更靠谱一点。</p>
+<p>直到babel7.3，<code>@babel/preset-env</code>在需要顺序引入一些polyfill时，还会有一些问题。从babel7.4开始，<code>@babel/preset-env</code>修复了这个问题。</p>
+<h2 id="runtime"><a href="#runtime" class="headerlink" title="runtime"></a>runtime</h2><p><code>babel</code>的runtime，包含两个部分。 其中一个部分，是这个插件：<code>@babel/plugin-transform-runtime</code>。 这个插件主要有两个方面的用途：</p>
+<ol>
+<li><p>babel在转码过程中，会加入很多babel自己的helper函数，这些helper函数，在每个文件里可能都会重复存在，<code>transform-runtime</code>插件可以把这些重复的helper函数，转换成公共的、单独的依赖引入，从而节省转码后的文件大小；</p>
+</li>
+<li><p>开发者在代码中如果使用了新的ES特性，比如Promise、generator函数等，往往需要通过core-js和regenerator-runtime给全局环境注入polyfill。 这种做法，在应用型的开发中，是非常标准的做法。 但是如果在开发一个独立的工具库项目，不确定它将会被其它人用到什么运行环境里面，那么前面那种扩展全局环境的polyfill就不是一个很好的方式。 <code>transform-runtime</code>可以帮助这种项目创建一个沙盒环境，即使在代码里用到了新的ES特性，它能将这些特性对应的全局变量，转换为对core-js和regenerator-runtime非全局变量版本的引用。这其实也应该看作是一种给代码提供polyfill的方式。</p>
+</li>
+</ol>
+<p><code>@babel/plugin-transform-runtime</code>是一个开发环境的dependency。 另外一个部分，是<code>babel</code>的一个内部库：<code>@babel/runtime</code>，这是一个生产环境的dependency。 在<code>transform-runtime</code>作用的过程中，都会使用<code>@babel/runtime</code>内部的模块，来代替前面讲到的重复的helper函数、对全局空间有污染的<code>core-js</code>和<code>regenerator-runtime</code>相关变量。后面会通过实例，来说明这两个部分对于代码转换的结果。</p>
+<p>如果使用runtime，需要安装上面提到的两个依赖：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/plugin-transform-runtime</span><br><span class="line">npm install --save @babel/runtime</span><br></pre></td></tr></table></figure></p>
+<p>默认情况下，<code>transform-runtime</code>是不启用对<code>core-js</code>的polyfill处理的，所以安装<code>@babel/runtime</code>就够了。  但是如果想启用<code>transform-runtime</code>对<code>core-js</code>的polyfill的话，就得使用<code>@babel/runtime</code>另外的两个版本。 core-js@2对应的<code>@babel/runtime</code>版本是：<code>@babel/runtime-corejs2</code>；core-js@3对应的<code>@babel/runtime</code>版本是：<code>@babel/runtime-corejs3</code>。 后面讲<code>transform-runtime</code>的options配置的时候，会来解释如何配置corejs。</p>
+<p>所以根据是否启用<code>core-js</code>的polyfill，以及<code>core-js</code>的版本，实际使用<code>babel</code>的runtime，有三种安装类型：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># disable core-js polyfill</span></span><br><span class="line">npm install --save-dev @babel/plugin-transform-runtime</span><br><span class="line">npm install --save @babel/runtime</span><br><span class="line"></span><br><span class="line"><span class="comment"># enable core-js@2 polyfill</span></span><br><span class="line">npm install --save-dev @babel/plugin-transform-runtime</span><br><span class="line">npm install --save @babel/runtime-corejs2</span><br><span class="line"></span><br><span class="line"><span class="comment"># enable core-js@3 polyfill</span></span><br><span class="line">npm install --save-dev @babel/plugin-transform-runtime</span><br><span class="line">npm install --save @babel/runtime-corejs3</span><br></pre></td></tr></table></figure></p>
+<p>开发者只需根据自己的项目需要，启用一种方式即可。 在core-js的那篇博客里，已经提过不再关注core-js@2相关的知识点，所以本篇后面也不会再有跟core-js@2相关的内容。</p>
+<p>接下来看看<code>babel</code>的<code>runtime</code>是如何作用的。</p>
+<h3 id="helper函数相关的处理"><a href="#helper函数相关的处理" class="headerlink" title="helper函数相关的处理"></a>helper函数相关的处理</h3><p>首先安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/plugin-transform-runtime</span><br><span class="line">npm install --save @babel/runtime</span><br><span class="line">npm install --save @babel/preset-env</span><br></pre></td></tr></table></figure></p>
+<p>如下配置babel:（为了仅观察<code>transform-runtime</code>的作用，所以关闭了preset-env的polyfill的功能）<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            useBuiltIns: <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>上面是一个未启用<code>transform-runtime</code>的配置。 然后准备一个ES文件：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    saySth()&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行babel，对该文件转码，最后结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_classCallCheck</span>(<span class="params">instance, Constructor</span>) </span>&#123; <span class="keyword">if</span> (!(instance <span class="keyword">instanceof</span> Constructor)) &#123; <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">"Cannot call a class as a function"</span>); &#125; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_defineProperties</span>(<span class="params">target, props</span>) </span>&#123; <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; props.length; i++) &#123; <span class="keyword">var</span> descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || <span class="literal">false</span>; descriptor.configurable = <span class="literal">true</span>; <span class="keyword">if</span> (<span class="string">"value"</span> <span class="keyword">in</span> descriptor) descriptor.writable = <span class="literal">true</span>; <span class="built_in">Object</span>.defineProperty(target, descriptor.key, descriptor); &#125; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_createClass</span>(<span class="params">Constructor, protoProps, staticProps</span>) </span>&#123; <span class="keyword">if</span> (protoProps) _defineProperties(Constructor.prototype, protoProps); <span class="keyword">if</span> (staticProps) _defineProperties(Constructor, staticProps); <span class="keyword">return</span> Constructor; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Foo =</span><br><span class="line"><span class="comment">/*#__PURE__*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    _classCallCheck(<span class="keyword">this</span>, Foo);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _createClass(Foo, [&#123;</span><br><span class="line">    key: <span class="string">"saySth"</span>,</span><br><span class="line">    value: <span class="function"><span class="keyword">function</span> <span class="title">saySth</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">  &#125;]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> Foo;</span><br><span class="line">&#125;();</span><br></pre></td></tr></table></figure></p>
+<p>上面转码后的结果中：<code>_classCallCheck</code>等都属于<code>babel</code>内部的helper函数。 这些函数在babel转码的每个文件中都会重复存在。</p>
+<p>接下来把babel配置修改为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            useBuiltIns: <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/plugin-transform-runtime"</span></span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>重新运行babel转码，结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _interopRequireDefault = <span class="built_in">require</span>(<span class="string">"@babel/runtime/helpers/interopRequireDefault"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _classCallCheck2 = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime/helpers/classCallCheck"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _createClass2 = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime/helpers/createClass"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Foo =</span><br><span class="line"><span class="comment">/*#__PURE__*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    (<span class="number">0</span>, _classCallCheck2.default)(<span class="keyword">this</span>, Foo);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  (<span class="number">0</span>, _createClass2.default)(Foo, [&#123;</span><br><span class="line">    key: <span class="string">"saySth"</span>,</span><br><span class="line">    value: <span class="function"><span class="keyword">function</span> <span class="title">saySth</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">  &#125;]);</span><br><span class="line">  <span class="keyword">return</span> Foo;</span><br><span class="line">&#125;();</span><br></pre></td></tr></table></figure></p>
+<p>从这个结果可以清晰地看到，<code>transform-runtime</code>把helper函数，都转换成了对<code>@babel/runtime</code>内modules的引用。</p>
+<h3 id="对regenerator-runtime的polyfill"><a href="#对regenerator-runtime的polyfill" class="headerlink" title="对regenerator-runtime的polyfill"></a>对regenerator-runtime的polyfill</h3><p>将上面的babel配置恢复为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            useBuiltIns: <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>再准备一个包含generator函数的文件，用于测试：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="string">'hi'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行<code>babel</code>，此时转码结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(exports, <span class="string">"__esModule"</span>, &#123;</span><br><span class="line">  value: <span class="literal">true</span></span><br><span class="line">&#125;);</span><br><span class="line">exports.default = _default;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">asyncGeneratorStep</span>(<span class="params">gen, resolve, reject, _next, _throw, key, arg</span>) </span>&#123; <span class="keyword">try</span> &#123; <span class="keyword">var</span> info = gen[key](arg); <span class="keyword">var</span> value = info.value; &#125; <span class="keyword">catch</span> (error) &#123; reject(error); <span class="keyword">return</span>; &#125; <span class="keyword">if</span> (info.done) &#123; resolve(value); &#125; <span class="keyword">else</span> &#123; <span class="built_in">Promise</span>.resolve(value).then(_next, _throw); &#125; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_asyncToGenerator</span>(<span class="params">fn</span>) </span>&#123; <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">var</span> self = <span class="keyword">this</span>, args = <span class="built_in">arguments</span>; <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123; <span class="keyword">var</span> gen = fn.apply(self, args); <span class="function"><span class="keyword">function</span> <span class="title">_next</span>(<span class="params">value</span>) </span>&#123; asyncGeneratorStep(gen, resolve, reject, _next, _throw, <span class="string">"next"</span>, value); &#125; <span class="function"><span class="keyword">function</span> <span class="title">_throw</span>(<span class="params">err</span>) </span>&#123; asyncGeneratorStep(gen, resolve, reject, _next, _throw, <span class="string">"throw"</span>, err); &#125; _next(<span class="literal">undefined</span>); &#125;); &#125;; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_default</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> _ref.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_ref</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  _ref = _asyncToGenerator(</span><br><span class="line">  <span class="comment">/*#__PURE__*/</span></span><br><span class="line">  regeneratorRuntime.mark(<span class="function"><span class="keyword">function</span> <span class="title">_callee</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> regeneratorRuntime.wrap(<span class="function"><span class="keyword">function</span> <span class="title">_callee$</span>(<span class="params">_context</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (_context.prev = _context.next) &#123;</span><br><span class="line">          <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            _context.next = <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'hi'</span>;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">          <span class="keyword">case</span> <span class="string">"end"</span>:</span><br><span class="line">            <span class="keyword">return</span> _context.stop();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;, _callee);</span><br><span class="line">  &#125;));</span><br><span class="line">  <span class="keyword">return</span> _ref.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面结果中：<code>regeneratorRuntime</code>是一个全局变量，如果其它人引用你这段代码，同时又不知道要在运行环境里面添加<code>regenerator-runtime</code>的polyfill，这段代码别人引用过去运行就会报错。 <code>transform-runtime</code>可以帮助开发者，解决这个问题。</p>
+<p>接下来，把babel配置修改为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            useBuiltIns: <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/plugin-transform-runtime"</span></span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>重新运行<code>babel</code>，转码结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _interopRequireDefault = <span class="built_in">require</span>(<span class="string">"@babel/runtime/helpers/interopRequireDefault"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(exports, <span class="string">"__esModule"</span>, &#123;</span><br><span class="line">  value: <span class="literal">true</span></span><br><span class="line">&#125;);</span><br><span class="line">exports.default = _default;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _regenerator = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime/regenerator"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _asyncToGenerator2 = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime/helpers/asyncToGenerator"</span>));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_default</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> _ref.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_ref</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  _ref = (<span class="number">0</span>, _asyncToGenerator2.default)(</span><br><span class="line">  <span class="comment">/*#__PURE__*/</span></span><br><span class="line">  _regenerator.default.mark(<span class="function"><span class="keyword">function</span> <span class="title">_callee</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> _regenerator.default.wrap(<span class="function"><span class="keyword">function</span> <span class="title">_callee$</span>(<span class="params">_context</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (_context.prev = _context.next) &#123;</span><br><span class="line">          <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            _context.next = <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'hi'</span>;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">          <span class="keyword">case</span> <span class="string">"end"</span>:</span><br><span class="line">            <span class="keyword">return</span> _context.stop();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;, _callee);</span><br><span class="line">  &#125;));</span><br><span class="line">  <span class="keyword">return</span> _ref.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从这个转码结果可以看到，<code>transform-runtime</code>通过引用<code>@babel/runtime/regenerator</code>和<code>@babel/runtime/helpers/asyncToGenerator</code>这两个内部模块，消除了<code>regeneratorRuntime</code>这个全局变量。 这两个模块跟<code>regenerator-runtime</code>的功能是一样的，但是不会扩展到全局空间，所以别人引用这段代码，就不会出现问题。</p>
+<h3 id="core-js相关polyfill的处理"><a href="#core-js相关polyfill的处理" class="headerlink" title="core-js相关polyfill的处理"></a>core-js相关polyfill的处理</h3><p>将babel配置修改为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            useBuiltIns: <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>准备一个文件用于测试：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br></pre></td></tr></table></figure></p>
+<p>运行babel，转码结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br></pre></td></tr></table></figure></p>
+<p>将babel配置修改为：(通过配置<code>transform-runtime</code>的<code>corejs</code>option，启用了对core-js的polyfill)<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            useBuiltIns: <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/plugin-transform-runtime"</span>, </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"corejs"</span>: <span class="number">3</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>重新转码，结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _interopRequireDefault = <span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/helpers/interopRequireDefault"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _promise = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/promise"</span>));</span><br><span class="line"></span><br><span class="line">_promise.default.resolve().finally();</span><br></pre></td></tr></table></figure></p>
+<p>跟<code>regenerator-runtime</code>类似，上面转换后的代码，引用了<code>@babel/runtime-corejs3</code>的内部模块，消除了Promise这个全局变量，同时提供了同样的core-js Promise的特性。<code>@babel/runtime-corejs3/core-js-stable</code>对应的是<code>core-js-pure/stable</code>的版本，所以也不会扩展全局空间。</p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>上面的测试中，没有开启preset-env的polyfill。 如果把配置修改为：(同时开启preset-env和transform-runtime的polyfill功能)<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"targets"</span>: &#123;</span><br><span class="line">                ios: <span class="number">8</span>,</span><br><span class="line">                android: <span class="number">4.1</span></span><br><span class="line">            &#125;,</span><br><span class="line">            useBuiltIns: <span class="string">'usage'</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/plugin-transform-runtime"</span>, &#123;</span><br><span class="line">            corejs: <span class="number">3</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>然后对：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br></pre></td></tr></table></figure></p>
+<p>进行转码，结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _interopRequireDefault = <span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/helpers/interopRequireDefault"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _promise = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/promise"</span>));</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es6.promise"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es6.object.to-string"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es7.promise.finally"</span>);</span><br><span class="line"></span><br><span class="line">_promise.default.resolve().finally();</span><br></pre></td></tr></table></figure></p>
+<p>会出现：preset-env的polyfill与transform-runtime的polyfill并存的现象。 这样的转码结果肯定是有问题的，这两个属于不同的polyfill做法，有不同的应用场景。 <strong>所以这两种polyfill不能同时启用</strong>。 在开发应用时，应该通过下面的方式关闭掉transform-runtime对core-js和regenerator的polyfill:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    <span class="string">"@babel/plugin-transform-runtime"</span>, &#123;</span><br><span class="line">        corejs: <span class="literal">false</span>,</span><br><span class="line">        regenerator: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>还有一点，transform-runtime的polyfill，对目标环境是不做判断的，只要它识别到代码里有用到新的ES特性，就会进行替换。</p>
+<h2 id="runtime跟core-js-pure"><a href="#runtime跟core-js-pure" class="headerlink" title="runtime跟core-js-pure"></a>runtime跟core-js-pure</h2><p>在上一篇学习core-js的时候，讲到如果使用core-js-pure的版本，那么代码就需要这么写：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">from</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/from'</span>;</span><br><span class="line"><span class="keyword">import</span> flat <span class="keyword">from</span> <span class="string">'core-js-pure/features/array/flat'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Set</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/set'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">Promise</span> <span class="keyword">from</span> <span class="string">'core-js-pure/features/promise'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span>(<span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]));                <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line">flat([<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]], <span class="number">2</span>);                <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">32</span>).then(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure></p>
+<p><code>from</code>是一个Array的静态方法，flat是一个Array的实例方法，本该通过<code>Array.from</code>或<code>数组实例.flat</code>的方法调用。 但是上面的代码不允许这么写。</p>
+<p>借助<code>transform-runtime</code>，上面的代码，可以将写法换为标准写法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 省略import语句</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]));          <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line">[<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]].flat(<span class="number">2</span>);                 <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">32</span>).then(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x)); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure></p>
+<p>只要使用如下babel配置：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            useBuiltIns: <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">    [</span><br><span class="line">        <span class="string">"@babel/plugin-transform-runtime"</span>, &#123;</span><br><span class="line">            corejs: <span class="number">3</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>上面的标准代码就可以转换为:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _interopRequireDefault = <span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/helpers/interopRequireDefault"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _promise = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/promise"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _flat = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/instance/flat"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _set = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/set"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _from = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"@babel/runtime-corejs3/core-js-stable/array/from"</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _context;</span><br><span class="line"></span><br><span class="line">(<span class="number">0</span>, _from.default)(<span class="keyword">new</span> _set.default([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>])); <span class="comment">// =&gt; [1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">(<span class="number">0</span>, _flat.default)(_context = [<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, [<span class="number">5</span>]]]).call(_context, <span class="number">2</span>); <span class="comment">// =&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"></span><br><span class="line">_promise.default.resolve(<span class="number">32</span>).then(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;); <span class="comment">// =&gt; 32</span></span><br></pre></td></tr></table></figure></p>
+<p>通过这个例子，就能明白，为什么说babel/runtime也能提供polyfill的能力了吧。  但是一定要注意三点：</p>
+<ol>
+<li>它跟preset-env提供的polyfill适用的场景是完全不同，runtime适合开发库，preset-env适合开发application</li>
+<li>runtime与preset-env的polyfill不能同时启用</li>
+<li>runtime的polyfill不判断目标运行环境</li>
+</ol>
+<h2 id="runtime的options"><a href="#runtime的options" class="headerlink" title="runtime的options"></a>runtime的options</h2><h3 id="corejs"><a href="#corejs" class="headerlink" title="corejs"></a>corejs</h3><blockquote>
+<p>false, 2, 3 or { version: 2 | 3, proposals: boolean }, defaults to false.<br>这个option，决定了是否对<code>core-js</code>进行polyfill，以及用哪个版本的<code>core-js</code>进行polyfill。 除了通过<code>version</code>配置版本，还能通过<code>proposals</code>指定对<code>core-js</code>的proposals特性也提供polyfill支持。如果这个option没配置，或设置为false，则不会对<code>core-js</code>进行polyfill。</p>
+</blockquote>
+<p>同时它也决定了到底安装哪个runtime的版本，前面有记录过的。</p>
+<h3 id="helpers"><a href="#helpers" class="headerlink" title="helpers"></a>helpers</h3><blockquote>
+<p>boolean, defaults to true.<br>这个option决定了是否对helpers函数进行优化处理。默认为true，如果为false，<code>transform-runtime</code>就不会对helpers函数进行去重提取的处理了。</p>
+</blockquote>
+<h3 id="regenerator"><a href="#regenerator" class="headerlink" title="regenerator"></a>regenerator</h3><blockquote>
+<p>boolean, defaults to true.<br>这个option决定了是否对<code>regenerator-runtime</code>进行polyfill。 默认为true，与preset-env搭配使用时，应该设置false。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/babel/" rel="tag"># babel</a>
+          
+            <a href="/tags/前端工程化/" rel="tag"># 前端工程化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/02/babel详解（四）-core-js/" rel="next" title="babel详解（四）:core-js">
+                <i class="fa fa-chevron-left"></i> babel详解（四）:core-js
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">57</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#polyfill"><span class="nav-number">1.</span> <span class="nav-text">polyfill</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#其它要点"><span class="nav-number">1.1.</span> <span class="nav-text">其它要点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#runtime"><span class="nav-number">2.</span> <span class="nav-text">runtime</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#helper函数相关的处理"><span class="nav-number">2.1.</span> <span class="nav-text">helper函数相关的处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对regenerator-runtime的polyfill"><span class="nav-number">2.2.</span> <span class="nav-text">对regenerator-runtime的polyfill</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#core-js相关polyfill的处理"><span class="nav-number">2.3.</span> <span class="nav-text">core-js相关polyfill的处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#runtime跟core-js-pure"><span class="nav-number">4.</span> <span class="nav-text">runtime跟core-js-pure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#runtime的options"><span class="nav-number">5.</span> <span class="nav-text">runtime的options</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#corejs"><span class="nav-number">5.1.</span> <span class="nav-text">corejs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helpers"><span class="nav-number">5.2.</span> <span class="nav-text">helpers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#regenerator"><span class="nav-number">5.3.</span> <span class="nav-text">regenerator</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="babel的presets是用来简化plugins的使用的。本篇介绍babel presets相关的内容。">
+<meta name="keywords" content="babel,前端工程化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="babel详解（三）:presets">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/08/31/babel详解（三）-presets/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="babel的presets是用来简化plugins的使用的。本篇介绍babel presets相关的内容。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-03T13:18:43.894Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="babel详解（三）:presets">
+<meta name="twitter:description" content="babel的presets是用来简化plugins的使用的。本篇介绍babel presets相关的内容。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/08/31/babel详解（三）-presets/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>babel详解（三）:presets | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">11</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">10</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">57</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/08/31/babel详解（三）-presets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">babel详解（三）:presets
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-30 18:11:04" itemprop="dateCreated datePublished" datetime="2019-08-30T18:11:04Z">2019-08-30</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/babel/" itemprop="url" rel="index"><span itemprop="name">babel</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>babel的presets是用来简化plugins的使用的。本篇介绍babel presets相关的内容。</p>
+<a id="more"></a>
+<h2 id="官方推荐的preset"><a href="#官方推荐的preset" class="headerlink" title="官方推荐的preset"></a>官方推荐的preset</h2><p>目前官方推荐的preset，有下面四个：</p>
+<ul>
+<li>@babel/preset-env 所有项目都会用到的</li>
+<li>@babel/preset-flow flow需要的</li>
+<li>@babel/preset-react react框架需要的</li>
+<li>@babel/preset-typescript typescript需要的</li>
+</ul>
+<p>其它的preset，如state-2, state-3, es2015这些从babel7开始已经不推荐使用了。</p>
+<h2 id="自定义一个preset"><a href="#自定义一个preset" class="headerlink" title="自定义一个preset"></a>自定义一个preset</h2><p>要创建一个自己的preset，很简单，创建一个下面形式的模块：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    plugins: [</span><br><span class="line">      <span class="string">"pluginA"</span>,</span><br><span class="line">      <span class="string">"pluginB"</span>,</span><br><span class="line">      <span class="string">"pluginC"</span>,</span><br><span class="line">    ]</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面这个简单的文件，就可以作为一个babel的preset。当babel的配置中，引用上面这个preset时，这个preset内定义的plugins就会生效。另外preset除了可以包含plugins，还可以包含其它的presets，只要类似下面的形式定义就可以了：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">()</span> =&gt;</span> (&#123;</span><br><span class="line">  presets: [</span><br><span class="line">    <span class="built_in">require</span>(<span class="string">"@babel/preset-env"</span>),</span><br><span class="line">  ],</span><br><span class="line">  plugins: [</span><br><span class="line">    [<span class="built_in">require</span>(<span class="string">"@babel/plugin-proposal-class-properties"</span>), &#123; <span class="attr">loose</span>: <span class="literal">true</span> &#125;],</span><br><span class="line">    <span class="built_in">require</span>(<span class="string">"@babel/plugin-proposal-object-rest-spread"</span>),</span><br><span class="line">  ],</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>仔细看一下，preset对外export的这个函数返回值，是不是跟.babelrc.js里面的配置很像呢！其实就一样的，我们在.babelrc.js里面怎么配置preset和plugin，这个地方就怎么配置preset和plugin。</p>
+<p>所以要定义一个仅仅是plugin集合作用的preset还是很简单的。</p>
+<h2 id="preset配置与使用"><a href="#preset配置与使用" class="headerlink" title="preset配置与使用"></a>preset配置与使用</h2><p>preset的配置方式与plugin完全一致。<a href="https://babeljs.io/docs/en/options#plugin-preset-entries" target="_blank" rel="noopener">查看官方对plugin/preset配置项的说明</a></p>
+<p>继续利用上一篇用到的那个小项目，并在项目根目录新建一个文件<code>my-preset.js</code>:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">()</span> =&gt;</span> (&#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    [<span class="string">'@babel/plugin-transform-arrow-functions'</span>],</span><br><span class="line">    [<span class="string">'@babel/plugin-transform-classes'</span>, &#123;<span class="attr">spec</span>: <span class="literal">false</span>&#125;],</span><br><span class="line">    [<span class="string">'@babel/plugin-transform-computed-properties'</span>],</span><br><span class="line">    [<span class="string">'@babel/plugin-proposal-object-rest-spread'</span>, &#123;<span class="attr">loose</span>: <span class="literal">true</span>, <span class="attr">useBuiltIns</span>: <span class="literal">true</span>&#125;]</span><br><span class="line">  ]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>把上一篇文章里面，在.babelrc.js里配置的所有plugins，全部都移动到<code>my-preset.js</code>，我想把这个文件等会作为一个preset，配置到.babelrc.js里面，试试babel转码的结果。<code>.babelrc.js</code>最终修改为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [</span><br><span class="line">    <span class="string">'./my-preset.js'</span></span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;presets, plugins&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后运行<code>npx babel src --out-dir dist</code>，即可查看这个自定义preset配置后的转码结果。</p>
+<h3 id="preset名称"><a href="#preset名称" class="headerlink" title="preset名称"></a>preset名称</h3><p>上一篇介绍plugin名称的时候，我尝试从自己的角度来说明这个东西的规律。但实际上babel官方文档对plugin/preset的名称，有一个部分很详细的说明了这里面的规则，而且这个部分有一个专门的名称叫做Name Normalization，包含各种名称类型，如相对路径、绝对路径、npm包、scope npm包以及名称的简写规则的。<a href="https://babeljs.io/docs/en/options#name-normalization" target="_blank" rel="noopener">详情请参考</a></p>
+<h3 id="preset的顺序"><a href="#preset的顺序" class="headerlink" title="preset的顺序"></a>preset的顺序</h3><p>上一篇也介绍过，presets是可以配置多个的，但是preset的启用顺序，与它在presets配置数组中的索引顺序是相反的。</p>
+<h3 id="preset-options"><a href="#preset-options" class="headerlink" title="preset options"></a>preset options</h3><p>不同的preset支持不同的options，options的配置方式跟plugin是一样的，例如：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"presets"</span>: [</span><br><span class="line">    [<span class="string">"@babel/preset-env"</span>, &#123;</span><br><span class="line">      <span class="attr">"loose"</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="attr">"modules"</span>: <span class="literal">false</span></span><br><span class="line">    &#125;]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="babel-preset-env"><a href="#babel-preset-env" class="headerlink" title="@babel/preset-env"></a>@babel/preset-env</h2><p>这是当前babel最重要的一个preset，而且功能比上面自定义的preset要复杂的多，所以有必要详细的学习。这个preset，可以根据我们对<code>browserslist</code>的配置，在转码时自动根据我们对转码后代码的目标运行环境的最低版本要求，采用更加“聪明”的转码，如果我们设置的最低版本的环境，已经原生实现了要转码的ES特性，则会直接采用ES标准写法；如果最低版本环境，还不支持要转码的特性，则会自动注入对应的polyfill。</p>
+<p>browserslist，应该已经不陌生了， 前端构建工具里面，很多都跟它有关系。除了<a href="https://github.com/browserslist/browserslist" target="_blank" rel="noopener">browserslist</a>，@babel/preset-env，还依赖了另外两个库来完成它的实现：<a href="https://github.com/kangax/compat-table" target="_blank" rel="noopener">compat-table</a>, and <a href="https://github.com/Kilian/electron-to-chromium" target="_blank" rel="noopener">electron-to-chromium</a>。后面两个帮助preset-env，知道ES6的特性，在不同的平台、不同的运行环境中，都是从哪个版本开始原生支持的。</p>
+<h3 id="important"><a href="#important" class="headerlink" title="important"></a>important</h3><p>@babel/preset-env不支持所有stage-x的plugins。通过查看preset-env的package.json文件，就能知道它需要哪些plugins:<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"7.5.5"</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"@babel/helper-module-imports"</span>: <span class="string">"^7.0.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/helper-plugin-utils"</span>: <span class="string">"^7.0.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-proposal-async-generator-functions"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-proposal-dynamic-import"</span>: <span class="string">"^7.5.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-proposal-json-strings"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-proposal-object-rest-spread"</span>: <span class="string">"^7.5.5"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-proposal-optional-catch-binding"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-proposal-unicode-property-regex"</span>: <span class="string">"^7.4.4"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-syntax-async-generators"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-syntax-dynamic-import"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-syntax-json-strings"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-syntax-object-rest-spread"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-syntax-optional-catch-binding"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-arrow-functions"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-async-to-generator"</span>: <span class="string">"^7.5.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-block-scoped-functions"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-block-scoping"</span>: <span class="string">"^7.5.5"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-classes"</span>: <span class="string">"^7.5.5"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-computed-properties"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-destructuring"</span>: <span class="string">"^7.5.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-dotall-regex"</span>: <span class="string">"^7.4.4"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-duplicate-keys"</span>: <span class="string">"^7.5.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-exponentiation-operator"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-for-of"</span>: <span class="string">"^7.4.4"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-function-name"</span>: <span class="string">"^7.4.4"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-literals"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-member-expression-literals"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-modules-amd"</span>: <span class="string">"^7.5.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-modules-commonjs"</span>: <span class="string">"^7.5.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-modules-systemjs"</span>: <span class="string">"^7.5.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-modules-umd"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-named-capturing-groups-regex"</span>: <span class="string">"^7.4.5"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-new-target"</span>: <span class="string">"^7.4.4"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-object-super"</span>: <span class="string">"^7.5.5"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-parameters"</span>: <span class="string">"^7.4.4"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-property-literals"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-regenerator"</span>: <span class="string">"^7.4.5"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-reserved-words"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-shorthand-properties"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-spread"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-sticky-regex"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-template-literals"</span>: <span class="string">"^7.4.4"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-typeof-symbol"</span>: <span class="string">"^7.2.0"</span>,</span><br><span class="line">    <span class="attr">"@babel/plugin-transform-unicode-regex"</span>: <span class="string">"^7.4.4"</span>,</span><br><span class="line">    <span class="attr">"@babel/types"</span>: <span class="string">"^7.5.5"</span>,</span><br><span class="line">    <span class="attr">"browserslist"</span>: <span class="string">"^4.6.0"</span>,</span><br><span class="line">    <span class="attr">"core-js-compat"</span>: <span class="string">"^3.1.1"</span>,</span><br><span class="line">    <span class="attr">"invariant"</span>: <span class="string">"^2.2.2"</span>,</span><br><span class="line">    <span class="attr">"js-levenshtein"</span>: <span class="string">"^1.1.3"</span>,</span><br><span class="line">    <span class="attr">"semver"</span>: <span class="string">"^5.5.0"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上一篇说过babel的plugin，现在把还在处于proposal阶段的plugin都命名为了<code>-proposal</code>形式的plugin。 非proposal的plugin都变为<code>-transform</code>形式的plugin了。为什么上面的package.json还会包含几个<code>-proposal</code>的plugin呢？这是因为以上几个<code>-proposal</code>的plugin在我写文这个时间已经进展到<code>stage-4</code>了，它变为<code>-trasform</code>的plugin是早晚的事，所以preset-env才会包含它们。</p>
+<p>由于proposal会不断地变化，意味着preset-env也会跟着调整，所以保持preset-env的更新，在平常的项目中也是比较重要的一项工作。</p>
+<p><strong>因为这一点，所以preset-env不是万能的。 如果我们用到某一个新的ES特性，还是proposal阶段，而且preset-env不提供转码支持的话，就得自己单独配置plugins了。</strong></p>
+<h3 id="important2"><a href="#important2" class="headerlink" title="important2"></a>important2</h3><p>stage-x的preset已经不再推荐使用了，而且preset-env不支持stage-x的plugin，但是曾经的vue项目，还使用了stage-2这个preset，意味着stage-2里面的一些plugin还是vue项目需要的，如何用plugin单独配置的方式来取代stage-2呢？babel官方提供了一个替代的说明文件：<a href="https://github.com/babel/babel/blob/master/packages/babel-preset-stage-0/README.md" target="_blank" rel="noopener">如何替代stage-x的preset</a></p>
+<h3 id="browserslist"><a href="#browserslist" class="headerlink" title="browserslist"></a>browserslist</h3><p>@babel/preset-env，需要像autoprefixer那样，配置一个browserslist，以便确认目标运行环境。虽然官方推荐我们使用跟autoprefixer一样的配置方式，借助.browserslistrc这个文件配置。我个人认为，preset-env的browserslist还是应该在preset-env里面独立配置，因为又不见得别的工具跟preset-env，对于目标环境的需求是完全相同的。preset-env的options里面有一个target option，就可以用来单独为它配置browserslist。</p>
+<p>browserlist的配置方式需阅读它们的<a href="https://github.com/browserslist/browserslist#query-composition" target="_blank" rel="noopener">官方文档</a>。</p>
+<p>写好一个browserlist字符串，可以通过<code>npx browserlist string</code>来检测，如：<code>npx browserslist &#39;iOS &gt; 8, Android &gt; 4&#39;</code>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt; npx browserslist <span class="string">'iOS &gt; 8, Android &gt; 4'</span></span><br><span class="line">npx: installed 5 <span class="keyword">in</span> 4.052s</span><br><span class="line">android 67</span><br><span class="line">android 4.4.3-4.4.4</span><br><span class="line">android 4.4</span><br><span class="line">android 4.2-4.3</span><br><span class="line">android 4.1</span><br><span class="line">ios_saf 12.2-12.3</span><br><span class="line">ios_saf 12.0-12.1</span><br><span class="line">ios_saf 11.3-11.4</span><br><span class="line">ios_saf 11.0-11.2</span><br><span class="line">ios_saf 10.3</span><br><span class="line">ios_saf 10.0-10.2</span><br><span class="line">ios_saf 9.3</span><br><span class="line">ios_saf 9.0-9.2</span><br><span class="line">ios_saf 8.1-8.4</span><br></pre></td></tr></table></figure></p>
+<h3 id="options"><a href="#options" class="headerlink" title="options"></a>options</h3><h4 id="target"><a href="#target" class="headerlink" title="target"></a>target</h4><p>用来配置目标运行环境。</p>
+<blockquote>
+<p>string | Array<string> | { [string]: string }, defaults to {}.</string></p>
+</blockquote>
+<p>target如果是一个string，则应该写成browserlist的query形式(<a href="https://github.com/browserslist/browserslist#query-composition" target="_blank" rel="noopener">什么是browserlist query</a>)，如<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"target"</span>:<span class="string">"iOS &gt; 8, Android &gt; 4"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>target如果是一个对象，则可以把browserlist的browsers直接配置到对象上（<a href="https://github.com/browserslist/browserslist#browsers" target="_blank" rel="noopener">什么是browserlist browser</a>)，如：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"target"</span>: &#123;</span><br><span class="line">    <span class="attr">"iOs"</span>: <span class="string">"8"</span>,</span><br><span class="line">    <span class="attr">"Android"</span>: <span class="string">"4"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种形式配置的browser代表的是它的最低版本。</p>
+<p>除了以上两种形式，targets还有其它的一些配置方式，但是我觉得不常用，所以不打算仔细介绍了。<a href="https://babeljs.io/docs/en/babel-preset-env#targets" target="_blank" rel="noopener">详情请查看</a></p>
+<h4 id="spec"><a href="#spec" class="headerlink" title="spec"></a>spec</h4><p>这个在上一篇讲过的，这个option会传递到preset内部的plugin，如果plugin支持这个option, spec就会传给它。</p>
+<h4 id="loose"><a href="#loose" class="headerlink" title="loose"></a>loose</h4><p>这个在上一篇讲过的，这个option会传递到preset内部的plugin，如果plugin支持这个option, loose就会传给它。</p>
+<h4 id="modules"><a href="#modules" class="headerlink" title="modules"></a>modules</h4><blockquote>
+<p>“amd” | “umd” | “systemjs” | “commonjs” | “cjs” | “auto” | false, defaults to “auto”.</p>
+</blockquote>
+<p>这个用于配置是否启用将ES6的模块转换其它规范的模块。在vue项目里，这个option被显示的配置为了false。</p>
+<h4 id="debug"><a href="#debug" class="headerlink" title="debug"></a>debug</h4><p>这个用于开启转码的调试。我觉得很有用，能够看到很多有用的提示，尤其是polyfill相关的处理结果。</p>
+<h4 id="corejs"><a href="#corejs" class="headerlink" title="corejs"></a>corejs</h4><blockquote>
+<p>2, 3 or { version: 2 | 3, proposals: boolean }, defaults to 2.</p>
+</blockquote>
+<p>这个option，用来指定preset-env进行polyfill时，要使用的corejs版本。 core-js是第三方写的不支持的浏览器环境，也能支持最新ES特性的库，该作者称其为standard library。 core-js现在有2个版本在被人使用：v2和v3。 所以preset-env的corejs这个option，可以支持配置2或者3。 但是从未来的角度来说，我认为不应该再关注core-js v2，它始终会被v3代替，慢慢地大家都会升级到v3上面来。 所以本篇在学习preset-env对core-js的polyfill行为，不再关注core-js v2了。</p>
+<p>如果仅考虑core-js v3的话，preset-env的corejs 这个option，有两种配置：</p>
+<ol>
+<li><code>corejs: 3</code></li>
+<li><code>corejs: {version: 3, proposals: boolean}</code></li>
+</ol>
+<p>默认情况下，对corejs的polyfill，只会注入那些stabled的ES特性，还处于proposal状态的polyfill则不会注入。 如果需要注入proposals的polyfill，则可以考虑将corejs配置为：<code>corejs: {version: 3, proposals: true}</code>。</p>
+<p><code>corejs: {version: 3, proposals: true}</code>往往搭配下面的<code>useBuiltIns: &#39;usage&#39;</code>一起使用。</p>
+<h4 id="useBuiltIns"><a href="#useBuiltIns" class="headerlink" title="useBuiltIns"></a>useBuiltIns</h4><blockquote>
+<p>“usage” | “entry” | false, defaults to false.</p>
+</blockquote>
+<p>由于@babel/polyfill在babel7.4开始，也不支持使用了。 所以现在要用preset-env，必须是得单独安装core-js v3：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install core-js@3 --save</span><br></pre></td></tr></table></figure></p>
+<p>并且是要安装到dependences。</p>
+<p><code>useBuiltIns</code>，主要有两个value: <code>entry</code>和<code>usage</code>。 这两个值，不管是哪一个，都会把core-js的modules注入到转换后的代码里面，充当polyfill。 什么是core-js的module? 这个需要专门去学习core-js的文档，后面的博客学习core-js时，我也会专门记录。</p>
+<h5 id="entry"><a href="#entry" class="headerlink" title="entry"></a>entry</h5><p>先来看entry的作用机制。 假如.babelrc.js如下配置：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">    <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"targets"</span>: &#123;</span><br><span class="line">                    ios: <span class="number">8</span>,</span><br><span class="line">                    android: <span class="number">4</span></span><br><span class="line">                &#125;,</span><br><span class="line">                useBuiltIns: <span class="string">"entry"</span>,</span><br><span class="line">                corejs: <span class="number">3</span>,</span><br><span class="line">                debug: <span class="literal">true</span><span class="comment">//方便调试</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>准备如下一段代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = &#123;...&#123;&#125;&#125;;</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>运行<code>npx babel src --out-dir dist</code>对它进行转码。 因为有debug，控制台会打印出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Using polyfills with `entry` option:</span><br><span class="line"></span><br><span class="line">[D:\babel\src\main.js] Import of core-js was not found.</span><br><span class="line">Successfully compiled 1 file with Babel.</span><br></pre></td></tr></table></figure></p>
+<p>这就提示我们需要在代码里，加入对core-js的import调用，以便注入core-js作为polyfill。</p>
+<p>将代码修改如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = &#123;...&#123;&#125;&#125;;</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>运行<code>npx babel src --out-dir dist</code>对它进行转码。 此时不会再有<code>Import of core-js was not found</code>提示。 最后转码结果如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.symbol"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.symbol.description"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 中间省略了几百行require</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/esnext.global-this"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/web.immediate"</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ownKeys</span>(<span class="params">object, enumerableOnly</span>) </span>&#123; <span class="keyword">var</span> keys = <span class="built_in">Object</span>.keys(object); <span class="keyword">if</span> (<span class="built_in">Object</span>.getOwnPropertySymbols) &#123; <span class="keyword">var</span> symbols = <span class="built_in">Object</span>.getOwnPropertySymbols(object); <span class="keyword">if</span> (enumerableOnly) symbols = symbols.filter(<span class="function"><span class="keyword">function</span> (<span class="params">sym</span>) </span>&#123; <span class="keyword">return</span> <span class="built_in">Object</span>.getOwnPropertyDescriptor(object, sym).enumerable; &#125;); keys.push.apply(keys, symbols); &#125; <span class="keyword">return</span> keys; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_objectSpread</span>(<span class="params">target</span>) </span>&#123; <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123; <span class="keyword">var</span> source = <span class="built_in">arguments</span>[i] != <span class="literal">null</span> ? <span class="built_in">arguments</span>[i] : &#123;&#125;; <span class="keyword">if</span> (i % <span class="number">2</span>) &#123; ownKeys(source, <span class="literal">true</span>).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; _defineProperty(target, key, source[key]); &#125;); &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Object</span>.getOwnPropertyDescriptors) &#123; <span class="built_in">Object</span>.defineProperties(target, <span class="built_in">Object</span>.getOwnPropertyDescriptors(source)); &#125; <span class="keyword">else</span> &#123; ownKeys(source).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; <span class="built_in">Object</span>.defineProperty(target, key, <span class="built_in">Object</span>.getOwnPropertyDescriptor(source, key)); &#125;); &#125; &#125; <span class="keyword">return</span> target; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_defineProperty</span>(<span class="params">obj, key, value</span>) </span>&#123; <span class="keyword">if</span> (key <span class="keyword">in</span> obj) &#123; <span class="built_in">Object</span>.defineProperty(obj, key, &#123; <span class="attr">value</span>: value, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span> &#125;); &#125; <span class="keyword">else</span> &#123; obj[key] = value; &#125; <span class="keyword">return</span> obj; &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = _objectSpread(&#123;&#125;, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>这个结果有做省略，累计有500多行。 在<code>useBuiltIns: &#39;entry&#39;</code>模式下，代码中对core-js的import：<code>import &quot;core-js&quot;</code>，会根据<code>targets</code>的配置，替换为core-js最底层的<code>modules</code>引用，如<code>require(&quot;core-js/modules/es.symbol&quot;)</code>。 core-js有很多个module，虽然源代码只有一行<code>import &quot;core-js&quot;</code>，转换后的代码有500多行<code>require(&quot;core-js/modules/...&quot;)</code>。</p>
+<p>如果你想在项目中继续使用以前babel/polyfill的方式，只需要引入下面的代码在入口文件即可：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"regenerator-runtime/runtime"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>这个方式有问题吗？有的，就是使用的polyfill太多了，有的可能整个项目的逻辑都不需要它，这个方式最后生成代码比较大，对前端性能肯定是有影响的；唯一的优点就是省心，不要去考虑哪个文件需要引入哪些core-js的modules来作为polyfill。</p>
+<p>如何改进呢？<br>在自身对当前文件所用到的ES特性非常熟悉的情况下，可以选择手工地引入core-js的modules，来避免整体的引用。 将代码修改为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es/promise"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es/array"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = &#123;...&#123;&#125;&#125;;</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>运行<code>npx babel src --out-dir dist</code>对它进行转码。 最终结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.concat"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.copy-within"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 省去几十行</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.unscopables.flat"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.unscopables.flat-map"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.to-string"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.promise"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.promise.finally"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.string.iterator"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/web.dom-collections.iterator"</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ownKeys</span>(<span class="params">object, enumerableOnly</span>) </span>&#123; <span class="keyword">var</span> keys = <span class="built_in">Object</span>.keys(object); <span class="keyword">if</span> (<span class="built_in">Object</span>.getOwnPropertySymbols) &#123; <span class="keyword">var</span> symbols = <span class="built_in">Object</span>.getOwnPropertySymbols(object); <span class="keyword">if</span> (enumerableOnly) symbols = symbols.filter(<span class="function"><span class="keyword">function</span> (<span class="params">sym</span>) </span>&#123; <span class="keyword">return</span> <span class="built_in">Object</span>.getOwnPropertyDescriptor(object, sym).enumerable; &#125;); keys.push.apply(keys, symbols); &#125; <span class="keyword">return</span> keys; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_objectSpread</span>(<span class="params">target</span>) </span>&#123; <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123; <span class="keyword">var</span> source = <span class="built_in">arguments</span>[i] != <span class="literal">null</span> ? <span class="built_in">arguments</span>[i] : &#123;&#125;; <span class="keyword">if</span> (i % <span class="number">2</span>) &#123; ownKeys(source, <span class="literal">true</span>).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; _defineProperty(target, key, source[key]); &#125;); &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Object</span>.getOwnPropertyDescriptors) &#123; <span class="built_in">Object</span>.defineProperties(target, <span class="built_in">Object</span>.getOwnPropertyDescriptors(source)); &#125; <span class="keyword">else</span> &#123; ownKeys(source).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; <span class="built_in">Object</span>.defineProperty(target, key, <span class="built_in">Object</span>.getOwnPropertyDescriptor(source, key)); &#125;); &#125; &#125; <span class="keyword">return</span> target; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_defineProperty</span>(<span class="params">obj, key, value</span>) </span>&#123; <span class="keyword">if</span> (key <span class="keyword">in</span> obj) &#123; <span class="built_in">Object</span>.defineProperty(obj, key, &#123; <span class="attr">value</span>: value, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span> &#125;); &#125; <span class="keyword">else</span> &#123; obj[key] = value; &#125; <span class="keyword">return</span> obj; &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = _objectSpread(&#123;&#125;, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>这个结果虽然还是有很多，但是比直接import core-js要减少好多了。 它的机制也是类似的，就是把对core-js的import，转换为core-js的最小单位：modules。：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es/promise"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es/array"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>上面两个引用代表的是core-js的两个命名空间：promise和array。 它们分别可能包含多个modules， 所以转码后，还是有好几十个core-js module的require语句。</p>
+<p>虽然单独引用core-js的某一部分，能够减少最终的转码大小，但是要求开发人员对core-js和ES特性特别熟悉，否则你怎么知道当前文件需不需要polyfill，以及要哪些呢？ 所以这个做法，真正使用的时候，难度较大。</p>
+<p><code>useBuiltIns: &quot;entry&quot;</code>对core-js的<code>import</code>替换，是根据<code>targets</code>配置的环境进行判断的。假如把配置文件调整一下：（<code>ios: 12</code>是非常新的环境了)<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">    <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"targets"</span>: &#123;</span><br><span class="line">                    ios: <span class="number">12</span></span><br><span class="line">                &#125;,</span><br><span class="line">                useBuiltIns: <span class="string">"entry"</span>,</span><br><span class="line">                corejs: <span class="number">3</span>,</span><br><span class="line">                debug: <span class="literal">true</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>然后重新对以下代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es/promise"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"core-js/es/array"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = &#123;...&#123;&#125;&#125;;</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>运行babel，结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.reverse"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.unscopables.flat"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.unscopables.flat-map"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/web.dom-collections.iterator"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"><span class="keyword">let</span> obj = &#123; ...&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>同样的代码，由于<code>targets</code>设置为了较新版本的环境，所以最终转码的结果减少很多。</p>
+<h5 id="usage"><a href="#usage" class="headerlink" title="usage"></a>usage</h5><p>usage比起entry，最大的好处就是，它会根据每个文件里面，用到了哪些es的新特性，然后根据我们设置的targets判断，是否需要polyfill，如果targets的最低环境不支持某个es特性，则这个es特性的core-js的对应module会被注入。</p>
+<p>配置文件修改为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">    <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"targets"</span>: &#123;</span><br><span class="line">                    ios: <span class="number">8</span>,</span><br><span class="line">                    android: <span class="number">4.1</span></span><br><span class="line">                &#125;,</span><br><span class="line">                useBuiltIns: <span class="string">"usage"</span>,</span><br><span class="line">                corejs: <span class="number">3</span>,</span><br><span class="line">                debug: <span class="literal">true</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>代码修改为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = &#123;...&#123;&#125;&#125;;</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>运行<code>npx babel src --out-dir dist</code>转码，最终结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.symbol"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.filter"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.for-each"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.define-properties"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.define-property"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.get-own-property-descriptor"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.get-own-property-descriptors"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.keys"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.to-string"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.promise"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.promise.finally"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/web.dom-collections.for-each"</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ownKeys</span>(<span class="params">object, enumerableOnly</span>) </span>&#123; <span class="keyword">var</span> keys = <span class="built_in">Object</span>.keys(object); <span class="keyword">if</span> (<span class="built_in">Object</span>.getOwnPropertySymbols) &#123; <span class="keyword">var</span> symbols = <span class="built_in">Object</span>.getOwnPropertySymbols(object); <span class="keyword">if</span> (enumerableOnly) symbols = symbols.filter(<span class="function"><span class="keyword">function</span> (<span class="params">sym</span>) </span>&#123; <span class="keyword">return</span> <span class="built_in">Object</span>.getOwnPropertyDescriptor(object, sym).enumerable; &#125;); keys.push.apply(keys, symbols); &#125; <span class="keyword">return</span> keys; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_objectSpread</span>(<span class="params">target</span>) </span>&#123; <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123; <span class="keyword">var</span> source = <span class="built_in">arguments</span>[i] != <span class="literal">null</span> ? <span class="built_in">arguments</span>[i] : &#123;&#125;; <span class="keyword">if</span> (i % <span class="number">2</span>) &#123; ownKeys(source, <span class="literal">true</span>).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; _defineProperty(target, key, source[key]); &#125;); &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Object</span>.getOwnPropertyDescriptors) &#123; <span class="built_in">Object</span>.defineProperties(target, <span class="built_in">Object</span>.getOwnPropertyDescriptors(source)); &#125; <span class="keyword">else</span> &#123; ownKeys(source).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; <span class="built_in">Object</span>.defineProperty(target, key, <span class="built_in">Object</span>.getOwnPropertyDescriptor(source, key)); &#125;); &#125; &#125; <span class="keyword">return</span> target; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_defineProperty</span>(<span class="params">obj, key, value</span>) </span>&#123; <span class="keyword">if</span> (key <span class="keyword">in</span> obj) &#123; <span class="built_in">Object</span>.defineProperty(obj, key, &#123; <span class="attr">value</span>: value, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span> &#125;); &#125; <span class="keyword">else</span> &#123; obj[key] = value; &#125; <span class="keyword">return</span> obj; &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = _objectSpread(&#123;&#125;, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>最终这个文件转码结果，就只有这么多，比使用<code>entry</code>简化了不少，而且很智能，不需要自己去操心需要哪些polyfill。 这也是为啥<code>usage</code>被推荐在项目中使用的原因。</p>
+<p>观察上面的源码和转码后的代码，其实有个小地方没有被转换，就是：<code>globalThis</code>，这是es的一个提案，当前是stage-3阶段，这个没有被注入polyfill。这是因为preset-env默认不会对proposals进行polyfill，所以如果需要对proposals进行polyfill，可以把配置文件做一点点修改：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> presets = [ </span><br><span class="line">    [</span><br><span class="line">    <span class="string">"@babel/preset-env"</span>,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"targets"</span>: &#123;</span><br><span class="line">                    ios: <span class="number">8</span>,</span><br><span class="line">                    android: <span class="number">4.1</span></span><br><span class="line">                &#125;,</span><br><span class="line">                useBuiltIns: <span class="string">"usage"</span>,</span><br><span class="line">                corejs: &#123;<span class="attr">version</span>: <span class="number">3</span>, <span class="attr">proposals</span>: <span class="literal">true</span>&#125;,</span><br><span class="line">                debug: <span class="literal">true</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">];</span><br><span class="line"><span class="keyword">const</span> plugins = [</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; presets, plugins &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>然后重新运行<code>npx babel src --out-dir dist</code>转码，最终结果为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.symbol"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.filter"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.array.for-each"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.define-properties"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.define-property"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.get-own-property-descriptor"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.get-own-property-descriptors"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.keys"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.object.to-string"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.promise"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/es.promise.finally"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/esnext.global-this"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"core-js/modules/web.dom-collections.for-each"</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ownKeys</span>(<span class="params">object, enumerableOnly</span>) </span>&#123; <span class="keyword">var</span> keys = <span class="built_in">Object</span>.keys(object); <span class="keyword">if</span> (<span class="built_in">Object</span>.getOwnPropertySymbols) &#123; <span class="keyword">var</span> symbols = <span class="built_in">Object</span>.getOwnPropertySymbols(object); <span class="keyword">if</span> (enumerableOnly) symbols = symbols.filter(<span class="function"><span class="keyword">function</span> (<span class="params">sym</span>) </span>&#123; <span class="keyword">return</span> <span class="built_in">Object</span>.getOwnPropertyDescriptor(object, sym).enumerable; &#125;); keys.push.apply(keys, symbols); &#125; <span class="keyword">return</span> keys; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_objectSpread</span>(<span class="params">target</span>) </span>&#123; <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123; <span class="keyword">var</span> source = <span class="built_in">arguments</span>[i] != <span class="literal">null</span> ? <span class="built_in">arguments</span>[i] : &#123;&#125;; <span class="keyword">if</span> (i % <span class="number">2</span>) &#123; ownKeys(source, <span class="literal">true</span>).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; _defineProperty(target, key, source[key]); &#125;); &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Object</span>.getOwnPropertyDescriptors) &#123; <span class="built_in">Object</span>.defineProperties(target, <span class="built_in">Object</span>.getOwnPropertyDescriptors(source)); &#125; <span class="keyword">else</span> &#123; ownKeys(source).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; <span class="built_in">Object</span>.defineProperty(target, key, <span class="built_in">Object</span>.getOwnPropertyDescriptor(source, key)); &#125;); &#125; &#125; <span class="keyword">return</span> target; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_defineProperty</span>(<span class="params">obj, key, value</span>) </span>&#123; <span class="keyword">if</span> (key <span class="keyword">in</span> obj) &#123; <span class="built_in">Object</span>.defineProperty(obj, key, &#123; <span class="attr">value</span>: value, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span> &#125;); &#125; <span class="keyword">else</span> &#123; obj[key] = value; &#125; <span class="keyword">return</span> obj; &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().finally();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = _objectSpread(&#123;&#125;, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">globalThis.obj = obj;</span><br></pre></td></tr></table></figure></p>
+<p>多了一条<code>require(&quot;core-js/modules/esnext.global-this&quot;);</code>，这就是globalThis proposal的polyfill。</p>
+<h4 id="其它options"><a href="#其它options" class="headerlink" title="其它options"></a>其它options</h4><p><a href="https://babeljs.io/docs/en/babel-preset-env#include" target="_blank" rel="noopener">其它的options</a>，建议有需要在学习。</p>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>本篇对presets的介绍就是上面这些内容了，其实从babel官方文档中还能够再总结出一些东西的，但是这样就太费时间了，好多信息散落在blog github以及各个preset的单独介绍页面中，不好整理。 本篇的内容包含了preset最重要的知识点，对于加强preset的认识，已经够了。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/babel/" rel="tag"># babel</a>
+          
+            <a href="/tags/前端工程化/" rel="tag"># 前端工程化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/29/babel详解（二）-plugins/" rel="next" title="babel详解（二）:plugins">
+                <i class="fa fa-chevron-left"></i> babel详解（二）:plugins
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/02/babel详解（四）-core-js/" rel="prev" title="babel详解（四）:core-js">
+                babel详解（四）:core-js <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">57</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#官方推荐的preset"><span class="nav-number">1.</span> <span class="nav-text">官方推荐的preset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义一个preset"><span class="nav-number">2.</span> <span class="nav-text">自定义一个preset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#preset配置与使用"><span class="nav-number">3.</span> <span class="nav-text">preset配置与使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#preset名称"><span class="nav-number">3.1.</span> <span class="nav-text">preset名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#preset的顺序"><span class="nav-number">3.2.</span> <span class="nav-text">preset的顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#preset-options"><span class="nav-number">3.3.</span> <span class="nav-text">preset options</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babel-preset-env"><span class="nav-number">4.</span> <span class="nav-text">@babel/preset-env</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#important"><span class="nav-number">4.1.</span> <span class="nav-text">important</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#important2"><span class="nav-number">4.2.</span> <span class="nav-text">important2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#browserslist"><span class="nav-number">4.3.</span> <span class="nav-text">browserslist</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#options"><span class="nav-number">4.4.</span> <span class="nav-text">options</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#target"><span class="nav-number">4.4.1.</span> <span class="nav-text">target</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spec"><span class="nav-number">4.4.2.</span> <span class="nav-text">spec</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loose"><span class="nav-number">4.4.3.</span> <span class="nav-text">loose</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#modules"><span class="nav-number">4.4.4.</span> <span class="nav-text">modules</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#debug"><span class="nav-number">4.4.5.</span> <span class="nav-text">debug</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#corejs"><span class="nav-number">4.4.6.</span> <span class="nav-text">corejs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#useBuiltIns"><span class="nav-number">4.4.7.</span> <span class="nav-text">useBuiltIns</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#entry"><span class="nav-number">4.4.7.1.</span> <span class="nav-text">entry</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#usage"><span class="nav-number">4.4.7.2.</span> <span class="nav-text">usage</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其它options"><span class="nav-number">4.4.8.</span> <span class="nav-text">其它options</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束语"><span class="nav-number">5.</span> <span class="nav-text">结束语</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
