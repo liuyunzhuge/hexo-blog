@@ -422,7 +422,7 @@ const plugins = [
 
 module.exports = { presets, plugins };
 ```
-我把targets设置为非常新的环境，然后重新对：
+我把targets设置为非常新的环境，然后重新对以下代码：
 ```js
 import "core-js/es/promise";
 import "core-js/es/array";
@@ -432,8 +432,8 @@ Promise.resolve().finally();
 let obj = {...{}};
 
 globalThis.obj = obj;
-``` 
-运行`npx babel src --out-dir dist`转码，最终结果为：
+```
+运行babel，结果为：
 ```js
 "use strict";
 
@@ -450,7 +450,8 @@ let obj = { ...{}
 };
 globalThis.obj = obj;
 ```
-因为有browserslist等的加成，而且targets配置的很新，所以最终这个转码，也还是变的小了不少。
+
+因为有browserslist等的加成，而且targets配置的很新，所以最终这个转码，变的小了不少。
 
 ##### usage
 usage比起entry，最大的好处就是，它会根据每个文件里面，用到了哪些es的新特性，然后根据我们设置的targets判断，是否需要polyfill，如果targets的最低环境不支持某个es特性，则这个es特性的core-js的对应module会被注入。

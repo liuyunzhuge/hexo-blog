@@ -9,8 +9,6 @@ categories:
 date: 2019-09-02 13:10:31
 ---
 
-
-
 本篇了解与babel高度集成的[core-js](https://github.com/zloirock/core-js)的要点。
 
 <!-- more -->
@@ -181,6 +179,9 @@ import "core-js/proposals/global-this";
 import "core-js/proposals/observable";
 ```
 
+### 重点
+`core-js`这个直接扩展全局空间的版本，适合与preset-env一起使用。 而下面的`core-js-pure`不适合。
+
 ## core-js-pure的modules组织方式
 core-js-pure与core-js在引用polyfill的主要区别就是core-js-pure需要采用带有接口名称的import语法，如`import Array from "core-js-pure/features/array"`。
 
@@ -213,7 +214,7 @@ import flat from 'core-js-pure/features/array/flat';
 
 
 ### 使用core-js-pure引入的polyfill
-有三种使用方式，第一种：
+有两种使用方式，第一种：
 ```js
 import from from 'core-js-pure/features/array/from';
 import flat from 'core-js-pure/features/array/flat';
@@ -235,7 +236,7 @@ Array(10)::fill(0).map((a, b) => b * b)::findIndex(it => it && !(it % 8)); // =>
 ```
 这个写法也不符合标准。
 
-第三种跟babel有关系，可以借助babel的runtime，在使用core-js-pure的时候，依然使用正常的ES标准写法，由babel将代码转换为上面的第1种使用方式。本篇后面的内容再介绍。
+我觉得在代码中，直接引用`core-js-pure`这个版本，是一件比较麻烦的事情，会让编码变得复杂。 所以`core-js-pure`不适合用到preset-env里面去做polyfill。 但是在后面与babel集成的内容里面，会介绍借助babel/runtime来简化使用`core-js-pure`的例子。
 
 ## core-js的源码结构
 core-js对应的package源码：[package](https://github.com/zloirock/core-js/tree/master/packages/core-js);
@@ -315,9 +316,7 @@ core-js-pure的源码与core-js仅仅只有`internals`和`modules`两个文件�
     为什么preset-env可以直接注入modules下的文件，而我们不建议直接引用呢？这是因为当core-js升级的时候，preset-env也会升级，所以能调整要注入的polyfill。 这一层都是babel在做的，开发者无需关心。
 
 3. @babel/runtime
-@babel/runtime是下一篇文章的内容，但是在这里，也不难理解它能对core-js有什么作用。
-
-    首先，@babel/runtime，如果配置了`corejs:3`这个option，就只能跟`core-js-pure`一起使用。前面介绍core-js-pure的使用时，第一种方式这么写：
+通过@babel/runtime，前面的代码：
 ```js
 import from from 'core-js-pure/stable/array/from';
 import flat from 'core-js-pure/stable/array/flat';
@@ -328,15 +327,58 @@ from(new Set([1, 2, 3, 2, 1]));
 flat([1, [2, 3], [4, [5]]], 2);
 Promise.resolve(32).then(x => console.log(x));
 ```
-    借助@babel/runtime，代码可以正常按ES标准写：
+  只要按ES标准来编写即可：
 ```js
-Array.from(new Set([1, 2, 3, 2, 1]));
-[1, [2, 3], [4, [5]]].flat(2);
-Promise.resolve(32).then(x => console.log(x));
+Array.from(new Set([1, 2, 3, 2, 1]));          // => [1, 2, 3]
+[1, [2, 3], [4, [5]]].flat(2);                 // => [1, 2, 3, 4, 5]
+Promise.resolve(32).then(x => console.log(x)); // => 32
 ```
-    @babel/runtime，会帮我们自动做代码转换。
-    
-    默认情况下，@babel/runtime，只会注入stable的polyfill，但是只要修改`corejs`option，改为：`corejs: {version: 3, proposals: true}`，就能让它支持proposals的polyfill。
+  连那些`import`语句全都不要。 babel/runtime会把这份代码转换为：
+```js
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
+
+var _flat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/flat"));
+
+var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
+
+var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
+
+var _context;
+
+(0, _from.default)(new _set.default([1, 2, 3, 2, 1])); // => [1, 2, 3]
+
+(0, _flat.default)(_context = [1, [2, 3], [4, [5]]]).call(_context, 2); // => [1, 2, 3, 4, 5]
+
+_promise.default.resolve(32).then(function (x) {
+  return console.log(x);
+}); // => 32
+```
+  要做到这个转换，需要安装：
+```bash
+npm install --save-dev @babel/plugin-transform-runtime
+npm install --save @babel/runtime-corejs3
+```
+  并如下配置`babel runtime`:
+```js
+const presets = [ 
+];
+const plugins = [
+    [
+        "@babel/plugin-transform-runtime", {
+            corejs: 3
+        }
+    ]
+];
+
+module.exports = { presets, plugins };
+```
+  上面转换的结果中：`@babel/runtime-corejs3/core-js-stable`等价于`core-js-pure`。 通过查看源码，会看到@babel/runtime-corejs3的这个包依赖了`core-js-pure`。 
+  **更多babel runtime的介绍，请前往阅读下一篇博客。**
+
     
 ## 其它
 1. core-js能够提供哪些polyfill，以及它们与features的对应关系，都可以从[官方的entry points列表](https://github.com/zloirock/core-js#features)中检阅，那里详细地列出了每一个polyfill的作用和引用方式。
@@ -350,7 +392,10 @@ Promise.resolve(32).then(x => console.log(x));
 5. [core-js-compat](http://npmjs.com/package/core-js-compat)是core-js提供的一个类似compat-table一样的库，基于它，能知道core-js的每个polyfill在不同的环境里面的兼容情况。  core-js-builder就是依赖于core-js-compat实现的。  另外在@babel/preset-env里面，如果使用了core-js@3，也会使用core-js-compat，而不是compact-table。
 
 6. 为什么要有core-js-compact，compact-table存在的问题：
-> 1. it contains data only about ECMAScript features and proposals, but not about web platform features like setImmediate or DOM collections iterators. So, up to now, @babel/preset-env added all web platform features from core-js even for targets where they are supported.
-> 2. it does not contain any information about (even serious) bugs in engines: for example, already mentioned Array#reverse broken in Safari 12 but it isn't marked as unsupported by compat-table. On the other hand, core-js correctly fixes broken implementations, but with compat-table this capability wasn't taken advantage of.
-> 3. it contains only some basic and naive tests, which do not check that features work as they should in real-word cases. For example, old Safari has broken iterators without .next method, but compat-table shows them as supported because it just check that typeof of methods which should return iterators is "function". Some features like typed arrays are almost completely not covered.
-> 4. compat-table is not designed for providing data for tools. I'm one of the compat-table maintainers, but some of the other maintainers are against maintaining this functionality.
+  * 它只包含了ES特性的兼容性数据，不包含web standards的特性（如setImmediate, DOM collections)相关的数据。所以`@babel/preset-env`只能把有用到的web standards的polyfill，不做判断地直接引入，即使开发者配置的目标环境不需要这个polyfill。
+
+  * 它没有包含任何已知的某些环境下存在的bug(甚至是严重的)的信息，比如safari 12里面的`Array#reverse broken`问题，它没有把这些环境下存在的问题标记为不支持。这会导致`@babel/preset-env`完全信赖它，导致`core-js`提供的专门针对这些问题做了修复的polyfill没有被引入。 
+
+  * it contains only some basic and naive tests, which do not check that features work as they should in real-word cases. For example, old Safari has broken iterators without .next method, but compat-table shows them as supported because it just check that typeof of methods which should return iterators is "function". Some features like typed arrays are almost completely not covered.
+
+  * `compat-table`的初衷不是为了给其它库提供数据支持。`core-js`的作者也是`compat-table`项目的参与者之一，他知道其它一些`compat-table`项目的参与者是反对给其它库提供数据支持的。
