@@ -71,7 +71,7 @@ Babel7开始，Babel具有“根”目录的概念，默认为当前工作目录
 
 由于项目范围的配置文件与配置文件的物理位置是分开的，因此它们非常适合必须广泛应用的配置，甚至允许plugins和presets轻松应用于`node_modules`或`symlinked packages`中的文件。
 
-`babel.config.js`的配置，有两种情况会启用。第一种，就是在`babel.config.js`所在目录运行babel，假如有以下项目结构：
+`babel.config.js`的配置，有两种情况会启用。第一种，就是在`babel.config.js`所在目录运行babel，会自动去寻找babel的root目录下有没有`babel.config.js`。假如有以下项目结构：
 ```
 repo-root/
     src/
@@ -91,10 +91,9 @@ repo-root/
 `main.js`是一段很简单的ES代码：
 ```js
 let foo = () => {
-
 };
 ```
-`build.js`是一个将被node运行的文件，调用`babel.transform`进行编程式转码：
+`build.js`是一个将被node运行的文件，它会调用`babel.transform`进行编程式转码：
 ```js
 let fs = require('fs');
 let babel = require('@babel/core');
@@ -114,11 +113,63 @@ babel.transform(code, {
 ```
 这个文件内通过`configFile`option，启用了`repo-root/babel.config.js`这个配置文件。 运行`cd src && node build.js`，将能看到正确的转码输出，说明`configFile`option已生效。
 
-`babel.config.js`的其它作用，就是它可以对`node_modules`内的文件进行转码。为了测试这个功能，可以运行`npm install lodash-es --save`，把这个ES modules版本的lodash安装到项目中。 然后在项目的根目录运行`npx babel ./node_modules/lodash-es/array.js -d dist`，会发现`array.js`不会被转码。 如果我们在项目根目录创建一个`babel.config.js`并做好配置，然后再次运行`npx babel ./node_modules/lodash-es/array.js -d dist`，此时就会看到`array.js`被babel转码了。
+`babel.config.js`的其它作用，就是它可以对`node_modules`和`symlinked packages`内的文件进行转码。为了测试这个功能，可以运行`npm install lodash-es --save`，把这个ES modules版本的lodash安装到项目中。 然后在项目的根目录添加一个`.babelrc.js`，把正常的配置写进去；然后运行`npx babel ./node_modules/lodash-es/array.js -d dist`，会发现`array.js`不会被转码。 接着删除`.babelrc.js`，然后在项目根目录创建一个`babel.config.js`并做好相同配置，然后再次运行`npx babel ./node_modules/lodash-es/array.js -d dist`，此时就会看到`array.js`被babel转码了。 
+
+`symlinked packages`也是类似的。 为了测试这个特性，先建立一个如下结构的文件夹：
+```
+/home/learn/some-package
+    bar.js
+    package.json
+```
+在`bar.js`里编写一些简单的ES代码：
+```js
+export default 'bar';
+```
+然后再新建一个如下结构的文件夹：（通过软连接，把src/outer-package链接到/home/learn/some-package)
+```
+/home/learn/repo-root
+    src
+        outer-package/   # symlinked to `/home/learn/some-package`
+        main.js
+    package.json
+    .babelrc.js
+```
+在`main.js`里写点简单的ES代码：
+```js
+let foo = () => {
+};
+```
+为了验证`babel.config.js`的作用，先把babel配置放到.babelrc.js里面：
+```js
+module.exports = {
+    presets: [
+        [
+            '@babel/preset-env'
+        ]
+    ]
+}
+```
+运行`npx babel src -d dist`，会发现`src/main.js`被转码，而`src/outer-package/bar.js`没有被转码。 
+
+如果把`.babelrc.js`替换为`babel.config.js`：
+```js
+module.exports = function(api){
+    api.cache(true);
+
+    return {
+        presets: [
+            [
+                '@babel/preset-env'
+            ]
+        ]
+    };
+};
+```
+再次运行`npx babel src/outer-package -d dist`，会发现`src/outer-package/bar.js`和`src/main.js`都被转码了。这就说明`babel.config.js`，是会把babel的转码范围扩大到`symlinked packages`内的。曾经babel6，要想包含对`node_modules`和`symlinked packages`内的文件进行处理，似乎是很麻烦的，babel7简化了这些工作。
 
 `babel.config.js`会成为未来babel主要的配置方式，这也是向`webpack`等工具看齐的举措吧！
 
-注意：搜索`babel.config.js`作为配置文件的行为，可以明确地指定`configFile: false`来关闭。
+另外，babel自动搜索`babel.config.js`作为配置文件的行为，可以明确地指定`configFile: false`来关闭。
 
 ## 相对文件的配置
 
