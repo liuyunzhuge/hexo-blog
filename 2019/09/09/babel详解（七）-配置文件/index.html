@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇记录babel配置文件相关的要点。">
+<meta name="keywords" content="babel,前端工程化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="babel详解（七）:配置文件">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/09/09/babel详解（七）-配置文件/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇记录babel配置文件相关的要点。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-08T12:24:57.101Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="babel详解（七）:配置文件">
+<meta name="twitter:description" content="本篇记录babel配置文件相关的要点。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/09/09/babel详解（七）-配置文件/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>babel详解（七）:配置文件 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">11</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">10</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">58</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/09/09/babel详解（七）-配置文件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">babel详解（七）:配置文件
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-08 20:24:57" itemprop="dateCreated datePublished" datetime="2019-09-08T20:24:57Z">2019-09-08</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/babel/" itemprop="url" rel="index"><span itemprop="name">babel</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇记录babel配置文件相关的要点。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>babel7目前来说有以下四种配置的方式：</p>
+<ol>
+<li><p><code>babel.config.js</code><br>在项目的root目录，新建一个<code>babel.config.js</code>文件，然后就可以把这个配置应用到整个项目范围内。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">api</span>) </span>&#123;</span><br><span class="line">  api.cache(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> presets = [  ];<span class="comment">// 类似.babelrc.js中的presets</span></span><br><span class="line">  <span class="keyword">const</span> plugins = [  ];<span class="comment">// 类似.babelrc.js中的plugins</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    presets,</span><br><span class="line">    plugins</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>.babelrc</code><br>在项目的<code>package.json</code>同目录，新建<code>.babelrc</code>文件，然后用json格式来编写配置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"presets"</span>: [],</span><br><span class="line">  <span class="attr">"plugins"</span>: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 与<code>.babelrc</code>等效的还有两种形式。第一种是之前博客中一直在用的<code>.babelrc.js</code>文件，它们的区别，就是<code>.babelrc.js</code>是通过js编写的，所以具备动态配置的能力。第二种形式，是直接在项目的package.json文件中编写配置，如：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"my-package"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"1.0.0"</span>,</span><br><span class="line">  <span class="attr">"babel"</span>: &#123;</span><br><span class="line">    <span class="attr">"presets"</span>: [  ],</span><br><span class="line">    <span class="attr">"plugins"</span>: [  ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>直接通过cli命令行传递配置<br>举例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">babel --plugins @babel/plugin-transform-arrow-functions script.js</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用api: <code>babel.transform</code><br>举例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">"@babel/core"</span>).transform(<span class="string">"code"</span>, &#123;</span><br><span class="line">  plugins: [<span class="string">"@babel/plugin-transform-arrow-functions"</span>]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p> 通过@babel/core，可以对代码进行动态转码。</p>
+</li>
+</ol>
+<p>第1、2种是babel配置方式的重点，所以后面重点解释。</p>
+<h2 id="项目范围的配置"><a href="#项目范围的配置" class="headerlink" title="项目范围的配置"></a>项目范围的配置</h2><p>Babel7开始，Babel具有“根”目录的概念，默认为当前工作目录。对于项目范围的配置，Babel将自动在此根目录中搜索<code>babel.config.js</code>。 或者用户可以使用显式指定<code>configFile</code>option来覆盖默认的配置文件搜索行为。</p>
+<p>由于项目范围的配置文件与配置文件的物理位置是分开的，因此它们非常适合必须广泛应用的配置，甚至允许plugins和presets轻松应用于<code>node_modules</code>或<code>symlinked packages</code>中的文件。</p>
+<p><code>babel.config.js</code>的配置，有两种情况会启用。第一种，就是在<code>babel.config.js</code>所在目录运行babel，会自动去寻找babel的root目录下有没有<code>babel.config.js</code>。假如有以下项目结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">repo-root/</span><br><span class="line">    src/</span><br><span class="line">        main.js</span><br><span class="line">    babel.config.js</span><br></pre></td></tr></table></figure></p>
+<p>如果在<code>repo-root</code>目录运行<code>npx babel src -d dist</code>，则<code>src/main.js</code>会被成功转码。如果先<code>cd src/</code>，然后再运行<code>npx babel . -d dist</code>转码，则babel此时的root目录为<code>repo-root/src</code>，无法找到<code>repo-root/babel.config.js</code>，导致无法转码。</p>
+<p>第二种，是通过<code>configFile</code>这个option，明确地指定<code>babel.config.js</code>文件的位置。假如有以下项目结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">repo-root/</span><br><span class="line">    src/</span><br><span class="line">        main.js</span><br><span class="line">        build.js</span><br><span class="line">    babel.config.js</span><br></pre></td></tr></table></figure></p>
+<p><code>main.js</code>是一段很简单的ES代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>build.js</code>是一个将被node运行的文件，它会调用<code>babel.transform</code>进行编程式转码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">let</span> babel = <span class="built_in">require</span>(<span class="string">'@babel/core'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(process.env.NODE_ENV);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> code = fs.readFileSync(<span class="string">'./main.js'</span>).toString();</span><br><span class="line"></span><br><span class="line">babel.transform(code, &#123;</span><br><span class="line">    configFile: <span class="string">'../babel.config.js'</span></span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err, result</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; code, ast &#125; = result;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(code);</span><br><span class="line">    <span class="built_in">console</span>.log(ast);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这个文件内通过<code>configFile</code>option，启用了<code>repo-root/babel.config.js</code>这个配置文件。 运行<code>cd src &amp;&amp; node build.js</code>，将能看到正确的转码输出，说明<code>configFile</code>option已生效。</p>
+<p><code>babel.config.js</code>的其它作用，就是它可以对<code>node_modules</code>和<code>symlinked packages</code>内的文件进行转码。为了测试这个功能，可以运行<code>npm install lodash-es --save</code>，把这个ES modules版本的lodash安装到项目中。 然后在项目的根目录添加一个<code>.babelrc.js</code>，把正常的配置写进去；然后运行<code>npx babel ./node_modules/lodash-es/array.js -d dist</code>，会发现<code>array.js</code>不会被转码。 接着删除<code>.babelrc.js</code>，然后在项目根目录创建一个<code>babel.config.js</code>并做好相同配置，然后再次运行<code>npx babel ./node_modules/lodash-es/array.js -d dist</code>，此时就会看到<code>array.js</code>被babel转码了。 </p>
+<p><code>symlinked packages</code>也是类似的。 为了测试这个特性，先建立一个如下结构的文件夹：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/home/learn/some-package</span><br><span class="line">    bar.js</span><br><span class="line">    package.json</span><br></pre></td></tr></table></figure></p>
+<p>注意：<code>/home/learn/some-package/package.json</code>必须得有，里面可以是空的。接着在<code>bar.js</code>里编写一些简单的ES代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="string">'bar'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>然后再新建一个如下结构的文件夹：（通过软连接，把src/outer-package链接到/home/learn/some-package)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/home/learn/repo-root</span><br><span class="line">    src</span><br><span class="line">        outer-package/   # symlinked to `/home/learn/some-package`</span><br><span class="line">        main.js</span><br><span class="line">    package.json</span><br><span class="line">    .babelrc.js</span><br></pre></td></tr></table></figure></p>
+<p>在<code>main.js</code>里写点简单的ES代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>为了验证<code>babel.config.js</code>的作用，先把babel配置放到.babelrc.js里面：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    presets: [</span><br><span class="line">        [</span><br><span class="line">            <span class="string">'@babel/preset-env'</span></span><br><span class="line">        ]</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行<code>npx babel src -d dist</code>，会发现<code>src/main.js</code>被转码，而<code>src/outer-package/bar.js</code>没有被转码。 </p>
+<p>如果把<code>.babelrc.js</code>替换为<code>babel.config.js</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">api</span>)</span>&#123;</span><br><span class="line">    api.cache(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        presets: [</span><br><span class="line">            [</span><br><span class="line">                <span class="string">'@babel/preset-env'</span></span><br><span class="line">            ]</span><br><span class="line">        ]</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>再次运行<code>npx babel src/outer-package -d dist</code>，会发现<code>src/outer-package/bar.js</code>和<code>src/main.js</code>都被转码了。这就说明<code>babel.config.js</code>，是会把babel的转码范围扩大到<code>symlinked packages</code>内的。曾经babel6，要想包含对<code>node_modules</code>和<code>symlinked packages</code>内的文件进行处理，似乎是很麻烦的，babel7简化了这些工作。</p>
+<p><code>babel.config.js</code>会成为未来babel主要的配置方式，这也是向<code>webpack</code>等工具看齐的举措吧！</p>
+<p>另外，babel自动搜索<code>babel.config.js</code>作为配置文件的行为，可以明确地指定<code>configFile: false</code>来关闭。</p>
+<h2 id="相对文件的配置"><a href="#相对文件的配置" class="headerlink" title="相对文件的配置"></a>相对文件的配置</h2><p><code>.babelrc</code> <code>.babelrc.js</code>以及<code>package.json</code>文件中的<code>babel</code>，三种配置方式都是相对文件的配置方式。 babel7重新调整了这种配置的默认搜索行为：它会从当前正在编译的文件所在文件夹开始，基于它的<code>filename</code>，向上搜索父级文件夹中包含的<code>.babelrc</code>文件（或<code>.babelrc.js</code>文件，以及<code>package.json</code>中<code>babel</code>配置节)，找到则停止搜索。</p>
+<p>注意：</p>
+<ol>
+<li>往上搜索配置的过程中，如果在某一层找到了<code>package.json</code>文件，就会停止搜索，这种配置的作用范围限定在单个的package内（babel用package.json文件来划定package的范围)；</li>
+<li>这种搜索行为找到的配置，如<code>.babelrc</code>文件，必须位于babel运行的root目录下，或者是包含在<code>babelrcRoots</code>这个option配置的目录下，否则找到的配置会直接被忽略；</li>
+</ol>
+<p>在大部分情况下，使用相对文件的配置和使用项目范围的配置区别不大，babel之所以要分出这两种配置，是为了方便开发者想要管理类似<code>@babel</code>这种<code>mono packages</code>的时候，既能统一集中的管理通用的babel配置（项目范围的配置)，又能根据各个package的特殊性单独做额外的配置（相对文件的配置）；当两种配置同时找到了的时候，相对文件的配置，将会与项目范围的配置进行合并，然后才应用到子package。</p>
+<p>准备如下一个项目结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">src/</span><br><span class="line">    mod/ </span><br><span class="line">        util/</span><br><span class="line">            main.js</span><br><span class="line">            package.json</span><br><span class="line">package.json</span><br><span class="line">.babelrc.js</span><br></pre></td></tr></table></figure></p>
+<p>main.js：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>两个package.json都是：<code>{}</code>。</p>
+<p>如果<code>cd src/ &amp;&amp; npx babel src -d dist</code>，会发现main.js不会被转码。 这是因为main.js同级的位置有一个package.json文件，当main.js被babel编译的时候，它会相对main.js去找<code>.babelrc.js</code>配置，但是遇到package.json的文件夹，就会停止，所以导致编译main.js，找不到<code>src</code>同级的<code>.babelrc.js</code>文件。只要把<code>util/package.json</code>删掉，再次编译，即可恢复正常。</p>
+<p>如果文件内容不变，把文件夹结构调整为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">src/</span><br><span class="line">    mod/ </span><br><span class="line">        util/</span><br><span class="line">            main.js</span><br><span class="line">            package.json</span><br><span class="line">            .babelrc.js</span><br><span class="line">package.json</span><br></pre></td></tr></table></figure></p>
+<p>如果<code>cd src/ &amp;&amp; npx babel src -d dist</code>，会发现main.js还是不会被转码。这是因为运行babel的目录是<code>src</code>，也就是babel运行的根目录是<code>src/</code>，虽然这次相对main.js可以找到一个<code>.babelrc.js</code>文件，但是因为这个文件不位于babel的root目录，所以导致它会直接被忽略。解决这个问题有两个办法：</p>
+<ol>
+<li><p>运行：<code>cd src/mod/util &amp;&amp; npx babel . -d dist</code></p>
+</li>
+<li><p>在<code>src/</code>目录同级的位置添加一个<code>babel.config.js</code>，用来配置<code>babelrcRoots</code>，内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    babelrcRoots: [</span><br><span class="line">        <span class="string">"."</span>,</span><br><span class="line">        <span class="string">"mod/util"</span>,</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 这个情况的文件夹结构为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">src/</span><br><span class="line">    mod/ </span><br><span class="line">        util/</span><br><span class="line">            main.js</span><br><span class="line">            package.json</span><br><span class="line">            .babelrc.js</span><br><span class="line">package.json</span><br><span class="line">babel.config.js</span><br></pre></td></tr></table></figure>
+<p> 然后继续使用<code>cd src/ &amp;&amp; npx babel src -d dist</code>即可正常转码<code>main.js</code>。<br> 注意：<code>babelrcRoots</code>不能用<code>.babelrc</code>或<code>.babelrc.js</code>文件来替代，否则还是不能正常转码。</p>
+</li>
+</ol>
+<h3 id="babel6-vs-babel7"><a href="#babel6-vs-babel7" class="headerlink" title="babel6 vs babel7"></a>babel6 vs babel7</h3><p>相对文件的配置在babel6中，是已经存在的特性，babel7对这个特性调整地比较大，这是因为babel6下的相对文件的配置行为有以下几个问题：</p>
+<ol>
+<li>babel6下的<code>.babelrc</code>文件，有时候会出人意料地应用到<code>node_modules</code>里面的文件；</li>
+<li>babel6下的<code>.babelrc</code>文件，无法应用到<code>symlinked</code>的<code>node_modules</code>；</li>
+<li>babel6下，<code>node_modules</code>的package内包含的<code>.babelrc</code>文件也会检测到，但是这些配置内依赖的presets和plugins可能外部主体包都没有安装，而且这些配置内用到的版本很可能也跟外部主体包安装的版本不一致。</li>
+</ol>
+<p>在babel6，类似下面的配置结构可以应用到<code>packages</code>下的所有<code>mod</code>文件夹：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.babelrc</span><br><span class="line">packages/</span><br><span class="line">  mod1/</span><br><span class="line">    package.json</span><br><span class="line">    src/index.js</span><br><span class="line">  mod2/</span><br><span class="line">    package.json</span><br><span class="line">    src/index.js</span><br></pre></td></tr></table></figure></p>
+<p>但是在babel7，无法生效了，因为<code>.babelrc</code>文件遇到<code>package.json</code>就停止搜索了。所以顶层的<code>.babelrc</code>没法应用到。解决这种情况，可以在每个mod文件夹下面，再单独建立一个<code>.babelrc</code>文件，通过<code>extends</code>option，来引用顶层的<code>.babelrc</code>文件：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">"extends"</span>: <span class="string">"../../.babelrc"</span> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>文件夹结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.babelrc</span><br><span class="line">packages/</span><br><span class="line">  mod1/</span><br><span class="line">    .babelrc</span><br><span class="line">    package.json</span><br><span class="line">    src/index.js</span><br><span class="line">  mod2/</span><br><span class="line">    .babelrc</span><br><span class="line">    package.json</span><br><span class="line">    src/index.js</span><br></pre></td></tr></table></figure></p>
+<p>但是这个办法，如果在运行babel的时候，是：<code>cd packages/ &amp;&amp; npx babel packages/mod1/src -d dist</code>这种方式运行，那么<code>mod1 mod2</code>下面的<code>.babelrc</code>文件，也无法生效，因为它们不在babel运行的根目录下；所以只能用<code>cd packages/mod1 &amp;&amp; npx babel src -d dist</code>这种方式运行。</p>
+<p>babel7推荐，把顶层的<code>.babelrc</code>替换为<code>babel.config.js</code>，各个mod下面的<code>.babelrc</code>文件可以删掉。 如果用<code>cd packages/ &amp;&amp; npx babel packages/mod1/src -d dist</code>运行，肯定会正确转码；如果先<code>cd packages/mod1</code>切换到子模块，则可以通过<code>configFile</code>来指定配置文件的方式运行：<code>npx babel --config-file=&quot;../../babel.config.js&quot; src -d dist</code>。 这样的话，不管是在哪个文件夹运行babel，都是OK的。</p>
+<h2 id="Monorepos"><a href="#Monorepos" class="headerlink" title="Monorepos"></a>Monorepos</h2><p>monorepos结构的库，一般都是类似下面的源码结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mono-repo</span><br><span class="line">    package.json</span><br><span class="line">    packages/</span><br><span class="line">      package-b/</span><br><span class="line">        .babelrc</span><br><span class="line">        src/</span><br><span class="line">      package-a/</span><br><span class="line">        package.json</span><br><span class="line">        src/</span><br></pre></td></tr></table></figure></p>
+<p>对于monorepo项目的配置，要理解的核心是Babel将你的工作目录视为root目录，如果你想在特定子包中运行Babel工具而不将Babel应用于整个repo，则会导致问题。</p>
+<p>任何monorepo项目的第一步应该是在repository root中创建一个babel.config.js文件。 这确定了Babel的存储库基本目录的核心概念。 </p>
+<p>通常可以将所有repo配置放在root babel.config.js中。 使用<code>overrides</code>，可以轻松指定仅适用于某些子文件夹的配置，这通常比在repo中创建许多.babelrc文件更容易。</p>
+<p>这种做法最容易遇到的一个问题，就是在子文件夹里面运行babel:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd packages/package-a;</span><br><span class="line">babel src -d dist</span><br></pre></td></tr></table></figure></p>
+<p>由于<code>babel.config.js</code>位于repo目录里面，如果从子文件夹运行，那么babel的root目录就是那个子文件夹，它就无法找到root目录下的<code>babel.config.js</code>文件，所以上面的命令根本不会有期望的转码作用。</p>
+<p>要解决这个问题，就需要告诉babel在子文件夹的时候，怎么找到<code>babel.config.js</code>？</p>
+<ol>
+<li>明确的指定<code>configFile</code>，类似这样：<code>npx babel --config-file=&quot;../../babel.config.js&quot; src -d dist</code></li>
+<li>借助<code>rootMode</code>这个option，将它配置为：<code>{rootMode: &quot;upward&quot;}</code>。 <code>upward</code>的作用就是告诉babel从当前的工作目录，向父级文件夹向上查找<code>babel.config.js</code>，如果从上层文件夹找到了<code>babel.config.js</code>，就启用该配置文件，同时把它所在目录作为当前运行的root目录。也就是说有了<code>rootMode： upward</code>，就等同于在repo目录运行babel。</li>
+</ol>
+<p>设定<code>rootMode: upward</code>的方式有很多种，比如：</p>
+<ol>
+<li><p>cli</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx babel --root-mode upward src -d lib</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@babel/register</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">"@babel/register"</span>)(&#123;</span><br><span class="line">  rootMode: <span class="string">"upward"</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>webpack</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">  rules: [&#123;</span><br><span class="line">    loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">    options: &#123;</span><br><span class="line">      rootMode: <span class="string">"upward"</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>前面说的这种方式，应该适用好多monorepo的情况，这样的方式只需要一个<code>babel.config.js</code>就够了，比较简单好用，而且通过<code>rootMode: upward</code>，不管是在repo还是子文件夹运行babel，都能得到正常的结果。</p>
+<p>如果想在子文件夹里通过单独的.babelrc文件再做配置，一定要在repo<code>babel.config.js</code>里面配置<code>babelrcRoots</code>。 假如有以下一个monorepo项目：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">monorepo/</span><br><span class="line">    package.json</span><br><span class="line">    babel.config.js</span><br><span class="line">    packages/</span><br><span class="line">      mod/</span><br><span class="line">        package.json</span><br><span class="line">        .babelrc</span><br><span class="line">        index.js</span><br></pre></td></tr></table></figure></p>
+<p>如果从<code>monorepo/</code>目录运行<code>npx babel packages/mod/index.js</code>，是不会启用<code>packages/.babelrc</code>文件的，前面说过的，<code>.babelrc</code>文件必须在babel运行的root目录或者是<code>babelrcRoots</code>option配置的目录范围内，才会被加载。</p>
+<p>从<code>monorepo</code>目录运行时，root目录是<code>monorepo/</code>。解决这个问题的办法是在<code>babel.config.js</code>里面配置<code>babelrcRoots</code>option:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">babelrcRoots: [</span><br><span class="line">  &quot;.&quot;,</span><br><span class="line">  &quot;packages/*&quot;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>这样的话，再从<code>monorepo/</code>下运行<code>npx babel packages/mod/index.js</code>，就能启用<code>packages/.babelrc</code>文件了。</p>
+<p>如果从子文件夹运行<code>babel</code>，还是要选择<code>configFile</code>或者是<code>rootMode</code>其中一种来运行，否则babel只能加载到子文件夹中的<code>.babelrc</code>文件，但是不知道从哪加载<code>babel.config.js</code>文件。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/babel/" rel="tag"># babel</a>
+          
+            <a href="/tags/前端工程化/" rel="tag"># 前端工程化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/04/babel详解（五）-polyfill和runtime/" rel="next" title="babel详解（五）:polyfill和runtime">
+                <i class="fa fa-chevron-left"></i> babel详解（五）:polyfill和runtime
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目范围的配置"><span class="nav-number">2.</span> <span class="nav-text">项目范围的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相对文件的配置"><span class="nav-number">3.</span> <span class="nav-text">相对文件的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#babel6-vs-babel7"><span class="nav-number">3.1.</span> <span class="nav-text">babel6 vs babel7</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Monorepos"><span class="nav-number">4.</span> <span class="nav-text">Monorepos</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
