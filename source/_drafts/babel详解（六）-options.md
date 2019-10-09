@@ -60,7 +60,7 @@ babel.transformFileSync("example.js", {
 > Type: string
   Default: path.relative(opts.cwd, opts.filename) (if "filename" was passed)
  
-用作Babel的`sourceFileName`这个option的默认值，并用作生成AMD/UMD/SystemJS模块转换的文件名的一部分。
+用作Babel的sourceFileName选项的默认值，并用作AMD / UMD / SystemJS模块转换的文件名生成的一部分。
 
 ### code
 > Type: boolean
@@ -169,12 +169,81 @@ const { code, map } = babel.transformFromAstSync(ast, source, {
 });
 ```
 
+## Config Loading options
+加载配置可能会变得有些复杂，因为环境可以具有多种类型的配置文件，并且这些配置文件可以具有各种嵌套的配置对象，这些对象根据配置而适用。
+
+### root
+> Type: string
+  Default: opts.cwd
+  Placement: Only allowed in Babel's programmatic options
+  
+首先注意：`root`option不允许在配置文件中指定。
+`root`option的初始值是由`rootMode`决定的，见后面`rootMode`的说明。`root`option有两个作用：
+1. 用来查找`babel.config.js`这个项目级别的配置文件；
+2. 用来作为`babelrcRoots`的默认值。
+
+### rootMode
+> Type: "root" | "upward" | "upward-optional"
+  Default: "root"
+  Placement: Only allowed in Babel's programmatic options
+
+首先注意：`rootMode`option不允许在配置文件中指定。
+该选项与`root`值结合使用，定义了Babel如何选择其项目根目录。 不同的模式定义了Babel处理`root`值以获得最终项目根目录的不同方式。
+* root：使用`root`option的默认值。
+* upward：从`root`option默认值对应的目录开始，往上查找包含babel.config.js文件的目录，如果找到了则将该目录设置为`root`option的值，如果未找到babel.config.js，则引发错误。
+* upward-optional：从`root`option默认值对应的目录开始，往上查找包含babel.config.js文件的目录，如果找到了则将该目录设置为`root`option的值，如果未找到babel.config.js，则退回到使用`root`option的默认值。
+
+`upward`这个值在babel应用于monorepos的构建时，可能会被用到，在后面的博客中，有相关的使用介绍。
+
+### envName
+> Type: string
+  Default: process.env.BABEL_ENV || process.env.NODE_ENV || "development"
+  Placement: Only allowed in Babel's programmatic options
+ 
+首先注意：`envName`option不允许在配置文件中指定。
+`envName`这个option通常不需要修改，跟NODE_ENV公用一个环境变量即可。
+
+### configFile
+> Type: string | boolean
+  Default: path.resolve(opts.root, "babel.config.js"), if it exists, false otherwise
+  Placement: Only allowed in Babel's programmatic options
+
+首先注意：`configFile`option不允许在配置文件中指定。
+这个option用来手动指定用来起到项目范围配置作用的文件，通常是`babel.config.js`。在`babel.config.js`默认的搜索规则不满足使用需求的情况下，这个option是有用的。
+默认要传递的是一个babel.config.js文件，但可以传递任何JS或JSON5配置文件的路径。
+注意：此选项不会影响.babelrc文件的加载，因此虽然可能很想执行`configFile：“ ./foo/.babelrc”`，但不建议这样做。 如果给定的.babelrc是通过相对于文件的标准逻辑加载的，则最终将加载相同的配置文件两次，并将其与自身合并。如果要`configFile`option链接特定的配置文件，建议坚持使用与“ babelrc”名称无关的命名方案。
+
+### babelrc
+> Type: boolean
+  Default: true as long as the filename option has been specified
+  Placement: Allowed in Babel's programmatic options, or inside of the loaded "configFile". A programmatic option will override a config file one.
+ 
+这个option可以在`babel.config.js`中配置，或者是在`babel.transform`的api中配置；api中的配置会覆盖`babel.config.js`文件中的配置值。
+`true`将允许搜索与提供给Babel的`filename`相关的配置文件。
+注意：仅当当前`filename`在与`babelrcRoots`配置的packages中有匹配的package时，才会加载.babelrc文件。
+
+### babelrcRoots
+> Type: boolean | MatchPattern | Array<MatchPattern>
+  Default: opts.root
+  Placement: Allowed in Babel's programmatic options, or inside of the loaded configFile. A programmatic option will override a config file one.
+  
+这个option可以在`babel.config.js`中配置，或者是在`babel.transform`的api中配置；api中的配置会覆盖`babel.config.js`文件中的配置值。
+
+这个option的作用在下一篇博客中有介绍，通常应用于monorepos的构建。
+
 ## Plugin and Preset configuration
 这部分在以前的博客中，已经都介绍过了。
 
 ## Config Merging options
 
-## Config Loading options
+### extends
+### env
+### overrides
+### test
+### include
+### exclude
+### ignore
+### only
 
 ## Source Map options
 
