@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇将尽可能详细地总结babel的配置options中各个选项的含义和作用。">
+<meta name="keywords" content="babel,前端工程化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="babel详解（六）:options">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/10/11/babel详解（六）-options/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="本篇将尽可能详细地总结babel的配置options中各个选项的含义和作用。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-10T14:53:49.564Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="babel详解（六）:options">
+<meta name="twitter:description" content="本篇将尽可能详细地总结babel的配置options中各个选项的含义和作用。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/10/11/babel详解（六）-options/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>babel详解（六）:options | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">记录、分享</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">11</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">10</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">59</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/10/11/babel详解（六）-options/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="流云诸葛">
+      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">babel详解（六）:options
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-10 22:53:49" itemprop="dateCreated datePublished" datetime="2019-10-10T22:53:49Z">2019-10-10</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/babel/" itemprop="url" rel="index"><span itemprop="name">babel</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇将尽可能详细地总结babel的配置options中各个选项的含义和作用。</p>
+<a id="more"></a>
+<h2 id="Primary-options"><a href="#Primary-options" class="headerlink" title="Primary options"></a>Primary options</h2><p>这个部分包含以下options:</p>
+<ul>
+<li>cwd</li>
+<li>caller</li>
+<li>filename</li>
+<li>filenameRelative</li>
+<li>code</li>
+<li>ast</li>
+</ul>
+<p>这些选项仅允许作为Babel程序选项的一部分，因此它们主要供包裹Babel的工具或直接调用babel.transform的人使用。 Babel的集成用户，如babel-loader或@babel/register，不太可能使用这些。</p>
+<h3 id="cwd"><a href="#cwd" class="headerlink" title="cwd"></a>cwd</h3><blockquote>
+<p>Type: string<br>  Default: process.cwd()</p>
+</blockquote>
+<p>cwd = current working directory。 所有跟路径有关的其它options，都会相对<code>cwd</code>option的值来解析。</p>
+<h3 id="caller"><a href="#caller" class="headerlink" title="caller"></a>caller</h3><blockquote>
+<p>Type: Object with a string-typed “name” property.</p>
+</blockquote>
+<p>调用<code>babel.transform</code>的工具，可能会传递一个<code>caller</code>对象，作为它们在babel运行过程中的标识，并且会传递功能相关的<code>flag</code>，以便在配置文件、preset和plugins中使用。举例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">babel.transformFileSync(<span class="string">"example.js"</span>, &#123;</span><br><span class="line">  caller: &#123;</span><br><span class="line">    name: <span class="string">"my-custom-tool"</span>,</span><br><span class="line">    supportsStaticESM: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上面的<code>caller</code>对象传递到plugins和presets之后，它们就知道这次转码的代码是支持ES modules特性的，所以它们可以跳过将ES modules编译为CommonJS modules的过程。</p>
+<p>这个option，我觉得在自定义plugin的时候，应该能用到。</p>
+<h3 id="filename"><a href="#filename" class="headerlink" title="filename"></a>filename</h3><blockquote>
+<p>Type: string</p>
+</blockquote>
+<p>这个是指定与当前正在编译的代码关联的文件名（如果有）。 文件名是可选的，但是当文件名未知时，并不是所有Babel的功能都可用，因为有一些options依赖于文件名来实现其功能。</p>
+<p>用户会遇到的三个主要场景需要filename:</p>
+<ol>
+<li>有一些插件可能需要filename才能正常完成它的功能；</li>
+<li>类似<code>test</code> <code>exclude</code> <code>ignore</code>这些option，都需要filename才能做字符串和正则匹配；</li>
+<li><code>.babelrc</code>文件是相对被转码的文件加载的。如果<code>filename</code>这个option没有设置，<code>babel</code>就会默认<code>babelc</code>被设置为<code>false</code>继续处理。</li>
+</ol>
+<p>从文档描述来看，<code>filename</code>option应该是很重要的。 babel底层应该不会省略掉这个option。 那既然这个option这么重要，为什么还要开放这个option呢？这是因为babel是可以直接对代码字符串进行转码，如果是代码字符串，没有要求这个字符串一定是从某个文件读取的，也有可能是动态生成，或者是数据库加载出来的呢？所以不是每次转码，都可以给babel提供<code>filename</code>的。能提供的情况下，filename得提供；如果提供不了，那可能有些功能就会缺失了。</p>
+<h3 id="filenameRelative"><a href="#filenameRelative" class="headerlink" title="filenameRelative"></a>filenameRelative</h3><blockquote>
+<p>Type: string<br>  Default: path.relative(opts.cwd, opts.filename) (if “filename” was passed)</p>
+</blockquote>
+<p>用作Babel的sourceFileName选项的默认值，并用作AMD / UMD / SystemJS模块转换的文件名生成的一部分。</p>
+<h3 id="code"><a href="#code" class="headerlink" title="code"></a>code</h3><blockquote>
+<p>Type: boolean<br>  Default: true</p>
+</blockquote>
+<p><code>babel.transform</code>默认的返回值，包含<code>code</code>和<code>map</code>属性、以及生成的代码。 在对Babel进行多次调用的某些上下文中，禁用代码生成可能会更有用，取而代之的是可以启用<code>ast: true</code>来直接获取<code>AST</code>，从而避免没必要的处理。</p>
+<h3 id="ast"><a href="#ast" class="headerlink" title="ast"></a>ast</h3><blockquote>
+<p>Type: boolean<br>  Default: false</p>
+</blockquote>
+<p>与code是一个互斥的option。</p>
+<p>准备一个直接使用<code>babel.transform</code>文件<code>build.js</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">let</span> babel = <span class="built_in">require</span>(<span class="string">'@babel/core'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> code = fs.readFileSync(<span class="string">'src/test01.js'</span>).toString();</span><br><span class="line"></span><br><span class="line">babel.transform(code, &#123;</span><br><span class="line">    presets: [</span><br><span class="line">        [</span><br><span class="line">            <span class="string">'@babel/preset-env'</span></span><br><span class="line">        ]</span><br><span class="line">    ]</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err, result</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; code, ast &#125; = result;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(code);</span><br><span class="line">    <span class="built_in">console</span>.log(ast);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>跟准备一个跟<code>build.js</code>同级的<code>src/test01.js</code>:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>运行<code>node build.js</code>，将得到以下输出：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"use strict"</span>;</span><br><span class="line"></span><br><span class="line">var foo = <span class="keyword">function</span> <span class="function"><span class="title">foo</span></span>() &#123;&#125;;</span><br><span class="line">null</span><br></pre></td></tr></table></figure></p>
+<p>如果把build.js修改为：(禁用code,启用ast)<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">let</span> babel = <span class="built_in">require</span>(<span class="string">'@babel/core'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> code = fs.readFileSync(<span class="string">'src/test01.js'</span>).toString();</span><br><span class="line"></span><br><span class="line">babel.transform(code, &#123;</span><br><span class="line">    presets: [</span><br><span class="line">        [</span><br><span class="line">            <span class="string">'@babel/preset-env'</span></span><br><span class="line">        ]</span><br><span class="line">    ]</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err, result</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; code, ast &#125; = result;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(code);</span><br><span class="line">    <span class="built_in">console</span>.log(ast);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>再次运行<code>node build.js</code>，输出为：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">null</span><br><span class="line">Node &#123;</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">'File'</span>,</span><br><span class="line">  start: 0,</span><br><span class="line">  end: 22,</span><br><span class="line">  loc:</span><br><span class="line">   SourceLocation &#123;</span><br><span class="line">     start: Position &#123; line: 1, column: 0 &#125;,</span><br><span class="line">     end: Position &#123; line: 4, column: 0 &#125; &#125;,</span><br><span class="line">  program:</span><br><span class="line">   Node &#123;</span><br><span class="line">     <span class="built_in">type</span>: <span class="string">'Program'</span>,</span><br><span class="line">     start: 0,</span><br><span class="line">     end: 22,</span><br><span class="line">     loc: SourceLocation &#123; start: [Position], end: [Position] &#125;,</span><br><span class="line">     sourceType: <span class="string">'script'</span>,</span><br><span class="line">     interpreter: null,</span><br><span class="line">     body: [ [Node] ],</span><br><span class="line">     directives: [ [Object] ] &#125;,</span><br><span class="line">  comments: [] &#125;</span><br></pre></td></tr></table></figure></p>
+<p>说明<code>{code: false, ast: true}</code>的设置下，将从<code>transform</code>结果中得到AST，而不是代码。</p>
+<p>Babel的默认设置是生成一个字符串和一个源映射，但在某些情况下，获取AST本身会很有用。 例如下面这种使用babel的工作流：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> filename = <span class="string">"example.js"</span>;</span><br><span class="line"><span class="keyword">const</span> source = fs.readFileSync(filename, <span class="string">"utf8"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Load and compile file normally, but skip code generation.</span></span><br><span class="line"><span class="keyword">const</span> &#123; ast &#125; = babel.transformSync(source, &#123; filename, <span class="attr">ast</span>: <span class="literal">true</span>, <span class="attr">code</span>: <span class="literal">false</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Minify the file in a second pass and generate the output code here.</span></span><br><span class="line"><span class="keyword">const</span> &#123; code, map &#125; = babel.transformFromAstSync(ast, source, &#123;</span><br><span class="line">  filename,</span><br><span class="line">  presets: [<span class="string">"minify"</span>],</span><br><span class="line">  babelrc: <span class="literal">false</span>,</span><br><span class="line">  configFile: <span class="literal">false</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h2 id="Config-Loading-options"><a href="#Config-Loading-options" class="headerlink" title="Config Loading options"></a>Config Loading options</h2><p>加载配置可能会变得有些复杂，因为环境可以具有多种类型的配置文件，并且这些配置文件可以具有各种嵌套的配置对象，这些对象根据配置而适用。</p>
+<h3 id="root"><a href="#root" class="headerlink" title="root"></a>root</h3><blockquote>
+<p>Type: string<br>  Default: opts.cwd<br>  Placement: Only allowed in Babel’s programmatic options</p>
+</blockquote>
+<p>首先注意：<code>root</code>option不允许在配置文件中指定。<br><code>root</code>option的初始值是由<code>rootMode</code>决定的，见后面<code>rootMode</code>的说明。<code>root</code>option有两个作用：</p>
+<ol>
+<li>用来查找<code>babel.config.js</code>这个项目级别的配置文件；</li>
+<li>用来作为<code>babelrcRoots</code>的默认值。</li>
+</ol>
+<h3 id="rootMode"><a href="#rootMode" class="headerlink" title="rootMode"></a>rootMode</h3><blockquote>
+<p>Type: “root” | “upward” | “upward-optional”<br>  Default: “root”<br>  Placement: Only allowed in Babel’s programmatic options</p>
+</blockquote>
+<p>首先注意：<code>rootMode</code>option不允许在配置文件中指定。<br>该选项与<code>root</code>值结合使用，定义了Babel如何选择其项目根目录。 不同的模式定义了Babel处理<code>root</code>值以获得最终项目根目录的不同方式。</p>
+<ul>
+<li>root：使用<code>root</code>option的默认值。</li>
+<li>upward：从<code>root</code>option默认值对应的目录开始，往上查找包含babel.config.js文件的目录，如果找到了则将该目录设置为<code>root</code>option的值，如果未找到babel.config.js，则引发错误。</li>
+<li>upward-optional：从<code>root</code>option默认值对应的目录开始，往上查找包含babel.config.js文件的目录，如果找到了则将该目录设置为<code>root</code>option的值，如果未找到babel.config.js，则退回到使用<code>root</code>option的默认值。</li>
+</ul>
+<p><code>upward</code>这个值在babel应用于monorepos的构建时，可能会被用到，在后面的博客中，有相关的使用介绍。</p>
+<h3 id="envName"><a href="#envName" class="headerlink" title="envName"></a>envName</h3><blockquote>
+<p>Type: string<br>  Default: process.env.BABEL_ENV || process.env.NODE_ENV || “development”<br>  Placement: Only allowed in Babel’s programmatic options</p>
+</blockquote>
+<p>首先注意：<code>envName</code>option不允许在配置文件中指定。<br><code>envName</code>这个option通常不需要修改，跟NODE_ENV公用一个环境变量即可。</p>
+<h3 id="configFile"><a href="#configFile" class="headerlink" title="configFile"></a>configFile</h3><blockquote>
+<p>Type: string | boolean<br>  Default: path.resolve(opts.root, “babel.config.js”), if it exists, false otherwise<br>  Placement: Only allowed in Babel’s programmatic options</p>
+</blockquote>
+<p>首先注意：<code>configFile</code>option不允许在配置文件中指定。<br>这个option用来手动指定用来起到项目范围配置作用的文件，通常是<code>babel.config.js</code>。在<code>babel.config.js</code>默认的搜索规则不满足使用需求的情况下，这个option是有用的。<br>默认要传递的是一个babel.config.js文件，但可以传递任何JS或JSON5配置文件的路径。<br>注意：此选项不会影响.babelrc文件的加载，因此虽然可能很想执行<code>configFile：“ ./foo/.babelrc”</code>，但不建议这样做。 如果给定的.babelrc是通过相对于文件的标准逻辑加载的，则最终将加载相同的配置文件两次，并将其与自身合并。如果要<code>configFile</code>option链接特定的配置文件，建议坚持使用与“ babelrc”名称无关的命名方案。</p>
+<h3 id="babelrc"><a href="#babelrc" class="headerlink" title="babelrc"></a>babelrc</h3><blockquote>
+<p>Type: boolean<br>  Default: true as long as the filename option has been specified<br>  Placement: Allowed in Babel’s programmatic options, or inside of the loaded “configFile”. A programmatic option will override a config file one.</p>
+</blockquote>
+<p>这个option可以在<code>babel.config.js</code>中配置，或者是在<code>babel.transform</code>的api中配置；api中的配置会覆盖<code>babel.config.js</code>文件中的配置值。<br><code>true</code>将允许搜索与提供给Babel的<code>filename</code>相关的配置文件。<br>注意：仅当当前<code>filename</code>在与<code>babelrcRoots</code>配置的packages中有匹配的package时，才会加载.babelrc文件。</p>
+<h3 id="babelrcRoots"><a href="#babelrcRoots" class="headerlink" title="babelrcRoots"></a>babelrcRoots</h3><blockquote>
+<p>Type: boolean | MatchPattern | Array<matchpattern><br>  Default: opts.root<br>  Placement: Allowed in Babel’s programmatic options, or inside of the loaded configFile. A programmatic option will override a config file one.</matchpattern></p>
+</blockquote>
+<p>这个option可以在<code>babel.config.js</code>中配置，或者是在<code>babel.transform</code>的api中配置；api中的配置会覆盖<code>babel.config.js</code>文件中的配置值。</p>
+<p>这个option的作用在下一篇博客中有介绍，通常应用于monorepos的构建。</p>
+<h2 id="Plugin-and-Preset-configuration"><a href="#Plugin-and-Preset-configuration" class="headerlink" title="Plugin and Preset configuration"></a>Plugin and Preset configuration</h2><p>这部分在以前的博客中，已经都介绍过了。</p>
+<h2 id="Config-Merging-options"><a href="#Config-Merging-options" class="headerlink" title="Config Merging options"></a>Config Merging options</h2><p>这部分的option都是进行有效范围控制的。</p>
+<h3 id="extends"><a href="#extends" class="headerlink" title="extends"></a>extends</h3><blockquote>
+<p>Type: string<br>  Placement: Not allowed inside of presets</p>
+</blockquote>
+<p>利用这个option，当前的配置文件，可以基于另外一个配置文件进行扩展。  被扩展的文件的内容，会与当前的配置文件，进行合并。</p>
+<h3 id="env"><a href="#env" class="headerlink" title="env"></a>env</h3><blockquote>
+<p>Type: { [envKey: string]: Options }<br>  Placement: May not be nested inside of another env block.</p>
+</blockquote>
+<p>这个option比较常见，常常应用于需要针对development以及production等不同的运行环境做不同的babel配置时使用。<br>注意：<code>env[envKey]</code>的options会在配置文件根对象的options之上合并。</p>
+<h3 id="overrides"><a href="#overrides" class="headerlink" title="overrides"></a>overrides</h3><blockquote>
+<p>Type: Array<options><br>  Placement: May not be nested inside of another overrides object, or within an env block.</options></p>
+</blockquote>
+<p>允许用户提供一系列额外的options，这些options将一次合并到当前配置中。 此功能需要与后面的<code>test</code> <code>include</code> <code>exclude</code>结合使用，它们可以给<code>overrides</code>option提供生效条件。<br>eg:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">overrides: [&#123;</span><br><span class="line">  test: <span class="string">"./vendor/large.min.js"</span>,</span><br><span class="line">  compact: <span class="literal">true</span>,</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure></p>
+<p>上例中，<code>compact</code>option，只会应用于<code>./vendor/large.min.js</code>这个文件。</p>
+<h3 id="test"><a href="#test" class="headerlink" title="test"></a>test</h3><blockquote>
+<p>Type: MatchPattern | Array<matchpattern> (MatchPattern)</matchpattern></p>
+</blockquote>
+<p>如果所有模式均不匹配，则当前配置对象被认为是非活动的，并且在配置处理期间将被忽略。 在<code>overrides</code>中使用时，此选项最有用，实际上它可以在任何地方使用。</p>
+<h3 id="include"><a href="#include" class="headerlink" title="include"></a>include</h3><p><code>include</code>等价于<code>test</code>。</p>
+<h3 id="exclude"><a href="#exclude" class="headerlink" title="exclude"></a>exclude</h3><p><code>exclude</code>与<code>test</code>的作用是相反的。</p>
+<h3 id="ignore"><a href="#ignore" class="headerlink" title="ignore"></a>ignore</h3><blockquote>
+<p>Type: Array<matchpattern> (MatchPattern)<br>  Placement: Not allowed inside of presets</matchpattern></p>
+</blockquote>
+<p>这个option，用来忽略对某些文件的处理。</p>
+<h3 id="only"><a href="#only" class="headerlink" title="only"></a>only</h3><blockquote>
+<p>Type: Array<matchpattern> (MatchPattern)<br>  Placement: Not allowed inside of presets</matchpattern></p>
+</blockquote>
+<p>这个option，用来设置仅处理某些文件。</p>
+<h2 id="Source-Map-options"><a href="#Source-Map-options" class="headerlink" title="Source Map options"></a>Source Map options</h2><p>这个部分的option跟source map生成有关。</p>
+<h3 id="inputSourceMap"><a href="#inputSourceMap" class="headerlink" title="inputSourceMap"></a>inputSourceMap</h3><blockquote>
+<p>Type: boolean | SourceMap<br>  Default: true</p>
+</blockquote>
+<p>这个option默认是true，babel会从要转码的文件末尾，尝试去寻找<code>//# sourceMappingURL=...</code>的相关注释，以便直接使用被转码文件原本就有的source map。 如果没找到，或找到的有问题，这个默认逻辑就相当于啥也没干。  </p>
+<h3 id="sourceMaps"><a href="#sourceMaps" class="headerlink" title="sourceMaps"></a>sourceMaps</h3><blockquote>
+<p>Type: boolean | “inline” | “both”<br>  Default: false</p>
+</blockquote>
+<p>这个option控制source map的生成方式。</p>
+<ul>
+<li>true 会开启生成source map，并把source map添加到transfrom的result中，<code>babel.transfrom</code>这种api调用转码，它的结果里有一个map属性，就是指source map</li>
+<li>“inline” 会开启生成soure map，并且会把source map添加到代码的末尾，但是不会把map添加到转码结果中<br>to generate a sourcemap and append it as a data URL to the end of the code, but not include it in the result object.</li>
+<li>“both” 相当于同时启用了<code>true</code>和<code>inline</code></li>
+</ul>
+<h3 id="sourceMap"><a href="#sourceMap" class="headerlink" title="sourceMap"></a>sourceMap</h3><p>等价于<code>sourceMaps</code>。</p>
+<h3 id="sourceFileName"><a href="#sourceFileName" class="headerlink" title="sourceFileName"></a>sourceFileName</h3><blockquote>
+<p>Type: string<br>  Default: path.basename(opts.filenameRelative) when available, or “unknown”</p>
+</blockquote>
+<p>这个有默认值的，一般不用设置。</p>
+<h3 id="sourceRoot"><a href="#sourceRoot" class="headerlink" title="sourceRoot"></a>sourceRoot</h3><blockquote>
+<p>Type: string</p>
+</blockquote>
+<p>一般不改动。</p>
+<h2 id="Misc-options"><a href="#Misc-options" class="headerlink" title="Misc options"></a>Misc options</h2><h3 id="sourceType"><a href="#sourceType" class="headerlink" title="sourceType"></a>sourceType</h3><blockquote>
+<p>Type: “script” | “module” | “unambiguous”<br>  Default: “module”</p>
+</blockquote>
+<ul>
+<li>“script” - Parse the file using the ECMAScript Script grammar. No import/export statements allowed, and files are not in strict mode.</li>
+<li>“module” - Parse the file using the ECMAScript Module grammar. Files are automatically strict, and import/export statements are allowed.</li>
+<li>“unambiguous” - Consider the file a “module” if import/export statements are present, or else consider it a “script”.</li>
+</ul>
+<p>这个option，对于babel的处理过程是比较重要的，因为plugins需要明确地知道当前被转码的文件到底是cjs还是es modules的文件类型，才能决定在转码过程中到底是使用require还是import/export的调用。</p>
+<p>例如，<code>@babel/plugin-transform-runtime</code>依赖于当前文档的类型来决定是插入import还是require调用。 <code>@babel/preset-env</code>的<code>useBuiltIns</code>选项也执行相同的操作。 由于Babel默认将文件视为ES模块，因此通常这些插件/预设将插入import语句。 设置正确的sourceType可能很重要，因为错误的类型可能导致Babel会将import语句插入到本应为CommonJS文件的文件中。 这在正在执行node_modules依赖关系的编译的项目中尤其重要，因为插入import语句可能导致Webpack和其他工具将文件视为ES模块，从而破坏了原本可以正常工作的CommonJS文件。</p>
+<p>这个option不影响<code>.mjs</code>文件，因为<code>.mjs</code>文件被硬编码地认为是es module类型的文件。</p>
+<h3 id="highlightCode"><a href="#highlightCode" class="headerlink" title="highlightCode"></a>highlightCode</h3><blockquote>
+<p>Type: boolean<br>  Default: true</p>
+</blockquote>
+<p>在Babel错误消息中的代码片段中突出显示标记，以使其更易于阅读。不用改。</p>
+<h3 id="wrapPluginVisitorMethod"><a href="#wrapPluginVisitorMethod" class="headerlink" title="wrapPluginVisitorMethod"></a>wrapPluginVisitorMethod</h3><blockquote>
+<p>Type: (key: string, nodeType: string, fn: Function) =&gt; Function</p>
+</blockquote>
+<p>允许用户在每个访问者上添加包装，以便在Babel执行插件时检查访问者进程。</p>
+<p>key是一个简单的不透明字符串，表示正在执行的插件。<br>nodeType是当前正在访问的AST节点的类型。<br>fn是访问者函数本身。<br>用户可以返回替换函数，该替换函数在执行他们希望执行的任何日志记录和分析之后应调用原始函数。</p>
+<p>应该是一个类似探针作用的函数。</p>
+<h3 id="parserOpts"><a href="#parserOpts" class="headerlink" title="parserOpts"></a>parserOpts</h3><blockquote>
+<p>Type: {}</p>
+</blockquote>
+<p>用于单独给parser添加配置的。</p>
+<h3 id="generatorOpts"><a href="#generatorOpts" class="headerlink" title="generatorOpts"></a>generatorOpts</h3><blockquote>
+<p>Type: {}</p>
+</blockquote>
+<p>用于单独给code generator添加配置的。</p>
+<h2 id="Code-Generator-options"><a href="#Code-Generator-options" class="headerlink" title="Code Generator options"></a>Code Generator options</h2><p>这些option用于控制代码生成的一些细节。</p>
+<h3 id="retainLines"><a href="#retainLines" class="headerlink" title="retainLines"></a>retainLines</h3><blockquote>
+<p>Type: boolean<br>  Default: false</p>
+</blockquote>
+<p>Babel将努力生成代码，以便将项目打印在原始文件中的同一行上。 存在此选项是为了使无法使用源映射的用户可以获得模糊有用的错误行号，但这只是尽力而为的，不能在所有情况下都保证使用所有插件。</p>
+<h3 id="compact"><a href="#compact" class="headerlink" title="compact"></a>compact</h3><blockquote>
+<p>Type: boolean | “auto”<br>  Default: “auto”</p>
+</blockquote>
+<p>“auto” will set the value by evaluating code.length &gt; 500_000。在该模式下生成代码时，将忽略所有可选的换行符和空格。</p>
+<h3 id="minified"><a href="#minified" class="headerlink" title="minified"></a>minified</h3><blockquote>
+<p>Type: boolean<br>  Default: false</p>
+</blockquote>
+<p><code>minified</code>如果为true，则<code>compact</code>会被设置为true。 它的作用，就是尽可能地使代码更加简短。</p>
+<h3 id="auxiliaryCommentBefore"><a href="#auxiliaryCommentBefore" class="headerlink" title="auxiliaryCommentBefore"></a>auxiliaryCommentBefore</h3><p>babel不建议使用。</p>
+<h3 id="auxiliaryCommentAfter"><a href="#auxiliaryCommentAfter" class="headerlink" title="auxiliaryCommentAfter"></a>auxiliaryCommentAfter</h3><p>babel不建议使用。</p>
+<h3 id="comments"><a href="#comments" class="headerlink" title="comments"></a>comments</h3><blockquote>
+<p>Type: boolean<br>  Default: true</p>
+</blockquote>
+<p>给下一个option的默认值中使用的。</p>
+<h3 id="shouldPrintComment"><a href="#shouldPrintComment" class="headerlink" title="shouldPrintComment"></a>shouldPrintComment</h3><blockquote>
+<p>Type: (value: string) =&gt; boolean<br>  Default without minified: (val) =&gt; opts.comments || /@license|@preserve/.test(val)<br>  Default with minified: () =&gt; opts.comments</p>
+</blockquote>
+<p>这个option决定了代码中哪些注释要保留。</p>
+<h2 id="AMD-UMD-SystemJS-options"><a href="#AMD-UMD-SystemJS-options" class="headerlink" title="AMD / UMD / SystemJS options"></a>AMD / UMD / SystemJS options</h2><p>这个部分的options，我个人认为不用去学习，因为这些工作webpack会比babel做得更好。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/babel/" rel="tag"># babel</a>
+          
+            <a href="/tags/前端工程化/" rel="tag"># 前端工程化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/09/babel详解（七）-配置文件/" rel="next" title="babel详解（七）:配置文件">
+                <i class="fa fa-chevron-left"></i> babel详解（七）:配置文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+            
+              <p class="site-author-name" itemprop="name">流云诸葛</p>
+              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">59</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Primary-options"><span class="nav-number">1.</span> <span class="nav-text">Primary options</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cwd"><span class="nav-number">1.1.</span> <span class="nav-text">cwd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#caller"><span class="nav-number">1.2.</span> <span class="nav-text">caller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filename"><span class="nav-number">1.3.</span> <span class="nav-text">filename</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filenameRelative"><span class="nav-number">1.4.</span> <span class="nav-text">filenameRelative</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#code"><span class="nav-number">1.5.</span> <span class="nav-text">code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ast"><span class="nav-number">1.6.</span> <span class="nav-text">ast</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Config-Loading-options"><span class="nav-number">2.</span> <span class="nav-text">Config Loading options</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#root"><span class="nav-number">2.1.</span> <span class="nav-text">root</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rootMode"><span class="nav-number">2.2.</span> <span class="nav-text">rootMode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#envName"><span class="nav-number">2.3.</span> <span class="nav-text">envName</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#configFile"><span class="nav-number">2.4.</span> <span class="nav-text">configFile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babelrc"><span class="nav-number">2.5.</span> <span class="nav-text">babelrc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babelrcRoots"><span class="nav-number">2.6.</span> <span class="nav-text">babelrcRoots</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Plugin-and-Preset-configuration"><span class="nav-number">3.</span> <span class="nav-text">Plugin and Preset configuration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Config-Merging-options"><span class="nav-number">4.</span> <span class="nav-text">Config Merging options</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#extends"><span class="nav-number">4.1.</span> <span class="nav-text">extends</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#env"><span class="nav-number">4.2.</span> <span class="nav-text">env</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#overrides"><span class="nav-number">4.3.</span> <span class="nav-text">overrides</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test"><span class="nav-number">4.4.</span> <span class="nav-text">test</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#include"><span class="nav-number">4.5.</span> <span class="nav-text">include</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exclude"><span class="nav-number">4.6.</span> <span class="nav-text">exclude</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ignore"><span class="nav-number">4.7.</span> <span class="nav-text">ignore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#only"><span class="nav-number">4.8.</span> <span class="nav-text">only</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Source-Map-options"><span class="nav-number">5.</span> <span class="nav-text">Source Map options</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#inputSourceMap"><span class="nav-number">5.1.</span> <span class="nav-text">inputSourceMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sourceMaps"><span class="nav-number">5.2.</span> <span class="nav-text">sourceMaps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sourceMap"><span class="nav-number">5.3.</span> <span class="nav-text">sourceMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sourceFileName"><span class="nav-number">5.4.</span> <span class="nav-text">sourceFileName</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sourceRoot"><span class="nav-number">5.5.</span> <span class="nav-text">sourceRoot</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Misc-options"><span class="nav-number">6.</span> <span class="nav-text">Misc options</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sourceType"><span class="nav-number">6.1.</span> <span class="nav-text">sourceType</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#highlightCode"><span class="nav-number">6.2.</span> <span class="nav-text">highlightCode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wrapPluginVisitorMethod"><span class="nav-number">6.3.</span> <span class="nav-text">wrapPluginVisitorMethod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parserOpts"><span class="nav-number">6.4.</span> <span class="nav-text">parserOpts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generatorOpts"><span class="nav-number">6.5.</span> <span class="nav-text">generatorOpts</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-Generator-options"><span class="nav-number">7.</span> <span class="nav-text">Code Generator options</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#retainLines"><span class="nav-number">7.1.</span> <span class="nav-text">retainLines</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compact"><span class="nav-number">7.2.</span> <span class="nav-text">compact</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#minified"><span class="nav-number">7.3.</span> <span class="nav-text">minified</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#auxiliaryCommentBefore"><span class="nav-number">7.4.</span> <span class="nav-text">auxiliaryCommentBefore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#auxiliaryCommentAfter"><span class="nav-number">7.5.</span> <span class="nav-text">auxiliaryCommentAfter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comments"><span class="nav-number">7.6.</span> <span class="nav-text">comments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shouldPrintComment"><span class="nav-number">7.7.</span> <span class="nav-text">shouldPrintComment</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AMD-UMD-SystemJS-options"><span class="nav-number">8.</span> <span class="nav-text">AMD / UMD / SystemJS options</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
