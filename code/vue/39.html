@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="./lib/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+
+<body>
+    <div id="vue">
+        <modal-dialog></modal-dialog>
+    </div>
+
+    <script type="text/javascript">
+        let ModalDialog = Vue.extend({
+            template: `
+            <div>
+                <header>
+                    <slot name="header"></slot>
+                </header>
+                <main>
+                    <slot></slot>
+                </main>
+                <footer>
+                    <slot name="footer"></slot>
+                </footer>
+            </div>
+            `
+        });
+
+        let vue = new Vue({
+            el: '#vue',
+            data: {
+            },
+            components: {
+                ModalDialog
+            }
+        });
+
+    </script>
+</body>
+
+</html>
