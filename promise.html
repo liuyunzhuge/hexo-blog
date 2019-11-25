@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+        let LAST_ERROR = null;
+        let IS_ERROR = {};
+        let STATES = {
+            PENDING: 0,
+            RESOLVED: 1,
+            REJECTED: 2
+        };
+
+        function noop() {
+
+        }
+
+        function tryCallOne(fn, one) {
+            try {
+                return fn(one);
+            } catch (e) {
+                LAST_ERROR = e;
+                return IS_ERROR;
+            }
+        }
+
+        function tryCallTwo(fn, one, two) {
+            try {
+                return fn(one, two);
+            } catch (e) {
+                LAST_ERROR = e;
+                return IS_ERROR;
+            }
+        }
+
+        function Promise(asyncTask) {
+            this._state = STATES.PENDING;
+            this._data = null;
+            this._reason = null;
+            this._deferreds = [];//then方法返回的promise都会以deferred对象的形式存储在此数组中
+            if (!asyncTask) asyncTask = noop;
+            makePromise(asyncTask, this);
+        }
+
+        function makePromise(asyncTask, promise) {
+            let executed = false;
+            let ret = tryCallTwo(
+                asyncTask,
+                function (data) {
+                    if (executed) return;
+
+                    executed = true;
+                    resolvePromise(promise, data);
+                }, function (reason) {
+                    if (executed) return;
+
+                    executed = true;
+                    rejectPromise(promise, data);
+                }
+            );
+
+            if (ret === IS_ERROR && !executed) {
+                // ret === IS_ERROR也有可能是asyncTask内部调用了resolve之后的代码有错导致的，所以要加一个!excecuted判断
+                executed = true;
+                rejectPromise(promise, data);
+            }
+        }
+
+        function resolvePromise(promise, data) {
+            if (promise === data) {
+                return rejectPromise(promise, new Error('promise cannot be resolved by itself'));
+            }
+
+            let isFunction = typeof data === 'function';
+            let isObject = typeof data === 'object';
+            let thenable = isObject && (typeof data.then) === 'function';
+
+            if (thenable) {
+                // 创建一个新的Promise实例，并且把当前promise的状态关联到该实例
+                new Promise(data.then.bind(data)).then(
+                    data => resolvePromise(promise, data),
+                    reason => rejectPromise(promise, reason)
+                );
+            } else if (isObject && data instanceof Promise) {
+                // 如果asyncTask用一个其它的promise实例来resolve，则data就是那个resolve的参数
+                // 利用它添加回调，来关联当前的promise实例
+                data.then(
+                    data => resolvePromise(promise, data),
+                    reason => rejectPromise(promise, reason)
+                );
+            } else {
+                promise._state = STATES.RESOLVED;
+                promise._data = data;
+                finishPromise(promise);
+            }
+        }
+
+        function rejectPromise(promise, reason) {
+            promise._state = STATES.REJECTED;
+            promise._reason = reason;
+            finishPromise(promise);
+        }
+
+        function finishPromise(promise) {
+            for (let deferred of promise._deferreds) {
+                handlerDeferred(promise, deferred);
+            }
+            promise._deferreds = [];//必须清空，否则在对已经resolved的实例继续添加回调，会导致以前的回调再次被调用
+        }
+
+        function handlerDeferred(promise, deferred) {
+            setTimeout(function () {
+                let onFulfilled = typeof deferred.onFulfilled === 'function' ? deferred.onFulfilled : noop;
+                let onRejected = typeof deferred.onRejected === 'function' ? deferred.onRejected : noop;
+                let cb = promise._state === STATES.RESOLVED ? onFulfilled : onRejected;
+
+                let ret = tryCallOne(cb, promise._data);
+                if (ret === IS_ERROR) {
+                    rejectPromise(deferred.promise, LAST_ERROR);
+                } else if (typeof ret === 'object' && ret instanceof Promise) {
+                    ret.then(
+                        data => resolvePromise(deferred.promise, data),
+                        reason => rejectPromise(deferred.promise, reason)
+                    );
+                } else {
+                    promise._state === STATES.RESOLVED ? resolvePromise(deferred.promise, promise._data)
+                        : rejectPromise(deferred.promise, promise._reason);
+                }
+            });
+        }
+
+        Promise.prototype.then = function (onFulfilled, onRejected) {
+            let p = new Promise();
+            this._deferreds.push(new Deferred(p, onFulfilled, onRejected));
+
+            if (this._state !== STATES.PENDING) {
+                finishPromise(this);
+            }
+            return p;
+        };
+
+        Promise.prototype.catch = function (onRejected) {
+            return this.then(null, onRejected);
+        }
+
+        function Deferred(promise, onFulfilled, onRejected) {
+            this.promise = promise;
+            this.onFulfilled = onFulfilled;
+            this.onRejected = onRejected;
+        }
+    </script>
+    <script>
+        let p = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log(111);
+
+                resolve({
+                    then: (resolve, reject) => {
+                        setTimeout(() => {
+                            resolve(2222);
+                        }, 5000);
+                    }
+                })
+            }, 5000);
+        }).then(data => {
+            console.log(data);
+        })
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
