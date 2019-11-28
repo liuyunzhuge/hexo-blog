@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        
+        function * someGenerator(){
+            let baseInfo = yield new Promise(resolve => {
+                // mock
+                setTimeout(()=>{
+                    resolve({
+                        name: 'liuyunzhuge',
+                        page: 'https://github.com/liuyunzhuge'
+                    });
+                }, 1000);
+            });
+
+            let repositories = yield new Promise(resolve => {
+                // mock;
+                setTimeout(()=>{
+                    resolve([
+                        'a-promise',
+                        'hexo-blog',
+                        'sougou_cell_dict'
+                    ])
+                }, 1000);
+            });
+
+            baseInfo.repositories = repositories;
+            return baseInfo;
+        }
+
+        function runGenerator(gen){
+            return new Promise((resolve, reject) => {
+                function run(lastValue){
+                    try {
+                        let ret = gen.next(lastValue);
+                        if(ret.done) return resolve(ret.value);
+
+                        ret.value.then(data => {
+                            run(data);
+                        });
+                    } catch(e){
+                        reject(e);
+                    }
+                }
+
+                run();
+            });
+        }
+
+        runGenerator(someGenerator()).then(data=>{
+            console.log(data);
+        })
+    </script>
+</body>
+</html>

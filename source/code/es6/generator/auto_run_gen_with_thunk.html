@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        function thunk(fn) {
+            return function (...args) {
+                let ctx = this;
+
+                return function (callback) {
+                    return fn.call(ctx, ...args, callback);
+                }
+            }
+        }
+
+        function* someGenerator() {
+            let loadBaseInfo = thunk(function (name, page, callback) {
+                // mock
+                setTimeout(() => {
+                    callback({
+                        name: name,
+                        page: page
+                    });
+                }, 1000);
+            });
+
+            let baseInfo = yield loadBaseInfo('liuyunzhuge', 'https://github.com/liuyunzhuge');
+
+            let loadRepositories = thunk(function (repositories, callback) {
+                // mock
+                setTimeout(() => {
+                    callback(repositories);
+                }, 1000);
+            });
+
+            let repositories = yield loadRepositories([
+                'a-promise',
+                'hexo-blog',
+                'sougou_cell_dict'
+            ]);
+
+            baseInfo.repositories = repositories;
+            return baseInfo;
+        }
+
+        function runGenerator(gen, callback) {
+            function run(lastValue) {
+                let ret = gen.next(lastValue);
+
+                if (ret.done) return callback(ret.value);
+
+                ret.value(function (data) {
+                    run(data);
+                });
+            }
+
+            run();
+        }
+
+        runGenerator(someGenerator(), data => {
+            console.log(data);
+        })
+    </script>
+</body>
+
+</html>
