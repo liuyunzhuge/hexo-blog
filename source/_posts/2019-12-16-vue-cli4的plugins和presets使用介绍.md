@@ -1,7 +1,15 @@
 ---
 title: vue-cli4的plugins和presets使用介绍
 tags:
+  - vue-cli
+  - Vue
+categories:
+  - Javascript
+  - Vue
+  - vue-cli
+date: 2019-12-16 23:00:54
 ---
+
 
 本篇介绍vue-cli4里面plugins和presets的用法。
 
@@ -142,6 +150,7 @@ vue add eslint --config airbnb --lintOn save
 ```
 
 ## presets
+presets可以简化以后的项目创建过程。 拿以下这个例子为例：
 ```bash
 ▶ vue create vue-cli-start
 Vue CLI v4.1.1
@@ -171,20 +180,150 @@ g files
 ? Save this as a preset for future projects? Yes
 ? Save preset as: normal
 ```
-
+上面这个`create`过程，采用了`Manually select features`的方式来处理，所以可以自由选择要启用哪些前端的`features`。由于每一个`feature`对应了不同的plugin，每个plugin都有各自的命令行交互提示，所以上述过程能看到已选择的那些`feature`触发的提示，让开发者自己设置相关的`option`。最重要的是最后，按照cli的提示，把当前这次创建项目的过程保存为了一个本地的preset并命名为了`normal`。 这样当下次在本机继续创建vue项目的时候，即可直接选择这个normal：
+```bash
+Vue CLI v4.1.1
+? Please pick a preset: (Use arrow keys)
+❯ normal (less, babel, router, eslint) 
+  default (babel, eslint) 
+  Manually select features
+```
+cli把`normal`保存在了`~/.vuerc`文件中：
+```json
 {
-    "useConfigFiles": true,
-    "plugins": {
+  "useTaobaoRegistry": true,
+  "presets": {
+    "normal": {
+      "useConfigFiles": true,
+      "plugins": {
+        "@vue/cli-plugin-babel": {},
+        "@vue/cli-plugin-router": {
+          "historyMode": true
+        },
+        "@vue/cli-plugin-eslint": {
+          "config": "airbnb",
+          "lintOn": [
+            "save"
+          ]
+        }
+      },
+      "cssPreprocessor": "less"
+    }
+  }
+}
+```
+`normal`的这个结构反映了一个常规的preset的内容形式：
+```json
+{
+  "useConfigFiles": true,
+  "plugins": {
     "@vue/cli-plugin-babel": {},
     "@vue/cli-plugin-router": {
-        "historyMode": true
+      "historyMode": true
     },
     "@vue/cli-plugin-eslint": {
-        "config": "airbnb",
-        "lintOn": [
+      "config": "airbnb",
+      "lintOn": [
         "save"
-        ]
+      ]
     }
-    },
-    "cssPreprocessor": "less"
+  },
+  "cssPreprocessor": "less"
 }
+```
+其中：
+* `useConfigFiles`决定了项目构建过程中一些工具的配置是否要启用单独的配置文件，如果不启用，则会添加至package.json，一般都设置为true。比如bable、eslint，它们作为独立的构建工具，一般都使用自己单独的配置文件；
+* `plugins`配置要启用哪些插件，这个直接决定了要构建的项目会开启哪些特性。同时可以在配置插件的时候，直接指定插件所需`option`的值，这样在`create`的时候就不会需要命令行提示了。如果仍然想在`preset`中启用`plugin`的命令行提示，可以把`option`的键值对去掉，加上`"prompts": true`，例如：
+```json
+    "@vue/cli-plugin-eslint": {
+      "prompts": true
+    }
+```
+  这样当使用这个preset进行`create`的时候，执行`eslint`插件时，仍然会有命令行提示来设置`option`。
+* `cssPreprocessor`设置css预处理器
+* 跟`"prompts": true`类似的，preset里还可以通过`vertion`来指定构建时plugin相应的版本，这样`create`的时候，`npm`就会去下载该版本条件的plugin包：
+```json
+    "@vue/cli-plugin-eslint": {
+      "version": "^3.0.0",
+      // ... 该插件的其它选项
+    }
+```
+  > 注意对于官方插件来说这不是必须的——当被忽略时，CLI 会自动使用 registry 中最新的版本。不过我们推荐为 preset 列出的所有第三方插件提供显式的版本范围。
+
+除了`plugins useConfigFiles cssPreprocessor`，preset的配置中还可以加入为集成工具预添加的配置：
+```json
+{
+  "useConfigFiles": true,
+  "plugins": {...},
+  "configs": {
+    "vue": {...},
+    "postcss": {...},
+    "eslintConfig": {...},
+    "jest": {...}
+  }
+}
+```
+以`configs.vue`为例，其实是预先添加的vue-cli的配置，最终如果`useConfigFiles`为true，则它们会被合并到`vue.config.js`里面。
+
+为了测试这个效果，我将`normal`这个preset修改为：
+```json
+{
+  "useConfigFiles": true,
+  "plugins": {
+    "@vue/cli-plugin-babel": {},
+    "@vue/cli-plugin-router": {
+      "historyMode": true
+    },
+    "@vue/cli-plugin-eslint": {
+      "config": "airbnb",
+      "lintOn": [
+        "save"
+      ]
+    }
+  },
+  "cssPreprocessor": "less",
+  "configs": {
+    "vue": {
+      "outputDir": "www",
+      "assetsDir": "assets"
+    }
+  }
+}
+```
+然后尝试用这个preset构建一个项目，看看最后项目中的`vue.config.js`会不会包含我上面单独配置的`outputDir和assetsDir`这两个option。
+```bash
+vue create vue-cli-demo01
+Vue CLI v4.1.1
+? Please pick a preset: normal (less, babel, router, eslint)#这里已经选择了normal
+...#creating
+...
+...
+```
+接下来去`vue-cli-demo01`项目中，查看下`vue.config.js`文件，现在它是：
+```js
+module.exports = {
+  outputDir: 'www',
+  assetsDir: 'assets',
+};
+```
+说明preset生效了。
+
+但是到这里，还是可以看到一个问题，vue-cli的官方文档介绍并不是很仔细，比如前面的configs里用下面的四个key来表示对相关四个工具的配置:
+```
+  "configs": {
+    "vue": {...},
+    "postcss": {...},
+    "eslintConfig": {...},
+    "jest": {...}
+  }
+```
+那其它的工具呢？比如babel，虽然大概率应该是用`babel`这个单词作为key，但是还有其它工具是不明确的。另外`eslintConfig`为啥是用`eslintConfig`而不是`eslint`呢，毕竟在plugin的部分，只需要`eslint`就够了。
+
+如果你也想在preset里面预先加入这样一些集成工具的配置，还是得好好琢磨测试下先。
+
+### 远程preset
+preset除了保存在`~/.vuerc`本地文件里面，还可以发布到git上面，这样不管在哪台机器都可以使用这个git这个远程的preset来创建项目。 使用形式为：
+```bash
+vue create --preset liuyunzhuge/vue-project-preset new-project
+```
+[了解更多](https://cli.vuejs.org/zh/guide/plugins-and-presets.html#%E8%BF%9C%E7%A8%8B-preset)
