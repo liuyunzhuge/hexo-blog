@@ -12,6 +12,7 @@ date: 2019-12-16 23:00:54
 
 
 本篇介绍vue-cli4里面plugins和presets的用法。
+<!-- more -->
 
 ## plugins
 为了体验plugins的用法，当使用`vue create app-name`创建项目的时候，最好什么特性都不要启用，这样的话就能一步步体验每个插件的添加过程了。
