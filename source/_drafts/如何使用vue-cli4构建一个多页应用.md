@@ -12,3 +12,69 @@ categories:
 本篇记录尝试用vue-cli4构建一个多页应用的过程。
 
 <!-- more -->
+
+参照[官方文档](https://cli.vuejs.org/zh/guide/html-and-static-assets.html#%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%A4%9A%E9%A1%B5%E5%BA%94%E7%94%A8)的说明，构建一个多页应用，只需要利用`vue.config.js`中的`page`option即可。
+
+从[官方配置参考]可看到，`page`option默认是undefined，只要按照配置要求，进行了配置，vue-cli会根据该配置的内容，自动进行多页应用的构建。不想再搬运官方文档对`page`option的说明，我直接做了一个demo来了解这个过程。demo地址：[vue-multi-page-demo](https://github.com/liuyunzhuge/vue-multi-page-demo)
+
+demo的项目结构：
+```
+public/
+  favicon.ico
+  index.html
+src/
+  assets/
+    logo.png
+  components/
+    HelloWorld.vue
+  pages/
+    about/
+      App.vue
+      main.js
+    index/
+      App.vue
+    some/
+      module/
+        App.vue
+.browserslistrc
+.editorconfig
+.eslintrc.js
+.gitignore
+README.md
+babel.config.js
+package-lock.json
+package.json
+vue.config.js
+```
+如你所见，多页应用在`src`下面新增了`pages`文件夹，来存储多页的页面结构。 每个叶子文件夹代表一个可访问的页面，每个页面包含`App.vue`作为它的入口组件，每个页面包含的`main.js`作为该页被构建时的入口文件。
+
+最关键的`vue.config.js`配置如下：
+```js
+const createPage = (name, title, chunk = '')=>{
+    return {
+      entry: `src/pages/${name}/main.js`,
+      template: 'public/index.html',
+      filename: `${name}.html`,
+      title,
+      chunks: ['chunk-vendors', 'chunk-common', chunk || name]
+    }
+}
+
+module.exports = {
+   pages: {
+    index: createPage('index', '首页'),
+    about: createPage('about', '关于我们'),
+    'some_module': createPage('some/module', '某一个子页面', 'some_module'),
+  }
+}
+```
+新增了一个简单的`createPage`函数，来简化每个页面的配置对象的创建逻辑，每个页面的配置对象，都使用相同的`template`option，也就是`public/index.html`这个文件。 为了让`title`option生效，必须将`public/index.html`文件内的title修改为：
+```html
+<title><%= htmlWebpackPlugin.options.title %></title>
+```
+其它模板内容可根据项目情况自行添加，或者新增其它页面作为模板，假如`public/index.html`不能满足项目需求的情况时。
+
+官方文档有提醒：
+> 当在 multi-page 模式下构建时，webpack 配置会包含不一样的插件 (这时会存在多个 html-webpack-plugin 和 preload-webpack-plugin 的实例)。如果你试图修改这些插件的选项，请确认运行 vue inspect。
+
+这个需要在项目中注意。
