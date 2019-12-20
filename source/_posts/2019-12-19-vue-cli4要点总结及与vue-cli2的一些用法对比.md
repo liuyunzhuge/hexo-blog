@@ -13,6 +13,8 @@ date: 2019-12-19 14:01:41
 
 这篇文章帮助你了解vue-cli4，深入学习还是依赖于更多的实际运用。
 
+<!-- more -->
+
 vue-cli4，npm包名称由`vue-cli`改成了`@vue/cli`，跟babel一样，采用了`scope`包。
 ## 安装
 ```bash
