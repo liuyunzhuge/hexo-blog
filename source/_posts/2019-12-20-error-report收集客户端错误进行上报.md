@@ -99,3 +99,73 @@ window.onerror = function(msg, url, line, col, error) {
 如果想收集不同域的脚本报出的完整错误信息，必须做到两点：
 * script标签添加`crossorigin`属性，如`<script crossorigin>`
 * 脚本域名必须做CORS的处理，将`Access-Control-Allow-Origin`这个http header配置好
+
+## v0.1.3新增
+* `getSystemInfo`和`getCookie`两个方法，方便在上报时利用它们收集客户端相关信息
+```js
+let systemInfo = ErrorReporter.getSystemInfo()
+/**
+ * {
+    system: "iPhone"
+    systemVersion: "iOS11.0"
+    netType: "Unknown"
+    ua: "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 ..."
+    wechat: false
+    wechatVersion: ""
+    wechatMini: false
+ * }
+ */
+
+ErrorReporter.getCookie('someCookieName')
+```
+
+## v0.1.4新增
+这个版本使用方式没有变化。在内部，新增了对于`script img link`元素加载失败时的错误处理，在捕获到这些元素抛出`error`错误时，也会通过`onReport`回调出来，这样后台收集到上报数据后，能明确知道什么资源在加载时出现问题。
+
+由于`script img link`的`error`事件并不会冒泡，所以`window.onerror`这个监听方式无法检测到这类错误。 这也说明，前面AlloyLever这段代码中的处理是多余的：
+```js
+window.onerror = function(msg, url, line, col, error) {
+    ...
+
+    if (isOBJByType(newMsg, "Event")) {
+        newMsg += newMsg.type ?
+            ("--" + newMsg.type + "--" + (newMsg.target ?
+                (newMsg.target.tagName + "::" + newMsg.target.src) : "")) : ""
+    }
+
+    ...
+}
+```
+所以我把这段代码在新版本内去掉了。因为`window.error`里面，不会有这个逻辑进来阿。
+
+虽然`window.error`无法监听到资源加载的错误，但是可以利用事件的机制，在捕获阶段，对错误进行上报，做法如下：
+```js
+// 2. use capture phase of window `error` event to collect resource loading errors
+// `error` event does not bubble, so `window.onerror` cannot known resource loading errors
+// but you can catch such errors using the capture phase of `error` event
+window.addEventListener('error', function (event) {
+    if (isOBJByType(event, 'Event') &&
+        (
+            event.target instanceof HTMLScriptElement ||
+            event.target instanceof HTMLLinkElement ||
+            event.target instanceof HTMLImageElement
+        )
+    ) {
+        let message = event.type
+            ? ('--' + event.type + '--' + (event.target
+                ? (event.target.tagName.toLowerCase() + '::' + event.target.src) : '')) : ''
+        config.onReport.call(ErrorReporter, message)
+    }
+}, true)
+```
+
+今天看到一篇文章，介绍前端如何全面地做错误收集，写得非常全面，也说明`error-reporter`这个库还有诸多不完善的地方。按照文章的总结，前端对于错误收集应该分为以下几个维度：
+* 运行时错误(done)
+* 资源加载错误(done)
+* Promise未处理的错误(todo)
+* 异步请求错误(xhr或fetch api) (todo)
+* 框架集成(vue、react) (todo)
+
+接下来的目标会针对以上几个`todo`一一解决。
+
+文章地址：[一篇文章教你如何捕获前端错误](https://mp.weixin.qq.com/s/E51lKQOojsvhHvACIyXwhw)
