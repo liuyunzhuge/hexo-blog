@@ -110,6 +110,26 @@ if(window.location.href.indexOf('vconsole') > -1) {
 
     这个option默认为null，可传入`axios`引用。传入后，通过配置`axios`对`request responce`的拦截器，收集相关错误。
 
+* axiosReportConfig
+
+    `@{Array|default: ['url', 'method', 'params', 'data', 'headers']}`
+
+    配置此数组，可以在捕获到`axios`的错误时，从它的`config`对象内提取指定信息。 默认提取的信息数组为：`'url', 'method', 'params', 'data', 'headers'`，这些数据被提取出来后，会作为`onReport`的第三个参数传入，方便一同上报至后台。
+
+* axiosIgnore
+
+    `@{Array,Function| default: null}`
+
+    这个option可以是一个数组，也可以是一个函数。当它是一个数组时，可通过数组指定正则表达式，只要这个数组内存在某个正则，与`config.url`匹配，则在此`config`请求失败时，不会进行上报。
+
+    或者是配置为一个函数，会被传入捕获到的`axios`的`error`对象，当这个函数返回trusy值时，则不会进行此错误的上报。
+
+* notReportErrors
+
+    `@{Array|default: []}`
+
+    这个option可以指定为一个数组，它的元素应该是`Error`类的子类，当`error-reporter`捕获的任何错误，只要是这个数组中某一个元素的实例（基于`instanceof`运算），则不进行该错误的上报。
+
 * processStack
 
     `@{Function|default:[inner function]`
@@ -144,15 +164,28 @@ if(window.location.href.indexOf('vconsole') > -1) {
 
     这是收集到错误以后的回调函数，不管是哪个场景的错误，都会进入这个回调。
 
-    它有两个参数：
+    它有三个参数：
     * message 错误信息串
     * reportType 错误场景描述的字符串
+    * extraData 某些上报场景可能会包含额外的数据，如`axios`
 
 * onResourceLoadError
 
     `@{Function|default: noop}`
 
     这是单独给资源加载失败时提供的额外的回调函数。考虑到资源加载失败是比较严重的错误，而且通常刷新一下页面可能就能恢复正常使用，所以需要一个类似这样的回调函数，来进行相关的提示和刷新操作。
+
+特殊地：
+在此库内部，会用到一个自定义的`Error`实例的属性：`notToReport`，只要这个属性是一个trusy值，则在捕获到这个错误时，不会进行上报。
+
+所以除了`notReportErrors`option，另外一个屏蔽某些错误不进行上报的方式，可以参考下面的做法：
+```js
+setTimeout(()=>{
+    let e = new Error('sth happened')
+    e.notToReport = true
+    throw e // 这个错误不会进行上报
+})
+```
 
 #### reportType
 内部有定义常量来描述上报场景：
@@ -163,17 +196,20 @@ const REPORT_TYPE = {
     VUE: 'vue',
     VUE_ROUTER: 'vue-router',
     MANUAL: 'manual',
-    AXIOS: 'axios'
+    AXIOS_REQUEST: 'axios-request',
+    AXIOS_RESPONSE: 'axios-response',
+    UNHANDLED_REJECTION: 'unhandledrejection'
 }
 ```
 将来支持的场景越多，这个地方还会增加。 另外在后面介绍的api方法中，有一个`makeReport`方法，它可以传入自定义的`reportType`：
 ```js
-function makeReport (err, reportType) {
+function makeReport (err, reportType, extraData = {}) {
     let error = err
-    if (isOBJByType(err, 'String')) {
+    if (isObjectType(err, 'String')) {
         error = new Error(err)
     }
-    config.onReport.call(ErrorReporter, config.processStack(error), reportType || REPORT_TYPE.MANUAL)
+    if (notToReport(error)) return
+    return config.onReport.call(ErrorReporter, config.processStack(error), reportType || REPORT_TYPE.MANUAL, extraData)
 }
 ```
 后端收集到错误，可根据`reportType`做相关统计和分类查询。
@@ -206,6 +242,9 @@ function makeReport (err, reportType) {
 * err @{String|Error} 可以是字符串或`Error`实例
 * reportType @{String}
 
+### `wrapNotReport`
+这个方法，用来包裹一个`Error`对象，添加`notToReport`属性，阻止它被上报。
+
 ### 更加完整的示例
 ```js
 import Vue from 'vue'
@@ -218,6 +257,9 @@ ErrorReporter.setConfig({
     vue: Vue,
     vueRouter: router,
     axios: axios,
+    axiosIgnore: [
+        /web-error-report/
+    ],
     onResourceLoadError (event) {
         if (event.target && event.target instanceof HTMLScriptElement) {
             if (event.target.src.indexOf('static/js') > -1) {
@@ -225,7 +267,7 @@ ErrorReporter.setConfig({
             }
         }
     },
-    onReport (message, reportType) {
+    onReport (message, reportType, extraData) {
         let accessToken = localStorage.accessToken || ''
         let clientId = localStorage.client_id || ''
 
@@ -249,7 +291,8 @@ ErrorReporter.setConfig({
             search,
             cookie,
             message,
-            reportType
+            reportType,
+            extraData: JSON.stringify(extraData)
         }
 
         // post reportData ...
