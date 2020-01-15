@@ -12,7 +12,7 @@
 <script>
   function renderGitment() {
     var gitment = new {{ CommentsClass }}({
-      id: window.location.pathname,
+      id: decodeURI(window.location.pathname).substring(0, 50),
       owner: '{{ theme.gitment.github_user }}',
       repo: '{{ theme.gitment.github_repo }}',
       {% if theme.gitment.mint %}
