@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="产品不能惘系列，记录我对一些产品功能设计的想法。">
+<meta name="keywords" content="产品设计,产品不能惘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="产品不能惘（一）">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/03/20/产品不能惘（一）/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="产品不能惘系列，记录我对一些产品功能设计的想法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-05T08:36:23.587Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="产品不能惘（一）">
+<meta name="twitter:description" content="产品不能惘系列，记录我对一些产品功能设计的想法。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/03/20/产品不能惘（一）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>产品不能惘（一） | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">存在的痕迹</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">19</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">78</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/03/20/产品不能惘（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">产品不能惘（一）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-03-19 22:03:46" itemprop="dateCreated datePublished" datetime="2020-03-19T22:03:46Z">2020-03-19</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>产品不能惘系列，记录我对一些产品功能设计的想法。<br><a id="more"></a></p>
+<h2 id="奖章要不要有激励"><a href="#奖章要不要有激励" class="headerlink" title="奖章要不要有激励"></a>奖章要不要有激励</h2><p>我们开发的app很早就有了奖章功能，虽然类型少，但是跟产品最核心的服务关联很强，每得到一个，都是对用户本人充分的自我、产品认可。有几个会员以前后台留言，问奖章有什么用，为什么没有奖励？我们刚开始看到这样的反馈，立马就开始反思：的确应该有一个奖励机制配合奖章的功能，不然用户辛辛苦苦得到这个奖章又有什么意义呢？</p>
+<p>现在我不这么想了。好比你家里的小孩，不愿意干某件事情，然后当爸妈的就开始用各种好吃的好玩的来诱惑他把这个事情做完。大多数人都知道这个教育方式不好，产品也是如此：产品不能老是通过给糖吃的方式，来骗用户去用它的一些功能，不然最终对用户、对产品双方而言，都是自欺欺人。</p>
+<p>用户每天除了工作、休息和吃饭之外的时间，本身就并不多，他现在如果把时间消耗在你的产品上面，实际上等同于他就把它生命的一部分奉献给了你的产品。 产品是死的，客观地说，它没有灵魂和思想，但是在用户跟产品交互的时间里，他把你当成了有思想的物体，他在你这里所发生的一切行为，对他的生命而言，都是有意义的，产品作为一个没有灵魂和思想的工具，应该要靠产品人的设计，将它变成一个可以记录用户时间轨迹的载体，这样你的产品，在无形之中，就开始为用户提供了非常宝贵的价值，这个价值就是对时间、对生命的刻印。</p>
+<p>最近我有一个比较简单的思路来设计产品的服务，就是我们要尽可能地在创造概念来为用户使用我们产品过程提供不同维度的表达和描述。拿悦跑圈这样的产品来说，它创造了动态、打卡、活动、挑战、赛事、跑团、勋章、跑鞋这些概念来为跑者服务，只要这些概念找的好、功能使用设计的好，那这个产品能为用户提供的核心价值框架就构建好了。</p>
+<p>我们产品现在想改版奖章的功能，最大的目标，就是尽可能地提供更多有实际意义的奖章设计，来提供不同维度地、对于用户使用过程中的不同阶段、不同结果的描述，当它将来某一天通过奖章墙回首下来，就能看到我们产品为它在生命里留下的诸多痕迹。最不想地就是站在平台角度，拼凑出更多让平台方得意洋洋的奖章出来，以及那些为了满足部分用户贪图便宜的心理搞出地种种给用户糖吃的功能。</p>
+<p>那你说产品不照顾那些贪图便宜的用户心理感受了吗？我觉得不照顾比较好，当你产品的前期、发展阶段去照顾他们，那你的产品永远没法变成一个能被客观认可的优秀产品；当你的产品已经到了稳定阶段，有了商业模式的保障，这个时候你还去考虑那样的用户干什么呢，难道不应该趁这个时候，继续为你的用户群创造更多的价值吗？有人会反驳，产品初期不考虑所有用户的感受，那用户不就都流失了？流失不可怕，而且流失是必然的，你的产品一开始不就应该确定好初心，要为什么人群服务的吗？如果不是你的目标人群，你的产品也要去照顾吗？</p>
+<h2 id="要重视区分男女用户的感受"><a href="#要重视区分男女用户的感受" class="headerlink" title="要重视区分男女用户的感受"></a>要重视区分男女用户的感受</h2><p>我们的产品主要是女性用户多，但是也有男性用户，但是在我们开发过程中，我们几乎没有花心思去为男性用户考虑，想当然就把主要思维放在女性用户身上了。 我反思这样是不对的，因为这样不够客观，如果你说用户群主要是女性，还要照顾男性，那产品好难做阿！是阿，容易做的话，做好产品就没门槛了呢。是我们做产品不够好…</p>
+<p>也有一些产品，明明是个好的模式，却始终要搞性别歧视，你去看keep、咕咚、悦跑圈，他们的社区里面，基本上看到的都是女性动态，有胸的、翘臀的、脸蛋好看、身材好的，但是很少看到丑的、身材不好的？说到底还是为了博人眼球，哄男性用户开心才这么搞。也许有人会说，女性用户看到这些也会对女性起到激励作用阿，身材不好的看到身材好的，自然而言就想到要去坚持健身，变得跟她们拥有同样的身材！这个理论谁知道是真是假，至少我觉得男性产品人是无法去验证这个观点的。相反，前面提到的那些产品，可以去看看那些美女动态的下面，是不是经常有些性暗示的评论，如果比较隐晦的话，可以去看看这些美女的私信数据，看看有多少跟她微信私约的男性用户。</p>
+<p>好色是男人的本能，但是产品一定要去为这个本能创造“价值”吗？</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/产品设计/" rel="tag"># 产品设计</a>
+          
+            <a href="/tags/产品不能惘/" rel="tag"># 产品不能惘</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/16/path-to-regexp使用小结/" rel="next" title="path-to-regexp使用小结">
+                <i class="fa fa-chevron-left"></i> path-to-regexp使用小结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/20/理解vue中keep-alive组件源码/" rel="prev" title="理解vue中keep-alive组件源码">
+                理解vue中keep-alive组件源码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">78</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#奖章要不要有激励"><span class="nav-number">1.</span> <span class="nav-text">奖章要不要有激励</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#要重视区分男女用户的感受"><span class="nav-number">2.</span> <span class="nav-text">要重视区分男女用户的感受</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

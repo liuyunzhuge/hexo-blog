@@ -9,29 +9,72 @@
 
 <body>
     <div id="vue">
-        <modal-dialog></modal-dialog>
     </div>
 
     <script type="text/javascript">
         let ModalDialog = Vue.extend({
-            template: `
-            <div>
-                <header>
-                    <slot name="header"></slot>
-                </header>
-                <main>
-                    <slot></slot>
-                </main>
-                <footer>
-                    <slot name="footer"></slot>
-                </footer>
-            </div>
-            `
+            data() {
+                return {
+                    avatar: 'https://blog.liuyunzhuge.com/uploads/avatar.jpg',
+                    profile: 'https://blog.liuyunzhuge.com/',
+                    title: '流云诸葛',
+                    footer: '©liuyunzhuge 2020'
+                }
+            },
+            render(h) {
+                return h('div', [
+                    h('header', [
+                        this.$scopedSlots.header({
+                            avatar: this.avatar,
+                            title: this.title,
+                            profile: this.profile
+                        })
+                    ]),
+                    h('main', [
+                        this.$slots.some,
+                        this.$slots.default
+                    ]),
+                    h('footer', [
+                        this.$scopedSlots.footer({
+                            footer: this.footer
+                        })
+                    ])
+                ])
+            }
         });
 
         let vue = new Vue({
             el: '#vue',
             data: {
+            },
+            render(h) {
+                return h('modal-dialog', {
+                    scopedSlots: {
+                        header({ avatar, title, profile }) {
+                            return h('img', {
+                                attrs: {
+                                    src: avatar
+                                }
+                            })
+                        },
+                        footer({ footer }) {
+                            return h('div', [footer])
+                        }
+                    }
+                }, [
+                    h('a',
+                        {
+                            attrs: {
+                                href: 'https://blog.liuyunzhuge.com/'
+                            },
+                            slot: 'some'
+                        },
+                        ['查看主页']
+                    ),
+                    h('p',
+                        ['点击即可进入主页']
+                    )
+                ])
             },
             components: {
                 ModalDialog

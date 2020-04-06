@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="path-to-regexp是一个库，可用于路由的解析。它可以把/user/:name之类的字符串转化为一个常规的正则表达式。">
+<meta name="keywords" content="path-to-regexp,vue-router,vue-router源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="path-to-regexp使用小结">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/03/16/path-to-regexp使用小结/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="path-to-regexp是一个库，可用于路由的解析。它可以把/user/:name之类的字符串转化为一个常规的正则表达式。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-05T08:36:23.587Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="path-to-regexp使用小结">
+<meta name="twitter:description" content="path-to-regexp是一个库，可用于路由的解析。它可以把/user/:name之类的字符串转化为一个常规的正则表达式。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/03/16/path-to-regexp使用小结/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>path-to-regexp使用小结 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">存在的痕迹</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">19</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">78</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/03/16/path-to-regexp使用小结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">path-to-regexp使用小结
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-03-15 22:19:40" itemprop="dateCreated datePublished" datetime="2020-03-15T22:19:40Z">2020-03-15</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/router/" itemprop="url" rel="index"><span itemprop="name">router</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://github.com/pillarjs/path-to-regexp" target="_blank" rel="noopener">path-to-regexp</a>是一个库，可用于路由的解析。它可以把<code>/user/:name</code>之类的字符串转化为一个常规的正则表达式。</p>
+<a id="more"></a>
+<p>在前端路由场景中，往往会定义一些包含命名参数的路由，来让路由更加灵活。比如<code>/user/:id</code>这种，其中的<code>:id</code>被称为路由的命名参数，参数名为<code>id</code>，参数的值，则由具体的路由路径发生匹配时来决定。 比如<code>/user/1</code>和<code>/user/2</code>这两个路径，都是匹配<code>/user/:id</code>这个路由的，在两次匹配中<code>id</code>参数的值分别为1和2。</p>
+<p>来看看<code>path-to-regexp</code>如何完成上面的功能。</p>
+<h2 id="pathToRegexp"><a href="#pathToRegexp" class="headerlink" title="pathToRegexp"></a>pathToRegexp</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; pathToRegexp &#125; <span class="keyword">from</span> <span class="string">'./index.js'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> keys = [];</span><br><span class="line"><span class="keyword">const</span> regexp = pathToRegexp(<span class="string">"/user/:id"</span>, keys);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(regexp) <span class="comment">// /^\/user(?:\/([^\/#\?]+?))[\/#\?]?$/i</span></span><br><span class="line"><span class="built_in">console</span>.log(keys) <span class="comment">// [&#123;name: "id", prefix: "/", suffix: "", pattern: "[^\/#\?]+?", modifier: ""&#125;]</span></span><br></pre></td></tr></table></figure>
+<p>如上所示，<code>path-to-regexp</code>提供的<code>pathToRegexp</code>函数把<code>/foo/:bar</code>这个字符串转换为了一个正则表达式<code>regexp</code>，并且能把这个字符串中的命名参数<code>:id</code>提取出来，存放到<code>pathToRegexp</code>调用时传入的第二个参数<code>keys</code>数组中。</p>
+<h2 id="match"><a href="#match" class="headerlink" title="match"></a>match</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; match &#125; <span class="keyword">from</span> <span class="string">'./index.js'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mm = match(<span class="string">"/user/:id"</span>, &#123; <span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">"/user/123"</span>)); <span class="comment">// &#123; path: '/user/123', index: 0, params: &#123; id: '123' &#125; &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">"/invalid"</span>)); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">"/user/caf%C3%A9"</span>)); <span class="comment">// &#123; path: '/user/caf%C3%A9', index: 0, params: &#123; id: 'café' &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+<p>通过<code>path-to-regexp</code>提供的<code>match</code>api，可以对一个路由字符串创建一个拥有路由解析能力的新函数<code>mm</code>（这只是个变量名），通过<code>mm</code>对不同的路径字符串如<code>/user/123</code>进行调用，就能很方便地判断该路径是否与路由匹配，如果匹配，相关的参数及参数值是什么。</p>
+<p>PS:说明在<code>match</code>的内部，肯定是有<code>pathToRegexp</code>的处理的。</p>
+<p>综合以上2点，不难看出，借助于<code>path-to-regexp</code>来定义路由规则，当你需要判断一个路径是否与某个路由匹配，并且提取路径中与路由的命名参数相应的值，是非常容易的。</p>
+<p><code>match</code>有一个需要注意的点，就是如果路由字符串是没有经过URL转义的，则可能导致一些未知的问题，所以在适当的时候，应该考虑对原始的路由串进行encode处理：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mm = match(<span class="string">"/user/café"</span>, &#123; <span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">"/user/caf%C3%A9"</span>)); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">mm = match(<span class="string">"/user/café"</span>, &#123; <span class="attr">encode</span>: <span class="built_in">encodeURI</span>, <span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">"/user/caf%C3%A9"</span>)); <span class="comment">// &#123; path: '/user/caf%C3%A9', index: 0, params: &#123; id: 'café' &#125; &#125;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="命名参数"><a href="#命名参数" class="headerlink" title="命名参数"></a>命名参数</h2><p>命名参数是<code>path-to-regexp</code>的核心处理能力，指的是在路由中以冒号开头的特殊子串。如下面示例中的<code>:foo</code>和<code>:bar</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; pathToRegexp &#125; <span class="keyword">from</span> <span class="string">'./index.js'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> keys = [];</span><br><span class="line"><span class="keyword">const</span> regexp = pathToRegexp(<span class="string">"/:foo/:bar"</span>, keys);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(keys) <span class="comment">//解析出两个命名参数</span></span><br><span class="line"><span class="comment">// [&#123;name: "foo", prefix: "/", suffix: "", pattern: "[^\/#\?]+?", modifier: ""&#125;,</span></span><br><span class="line"><span class="comment">// &#123;name: "bar", prefix: "/", suffix: "", pattern: "[^\/#\?]+?", modifier: ""&#125;]</span></span><br></pre></td></tr></table></figure></p>
+<p>默认情况下，命名参数部分在解析为正则表达式过程中，都是用<code>[^\/#\?]+?</code>来代替，如果想自定义某个命名参数的匹配规则，可以在命名参数后面加入<code>()</code>，在<code>()</code>中书写自定义的匹配规则，如：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; pathToRegexp &#125; <span class="keyword">from</span> <span class="string">'./index.js'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> keys = [];</span><br><span class="line"><span class="keyword">let</span> regexp = pathToRegexp(<span class="string">"/icon-:foo(\\d+).png"</span>, keys);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(regexp) <span class="comment">// /^\/icon-(\d+)\.png[\/#\?]?$/i</span></span><br><span class="line"><span class="built_in">console</span>.log(keys) <span class="comment">// [&#123;name: "foo", prefix: "", suffix: "", pattern: "\d+", modifier: ""&#125;]</span></span><br><span class="line"></span><br><span class="line">keys = [];</span><br><span class="line">regexp = pathToRegexp(<span class="string">"/to-(user|u)"</span>, keys);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(regexp) <span class="comment">// /^\/to-(user|u)[\/#\?]?$/i</span></span><br><span class="line"><span class="built_in">console</span>.log(keys) <span class="comment">// [&#123;name: 0, prefix: "", suffix: "", pattern: "user|u", modifier: ""&#125;]</span></span><br></pre></td></tr></table></figure></p>
+<p>上面的示例中，第一个示例<code>:foo</code>这个命名参数，自定义了匹配规则<code>\d+</code>，所以到时候进行路由匹配时，如果路径中跟<code>:foo</code>对应的部分不匹配<code>\d+</code>则会导致匹配失败：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> mm = match(<span class="string">"/icon-:foo(\\d+).png"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/icon-123.png'</span>)) <span class="comment">// &#123;path: "/icon-123.png", index: 0, params: &#123;foo: "123"&#125;&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/icon-abc.png'</span>)) <span class="comment">// false</span></span><br></pre></td></tr></table></figure></p>
+<p>第二个示例，是一个匿名的命名参数，从打印出的<code>keys</code>也能看到，对应的<code>name</code>是一个数字0。如果匿名的参数有多个，则<code>name</code>属性按参数顺序来赋值：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">keys = [];</span><br><span class="line">regexp = pathToRegexp(<span class="string">"/to-(user|u)-(\\d+)"</span>, keys);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(regexp)</span><br><span class="line"><span class="built_in">console</span>.log(keys)</span><br><span class="line"><span class="comment">// [&#123;name: 0, prefix: "", suffix: "", pattern: "user|u", modifier: ""&#125;,</span></span><br><span class="line"><span class="comment">//  &#123;name: 1, prefix: "", suffix: "", pattern: "\d+", modifier: ""&#125;]</span></span><br></pre></td></tr></table></figure></p>
+<p>匿名参数在<code>match</code>的时候也能解析出来：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mm = match(<span class="string">"/to-(user|u)-(\\d+)"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/to-u-123'</span>)) <span class="comment">// &#123;path: "/to-u-123", index: 0, params: &#123;0: "u", 1: "123"&#125;&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>命名参数可以添加前缀和后缀，只需要把命名参数放在<code>{}</code>中来定义，如：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; pathToRegexp, match &#125; <span class="keyword">from</span> <span class="string">'./index.js'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> keys = [];</span><br><span class="line"><span class="keyword">let</span> regexp = pathToRegexp(<span class="string">"/test&#123;yes-:foo-no&#125;"</span>, keys);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(regexp) </span><br><span class="line"><span class="built_in">console</span>.log(keys) <span class="comment">// &#123;name: "foo", pattern: "[^\/#\?]+?", prefix: "yes-", suffix: "-no", modifier: ""&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> mm = match(<span class="string">"/test&#123;yes-:foo-no&#125;"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/testyes-123-no'</span>)); <span class="comment">// &#123;path: "/testyes-123-no", index: 0, params: &#123;foo: "123"&#125;&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/testyes-123-noo'</span>)); <span class="comment">// false</span></span><br></pre></td></tr></table></figure></p>
+<p>从这个示例打印出的<code>keys</code>能看到<code>prefix</code>和<code>suffix</code>两个属性，分别代表了命名参数的前缀和后缀，这正是通过<code>{}</code>在命名参数<code>:foo</code>前后添加的那两个字符串。</p>
+<p>命名参数在路由中可以像添加修饰符来增强路由的灵活性。修饰符有三个：<code>?+*</code>，必须放置在命名参数的后面。从前面的内容总结，命名参数有以下几种形式：<code>/:foo</code> <code>/:foo(\\d+)</code> <code>/{yes-:foo-no}</code> <code>/{yes-:foo(\\d+)-no}</code> <code>/(\\d+)</code> <code>/{yes-(\\d+)-no}</code>，假设要加一个通配符，则必须位于前面几种形式的后面，如：<code>/:foo?</code> <code>/:foo(\\d+)?</code> <code>/{yes-:foo-no}?</code> <code>/{yes-:foo(\\d+)-no}?</code> <code>/(\\d+)?</code> <code>/{yes-(\\d+)-no}?</code>。</p>
+<p>通配符三个的含义跟正则相似，<code>?</code>表示这个命名参数可以匹配0或1次，<code>+</code>表示这个命名参数可以匹配1次以上，<code>*</code>则表示这个命名参数可以匹配0次以上。示例如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; match &#125; <span class="keyword">from</span> <span class="string">'./index.js'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> mm = match(<span class="string">"/user/:foo"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/a'</span>)); <span class="comment">//可匹配上</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user'</span>)); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">mm = match(<span class="string">"/user/:foo?"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/a'</span>)); <span class="comment">//可匹配上</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user'</span>)); <span class="comment">// 可匹配上</span></span><br><span class="line"></span><br><span class="line">mm = match(<span class="string">"/user/:foo*"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user'</span>)); <span class="comment">//可匹配上</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/a'</span>)); <span class="comment">// 可匹配上 &#123;path: "/user/a", index: 0, params: &#123;foo: ["a"]&#125;&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/a/b/c'</span>)); <span class="comment">// 可匹配上 &#123;path: "/user/a", index: 0, params: &#123;foo: ["a","b","c"]&#125;&#125;</span></span><br><span class="line"></span><br><span class="line">mm = match(<span class="string">"/user/:foo+"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user'</span>)); <span class="comment">//false</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/a'</span>)); <span class="comment">// 可匹配上 &#123;path: "/user/a", index: 0, params: &#123;foo: ["a"]&#125;&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/a/b/c'</span>)); <span class="comment">// 可匹配上 &#123;path: "/user/a", index: 0, params: &#123;foo: ["a","b","c"]&#125;&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>在<code>?</code>修饰符场景中，命名参数没有匹配到，即使它的<code>prefix</code>在路径中没有，也是可以匹配上的，如：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mm = match(<span class="string">"/user/:foo?"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/a'</span>)); <span class="comment">//可匹配上</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user'</span>)); <span class="comment">// 可匹配上</span></span><br></pre></td></tr></table></figure></p>
+<p>上面<code>foo</code>这个参数的<code>prefix</code>是<code>/</code>，而<code>/user</code>这个路径后面没有<code>/</code>，但它还是能匹配成功，因为它满足<code>?</code>修饰符的功能。如果想要这种情况不成立，可以使用<code>{}</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mm = match(<span class="string">"/user/&#123;:foo&#125;?"</span>, &#123;<span class="attr">decode</span>: <span class="built_in">decodeURIComponent</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/a'</span>)); <span class="comment">//可匹配上</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user'</span>)); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(mm(<span class="string">'/user/'</span>)); <span class="comment">// 可匹配上</span></span><br></pre></td></tr></table></figure></p>
+<p>在这个场景中,<code>foo</code>的<code>prefix</code>被设置为了空串，而不是<code>/</code>。</p>
+<p>路由中如果有普通的<code>?</code>字符，需要进行转义：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> regexp = pathToRegexp(<span class="string">"/search/:tableName\\?useIndex=true&amp;term=amazing"</span>);</span><br><span class="line"></span><br><span class="line">regexp.exec(<span class="string">"/search/people?useIndex=true&amp;term=amazing"</span>);</span><br><span class="line"><span class="comment">//=&gt; [ '/search/people?useIndex=true&amp;term=amazing', 'people', index: 0, input: '/search/people?useIndex=true&amp;term=amazing', groups: undefined ]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// This library does not handle query strings in different orders</span></span><br><span class="line">regexp.exec(<span class="string">"/search/people?term=amazing&amp;useIndex=true"</span>);</span><br><span class="line"><span class="comment">//=&gt; null</span></span><br></pre></td></tr></table></figure></p>
+<p>从上个例子中还能看到，虽然<code>/search/people?useIndex=true&amp;term=amazing</code>和<code>/search/people?term=amazing&amp;useIndex=true</code>在被浏览器解析时是相同的<code>pathname</code>以及相同的query数据，但是在<code>path-to-regexp</code>中，无法解析这种无序的数据串，它不具备去解析<code>querystring</code>的能力，它的核心是处理<code>path</code>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/path-to-regexp/" rel="tag"># path-to-regexp</a>
+          
+            <a href="/tags/vue-router/" rel="tag"># vue-router</a>
+          
+            <a href="/tags/vue-router源码/" rel="tag"># vue-router源码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/08/wxjssdk-copy及spa-wxjssdk-util/" rel="next" title="wxjssdk-copy及spa-wxjssdk-util">
+                <i class="fa fa-chevron-left"></i> wxjssdk-copy及spa-wxjssdk-util
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/20/产品不能惘（一）/" rel="prev" title="产品不能惘（一）">
+                产品不能惘（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">78</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#pathToRegexp"><span class="nav-number">1.</span> <span class="nav-text">pathToRegexp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#match"><span class="nav-number">2.</span> <span class="nav-text">match</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名参数"><span class="nav-number">3.</span> <span class="nav-text">命名参数</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

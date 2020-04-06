@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这是一篇笔记，记录macOS下virtua box中的centos的磁盘空间扩容的要点。">
+<meta name="keywords" content="运维知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="macOS下virtua box中的centos的磁盘空间扩容">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="这是一篇笔记，记录macOS下virtua box中的centos的磁盘空间扩容的要点。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/01.jpg">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/02.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/03.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/04.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/05.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/06.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/07.jpg">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/08.jpg">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/09.jpg">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/10.jpg">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/18.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/11.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/12.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/13.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/14.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/15.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/16.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/17.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/19.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/20.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/22.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/21.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/23.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/24.png">
+<meta property="og:updated_time" content="2020-04-06T07:05:15.248Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="macOS下virtua box中的centos的磁盘空间扩容">
+<meta name="twitter:description" content="这是一篇笔记，记录macOS下virtua box中的centos的磁盘空间扩容的要点。">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/01.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>macOS下virtua box中的centos的磁盘空间扩容 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">存在的痕迹</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">19</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">78</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">macOS下virtua box中的centos的磁盘空间扩容
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-06 15:05:15" itemprop="dateCreated datePublished" datetime="2020-04-06T15:05:15Z">2020-04-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维管理/" itemprop="url" rel="index"><span itemprop="name">运维管理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这是一篇笔记，记录macOS下virtua box中的centos的磁盘空间扩容的要点。<br><a id="more"></a></p>
+<p>环境：</p>
+<ul>
+<li>macOS</li>
+<li>virtual box</li>
+<li>centos7</li>
+</ul>
+<p>问题：磁盘空间不够，1个3GB的数据库文件无法恢复：<br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/01.jpg" width="800"><br>如果所示，<code>/</code>目录挂载的是<code>/dev/mapper/centos-root</code>这个磁盘设备，该目录是整个虚拟机最大的一个存储区，当时分区只做了这一个。<br>如何对它进行扩容？</p>
+<h2 id="第一步，给虚拟机分配更多的空间"><a href="#第一步，给虚拟机分配更多的空间" class="headerlink" title="第一步，给虚拟机分配更多的空间"></a>第一步，给虚拟机分配更多的空间</h2><p>关闭虚拟机，然后进入macOS的应用程序，找到virtual box，然后右键选择显示包内容，<br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/02.png" width="600"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/03.png" width="300"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/04.png" width="500"><br>在命令行中打开<code>macOS</code>这个目录，就可以运行<code>vboxmanage</code>这个命令，然后运行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vboxmanage list hdds</span><br></pre></td></tr></table></figure></p>
+<p>找到虚拟机的UUID，接下来给虚拟机增加存储空间时会用到。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">UUID:           c8055692-a2d2-4a22-a97b-db3fe8bb9f36</span><br><span class="line">Parent UUID:    base</span><br><span class="line">State:          created</span><br><span class="line">Type:           normal (base)</span><br><span class="line">Location:       /Users/wangdanlu/zengxf/virtual_machine/centos/centos.vdi</span><br><span class="line">Storage format: VDI</span><br><span class="line">Capacity:       40960 MBytes</span><br><span class="line">Encryption:     disabled</span><br></pre></td></tr></table></figure></p>
+<p>我得到的是<code>c8055692-a2d2-4a22-a97b-db3fe8bb9f36</code></p>
+<p>接下来通过<code>VBoxManage modifyhd &lt;uuid&gt; –-resize 40960</code>来调整存储空间大小。 40960就是40GB，uuid就是上一步查询出来的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VBoxManage modifyhd c8055692-a2d2-4a22-a97b-db3fe8bb9f36 –-resize 40960</span><br></pre></td></tr></table></figure></p>
+<p>接着打开virtual box，注意不是启动虚拟机，然后查看虚拟机系统的存储空间状态：<br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/05.png" width="800"><br>从这里看到虚拟机的存储空间已经增加了，但是这个时候加进去的空间并没有生效，还需要继续处理。</p>
+<h2 id="第二步，通过gparted工具，来给已经存在磁盘分区扩容"><a href="#第二步，通过gparted工具，来给已经存在磁盘分区扩容" class="headerlink" title="第二步，通过gparted工具，来给已经存在磁盘分区扩容"></a>第二步，通过gparted工具，来给已经存在磁盘分区扩容</h2><p>第一步新加进去的磁盘空间，输入未分配的空间，如果要使用，需要把这些空间，变为磁盘分区的一部分，这里会借助到一个磁盘分区工具：<a href="https://gparted.org/download.php" target="_blank" rel="noopener">gparted</a>，点击该链接可前往下载，得到的是一个iso文件。因为虚拟机安装的是一个纯命令行的系统，磁盘分区使用不方便，gparted是一个可视化的软件，可以来管理磁盘分区。</p>
+<p>下载后以后，将gparted载入到虚拟机的光驱：</p>
+<p><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/06.png" width="800"></p>
+<p>接下来启动虚拟机，按照下面的步骤依次完成分区的空间扩容：<br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/07.jpg" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/08.jpg" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/09.jpg" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/10.jpg" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/18.png" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/11.png" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/12.png" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/13.png" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/14.png" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/15.png" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/16.png" width="800"><br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/17.png" width="800"></p>
+<h2 id="第三步、进入虚拟机对逻辑卷进行扩容"><a href="#第三步、进入虚拟机对逻辑卷进行扩容" class="headerlink" title="第三步、进入虚拟机对逻辑卷进行扩容"></a>第三步、进入虚拟机对逻辑卷进行扩容</h2><p>前2步做完，部分场景可能就成功了，但是我的虚拟机分区，采用的是LVM的方式，支持动态扩容，所以前2步做完，进入系统发现<code>/dev/mapper/centos-root</code>还是没有增加空间，通过查阅资料发现，还需要进行逻辑卷的扩容。<br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/19.png" width="800"></p>
+<p>什么是LVM？<a href="https://www.cnblogs.com/moox/p/11163229.html" target="_blank" rel="noopener">这里有答案</a></p>
+<p>运行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lvs</span><br></pre></td></tr></table></figure></p>
+<p>得到当前的逻辑卷的<code>vg名称</code>和<code>lv名称</code>:<br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/20.png" width="800"><br>如图所示，与14GB存储空间对应的逻辑卷的名称是<code>root</code>，它的<code>vg</code>名称为<code>centos</code>。所以这个逻辑卷的设备名就是:<code>/dev/centos/root</code>。</p>
+<p>运行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgs</span><br></pre></td></tr></table></figure></p>
+<p>查看<code>centos</code>这个vg现在的空间情况，可以看到它还有24GB空间多余，正好是一开始做虚拟机存储扩容的那个空间，也是第二步做磁盘分区扩容的那个空间：</p>
+<p><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/22.png" width="800"></p>
+<p>接下来运行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lvextend -L +24GB -n /dev/centos/root</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/21.png" width="800"><br>这个命令对<code>/dev/centos/root</code>这个逻辑卷，进行了扩容，增加了24GB。</p>
+<p>通过lvs可以看到逻辑卷已经被成功扩容：<br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/23.png" width="800"></p>
+<p>此时尽管lv已经被扩容，但是文件系统还没有变化，通过<code>df</code>查看文件系统，会看到空间还是之前的14G，没有增加，所以还需要对文件系统进行更新：<br><img src="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/24.png" width="800"><br>我在电脑上运行的是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xfs_growfs /dev/centos/root</span><br></pre></td></tr></table></figure></p>
+<p>一开始运行的是<code>resize2fs /dev/centos/root</code>，但是报错了，上图中有演示。</p>
+<p>最后查了跟文件系统有关，我虚拟机中<code>/dev/centos/root</code>的文件系统是<code>xfs</code>，所以需要用<code>xfs_growfs</code>命令，而不是<code>resize2fs</code>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/运维知识/" rel="tag"># 运维知识</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/23/vue-router源码：create-route-map/" rel="next" title="vue-router源码：create-route-map">
+                <i class="fa fa-chevron-left"></i> vue-router源码：create-route-map
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">78</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一步，给虚拟机分配更多的空间"><span class="nav-number">1.</span> <span class="nav-text">第一步，给虚拟机分配更多的空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二步，通过gparted工具，来给已经存在磁盘分区扩容"><span class="nav-number">2.</span> <span class="nav-text">第二步，通过gparted工具，来给已经存在磁盘分区扩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三步、进入虚拟机对逻辑卷进行扩容"><span class="nav-number">3.</span> <span class="nav-text">第三步、进入虚拟机对逻辑卷进行扩容</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

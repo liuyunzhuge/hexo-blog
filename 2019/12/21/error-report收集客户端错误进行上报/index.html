@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="开发了一个小工具：ErrorReporter。利用window.onerror完成脚本错误收集，方便进行上报，以便排查未知的客户端问题。 参考自AlloyLever，在它的基础上有简化和调整使用方式。错误上报服务也可以使用商业方案：Sentry和Bugsnag。">
+<meta name="keywords" content="日常开发,javscript,error-reporter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="error-report收集客户端错误进行上报">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/12/21/error-report收集客户端错误进行上报/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="开发了一个小工具：ErrorReporter。利用window.onerror完成脚本错误收集，方便进行上报，以便排查未知的客户端问题。 参考自AlloyLever，在它的基础上有简化和调整使用方式。错误上报服务也可以使用商业方案：Sentry和Bugsnag。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-05T08:36:23.586Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="error-report收集客户端错误进行上报">
+<meta name="twitter:description" content="开发了一个小工具：ErrorReporter。利用window.onerror完成脚本错误收集，方便进行上报，以便排查未知的客户端问题。 参考自AlloyLever，在它的基础上有简化和调整使用方式。错误上报服务也可以使用商业方案：Sentry和Bugsnag。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/12/21/error-report收集客户端错误进行上报/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>error-report收集客户端错误进行上报 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">存在的痕迹</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">19</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">78</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/12/21/error-report收集客户端错误进行上报/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">error-report收集客户端错误进行上报
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-12-20 22:04:19" itemprop="dateCreated datePublished" datetime="2019-12-20T22:04:19Z">2019-12-20</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>开发了一个小工具：<a href="https://github.com/liuyunzhuge/error-reporter" target="_blank" rel="noopener">ErrorReporter</a>。利用window.onerror完成脚本错误收集，方便进行上报，以便排查未知的客户端问题。 参考自AlloyLever，在它的基础上有简化和调整使用方式。错误上报服务也可以使用商业方案：Sentry和Bugsnag。</p>
+<a id="more"></a>
+<p>这个库提供的核心服务：</p>
+<ul>
+<li>动态激活vConsole</li>
+<li>收集客户端脚本运行错误</li>
+<li>收集<code>script|img|link</code>标签加载资源时的加载错误</li>
+<li>收集使用<code>vue</code>时的运行错误</li>
+<li>收集使用<code>vue-router</code>时的运行错误</li>
+<li>收集使用<code>axios</code>时的请求和响应错误</li>
+<li>上报自定义错误</li>
+</ul>
+<p>其它场景的错误收集服务，在后续版本会陆续发布。</p>
+<ul>
+<li>react相关</li>
+<li>未捕获的Promise</li>
+<li>fetch或xhr过程中的错误</li>
+</ul>
+<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><p>先介绍下error-reporter的使用方式。</p>
+<p>安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install breif-error-reporter --save</span><br></pre></td></tr></table></figure></p>
+<p>使用：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ErrorReporter <span class="keyword">from</span> <span class="string">'breif-error-reporter'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * setConfig(options)</span></span><br><span class="line"><span class="comment"> *  onReport &#123;Function&#125; 收集到错误之后的回调函数，在此进行错误上报</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// 错误上报</span></span><br><span class="line">ErrorReporter.setConfig(&#123;</span><br><span class="line">    onReport (message, reportType) &#123;</span><br><span class="line">        <span class="comment">// message是可以进行上报的包含错误信息的字符串</span></span><br><span class="line">        <span class="comment">// reportType是一个描述上报场景的字符串</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用enableVConsole动态加载vConsole并实例化，如果show为true则在实例化完成后立即展示vConsole</span></span><br><span class="line"><span class="keyword">let</span> show = <span class="literal">false</span></span><br><span class="line">ErrorReporter.enableVConsole(show)</span><br></pre></td></tr></table></figure></p>
+<p>如果你想在某个url参数下自动唤起vConsole，可以采用以下类似的做法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="built_in">window</span>.location.href.indexOf(<span class="string">'vconsole'</span>) &gt; <span class="number">-1</span>) &#123;</span><br><span class="line">    ErrorReporter.enableVConsole()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当生产环境有用户反馈问题，不好排查原因时，可将带有<code>vconsole</code>参数的链接发给用户，让用户协助截图或录屏的方式，帮忙反馈vConsole收集的日志。</p>
+<p>这个库并没有把url参数唤起的方式，自动加入到库的实现里面去，只提供了动态唤起vConsole的方法，每个项目怎么用，由项目自己决定。</p>
+<h2 id="VS-AlloyLever"><a href="#VS-AlloyLever" class="headerlink" title="VS. AlloyLever"></a>VS. AlloyLever</h2><ul>
+<li>本库不提供url参数唤起vConsole，以及<code>entry</code>机关唤起vConsole，只提供动态唤起vConsole的方法，每个项目可自行决定如何唤起。</li>
+<li>本库不默认提供上报的逻辑，由每个项目自己通过回调函数决定如何上报。 AlloyLever内部是通过<code>new Image().src</code>的方式来进行上报的，我个人更喜欢用ajax来处理，比<code>new Image().src</code>灵活。</li>
+</ul>
+<h2 id="详细使用说明"><a href="#详细使用说明" class="headerlink" title="详细使用说明"></a>详细使用说明</h2><h3 id="setConfig-options"><a href="#setConfig-options" class="headerlink" title="setConfig(options)"></a><code>setConfig(options)</code></h3><p>这是进行初始化的一个方法，各个option的用法如下：</p>
+<ul>
+<li><p>vConsoleSrc</p>
+<p>  <code>@{String|default: &#39;//cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js&#39;}</code></p>
+<p>  这个option指定vConsole的文件地址，当启用vConsole时，会基于这个地址动态加载vConsole源文件。</p>
+</li>
+<li><p>maximumStackLines</p>
+<p>  <code>@{Number|default: 20}</code><br>  这个option用在收集运行时错误的场景中。通常js运行错误，都有比较长的堆栈信息，这个option限制上报时最多收集多少行堆栈信息。</p>
+</li>
+<li><p>resource</p>
+<p>  <code>@{Boolean|default: true}</code></p>
+<p>  是否开启收集资源加载失败的错误。默认为<code>true</code>，开启后，<code>script|img|link</code>资源加载失败，会被收集到。</p>
+</li>
+<li><p>vue</p>
+<p> <code>@{Class|default: null}</code><br> 这个option默认为null，传入<code>Vue</code>之后，就会通过<code>Vue</code>的异常处理机制收集<code>Vue</code>的运行错误。</p>
+</li>
+<li><p>vueRouter</p>
+<p>  <code>@{VueRouter|default: null}</code></p>
+<p>  这个option默认为null，可传入<code>vue-router</code>的实例。传入后，就会通过<code>vue-router</code>的异常处理机制，收集<code>vue-router</code>的运行错误。</p>
+</li>
+<li><p>axios</p>
+<p>  <code>@{axios|default: null}</code></p>
+<p>  这个option默认为null，可传入<code>axios</code>引用。传入后，通过配置<code>axios</code>对<code>request responce</code>的拦截器，收集相关错误。</p>
+</li>
+<li><p>axiosReportConfig</p>
+<p>  <code>@{Array|default: [&#39;url&#39;, &#39;method&#39;, &#39;params&#39;, &#39;data&#39;, &#39;headers&#39;]}</code></p>
+<p>  配置此数组，可以在捕获到<code>axios</code>的错误时，从它的<code>config</code>对象内提取指定信息。 默认提取的信息数组为：<code>&#39;url&#39;, &#39;method&#39;, &#39;params&#39;, &#39;data&#39;, &#39;headers&#39;</code>，这些数据被提取出来后，会作为<code>onReport</code>的第三个参数传入，方便一同上报至后台。</p>
+</li>
+<li><p>axiosIgnore</p>
+<p>  <code>@{Array,Function| default: null}</code></p>
+<p>  这个option可以是一个数组，也可以是一个函数。当它是一个数组时，可通过数组指定正则表达式，只要这个数组内存在某个正则，与<code>config.url</code>匹配，则在此<code>config</code>请求失败时，不会进行上报。</p>
+<p>  或者是配置为一个函数，会被传入捕获到的<code>axios</code>的<code>error</code>对象，当这个函数返回trusy值时，则不会进行此错误的上报。</p>
+</li>
+<li><p>notReportErrors</p>
+<p>  <code>@{Array|default: []}</code></p>
+<p>  这个option可以指定为一个数组，它的元素应该是<code>Error</code>类的子类，当<code>error-reporter</code>捕获的任何错误，只要是这个数组中某一个元素的实例（基于<code>instanceof</code>运算），则不进行该错误的上报。</p>
+</li>
+<li><p>processStack</p>
+<p>  <code>@{Function|default:[inner function]</code></p>
+<p>  这个option用来对<code>Error</code>实例的<code>stack</code>进行解析，在此库的内部有使用以下这个函数进行解析，如果不想要或者想更换，则可利用此<code>option</code>处理。</p>
+<p>  默认的处理函数如下：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">processStackMsg</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 1. clean line separator</span></span><br><span class="line">    <span class="comment">// 2. replace 'at' with '@' in error source like 'at window.makeError (http://localhost:8080/test.js?a=1&amp;b=2:3:5)'</span></span><br><span class="line">    <span class="comment">// 3. limit maximum stack lines</span></span><br><span class="line">    <span class="comment">// 4. clean query string in error source like 'http://localhost:8080/test.js?a=1&amp;b=2'</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> stack = error.stack</span><br><span class="line">        .replace(<span class="regexp">/\n/gi</span>, <span class="string">''</span>) <span class="comment">// 1</span></span><br><span class="line">        .split(<span class="regexp">/\bat\b/</span>) <span class="comment">// 2</span></span><br><span class="line">        .slice(<span class="number">0</span>, config.maximumStackLines) <span class="comment">// 3</span></span><br><span class="line">        .join(<span class="string">'@'</span>)</span><br><span class="line">        .replace(<span class="regexp">/\?[^:]+/gi</span>, <span class="string">''</span>) <span class="comment">// 4</span></span><br><span class="line">    <span class="keyword">let</span> msg = error.toString()</span><br><span class="line">    <span class="keyword">if</span> (stack.indexOf(msg) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        stack = msg + <span class="string">'@'</span> + stack</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> stack</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>onReport</p>
+<p>  <code>@{Function|default: noop}</code></p>
+<p>  这是收集到错误以后的回调函数，不管是哪个场景的错误，都会进入这个回调。</p>
+<p>  它有三个参数：</p>
+<ul>
+<li>message 错误信息串</li>
+<li>reportType 错误场景描述的字符串</li>
+<li>extraData 某些上报场景可能会包含额外的数据，如<code>axios</code></li>
+</ul>
+</li>
+<li><p>onResourceLoadError</p>
+<p>  <code>@{Function|default: noop}</code></p>
+<p>  这是单独给资源加载失败时提供的额外的回调函数。考虑到资源加载失败是比较严重的错误，而且通常刷新一下页面可能就能恢复正常使用，所以需要一个类似这样的回调函数，来进行相关的提示和刷新操作。</p>
+</li>
+</ul>
+<p>特殊地：<br>在此库内部，会用到一个自定义的<code>Error</code>实例的属性：<code>notToReport</code>，只要这个属性是一个trusy值，则在捕获到这个错误时，不会进行上报。</p>
+<p>所以除了<code>notReportErrors</code>option，另外一个屏蔽某些错误不进行上报的方式，可以参考下面的做法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> e = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'sth happened'</span>)</span><br><span class="line">    e.notToReport = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">throw</span> e <span class="comment">// 这个错误不会进行上报</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="reportType"><a href="#reportType" class="headerlink" title="reportType"></a>reportType</h4><p>内部有定义常量来描述上报场景：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> REPORT_TYPE = &#123;</span><br><span class="line">    RUNTIME: <span class="string">'runtime'</span>,</span><br><span class="line">    RESOURCE: <span class="string">'resource'</span>,</span><br><span class="line">    VUE: <span class="string">'vue'</span>,</span><br><span class="line">    VUE_ROUTER: <span class="string">'vue-router'</span>,</span><br><span class="line">    MANUAL: <span class="string">'manual'</span>,</span><br><span class="line">    AXIOS_REQUEST: <span class="string">'axios-request'</span>,</span><br><span class="line">    AXIOS_RESPONSE: <span class="string">'axios-response'</span>,</span><br><span class="line">    UNHANDLED_REJECTION: <span class="string">'unhandledrejection'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将来支持的场景越多，这个地方还会增加。 另外在后面介绍的api方法中，有一个<code>makeReport</code>方法，它可以传入自定义的<code>reportType</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeReport</span> (<span class="params">err, reportType, extraData = &#123;&#125;</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> error = err</span><br><span class="line">    <span class="keyword">if</span> (isObjectType(err, <span class="string">'String'</span>)) &#123;</span><br><span class="line">        error = <span class="keyword">new</span> <span class="built_in">Error</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (notToReport(error)) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">return</span> config.onReport.call(ErrorReporter, config.processStack(error), reportType || REPORT_TYPE.MANUAL, extraData)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>后端收集到错误，可根据<code>reportType</code>做相关统计和分类查询。</p>
+<h3 id="enableVConsole"><a href="#enableVConsole" class="headerlink" title="enableVConsole"></a><code>enableVConsole</code></h3><p>这个方法用来激活<code>vConsole</code>，它有一个参数：</p>
+<ul>
+<li>show @{Boolean|Default: undefined} 指定为true时，将在激活后立即显示vConsole面板</li>
+</ul>
+<h3 id="getSystemInfo"><a href="#getSystemInfo" class="headerlink" title="getSystemInfo"></a><code>getSystemInfo</code></h3><p>这个方法可用来收集客户端信息，目前可收集的信息如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    system,</span><br><span class="line">    systemVersion,</span><br><span class="line">    netType,</span><br><span class="line">    ua,</span><br><span class="line">    wechat,</span><br><span class="line">    wechatVersion,</span><br><span class="line">    wechatMini</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="getCookie"><a href="#getCookie" class="headerlink" title="getCookie"></a><code>getCookie</code></h3><p>这是一个工具方法，用来从<code>document.cookie</code>中查询指定的cookie值。<br>有一个参数：</p>
+<ul>
+<li>name @{String} 要查询的cookie的名字</li>
+</ul>
+<h3 id="makeReport"><a href="#makeReport" class="headerlink" title="makeReport"></a><code>makeReport</code></h3><p>这个方法，可用来自定义错误上报，接收两个参数</p>
+<ul>
+<li>err @{String|Error} 可以是字符串或<code>Error</code>实例</li>
+<li>reportType @{String}</li>
+</ul>
+<h3 id="wrapNotReport"><a href="#wrapNotReport" class="headerlink" title="wrapNotReport"></a><code>wrapNotReport</code></h3><p>这个方法，用来包裹一个<code>Error</code>对象，添加<code>notToReport</code>属性，阻止它被上报。</p>
+<h3 id="更加完整的示例"><a href="#更加完整的示例" class="headerlink" title="更加完整的示例"></a>更加完整的示例</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> ErrorReporter <span class="keyword">from</span> <span class="string">'breif-error-reporter'</span></span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">'axios'</span></span><br><span class="line"><span class="keyword">import</span> router <span class="keyword">from</span> <span class="string">'./router'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 错误上报</span></span><br><span class="line">ErrorReporter.setConfig(&#123;</span><br><span class="line">    vue: Vue,</span><br><span class="line">    vueRouter: router,</span><br><span class="line">    axios: axios,</span><br><span class="line">    axiosIgnore: [</span><br><span class="line">        /web-error-report/</span><br><span class="line">    ],</span><br><span class="line">    onResourceLoadError (event) &#123;</span><br><span class="line">        <span class="keyword">if</span> (event.target &amp;&amp; event.target <span class="keyword">instanceof</span> HTMLScriptElement) &#123;</span><br><span class="line">            <span class="keyword">if</span> (event.target.src.indexOf(<span class="string">'static/js'</span>) &gt; <span class="number">-1</span>) &#123;</span><br><span class="line">                location.reload()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    onReport (message, reportType, extraData) &#123;</span><br><span class="line">        <span class="keyword">let</span> accessToken = localStorage.accessToken || <span class="string">''</span></span><br><span class="line">        <span class="keyword">let</span> clientId = localStorage.client_id || <span class="string">''</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> systemInfo = <span class="keyword">this</span>.getSystemInfo()</span><br><span class="line">        <span class="keyword">let</span> href = location.href</span><br><span class="line">        <span class="keyword">let</span> path = location.pathname</span><br><span class="line">        <span class="keyword">let</span> search = location.search ? location.search.substring(<span class="number">1</span>) : <span class="string">''</span></span><br><span class="line">        <span class="keyword">let</span> cookieClientId = <span class="keyword">this</span>.getCookie(<span class="string">'client_id'</span>)</span><br><span class="line">        <span class="keyword">let</span> cookieAccessToken = <span class="keyword">this</span>.getCookie(<span class="string">'accessToken'</span>)</span><br><span class="line">        <span class="keyword">let</span> cookie = []</span><br><span class="line">        cookieClientId &amp;&amp; cookie.push(cookieClientId)</span><br><span class="line">        cookieAccessToken &amp;&amp; cookie.push(cookieAccessToken)</span><br><span class="line">        cookie = cookie.join(<span class="string">'; '</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> reportData = &#123;</span><br><span class="line">            ...systemInfo,</span><br><span class="line">            accessToken,</span><br><span class="line">            clientId,</span><br><span class="line">            href,</span><br><span class="line">            path,</span><br><span class="line">            search,</span><br><span class="line">            cookie,</span><br><span class="line">            message,</span><br><span class="line">            reportType,</span><br><span class="line">            extraData: <span class="built_in">JSON</span>.stringify(extraData)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// post reportData ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="运行时错误的跨域问题"><a href="#运行时错误的跨域问题" class="headerlink" title="运行时错误的跨域问题"></a>运行时错误的跨域问题</h3><p><code>ErrorReporter</code>利用<code>window.onerror</code>收集运行时错误，有一个跨域问题需要注意：<br>如果错误是由跨域的脚本产生的，比如某网站<code>a.com</code>下有个页面有如下js引用：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://b.com/some.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><code>some.js</code>运行时发生错误，通过<code>ErrorReporter</code>收集到出错信息时，默认只能收到<code>Script error.</code>这样一个字符串，并且<code>window.onerror</code>回调的最后一个很重要的参数<code>error</code>也是<code>null</code>，这是浏览器因为安全策略故意做的，防止信息泄露。这样的错误信息是没有意义的。</p>
+<p>如果想收集不同域的脚本报出的完整错误信息，必须做到两点：</p>
+<ul>
+<li>script标签添加<code>crossorigin</code>属性，如<code>&lt;script crossorigin&gt;</code></li>
+<li>脚本域名必须做CORS的处理，将<code>Access-Control-Allow-Origin</code>这个http header配置好</li>
+</ul>
+<h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><p>请阅读<a href="https://mp.weixin.qq.com/s/E51lKQOojsvhHvACIyXwhw" target="_blank" rel="noopener">这篇文章</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/日常开发/" rel="tag"># 日常开发</a>
+          
+            <a href="/tags/javscript/" rel="tag"># javscript</a>
+          
+            <a href="/tags/error-reporter/" rel="tag"># error-reporter</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/21/如何使用vue-cli4构建一个多页应用/" rel="next" title="如何使用vue-cli4构建一个多页应用">
+                <i class="fa fa-chevron-left"></i> 如何使用vue-cli4构建一个多页应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/28/simple-qiniu-upload以及vue-cli-plugin-qiniu-upload/" rel="prev" title="simple-qiniu-upload以及vue-cli-plugin-qiniu-upload">
+                simple-qiniu-upload以及vue-cli-plugin-qiniu-upload <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">78</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用方式"><span class="nav-number">1.</span> <span class="nav-text">使用方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VS-AlloyLever"><span class="nav-number">2.</span> <span class="nav-text">VS. AlloyLever</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详细使用说明"><span class="nav-number">3.</span> <span class="nav-text">详细使用说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#setConfig-options"><span class="nav-number">3.1.</span> <span class="nav-text">setConfig(options)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#reportType"><span class="nav-number">3.1.1.</span> <span class="nav-text">reportType</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enableVConsole"><span class="nav-number">3.2.</span> <span class="nav-text">enableVConsole</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getSystemInfo"><span class="nav-number">3.3.</span> <span class="nav-text">getSystemInfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getCookie"><span class="nav-number">3.4.</span> <span class="nav-text">getCookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#makeReport"><span class="nav-number">3.5.</span> <span class="nav-text">makeReport</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wrapNotReport"><span class="nav-number">3.6.</span> <span class="nav-text">wrapNotReport</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更加完整的示例"><span class="nav-number">3.7.</span> <span class="nav-text">更加完整的示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时错误的跨域问题"><span class="nav-number">3.8.</span> <span class="nav-text">运行时错误的跨域问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现思路"><span class="nav-number">4.</span> <span class="nav-text">实现思路</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>

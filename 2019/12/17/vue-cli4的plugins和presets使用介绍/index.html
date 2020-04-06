@@ -99,18 +99,18 @@
 
 
 
-  <meta name="description" content="本篇介绍vue-cli4里面plugins和presets的用法。 plugins为了体验plugins的用法，当使用vue create app-name创建项目的时候，最好什么特性都不要启用，这样的话就能一步步体验每个插件的添加过程了。 插件名称及解析vue-cli4管理插件，可直接使用插件的简称，无须使用全称的npm包的形式，cli底层会自动按照规则进行全名称的包名称解析。假如有一个包的名称">
-<meta name="keywords" content="Vue,vue-cli">
+  <meta name="description" content="本篇介绍vue-cli4里面plugins和presets的用法。">
+<meta name="keywords" content="vue-cli,Vue">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vue-cli4的plugins和presets使用介绍">
 <meta property="og:url" content="http://blog.liuyunzhuge.com/2019/12/17/vue-cli4的plugins和presets使用介绍/index.html">
 <meta property="og:site_name" content="流云诸葛">
-<meta property="og:description" content="本篇介绍vue-cli4里面plugins和presets的用法。 plugins为了体验plugins的用法，当使用vue create app-name创建项目的时候，最好什么特性都不要启用，这样的话就能一步步体验每个插件的添加过程了。 插件名称及解析vue-cli4管理插件，可直接使用插件的简称，无须使用全称的npm包的形式，cli底层会自动按照规则进行全名称的包名称解析。假如有一个包的名称">
+<meta property="og:description" content="本篇介绍vue-cli4里面plugins和presets的用法。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-16T15:00:54.958Z">
+<meta property="og:updated_time" content="2019-12-18T14:37:43.296Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="vue-cli4的plugins和presets使用介绍">
-<meta name="twitter:description" content="本篇介绍vue-cli4里面plugins和presets的用法。 plugins为了体验plugins的用法，当使用vue create app-name创建项目的时候，最好什么特性都不要启用，这样的话就能一步步体验每个插件的添加过程了。 插件名称及解析vue-cli4管理插件，可直接使用插件的简称，无须使用全称的npm包的形式，cli底层会自动按照规则进行全名称的包名称解析。假如有一个包的名称">
+<meta name="twitter:description" content="本篇介绍vue-cli4里面plugins和presets的用法。">
 
 
 
@@ -203,7 +203,7 @@
     </div>
     
       
-        <p class="site-subtitle">记录、分享</p>
+        <p class="site-subtitle">存在的痕迹</p>
       
     
     
@@ -278,7 +278,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">18</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
 
   </li>
         
@@ -297,7 +297,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">13</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">19</span></a>
 
   </li>
         
@@ -316,7 +316,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">64</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">78</span></a>
 
   </li>
         
@@ -335,7 +335,7 @@
       
     
 
-    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>旧博客</a>
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
 
   </li>
 
@@ -397,8 +397,8 @@
     <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/12/17/vue-cli4的plugins和presets使用介绍/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="流云诸葛">
-      <meta itemprop="description" content="工作、生活">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
 
@@ -504,7 +504,7 @@
       
 
       
-        <p>本篇介绍vue-cli4里面plugins和presets的用法。</p>
+        <p>本篇介绍vue-cli4里面plugins和presets的用法。<br><a id="more"></a></p>
 <h2 id="plugins"><a href="#plugins" class="headerlink" title="plugins"></a>plugins</h2><p>为了体验plugins的用法，当使用<code>vue create app-name</code>创建项目的时候，最好什么特性都不要启用，这样的话就能一步步体验每个插件的添加过程了。</p>
 <h3 id="插件名称及解析"><a href="#插件名称及解析" class="headerlink" title="插件名称及解析"></a>插件名称及解析</h3><p>vue-cli4管理插件，可直接使用插件的简称，无须使用全称的npm包的形式，cli底层会自动按照规则进行全名称的包名称解析。假如有一个包的名称为：<code>some</code>，那么解析规则如下：</p>
 <ul>
@@ -585,9 +585,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Vue/" rel="tag"># Vue</a>
-          
             <a href="/tags/vue-cli/" rel="tag"># vue-cli</a>
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
           
         </div>
       
@@ -610,6 +610,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/12/19/vue-cli2的项目升级到vue-cli4做了哪些事情/" rel="prev" title="vue-cli2的项目升级到vue-cli4做了哪些事情">
+                vue-cli2的项目升级到vue-cli4做了哪些事情 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -629,6 +633,13 @@
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
 
   
 
@@ -666,10 +677,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="流云诸葛">
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
             
-              <p class="site-author-name" itemprop="name">流云诸葛</p>
-              <div class="site-description motion-element" itemprop="description">工作、生活</div>
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
           </div>
 
           
@@ -679,7 +690,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">64</span>
+                    <span class="site-state-item-count">78</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -722,7 +733,19 @@
                     
                       
                     
-                    <span class="site-state-item-count">13</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -775,7 +798,31 @@
                     
                       
                     
-                    <span class="site-state-item-count">18</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -834,11 +881,11 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">流云诸葛</span>
+  <span class="author" itemprop="copyrightHolder"></span>
 
   
 
@@ -962,6 +1009,38 @@
 
   
 
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
 
   
 
