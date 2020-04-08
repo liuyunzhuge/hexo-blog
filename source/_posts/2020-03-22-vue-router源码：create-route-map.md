@@ -12,7 +12,7 @@ date: 2020-03-22 17:41:03
 ---
 
 
-vue-router源码解析系列。这是第一篇。本篇介绍源码中的`create-route-map.js`，它在`vue-router`中的作用是将路由配置数据`routes`解析为路由匹配时需要的数据，了解它的源码之后，能够加强对于`routes`配置的理解和使用。本系列解析的是官方git库中3.1.6的版本源码。
+vue-router源码解析系列。这是第二篇。本篇介绍源码中的`create-route-map.js`，它在`vue-router`中的作用是将路由配置数据`routes`解析为路由匹配时需要的数据，了解它的源码之后，能够加强对于`routes`配置的理解和使用。本系列解析的是官方git库中3.1.6的版本源码。
 <!-- more -->
 源码链接：[create-route-map.js](/code/vue-router/source-code/create-route-map.js)。源码里面用的是typescript，但是不影响阅读。
 
