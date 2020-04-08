@@ -313,7 +313,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">78</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">79</span></a>
 
   </li>
         
@@ -375,6 +375,183 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2020/04/08/vue-router源码：create-matcher/" class="post-title-link" itemprop="url">vue-router源码：create-matcher</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-08 14:58:24" itemprop="dateCreated datePublished" datetime="2020-04-08T14:58:24Z">2020-04-08</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/vue-router/" itemprop="url" rel="index"><span itemprop="name">vue-router</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>vue-router源码解析系列。这是第三篇。本篇介绍源码中的<code>create-matcher.js</code>，它在<code>vue-router</code>中的作用是构造一个<code>matcher</code>对象，这个<code>matcher</code>对象的能力主要是两方面：一是进行路由匹配，二是动态添加路由定义。本系列解析的是官方git库中3.1.6的版本源码。<br>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/04/08/vue-router源码：create-matcher/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -667,7 +844,7 @@
 
       
         
-          <p>vue-router源码解析系列。这是第一篇。本篇介绍源码中的<code>create-route-map.js</code>，它在<code>vue-router</code>中的作用是将路由配置数据<code>routes</code>解析为路由匹配时需要的数据，了解它的源码之后，能够加强对于<code>routes</code>配置的理解和使用。本系列解析的是官方git库中3.1.6的版本源码。<br>
+          <p>vue-router源码解析系列。这是第二篇。本篇介绍源码中的<code>create-route-map.js</code>，它在<code>vue-router</code>中的作用是将路由配置数据<code>routes</code>解析为路由匹配时需要的数据，了解它的源码之后，能够加强对于<code>routes</code>配置的理解和使用。本系列解析的是官方git库中3.1.6的版本源码。<br>
           <!--noindex-->
           
             <div class="post-button text-center">
@@ -1516,171 +1693,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/02/08/wxjssdk-copy及spa-wxjssdk-util/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content>
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/uploads/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="流云诸葛">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2020/02/08/wxjssdk-copy及spa-wxjssdk-util/" class="post-title-link" itemprop="url">wxjssdk-copy及spa-wxjssdk-util</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-02-08 10:58:02" itemprop="dateCreated datePublished" datetime="2020-02-08T10:58:02Z">2020-02-08</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/wxjssdk/" itemprop="url" rel="index"><span itemprop="name">wxjssdk</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>从官方wxjssdk的源码中复制了一份：<a href="https://github.com/liuyunzhuge/wxjssdk-copy" target="_blank" rel="noopener">wxjssdk-copy</a>，并做了一小点改动，以保证<code>wx.config</code>能有一个始终是异步的回调方式：<code>wx.complete</code>(这是非官方的)。</p>
-<p>基于<a href="https://github.com/liuyunzhuge/wxjssdk-copy" target="_blank" rel="noopener">wxjssdk-copy</a>，开发出了<a href="https://github.com/liuyunzhuge/spa-wxjssdk-util" target="_blank" rel="noopener">spa-wxjssdk-util</a>，这是一个用于单页应用中，改善<code>wxjssdk</code>使用的工具。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1729,7 +1741,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">78</span>
+                    <span class="site-state-item-count">79</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

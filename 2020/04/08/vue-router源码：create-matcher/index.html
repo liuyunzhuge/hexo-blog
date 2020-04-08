@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="vue-router源码解析系列。这是第三篇。本篇介绍源码中的create-matcher.js，它在vue-router中的作用是构造一个matcher对象，这个matcher对象的能力主要是两方面：一是进行路由匹配，二是动态添加路由定义。本系列解析的是官方git库中3.1.6的版本源码。">
+<meta name="keywords" content="Vue,vue-router,vue-router源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue-router源码：create-matcher">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="vue-router源码解析系列。这是第三篇。本篇介绍源码中的create-matcher.js，它在vue-router中的作用是构造一个matcher对象，这个matcher对象的能力主要是两方面：一是进行路由匹配，二是动态添加路由定义。本系列解析的是官方git库中3.1.6的版本源码。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/01.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/02.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/03.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/04.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/05.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/06.png">
+<meta property="og:updated_time" content="2020-04-08T06:58:24.290Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vue-router源码：create-matcher">
+<meta name="twitter:description" content="vue-router源码解析系列。这是第三篇。本篇介绍源码中的create-matcher.js，它在vue-router中的作用是构造一个matcher对象，这个matcher对象的能力主要是两方面：一是进行路由匹配，二是动态添加路由定义。本系列解析的是官方git库中3.1.6的版本源码。">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/01.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>vue-router源码：create-matcher | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">存在的痕迹</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">19</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">79</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/04/08/vue-router源码：create-matcher/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vue-router源码：create-matcher
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-08 14:58:24" itemprop="dateCreated datePublished" datetime="2020-04-08T14:58:24Z">2020-04-08</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/vue-router/" itemprop="url" rel="index"><span itemprop="name">vue-router</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>vue-router源码解析系列。这是第三篇。本篇介绍源码中的<code>create-matcher.js</code>，它在<code>vue-router</code>中的作用是构造一个<code>matcher</code>对象，这个<code>matcher</code>对象的能力主要是两方面：一是进行路由匹配，二是动态添加路由定义。本系列解析的是官方git库中3.1.6的版本源码。<br><a id="more"></a><br>源码链接：<a href="/code/vue-router/source-code/create-matcher.js">create-matcher.js</a>。源码里面用的是typescript，但是不影响阅读。</p>
+<h2 id="matcher对象的使用时机"><a href="#matcher对象的使用时机" class="headerlink" title="matcher对象的使用时机"></a>matcher对象的使用时机</h2><p>在<code>vue-router</code>的<a href="/code/vue-router/source-code/index.js">类文件</a>中，可以看到<code>create-matcher</code>是在<code>vue-router</code>的构造函数中就被调用的（下面的第8行）：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">constructor</span> (options: RouterOptions = &#123;&#125;) &#123;</span><br><span class="line">  <span class="keyword">this</span>.app = <span class="literal">null</span></span><br><span class="line">  <span class="keyword">this</span>.apps = []</span><br><span class="line">  <span class="keyword">this</span>.options = options</span><br><span class="line">  <span class="keyword">this</span>.beforeHooks = []</span><br><span class="line">  <span class="keyword">this</span>.resolveHooks = []</span><br><span class="line">  <span class="keyword">this</span>.afterHooks = []</span><br><span class="line">  <span class="keyword">this</span>.matcher = createMatcher(options.routes || [], <span class="keyword">this</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> mode = options.mode || <span class="string">'hash'</span></span><br><span class="line">  <span class="keyword">this</span>.fallback = mode === <span class="string">'history'</span> &amp;&amp; !supportsPushState &amp;&amp; options.fallback !== <span class="literal">false</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.fallback) &#123;</span><br><span class="line">    mode = <span class="string">'hash'</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (!inBrowser) &#123;</span><br><span class="line">    mode = <span class="string">'abstract'</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>.mode = mode</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (mode) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'history'</span>:</span><br><span class="line">      <span class="keyword">this</span>.history = <span class="keyword">new</span> HTML5History(<span class="keyword">this</span>, options.base)</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">'hash'</span>:</span><br><span class="line">      <span class="keyword">this</span>.history = <span class="keyword">new</span> HashHistory(<span class="keyword">this</span>, options.base, <span class="keyword">this</span>.fallback)</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">'abstract'</span>:</span><br><span class="line">      <span class="keyword">this</span>.history = <span class="keyword">new</span> AbstractHistory(<span class="keyword">this</span>, options.base)</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">        assert(<span class="literal">false</span>, <span class="string">`invalid mode: <span class="subst">$&#123;mode&#125;</span>`</span>)</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="create-matcher文件的基本结构"><a href="#create-matcher文件的基本结构" class="headerlink" title="create-matcher文件的基本结构"></a>create-matcher文件的基本结构</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* @flow */</span></span><br><span class="line"><span class="keyword">import</span> &#123; resolvePath &#125; <span class="keyword">from</span> <span class="string">'./util/path'</span></span><br><span class="line"><span class="keyword">import</span> &#123; assert, warn &#125; <span class="keyword">from</span> <span class="string">'./util/warn'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createRoute &#125; <span class="keyword">from</span> <span class="string">'./util/route'</span></span><br><span class="line"><span class="keyword">import</span> &#123; fillParams &#125; <span class="keyword">from</span> <span class="string">'./util/params'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createRouteMap &#125; <span class="keyword">from</span> <span class="string">'./create-route-map'</span></span><br><span class="line"><span class="keyword">import</span> &#123; normalizeLocation &#125; <span class="keyword">from</span> <span class="string">'./util/location'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createMatcher</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  routes: Array&lt;RouteConfig&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">  router: VueRouter</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Matcher</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; pathList, pathMap, nameMap &#125; = createRouteMap(routes)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">addRoutes</span> (<span class="params">routes</span>) </span>&#123;</span><br><span class="line">    createRouteMap(routes, pathList, pathMap, nameMap)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">match</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    raw: RawLocation,</span></span></span><br><span class="line"><span class="function"><span class="params">    currentRoute?: Route,</span></span></span><br><span class="line"><span class="function"><span class="params">    redirectedFrom?: Location</span></span></span><br><span class="line"><span class="function"><span class="params">  </span>): <span class="title">Route</span> </span>&#123;</span><br><span class="line">   <span class="comment">// ...省略很多代码 </span></span><br><span class="line">  &#125;</span><br><span class="line">   <span class="comment">// ...省略很多代码 </span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    match,</span><br><span class="line">    addRoutes</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个文件对外<code>export</code>了一个<code>createMatcher</code>函数，这个函数在<code>vue-router</code>的构造函数中被调用，将会返回一个包含两个方法：<code>match</code>和<code>addRoutes</code>的对象。</p>
+<p><code>addRoutes</code>比较简单，就是再次调用上一篇博客里面介绍的<code>create-route-map</code>的功能，用来进行路由配置的动态添加。</p>
+<p><code>match</code>方法是本篇学习的重点内容。</p>
+<p>顶部有一堆的<code>import</code>这些<code>import</code>进来的接口，都有各自的作用，在学习<code>match</code>方法的过程中，涉及到哪个就会进入该接口学习。</p>
+<p>从<code>create-matcher</code>的源码能看到，<code>createMatcher</code>函数执行时，所执行的代码实际上只有2条：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; pathList, pathMap, nameMap &#125; = createRouteMap(routes)</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">  match,</span><br><span class="line">  addRoutes</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其它都是函数定义。第一行代码，就是根据<code>routes</code>的配置，解析出所有的路由对象<code>RouteRecord</code>，然后用<code>pathList pathMap nameMap</code>三个不同的结构来存储，在上一篇博客中有学习。这三个变量，会被<code>createMatcher</code>这个闭包所持有，当外部利用<code>addRoutes</code>动态添加路由配置时，他们三个还会被重复用到。</p>
+<h2 id="match函数的解析"><a href="#match函数的解析" class="headerlink" title="match函数的解析"></a>match函数的解析</h2><p>这是match的源码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">match</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    raw: RawLocation,</span></span></span><br><span class="line"><span class="function"><span class="params">    currentRoute?: Route,</span></span></span><br><span class="line"><span class="function"><span class="params">    redirectedFrom?: Location</span></span></span><br><span class="line"><span class="function"><span class="params">  </span>): <span class="title">Route</span> </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> location = normalizeLocation(raw, currentRoute, <span class="literal">false</span>, router)</span><br><span class="line">    <span class="keyword">const</span> &#123; name &#125; = location</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (name) &#123;</span><br><span class="line">      <span class="keyword">const</span> record = nameMap[name]</span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">        warn(record, <span class="string">`Route with name '<span class="subst">$&#123;name&#125;</span>' does not exist`</span>)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (!record) <span class="keyword">return</span> _createRoute(<span class="literal">null</span>, location)</span><br><span class="line">      <span class="keyword">const</span> paramNames = record.regex.keys</span><br><span class="line">        .filter(<span class="function"><span class="params">key</span> =&gt;</span> !key.optional)</span><br><span class="line">        .map(<span class="function"><span class="params">key</span> =&gt;</span> key.name)</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> location.params !== <span class="string">'object'</span>) &#123;</span><br><span class="line">        location.params = &#123;&#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (currentRoute &amp;&amp; <span class="keyword">typeof</span> currentRoute.params === <span class="string">'object'</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> currentRoute.params) &#123;</span><br><span class="line">          <span class="keyword">if</span> (!(key <span class="keyword">in</span> location.params) &amp;&amp; paramNames.indexOf(key) &gt; <span class="number">-1</span>) &#123;</span><br><span class="line">            location.params[key] = currentRoute.params[key]</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      location.path = fillParams(record.path, location.params, <span class="string">`named route "<span class="subst">$&#123;name&#125;</span>"`</span>)</span><br><span class="line">      <span class="keyword">return</span> _createRoute(record, location, redirectedFrom)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (location.path) &#123;</span><br><span class="line">      location.params = &#123;&#125;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; pathList.length; i++) &#123;</span><br><span class="line">        <span class="keyword">const</span> path = pathList[i]</span><br><span class="line">        <span class="keyword">const</span> record = pathMap[path]</span><br><span class="line">        <span class="keyword">if</span> (matchRoute(record.regex, location.path, location.params)) &#123;</span><br><span class="line">          <span class="keyword">return</span> _createRoute(record, location, redirectedFrom)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// no match</span></span><br><span class="line">    <span class="keyword">return</span> _createRoute(<span class="literal">null</span>, location)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这份代码看似简单，实际上背后依托的代码非常多，分为以下几个点来解析：</p>
+<ul>
+<li><code>normalizeLocation</code>的解析</li>
+<li>没有<code>name</code>定义的路由匹配解析，也就是第34-40行</li>
+<li>有<code>name</code>定义的路由匹配解析，也就是第10-32行</li>
+<li><code>_createRoute</code>的解析</li>
+<li>参数部分的解析，也就是第2-4行</li>
+</ul>
+<h3 id="normalizeLocation的解析"><a href="#normalizeLocation的解析" class="headerlink" title="normalizeLocation的解析"></a><code>normalizeLocation</code>的解析</h3><p><a href="/code/vue-router/source-code/util/location.js">normalizeLocation</a>的基本结构:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">normalizeLocation</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  raw: RawLocation,</span></span></span><br><span class="line"><span class="function"><span class="params">  current: ?Route,</span></span></span><br><span class="line"><span class="function"><span class="params">  append: ?boolean,</span></span></span><br><span class="line"><span class="function"><span class="params">  router: ?VueRouter</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Location</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    _normalized: <span class="literal">true</span>,</span><br><span class="line">    path,</span><br><span class="line">    query,</span><br><span class="line">    hash</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个函数的作用是对<code>RawLocation</code>的数据进行正规化处理，返回一个对象，主要包含<code>path query hash</code>三份数据，这三份数据在一个app中，是非常核心的三个与访问地址有关的数据，另外这个返回值有一个<code>_normalized</code>属性，用来标识它是否已经是做过<code>normalize</code>处理。</p>
+<p>这个函数接收4个参数：</p>
+<ul>
+<li>必要参数：raw: RawLocation, 要进行正规化处理的原始数据</li>
+<li>可选参数：current: ?Route, 当前的路由对象</li>
+<li>可选参数：append: ?boolean, 是否为追加模式，与<code>path</code>解析相关，主要是给<code>router-link</code>提供的</li>
+<li>可选参数：router: ?VueRouter，<code>vue-router</code>的实例对象</li>
+</ul>
+<p>从接触<code>vue-router</code>源码有一段时间了，我发现了<code>typescript</code>的好处，通过参数类型、返回值类型，我们看到一份变量，就能知道这份变量是哪个位置产生的。 目前为止，我认为<code>vue-router</code>有以下的一些核心类型值得有一个准确的认知:</p>
+<ul>
+<li>RouteConfig 这个代表的就是使用<code>vue-router</code>时<code>routes</code>这个数组中的每一个条目的数据类型</li>
+<li>RouteRecord 这个代表的就是<code>create-route-map</code>这个源码中主要创建出的数据，它是根据<code>RouteConfig</code>创建出来的，能够代表一条路由配置的对象</li>
+<li>VueRoute 这个类型代表<code>vue-router</code>自己</li>
+<li>RawLocation 这个类型代表了要进行路由匹配的原始对象，它也是<code>match</code>函数和<code>normalizeLocation</code>函数的第一个参数的类型，下一部分主要介绍这个类型几种数据形式。</li>
+<li>Location 这个类型是<code>normalizeLocation</code>函数的返回值类型</li>
+<li>Route 这个类型就是我们在开发中经常打交道的那个路由对象的数据类型</li>
+</ul>
+<p>从上到下，可以看到一个路由数据在<code>vue-router</code>的数据变化的流程。</p>
+<p>在学习<code>normalizeLocation</code>之前，了解<code>RawLocation</code>有哪些使用形式是有必要的，主要有：</p>
+<ul>
+<li>包含<code>name</code>，不含<code>path</code>的对象，如<code>{name: &#39;detail&#39;, params: {id: 1}}</code></li>
+<li>不含<code>path</code>和<code>name</code>，但是含有<code>params</code>的对象，这种路由形式用来进行仅params发生变化的相对路由，如<code>{params: {id: 1}}</code></li>
+<li>字符串形式，如<code>&#39;/&#39;</code>，就是直接用路径进行路由的场景</li>
+<li>不含<code>name</code>，含<code>path</code>的对象，如<code>{path: &#39;/detail&#39;, query: {id: 1}}</code></li>
+</ul>
+<p>接下来对normalizeLocation的解析，我就直接写到注释里面了：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">normalizeLocation</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  raw: RawLocation,</span></span></span><br><span class="line"><span class="function"><span class="params">  current: ?Route,</span></span></span><br><span class="line"><span class="function"><span class="params">  append: ?boolean,</span></span></span><br><span class="line"><span class="function"><span class="params">  router: ?VueRouter</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Location</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 判断了raw为字符串的场景</span></span><br><span class="line">  <span class="comment">// 比如 this.$router.push('/detail')这种</span></span><br><span class="line">  <span class="comment">// 直接转换为一个含`path`的对象再进行后续处理</span></span><br><span class="line">  <span class="keyword">let</span> next: Location = <span class="keyword">typeof</span> raw === <span class="string">'string'</span> ? &#123; <span class="attr">path</span>: raw &#125; : raw</span><br><span class="line">  <span class="comment">// named target</span></span><br><span class="line">  <span class="keyword">if</span> (next._normalized) &#123;</span><br><span class="line">    <span class="comment">// 如果raw是一个对象，则next就是raw</span></span><br><span class="line">    <span class="comment">// 如果raw含有_normalized，就没有后续处理</span></span><br><span class="line">    <span class="keyword">return</span> next</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (next.name) &#123;</span><br><span class="line">    <span class="comment">// 如果raw是一个含name的对象 就会进入这个分支处理</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 拷贝了raw到一个新对象</span></span><br><span class="line">    next = extend(&#123;&#125;, raw)</span><br><span class="line">    <span class="keyword">const</span> params = next.params</span><br><span class="line">    <span class="keyword">if</span> (params &amp;&amp; <span class="keyword">typeof</span> params === <span class="string">'object'</span>) &#123;</span><br><span class="line">      <span class="comment">// 拷贝params </span></span><br><span class="line">      next.params = extend(&#123;&#125;, params)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 这里直接返回了没有后续处理</span></span><br><span class="line">    <span class="keyword">return</span> next</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// relative params</span></span><br><span class="line">  <span class="comment">// 这里就是处理相对路由，如this.$router.push(&#123;params: &#123;id: 2&#125;&#125;)</span></span><br><span class="line">  <span class="comment">// 但是相对路由比较严格的</span></span><br><span class="line">  <span class="comment">// 1. next不含path</span></span><br><span class="line">  <span class="comment">// 2. next不含name，有name就不会执行到这</span></span><br><span class="line">  <span class="comment">// 3. 必须有current，current是谁？Route对象</span></span><br><span class="line">  <span class="comment">// 4. next必须含params</span></span><br><span class="line">  <span class="comment">// 为什么一定要有current?没有current，怎么叫相对路由呢？</span></span><br><span class="line">  <span class="keyword">if</span> (!next.path &amp;&amp; next.params &amp;&amp; current) &#123;</span><br><span class="line">    next = extend(&#123;&#125;, next)</span><br><span class="line">    <span class="comment">// 设置_normalized</span></span><br><span class="line">    next._normalized = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">const</span> params: any = extend(extend(&#123;&#125;, current.params), next.params)</span><br><span class="line">    <span class="keyword">if</span> (current.name) &#123;</span><br><span class="line">      <span class="comment">// 这个分支处理的是current有name的情况</span></span><br><span class="line">      <span class="comment">// 比较简单，有name的话，外面的match函数，走含name的路由匹配逻辑就行了</span></span><br><span class="line">      next.name = current.name</span><br><span class="line">      next.params = params</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (current.matched.length) &#123;</span><br><span class="line">      <span class="comment">// 进入到这里，说明current没有name</span></span><br><span class="line">      <span class="comment">// 那就麻烦点了，必须找到current的path才行</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">// 这行代码比较关键</span></span><br><span class="line">      <span class="comment">// current.matched[current.matched.length - 1]</span></span><br><span class="line">      <span class="comment">// 它得到的是一个RouteRecord对象，实际上就是</span></span><br><span class="line">      <span class="comment">// 与当前访问地址所匹配的那个RouteRecord对象</span></span><br><span class="line">      <span class="comment">// 拿到这个对象，就可以拿到它的path属性</span></span><br><span class="line">      <span class="comment">// 这个path属性，是经过path-to-regexp处理过正则表达式</span></span><br><span class="line">      <span class="comment">// 为什么current.matched.length - 1这个位置的就是</span></span><br><span class="line">      <span class="comment">// 当前访问地址对应的RouteRecord对象呢？</span></span><br><span class="line">      <span class="comment">// 这个在本篇后面的其它源码会有解析</span></span><br><span class="line">      <span class="keyword">const</span> rawPath = current.matched[current.matched.length - <span class="number">1</span>].path</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 下面这行代码构造next.path</span></span><br><span class="line">      <span class="comment">// fillParams就是来完成这个构造的</span></span><br><span class="line">      <span class="comment">// fillParams简单来说，第一个参数是RouteRecord的path正则表达式</span></span><br><span class="line">      <span class="comment">// 第二个参数是一个对象，用来填充正则表达式中的命名参数</span></span><br><span class="line">      <span class="comment">// fillParams内部的核心逻辑是在使用path-to-regexp的compile功能</span></span><br><span class="line">      <span class="comment">// 详见：https://github.com/pillarjs/path-to-regexp#compile-reverse-path-to-regexp</span></span><br><span class="line">      next.path = fillParams(rawPath, params, <span class="string">`path <span class="subst">$&#123;current.path&#125;</span>`</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">      warn(<span class="literal">false</span>, <span class="string">`relative params navigation requires a current route.`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> next</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 调用parsePath对path进行解析，</span></span><br><span class="line">  <span class="comment">// 它会返回一个对象，包含path query hash三个部分</span></span><br><span class="line">  <span class="comment">// 比如 next.path是'/some/detail?id=1&amp;name=2#abc</span></span><br><span class="line">  <span class="comment">// 那么parsedPath就是： &#123;path: '/some/detail', query: 'id=1&amp;name=2', hash: '#abc'&#125;</span></span><br><span class="line">  <span class="comment">// 非常像window.location.pathname window.location.search window.location.hash</span></span><br><span class="line">  <span class="keyword">const</span> parsedPath = parsePath(next.path || <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 以当前路由的path作为basePath</span></span><br><span class="line">  <span class="keyword">const</span> basePath = (current &amp;&amp; current.path) || <span class="string">'/'</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这个主要是为了对parsedPath.path作resolvePath的处理</span></span><br><span class="line">  <span class="comment">// resolvePath是为了处理相对路径用的，它会把相对路径变为绝对路径</span></span><br><span class="line">  <span class="comment">// 比如next.path: '../../detail?id=1#abc'</span></span><br><span class="line">  <span class="comment">// 如果next.path是一个/开头的路径，resolvePath是不会处理的</span></span><br><span class="line">  <span class="comment">// 注意append || next.append这个用法</span></span><br><span class="line">  <span class="comment">// resolvePath的第三个参数，首先是以normalizeLocation的第三个参数为准，它为falsy，才会降级使用</span></span><br><span class="line">  <span class="comment">// next.append，那这个又是哪里会用呢？</span></span><br><span class="line">  <span class="comment">// 比如&lt;router-link :to="../a/c" append&gt;&lt;/router-link&gt; 或者是this.$router.push(&#123;path: '../a', append: true&#125;)</span></span><br><span class="line">  <span class="keyword">const</span> path = parsedPath.path</span><br><span class="line">    ? resolvePath(parsedPath.path, basePath, append || next.append)</span><br><span class="line">    : basePath</span><br><span class="line"></span><br><span class="line">  <span class="comment">// resolveQuery是把querystring变为一个js对象用的</span></span><br><span class="line">  <span class="keyword">const</span> query = resolveQuery(</span><br><span class="line">    parsedPath.query,</span><br><span class="line">    next.query,</span><br><span class="line">    router &amp;&amp; router.options.parseQuery</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> hash = next.hash || parsedPath.hash</span><br><span class="line">  <span class="keyword">if</span> (hash &amp;&amp; hash.charAt(<span class="number">0</span>) !== <span class="string">'#'</span>) &#123;</span><br><span class="line">    hash = <span class="string">`#<span class="subst">$&#123;hash&#125;</span>`</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 经过前面的处理，path query hash就都经过vue-router内部的标准化处理了</span></span><br><span class="line">  <span class="comment">// 最终得到一个包含path query hash的Location对象</span></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    _normalized: <span class="literal">true</span>,</span><br><span class="line">    path,</span><br><span class="line">    query,</span><br><span class="line">    hash</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注释里面包含了很多重要的解析，<code>normalizeLocation</code>引用到了其他的一些源码：</p>
+<ul>
+<li>fillParams</li>
+<li>parsePath</li>
+<li>resolvePath</li>
+<li>resolveQuery</li>
+</ul>
+<p>下面一一解析。</p>
+<h4 id="fillParams"><a href="#fillParams" class="headerlink" title="fillParams"></a>fillParams</h4><p><a href="/code/vue-router/source-code/util/params.js">源码文件</a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; warn &#125; <span class="keyword">from</span> <span class="string">'./warn'</span></span><br><span class="line"><span class="keyword">import</span> Regexp <span class="keyword">from</span> <span class="string">'path-to-regexp'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// $flow-disable-line</span></span><br><span class="line"><span class="keyword">const</span> regexpCompileCache: &#123;</span><br><span class="line">  [key: string]: <span class="built_in">Function</span></span><br><span class="line">&#125; = <span class="built_in">Object</span>.create(<span class="literal">null</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">fillParams</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  path: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  params: ?Object,</span></span></span><br><span class="line"><span class="function"><span class="params">  routeMsg: string</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  params = params || &#123;&#125;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> filler =</span><br><span class="line">      regexpCompileCache[path] ||</span><br><span class="line">      (regexpCompileCache[path] = Regexp.compile(path))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Fix #2505 resolving asterisk routes &#123; name: 'not-found', params: &#123; pathMatch: '/not-found' &#125;&#125;</span></span><br><span class="line">    <span class="comment">// and fix #3106 so that you can work with location descriptor object having params.pathMatch equal to empty string</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> params.pathMatch === <span class="string">'string'</span>) params[<span class="number">0</span>] = params.pathMatch</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> filler(params, &#123; <span class="attr">pretty</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">      <span class="comment">// Fix #3072 no warn if `pathMatch` is string</span></span><br><span class="line">      warn(<span class="keyword">typeof</span> params.pathMatch === <span class="string">'string'</span>, <span class="string">`missing param for <span class="subst">$&#123;routeMsg&#125;</span>: <span class="subst">$&#123;e.message&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// delete the 0 if it was added</span></span><br><span class="line">    <span class="keyword">delete</span> params[<span class="number">0</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这段代码其实不难理解，如果你学过<code>path-to-regexp</code>的<a href="https://github.com/pillarjs/path-to-regexp#compile-reverse-path-to-regexp" target="_blank" rel="noopener">用法</a>的话。不过我才发现<code>vue-router</code>用的<code>path-to-regexp</code>还是1.7的版本，而它现在已经是6.x的版本了，所以如果你学最新的<code>path-to-regexp</code>，会跟<code>vue-router</code>里看到的用法有差异。</p>
+<p>上面值得重点解析的是<code>pathMatch</code>的作用，这个作用，要跟<code>vue-router</code>的官方文档联系起来，才能知道它的用途：<br><img src="/2020/04/08/vue-router源码：create-matcher/01.png" width="800"></p>
+<p>假设有一个这样的路由配置：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  path: <span class="string">'/index/*'</span>,</span><br><span class="line">  component: Index,</span><br><span class="line">  name: <span class="string">'index'</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>然后这样跳转路由：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$router.push(&#123;</span><br><span class="line">  name: <span class="string">'index'</span>,</span><br><span class="line">  params: &#123;</span><br><span class="line">    pathMatch: <span class="string">"abc"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>则可以看到<code>fillParams</code>中<code>pathMatch</code>如何发挥作用：<br><img src="/2020/04/08/vue-router源码：create-matcher/02.png" width="800"><br><img src="/2020/04/08/vue-router源码：create-matcher/03.png" width="300"></p>
+<p>说白了<code>pathMatch</code>是<code>vue-router</code>为了与<code>path-to-regexp</code>搭配使用用到的一个属性，在<code>vue-router</code>中，它代表的是与<code>通配符</code>所匹配的部分，而<code>path-to-regexp</code>里面，需要用<code>0</code>来表示这个部分。</p>
+<h4 id="parsePath"><a href="#parsePath" class="headerlink" title="parsePath"></a>parsePath</h4><p>比较简单：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 解析出一个路径中的querystring hash pathname三个信息</span></span><br><span class="line"><span class="comment"> * 如 /list?id=1#abc</span></span><br><span class="line"><span class="comment"> * 最终query: id=1</span></span><br><span class="line"><span class="comment"> * hash: #abc</span></span><br><span class="line"><span class="comment"> * path: /list</span></span><br><span class="line"><span class="comment"> * @param &#123;*&#125; path </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">parsePath</span> (<span class="params">path: string</span>): </span>&#123;</span><br><span class="line">  path: string;</span><br><span class="line">  query: string;</span><br><span class="line">  hash: string;</span><br><span class="line">&#125; &#123;</span><br><span class="line">  <span class="keyword">let</span> hash = <span class="string">''</span></span><br><span class="line">  <span class="keyword">let</span> query = <span class="string">''</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> hashIndex = path.indexOf(<span class="string">'#'</span>)</span><br><span class="line">  <span class="keyword">if</span> (hashIndex &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    hash = path.slice(hashIndex)</span><br><span class="line">    path = path.slice(<span class="number">0</span>, hashIndex)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> queryIndex = path.indexOf(<span class="string">'?'</span>)</span><br><span class="line">  <span class="keyword">if</span> (queryIndex &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    query = path.slice(queryIndex + <span class="number">1</span>)</span><br><span class="line">    path = path.slice(<span class="number">0</span>, queryIndex)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    path,</span><br><span class="line">    query,</span><br><span class="line">    hash</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="resolvePath"><a href="#resolvePath" class="headerlink" title="resolvePath"></a>resolvePath</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这个函数用来解析路径</span></span><br><span class="line"><span class="comment"> * 绝对路径会直接返回</span></span><br><span class="line"><span class="comment"> * 它的主要作用是解析相对路径</span></span><br><span class="line"><span class="comment"> * @param &#123;*&#125; relative </span></span><br><span class="line"><span class="comment"> * @param &#123;*&#125; base </span></span><br><span class="line"><span class="comment"> * @param &#123;*&#125; append </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolvePath</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  relative: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  base: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  append?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> firstChar = relative.charAt(<span class="number">0</span>)</span><br><span class="line">  <span class="comment">// 判断如果是绝对路径直接就返回了</span></span><br><span class="line">  <span class="keyword">if</span> (firstChar === <span class="string">'/'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> relative</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 如果relative是query或hash的形式</span></span><br><span class="line">  <span class="comment">// 如： ?a=1  #abc</span></span><br><span class="line">  <span class="comment">// 则直接把base 和 relative拼接起来</span></span><br><span class="line">  <span class="comment">// 这个反映的是访问地址不变，只是参数和hash发生变化的那种路由</span></span><br><span class="line">  <span class="keyword">if</span> (firstChar === <span class="string">'?'</span> || firstChar === <span class="string">'#'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> base + relative</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> stack = base.split(<span class="string">'/'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// remove trailing segment if:</span></span><br><span class="line">  <span class="comment">// - not appending</span></span><br><span class="line">  <span class="comment">// - appending to trailing slash (last segment is empty)</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// a/b/c/ 这个串被split后stack[stack.length - 1]为</span></span><br><span class="line">  <span class="comment">// ['a','b','c',''] 最后一个空的会被去掉</span></span><br><span class="line">  <span class="comment">// 非append模式，也会把最后一个去掉，差异在哪？</span></span><br><span class="line">  <span class="comment">// base=a/b/c,relative=d,</span></span><br><span class="line">  <span class="comment">// 如果append为真，则最后拼接为a/b/c/d，</span></span><br><span class="line">  <span class="comment">// 如果append为假，则拼接为a/b/c</span></span><br><span class="line">  <span class="comment">// 也就是说非append模式会把base的最后一层给去掉</span></span><br><span class="line">  <span class="keyword">if</span> (!append || !stack[stack.length - <span class="number">1</span>]) &#123;</span><br><span class="line">    stack.pop()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// resolve relative path</span></span><br><span class="line">  <span class="keyword">const</span> segments = relative.replace(<span class="regexp">/^\//</span>, <span class="string">''</span>).split(<span class="string">'/'</span>)</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; segments.length; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> segment = segments[i]</span><br><span class="line">    <span class="keyword">if</span> (segment === <span class="string">'..'</span>) &#123;</span><br><span class="line">      <span class="comment">// '..'代表一个上层目录，遇到一个这个，就要把stack的最后一个目录给弹出</span></span><br><span class="line">      stack.pop()</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (segment !== <span class="string">'.'</span>) &#123;</span><br><span class="line">      <span class="comment">// '.'代表当前目录，遇到一个，就表示继续在当前的目录后面构造路径</span></span><br><span class="line">      stack.push(segment)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ensure leading slash</span></span><br><span class="line">  <span class="comment">// 保证最终函数返回的路径前面有/</span></span><br><span class="line">  <span class="keyword">if</span> (stack[<span class="number">0</span>] !== <span class="string">''</span>) &#123;</span><br><span class="line">    stack.unshift(<span class="string">''</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> stack.join(<span class="string">'/'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把上面这个函数放到浏览器控制台运行，就可以在控制台测试了，示例如下：<br><img src="/2020/04/08/vue-router源码：create-matcher/04.png" width="500"></p>
+<h4 id="resolveQuery"><a href="#resolveQuery" class="headerlink" title="resolveQuery"></a>resolveQuery</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> encodeReserveRE = <span class="regexp">/[!'()*]/g</span></span><br><span class="line"><span class="keyword">const</span> encodeReserveReplacer = <span class="function"><span class="params">c</span> =&gt;</span> <span class="string">'%'</span> + c.charCodeAt(<span class="number">0</span>).toString(<span class="number">16</span>)</span><br><span class="line"><span class="keyword">const</span> commaRE = <span class="regexp">/%2C/g</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 原版注释说的比较清楚了</span></span><br><span class="line"><span class="comment">// fixed encodeURIComponent which is more conformant to RFC3986:</span></span><br><span class="line"><span class="comment">// - escapes [!'()*]</span></span><br><span class="line"><span class="comment">// - preserve commas</span></span><br><span class="line"><span class="keyword">const</span> encode = <span class="function"><span class="params">str</span> =&gt;</span> <span class="built_in">encodeURIComponent</span>(str)</span><br><span class="line">  .replace(encodeReserveRE, encodeReserveReplacer)</span><br><span class="line">  .replace(commaRE, <span class="string">','</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> decode = <span class="built_in">decodeURIComponent</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 这个函数比较简单</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveQuery</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  query: ?string,</span></span></span><br><span class="line"><span class="function"><span class="params">  extraQuery: Dictionary&lt;string&gt; = &#123;&#125;,</span></span></span><br><span class="line"><span class="function"><span class="params">  _parseQuery: ?Function</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Dictionary</span>&lt;<span class="title">string</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> parse = _parseQuery || parseQuery</span><br><span class="line">  <span class="keyword">let</span> parsedQuery</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    parsedQuery = parse(query || <span class="string">''</span>)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; warn(<span class="literal">false</span>, e.message)</span><br><span class="line">    parsedQuery = &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> extraQuery) &#123;</span><br><span class="line">    parsedQuery[key] = extraQuery[key]</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> parsedQuery</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">parseQuery</span> (<span class="params">query: string</span>): <span class="title">Dictionary</span>&lt;<span class="title">string</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> res = &#123;&#125;</span><br><span class="line"></span><br><span class="line">  query = query.trim().replace(<span class="regexp">/^(\?|#|&amp;)/</span>, <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!query) &#123;</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  query.split(<span class="string">'&amp;'</span>).forEach(<span class="function"><span class="params">param</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> parts = param.replace(<span class="regexp">/\+/g</span>, <span class="string">' '</span>).split(<span class="string">'='</span>)</span><br><span class="line">    <span class="keyword">const</span> key = decode(parts.shift())</span><br><span class="line">    <span class="keyword">const</span> val = parts.length &gt; <span class="number">0</span></span><br><span class="line">      ? decode(parts.join(<span class="string">'='</span>))</span><br><span class="line">      : <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (res[key] === <span class="literal">undefined</span>) &#123;</span><br><span class="line">      res[key] = val</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(res[key])) &#123;</span><br><span class="line">      res[key].push(val)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      res[key] = [res[key], val]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> res</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/08/vue-router源码：create-matcher/05.png" width="500"></p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p><code>normalizeLocation</code>是进行路由匹配的前置工作，它会准备好路由匹配时所需要的<code>params query hash path</code>这四个非常关键的信息，只有这些信息明确了，下一步做匹配才能准确地处理。</p>
+<h3 id="有name定义的路由匹配解析"><a href="#有name定义的路由匹配解析" class="headerlink" title="有name定义的路由匹配解析"></a>有<code>name</code>定义的路由匹配解析</h3><p>下面就开始看<code>match</code>的代码，首先是这段：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调用normalizeLocation处理raw</span></span><br><span class="line"><span class="keyword">const</span> location = normalizeLocation(raw, currentRoute, <span class="literal">false</span>, router)</span><br><span class="line"><span class="comment">// 尝试结构name属性</span></span><br><span class="line"><span class="keyword">const</span> &#123; name &#125; = location</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理name有值的情况</span></span><br><span class="line"><span class="keyword">if</span> (name) &#123;</span><br><span class="line">  <span class="comment">// 直接从nameMap解析出RouteRecord对象：record变量</span></span><br><span class="line">  <span class="comment">// nameMap是create-route-map这个源码中创建出的数据</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> record = nameMap[name]</span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">    warn(record, <span class="string">`Route with name '<span class="subst">$&#123;name&#125;</span>' does not exist`</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// record为空，则创建一个空的Route对象</span></span><br><span class="line">  <span class="keyword">if</span> (!record) <span class="keyword">return</span> _createRoute(<span class="literal">null</span>, location)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// record.regex拿到的是经过path-to-regexp处理过的RouteConfig上的path正则表达式</span></span><br><span class="line">  <span class="comment">// record.regex.keys也是path-to-regexp处理后才有的，命名参数的数组</span></span><br><span class="line">  <span class="comment">// filter(key=&gt;!key.optional)去掉可选参数</span></span><br><span class="line">  <span class="comment">// paramNames得到的是record这个路由中定义的动态参数名数组</span></span><br><span class="line">  <span class="keyword">const</span> paramNames = record.regex.keys</span><br><span class="line">    .filter(<span class="function"><span class="params">key</span> =&gt;</span> !key.optional)</span><br><span class="line">    .map(<span class="function"><span class="params">key</span> =&gt;</span> key.name)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> location.params !== <span class="string">'object'</span>) &#123;</span><br><span class="line">    location.params = &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 底下这一段把currentRoute上有的动态参数，但是这些参数不在paramNames中，给复制出来</span></span><br><span class="line">  <span class="comment">// 为什么要有这个呢？对于那种有chidren配置的routes非常有用</span></span><br><span class="line">  <span class="comment">// 假如当前匹配的路径是 /list/:type 已经有一个参数type</span></span><br><span class="line">  <span class="comment">// 即将匹配的是路径是一个子路由，比如 /list/:type/detail/:id， 显然这个子路由需要把父路径中的参数type</span></span><br><span class="line">  <span class="comment">// 给同步进来，这样匹配的路由就包含type和id两个参数了</span></span><br><span class="line">  <span class="keyword">if</span> (currentRoute &amp;&amp; <span class="keyword">typeof</span> currentRoute.params === <span class="string">'object'</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> currentRoute.params) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!(key <span class="keyword">in</span> location.params) &amp;&amp; paramNames.indexOf(key) &gt; <span class="number">-1</span>) &#123;</span><br><span class="line">        location.params[key] = currentRoute.params[key]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这一步是构造path</span></span><br><span class="line">  <span class="comment">// 调用的是normalizeLocation里面学过的fillParams函数</span></span><br><span class="line">  <span class="comment">// 为什么要调用？因为根据name匹配的路由，实际上没有和当前访问的路径关联</span></span><br><span class="line">  <span class="comment">// 拿到的record.path也只是一个正则表达式，不是真正的访问地址</span></span><br><span class="line">  <span class="comment">// 所以需要用fillParams填充到record.path里面，得到一个真正的访问地址</span></span><br><span class="line">  location.path = fillParams(record.path, location.params, <span class="string">`named route "<span class="subst">$&#123;name&#125;</span>"`</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 调用_createRoute来创建Route对象来完成路由匹配</span></span><br><span class="line">  <span class="keyword">return</span> _createRoute(record, location, redirectedFrom)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这部分要点都写在注释里面了，还有一个点<code>_createRoute</code>在后面的部分会介绍。</p>
+<h3 id="没有name定义的路由匹配解析"><a href="#没有name定义的路由匹配解析" class="headerlink" title="没有name定义的路由匹配解析"></a>没有<code>name</code>定义的路由匹配解析</h3><p>源码部分：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(name) &#123;</span><br><span class="line">    <span class="comment">// 省略</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (location.path) &#123;</span><br><span class="line">   <span class="comment">// 如果前面normalizeLocation返回的Location数据有path</span></span><br><span class="line">   <span class="comment">// 则会进入这个分支</span></span><br><span class="line">  location.params = &#123;&#125;</span><br><span class="line"> <span class="comment">// 这个for循环遍历的是谁？</span></span><br><span class="line"> <span class="comment">// 是pathList</span></span><br><span class="line"> <span class="comment">// pathList是create-route-map在另外一个角度构造的RouteRecord数组</span></span><br><span class="line"> <span class="comment">// for循环按照先后循序，对location.path进行匹配</span></span><br><span class="line"> <span class="comment">// 这就是vue-router官方文档中解释的路由匹配的优先级是按照RouteConfig的先后关系来处理的根本原因</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; pathList.length; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> path = pathList[i]</span><br><span class="line">    <span class="keyword">const</span> record = pathMap[path]</span><br><span class="line">    <span class="comment">// 通过matchRoute这个函数来判断当前遍历的RouteRecord是否与location.path匹配，</span></span><br><span class="line">    <span class="comment">// 如果匹配则会调用_createRoute来创建Route对象</span></span><br><span class="line">    <span class="comment">// matchRoute还有另外一个作用，就是会解析出location.path里面的动态参数的值，然后放到location.params对象里面</span></span><br><span class="line">    <span class="comment">// 所以matchRoute调用时，第三个参数传入的是location.params</span></span><br><span class="line">    <span class="keyword">if</span> (matchRoute(record.regex, location.path, location.params)) &#123;</span><br><span class="line">      <span class="keyword">return</span> _createRoute(record, location, redirectedFrom)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="matchRoute"><a href="#matchRoute" class="headerlink" title="matchRoute"></a>matchRoute</h4><p>源码部分：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">matchRoute</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  regex: RouteRegExp,</span></span></span><br><span class="line"><span class="function"><span class="params">  path: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  params: Object</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> m = path.match(regex)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!m) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!params) &#123;</span><br><span class="line">    <span class="comment">// 这个分支似乎没有可能被执行 matchRoute函数只在当前文件中被调用，且只存在一处调用</span></span><br><span class="line">    <span class="comment">// 而该处必传params</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>, len = m.length; i &lt; len; ++i) &#123;</span><br><span class="line">    <span class="keyword">const</span> key = regex.keys[i - <span class="number">1</span>]</span><br><span class="line">    <span class="comment">// 为什么要加 typeof m[i] === 'string' 呢</span></span><br><span class="line">    <span class="comment">// 从正则match出来的，难道还会有非string的东西吗</span></span><br><span class="line">    <span class="keyword">const</span> val = <span class="keyword">typeof</span> m[i] === <span class="string">'string'</span> ? <span class="built_in">decodeURIComponent</span>(m[i]) : m[i]</span><br><span class="line">    <span class="keyword">if</span> (key) &#123;</span><br><span class="line">      <span class="comment">// Fix #1994: using * with props: true generates a param named 0</span></span><br><span class="line">      <span class="comment">// 如果路由的path中用了*号，则*号会被path-to-regxp生成一个名为0的参数</span></span><br><span class="line">      <span class="comment">// 参考官方文档：https://github.com/pillarjs/path-to-regexp/tree/v1.7.0#asterisk</span></span><br><span class="line">      params[key.name || <span class="string">'pathMatch'</span>] = val</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个<code>matchRoute</code>里面对<code>params</code>的处理，跟<code>fillParams</code>有点相反的味道，那边是需要传入<code>{params: {pathMatch: &#39;aa&#39;}}</code>，这样就能把正则表达式里面的通配符，替换为<code>pathMatch</code>所对应的值；而<code>matchRoute</code>里面，当<code>key.name ===  0</code>时，则是在<code>params</code>中添加一个名为<code>pathMatch</code>的数据。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">params[key.name || <span class="string">'pathMatch'</span>] = val</span><br></pre></td></tr></table></figure></p>
+<p>为什么<code>key.name</code>会为0？这也是跟<code>path-to-regexp</code>有关，它会把通配符解析为一个<code>named 0</code>的参数，在<code>regex.keys</code>中可以看到这个。<br>调试示意，下面的调试中最终params会变为<code>{pathMatch: &#39;abc&#39;}</code>:<br><img src="/2020/04/08/vue-router源码：create-matcher/06.png" width="800"></p>
+<p><code>pathMatch</code>有什么好处呢？在app中通过<code>this.$route.params.pathMatch</code>就能拿到通配符匹配的路径部分了。</p>
+<h3 id="createRoute的解析"><a href="#createRoute的解析" class="headerlink" title="_createRoute的解析"></a>_createRoute的解析</h3><p><code>_createRoute</code>是创建Route对象的入口：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_createRoute</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  record: ?RouteRecord,</span></span></span><br><span class="line"><span class="function"><span class="params">  location: Location,</span></span></span><br><span class="line"><span class="function"><span class="params">  redirectedFrom?: Location</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Route</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (record &amp;&amp; record.redirect) &#123;</span><br><span class="line">    <span class="keyword">return</span> redirect(record, redirectedFrom || location)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (record &amp;&amp; record.matchAs) &#123;</span><br><span class="line">    <span class="keyword">return</span> alias(record, location, record.matchAs)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> createRoute(record, location, redirectedFrom, router)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>源码其实很简单。 它是分三个逻辑来走的，分别是：</p>
+<ul>
+<li>正常的</li>
+<li>带别名的</li>
+<li>带重定向的</li>
+</ul>
+<h4 id="正常的"><a href="#正常的" class="headerlink" title="正常的"></a>正常的</h4><p>这种直接就进入<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> createRoute(record, location, redirectedFrom, router)</span><br></pre></td></tr></table></figure></p>
+<p>重点就是学习<code>createRoute</code>这个函数，这个函数的作用是构造Route对象，相关的代码解析如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; stringifyQuery &#125; <span class="keyword">from</span> <span class="string">'./query'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> trailingSlashRE = <span class="regexp">/\/?$/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意这几个参数的类型</span></span><br><span class="line"><span class="comment">// 之前的代码分析都已经学过了</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createRoute</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  record: ?RouteRecord,</span></span></span><br><span class="line"><span class="function"><span class="params">  location: Location,</span></span></span><br><span class="line"><span class="function"><span class="params">  redirectedFrom?: ?Location,</span></span></span><br><span class="line"><span class="function"><span class="params">  router?: VueRouter</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Route</span> </span>&#123;</span><br><span class="line">  <span class="comment">// stringifyQuery是前面resolveQuery的逆操作</span></span><br><span class="line">  <span class="comment">// resolveQuery把querystring变为对象</span></span><br><span class="line">  <span class="comment">// stringifyQuery把对象变为querystring</span></span><br><span class="line">  <span class="keyword">const</span> stringifyQuery = router &amp;&amp; router.options.stringifyQuery</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> query: any = location.query || &#123;&#125;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    query = clone(query)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 下面几个数据属性应该都很熟悉</span></span><br><span class="line">  <span class="comment">// 只要vue-router用的多的话</span></span><br><span class="line">  <span class="keyword">const</span> route: Route = &#123;</span><br><span class="line">    name: location.name || (record &amp;&amp; record.name),</span><br><span class="line">    meta: (record &amp;&amp; record.meta) || &#123;&#125;,</span><br><span class="line">    path: location.path || <span class="string">'/'</span>,</span><br><span class="line">    hash: location.hash || <span class="string">''</span>,</span><br><span class="line">    query,</span><br><span class="line">    params: location.params || &#123;&#125;,</span><br><span class="line">    fullPath: getFullPath(location, stringifyQuery),<span class="comment">//构造出带querystring和hash的全路径</span></span><br><span class="line">    matched: record ? formatMatch(record) : [] <span class="comment">// formatMatch很关键，matched是Route对象上用来存储所匹配的RouteRecord对象的数组</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (redirectedFrom) &#123;</span><br><span class="line">    <span class="comment">// 重定向的路由会进入这里</span></span><br><span class="line">    <span class="comment">// 看到route.redirectedFrom也是一个带querystring和hash的全路径</span></span><br><span class="line">    route.redirectedFrom = getFullPath(redirectedFrom, stringifyQuery)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 最后返回一个被freeze的对象，就是最终的Route对象</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.freeze(route)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 深层拷贝</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">clone</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">    <span class="keyword">return</span> value.map(clone)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (value &amp;&amp; <span class="keyword">typeof</span> value === <span class="string">'object'</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> res = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> value) &#123;</span><br><span class="line">      res[key] = clone(value[key])</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> value</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// the starting route that represents the initial state</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> START = createRoute(<span class="literal">null</span>, &#123;</span><br><span class="line">  path: <span class="string">'/'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对于嵌套子路由来说，子路由匹配到的RouteRecord除了自己，还有上级的</span></span><br><span class="line"><span class="comment">// formatMatch构造出了一个数组，通过record与parent record的关系</span></span><br><span class="line"><span class="comment">// 按照嵌套关系，把子路由关联的所有RouteRecord存到了数组里面</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">formatMatch</span> (<span class="params">record: ?RouteRecord</span>): <span class="title">Array</span>&lt;<span class="title">RouteRecord</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> res = []</span><br><span class="line">  <span class="keyword">while</span> (record) &#123;</span><br><span class="line">    res.unshift(record)</span><br><span class="line">    record = record.parent</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> res</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getFullPath</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  &#123; path, query = &#123;&#125;, hash = <span class="string">''</span> &#125;,</span></span></span><br><span class="line"><span class="function"><span class="params">  _stringifyQuery</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stringify = _stringifyQuery || stringifyQuery</span><br><span class="line">  <span class="keyword">return</span> (path || <span class="string">'/'</span>) + stringify(query) + hash</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>formatMatch</code>构造出的这个数组，第一元素一定是嵌套路由中最顶层的那个路由对应的RouteRecord对象，而最后一个则代表当前匹配的路由所对应的RouteRecord。这就是其他代码里，为啥总是用<code>route.matched[route.matched.length - 1]</code>来查找当前route对应的<code>RouteRecord</code>的原因。</p>
+<p><code>stringifyQuery</code>源码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">stringifyQuery</span> (<span class="params">obj: Dictionary&lt;string&gt;</span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> res = obj ? <span class="built_in">Object</span>.keys(obj).map(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> val = obj[key]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (val === <span class="literal">undefined</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (val === <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> encode(key)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(val)) &#123;</span><br><span class="line">      <span class="keyword">const</span> result = []</span><br><span class="line">      val.forEach(<span class="function"><span class="params">val2</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (val2 === <span class="literal">undefined</span>) &#123;</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (val2 === <span class="literal">null</span>) &#123;</span><br><span class="line">          result.push(encode(key))</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          result.push(encode(key) + <span class="string">'='</span> + encode(val2))</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="keyword">return</span> result.join(<span class="string">'&amp;'</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> encode(key) + <span class="string">'='</span> + encode(val)</span><br><span class="line">  &#125;).filter(<span class="function"><span class="params">x</span> =&gt;</span> x.length &gt; <span class="number">0</span>).join(<span class="string">'&amp;'</span>) : <span class="literal">null</span></span><br><span class="line">  <span class="keyword">return</span> res ? <span class="string">`?<span class="subst">$&#123;res&#125;</span>`</span> : <span class="string">''</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="带别名的"><a href="#带别名的" class="headerlink" title="带别名的"></a>带别名的</h4><p>这种走的是：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (record &amp;&amp; record.matchAs) &#123;</span><br><span class="line">  <span class="keyword">return</span> alias(record, location, record.matchAs)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>record.matchAs</code>实际上就是当前这个路由，真正匹配到的路由，所对应的path regexp。在学习<code>create-route-map</code>了解了<code>routeRecord</code>的构造之后，就知道matchAs是个啥了。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">alias</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  record: RouteRecord,</span></span></span><br><span class="line"><span class="function"><span class="params">  location: Location,</span></span></span><br><span class="line"><span class="function"><span class="params">  matchAs: string</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Route</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 用params填充matchAs，得到真正的访问路径</span></span><br><span class="line">  <span class="keyword">const</span> aliasedPath = fillParams(matchAs, location.params, <span class="string">`aliased route with path "<span class="subst">$&#123;matchAs&#125;</span>"`</span>)</span><br><span class="line">  <span class="comment">// 再用aliasedPath做一次match</span></span><br><span class="line">  <span class="keyword">const</span> aliasedMatch = match(&#123;</span><br><span class="line">    _normalized: <span class="literal">true</span>,</span><br><span class="line">    path: aliasedPath</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">if</span> (aliasedMatch) &#123;</span><br><span class="line">    <span class="keyword">const</span> matched = aliasedMatch.matched</span><br><span class="line">    <span class="keyword">const</span> aliasedRecord = matched[matched.length - <span class="number">1</span>]</span><br><span class="line">    location.params = aliasedMatch.params</span><br><span class="line">   </span><br><span class="line">    <span class="comment">//为啥前面得到了aliasedMatch还要进这个if分支处理呢</span></span><br><span class="line">    <span class="comment">//为了得到aliasedRecord</span></span><br><span class="line">    <span class="comment">//然后aliasedRecord和location来创建最终的Route对象</span></span><br><span class="line">    <span class="comment">//这个Route对象的与aliasedMatch的主要区别就是</span></span><br><span class="line">    <span class="comment">//这个Route对象内的path信息，都是跟浏览器当前访问地址一致的，而aliasedMatch内的是不一致的</span></span><br><span class="line">    <span class="comment">//这就是vue-router官方文档所说的：</span></span><br><span class="line">    <span class="comment">// /a 的别名是 /b，意味着，当用户访问 /b 时，URL 会保持为 /b，但是路由匹配则为 /a，就像用户访问 /a 一样。</span></span><br><span class="line">    <span class="keyword">return</span> _createRoute(aliasedRecord, location)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> _createRoute(<span class="literal">null</span>, location)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="带重定向的"><a href="#带重定向的" class="headerlink" title="带重定向的"></a>带重定向的</h4><p>这个场景的进入：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (record &amp;&amp; record.redirect) &#123;</span><br><span class="line">  <span class="comment">//这里为什么是redirectedFrom || location</span></span><br><span class="line">  <span class="comment">//在一开始的时候redirectedFrom肯定是没有的，location将会作为第一层重定向的原始Location对象</span></span><br><span class="line">  <span class="comment">//但是如果有多层重定向呢？</span></span><br><span class="line">  <span class="comment">//要始终维护最开始的那个Location对象作为最终的Route对象创建时需要的那个</span></span><br><span class="line">  <span class="comment">//就要借助于redirect与match函数，在内部将最原始的location传来传去了</span></span><br><span class="line">  <span class="keyword">return</span> redirect(record, redirectedFrom || location)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>redirect</code>对应的源码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">redirect</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    record: RouteRecord,</span></span></span><br><span class="line"><span class="function"><span class="params">    location: Location</span></span></span><br><span class="line"><span class="function"><span class="params">  </span>): <span class="title">Route</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//从下面两行代码可以看到routes配置中，redirect是可以配置为函数的</span></span><br><span class="line">    <span class="keyword">const</span> originalRedirect = record.redirect</span><br><span class="line">    <span class="keyword">let</span> redirect = <span class="keyword">typeof</span> originalRedirect === <span class="string">'function'</span></span><br><span class="line">      ? originalRedirect(createRoute(record, location, <span class="literal">null</span>, router))</span><br><span class="line">      : originalRedirect</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> redirect === <span class="string">'string'</span>) &#123;</span><br><span class="line">      redirect = &#123; <span class="attr">path</span>: redirect &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!redirect || <span class="keyword">typeof</span> redirect !== <span class="string">'object'</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">        warn(</span><br><span class="line">          <span class="literal">false</span>, <span class="string">`invalid redirect option: <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(redirect)&#125;</span>`</span></span><br><span class="line">        )</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> _createRoute(<span class="literal">null</span>, location)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> re: <span class="built_in">Object</span> = redirect</span><br><span class="line">    <span class="keyword">const</span> &#123; name, path &#125; = re</span><br><span class="line">    <span class="keyword">let</span> &#123; query, hash, params &#125; = location</span><br><span class="line">    <span class="comment">// 从这里可以看到，重定向的时候，query hash params如果在redirect配置时有，</span></span><br><span class="line">    <span class="comment">// 也会取代当前的location中对应的数据</span></span><br><span class="line">    query = re.hasOwnProperty(<span class="string">'query'</span>) ? re.query : query</span><br><span class="line">    hash = re.hasOwnProperty(<span class="string">'hash'</span>) ? re.hash : hash</span><br><span class="line">    params = re.hasOwnProperty(<span class="string">'params'</span>) ? re.params : params</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (name) &#123;</span><br><span class="line">      <span class="comment">// 下面比较简单，就是通过nameMap找到重定向的目标RouterRecord</span></span><br><span class="line">      <span class="comment">// 再做一次match</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">// resolved named direct</span></span><br><span class="line">      <span class="keyword">const</span> targetRecord = nameMap[name]</span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">        assert(targetRecord, <span class="string">`redirect failed: named route "<span class="subst">$&#123;name&#125;</span>" not found.`</span>)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 注意match的四个参数是location，不是空值了</span></span><br><span class="line">      <span class="comment">// 所以这次match如果还遇到重定向，那_createRoute里面的redirectFrom就有值</span></span><br><span class="line">      <span class="keyword">return</span> match(&#123;</span><br><span class="line">        _normalized: <span class="literal">true</span>,</span><br><span class="line">        name,</span><br><span class="line">        query,</span><br><span class="line">        hash,</span><br><span class="line">        params</span><br><span class="line">      &#125;, <span class="literal">undefined</span>, location)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (path) &#123;</span><br><span class="line">      <span class="comment">// 1. resolve relative redirect</span></span><br><span class="line">      <span class="comment">// resolveRecordPath内部还是在调用resolvePath</span></span><br><span class="line">      <span class="comment">// 但是调用resolvePath的第二个参数 也就是那个base参数，是用record.parent.path</span></span><br><span class="line">      <span class="comment">// 说明重定向的path，如果是相对路径的话，是根据record.parent.path来进行相对的</span></span><br><span class="line">      <span class="comment">// 当然前提是record.parent是存在的</span></span><br><span class="line">      <span class="keyword">const</span> rawPath = resolveRecordPath(path, record)</span><br><span class="line">      <span class="comment">// 2. resolve params</span></span><br><span class="line">      <span class="keyword">const</span> resolvedPath = fillParams(rawPath, params, <span class="string">`redirect route with path "<span class="subst">$&#123;rawPath&#125;</span>"`</span>)</span><br><span class="line">      <span class="comment">// 3. rematch with existing query and hash</span></span><br><span class="line">      <span class="keyword">return</span> match(&#123;</span><br><span class="line">        _normalized: <span class="literal">true</span>,</span><br><span class="line">        path: resolvedPath,</span><br><span class="line">        query,</span><br><span class="line">        hash</span><br><span class="line">      &#125;, <span class="literal">undefined</span>, location)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">        warn(<span class="literal">false</span>, <span class="string">`invalid redirect option: <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(redirect)&#125;</span>`</span>)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> _createRoute(<span class="literal">null</span>, location)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resolveRecordPath</span> (<span class="params">path: string, record: RouteRecord</span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> resolvePath(path, record.parent ? record.parent.path : <span class="string">'/'</span>, <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意，<code>recorde.redirect</code>的几种情况：</p>
+<ul>
+<li>字符串，如 <code>{redirect: &#39;/&#39;}</code></li>
+<li>对象，如 <code>{redirect: {name: &#39;index&#39;}}</code>或<code>{redirect: {path: &#39;/&#39;}}</code></li>
+<li>函数，如 <code>{redirect: function(){ return {name: &#39;index&#39;} }}</code></li>
+</ul>
+<h3 id="参数部分的解析"><a href="#参数部分的解析" class="headerlink" title="参数部分的解析"></a>参数部分的解析</h3><p>回看<code>match</code>函数的参数部分：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">match</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  raw: RawLocation,</span></span></span><br><span class="line"><span class="function"><span class="params">  currentRoute?: Route,</span></span></span><br><span class="line"><span class="function"><span class="params">  redirectedFrom?: Location</span></span></span><br><span class="line"><span class="function"><span class="params"></span>)</span></span><br></pre></td></tr></table></figure></p>
+<p>第三个参数其实只有在<code>redirect</code>场景中才会存在，而且只有在发生<code>redirect</code>导致进入了<code>redirect</code>函数，在<code>redirect</code>函数内部再次发生<code>match</code>调用时，才会有值。看了<code>vue-router</code>其它所有的代码，有依赖<code>match</code>函数的地方， 直接调用<code>match</code>时，第三个参数都是不传的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+            <a href="/tags/vue-router/" rel="tag"># vue-router</a>
+          
+            <a href="/tags/vue-router源码/" rel="tag"># vue-router源码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/06/macOS下virtua-box中的centos的磁盘空间扩容/" rel="next" title="macOS下virtua box中的centos的磁盘空间扩容">
+                <i class="fa fa-chevron-left"></i> macOS下virtua box中的centos的磁盘空间扩容
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">79</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#matcher对象的使用时机"><span class="nav-number">1.</span> <span class="nav-text">matcher对象的使用时机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#create-matcher文件的基本结构"><span class="nav-number">2.</span> <span class="nav-text">create-matcher文件的基本结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#match函数的解析"><span class="nav-number">3.</span> <span class="nav-text">match函数的解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#normalizeLocation的解析"><span class="nav-number">3.1.</span> <span class="nav-text">normalizeLocation的解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fillParams"><span class="nav-number">3.1.1.</span> <span class="nav-text">fillParams</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#parsePath"><span class="nav-number">3.1.2.</span> <span class="nav-text">parsePath</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#resolvePath"><span class="nav-number">3.1.3.</span> <span class="nav-text">resolvePath</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#resolveQuery"><span class="nav-number">3.1.4.</span> <span class="nav-text">resolveQuery</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">3.1.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有name定义的路由匹配解析"><span class="nav-number">3.2.</span> <span class="nav-text">有name定义的路由匹配解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#没有name定义的路由匹配解析"><span class="nav-number">3.3.</span> <span class="nav-text">没有name定义的路由匹配解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#matchRoute"><span class="nav-number">3.3.1.</span> <span class="nav-text">matchRoute</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#createRoute的解析"><span class="nav-number">3.4.</span> <span class="nav-text">_createRoute的解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#正常的"><span class="nav-number">3.4.1.</span> <span class="nav-text">正常的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#带别名的"><span class="nav-number">3.4.2.</span> <span class="nav-text">带别名的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#带重定向的"><span class="nav-number">3.4.3.</span> <span class="nav-text">带重定向的</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数部分的解析"><span class="nav-number">3.5.</span> <span class="nav-text">参数部分的解析</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
