@@ -268,7 +268,7 @@ export function normalizeLocation (
       // 它得到的是一个RouteRecord对象，实际上就是
       // 与当前访问地址所匹配的那个RouteRecord对象
       // 拿到这个对象，就可以拿到它的path属性
-      // 这个path属性，是经过path-to-regexp处理过正则表达式
+      // 这个path属性，是经过path-to-regexp处理过得到的正则表达式
       // 为什么current.matched.length - 1这个位置的就是
       // 当前访问地址对应的RouteRecord对象呢？
       // 这个在本篇后面的其它源码会有解析
@@ -276,7 +276,7 @@ export function normalizeLocation (
 
       // 下面这行代码构造next.path
       // fillParams就是来完成这个构造的
-      // fillParams简单来说，第一个参数是RouteRecord的path正则表达式
+      // fillParams简单来说，第一个参数是RouteRecord的正则表达式path
       // 第二个参数是一个对象，用来填充正则表达式中的命名参数
       // fillParams内部的核心逻辑是在使用path-to-regexp的compile功能
       // 详见：https://github.com/pillarjs/path-to-regexp#compile-reverse-path-to-regexp
@@ -484,7 +484,7 @@ export function resolvePath (
   // 非append模式，也会把最后一个去掉，差异在哪？
   // base=a/b/c,relative=d,
   // 如果append为真，则最后拼接为a/b/c/d，
-  // 如果append为假，则拼接为a/b/c
+  // 如果append为假，则拼接为a/b/d
   // 也就是说非append模式会把base的最后一层给去掉
   if (!append || !stack[stack.length - 1]) {
     stack.pop()
