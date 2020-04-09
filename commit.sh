@@ -1,3 +1,3 @@
 #!/bin/bash
 
-git add -A && git commit -m "update site" && git push
+hexo clean && hexo deploy
