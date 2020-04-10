@@ -99,18 +99,18 @@
 
 
 
-  <meta name="description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中let 和 const 命令我的ES6入门学习规划">
-<meta name="keywords" content="ES6学习笔记">
+  <meta name="description" content="vue-router源码解析系列。这是第四篇。本篇介绍源码中的resolve-components.js，它是vue-router里面解析异步组件的函数。本系列解析的是官方git库中3.1.6的版本源码。">
+<meta name="keywords" content="Vue,vue-router,vue-router源码">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ES6 let&amp;const声明变量">
-<meta property="og:url" content="http://blog.liuyunzhuge.com/2019/05/10/ES6-let-const声明变量/index.html">
+<meta property="og:title" content="vue-router源码：resolveAsyncComponents">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/04/10/vue-router源码：resolveAsyncComponents/index.html">
 <meta property="og:site_name" content="流云诸葛">
-<meta property="og:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中let 和 const 命令我的ES6入门学习规划">
+<meta property="og:description" content="vue-router源码解析系列。这是第四篇。本篇介绍源码中的resolve-components.js，它是vue-router里面解析异步组件的函数。本系列解析的是官方git库中3.1.6的版本源码。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-11T12:55:53.211Z">
+<meta property="og:updated_time" content="2020-04-10T04:56:31.988Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ES6 let&amp;const声明变量">
-<meta name="twitter:description" content="注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：  阮一峰ES6的书籍中let 和 const 命令我的ES6入门学习规划">
+<meta name="twitter:title" content="vue-router源码：resolveAsyncComponents">
+<meta name="twitter:description" content="vue-router源码解析系列。这是第四篇。本篇介绍源码中的resolve-components.js，它是vue-router里面解析异步组件的函数。本系列解析的是官方git库中3.1.6的版本源码。">
 
 
 
@@ -118,7 +118,7 @@
 
   
   
-  <link rel="canonical" href="http://blog.liuyunzhuge.com/2019/05/10/ES6-let-const声明变量/">
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/04/10/vue-router源码：resolveAsyncComponents/">
 
 
 
@@ -128,7 +128,7 @@
   };
 </script>
 
-  <title>ES6 let&const声明变量 | 流云诸葛</title>
+  <title>vue-router源码：resolveAsyncComponents | 流云诸葛</title>
   
 
 
@@ -394,7 +394,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2019/05/10/ES6-let-const声明变量/">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/04/10/vue-router源码：resolveAsyncComponents/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content>
@@ -411,7 +411,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">ES6 let&const声明变量
+          <h1 class="post-title" itemprop="name headline">vue-router源码：resolveAsyncComponents
 
               
             
@@ -437,7 +437,7 @@
                 
               
 
-              <time title="创建时间：2019-05-09 17:35:30" itemprop="dateCreated datePublished" datetime="2019-05-09T17:35:30Z">2019-05-09</time>
+              <time title="创建时间：2020-04-10 12:56:31" itemprop="dateCreated datePublished" datetime="2020-04-10T12:56:31Z">2020-04-10</time>
             
 
             
@@ -462,14 +462,14 @@
                   ，
                 
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/" itemprop="url" rel="index"><span itemprop="name">ES6</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a></span>
 
                 
                 
                   ，
                 
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/ES6/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/vue-router/" itemprop="url" rel="index"><span itemprop="name">vue-router</span></a></span>
 
                 
                 
@@ -504,38 +504,12 @@
       
 
       
-        <p>注：这是一篇学习笔记，记录自己在ES6学习过程中按照自己的思路觉得应该记录的一些要点，方便以后查看和复习。参考：</p>
-<blockquote>
-<p>阮一峰ES6的书籍中<a href="http://es6.ruanyifeng.com/#docs/let" target="_blank" rel="noopener">let 和 const 命令</a><br><a href="/2019/05/01/ES6入门学习的规划/" title="我的ES6入门学习规划">我的ES6入门学习规划</a></p>
-</blockquote>
+        <p>vue-router源码解析系列。这是第四篇。本篇介绍源码中的<code>resolve-components.js</code>，它是<code>vue-router</code>里面解析异步组件的函数。本系列解析的是官方git库中3.1.6的版本源码。</p>
 <a id="more"></a>
-<h2 id="基本点"><a href="#基本点" class="headerlink" title="基本点"></a>基本点</h2><p>let与const基本上没区别；只是const声明的是常量，它后面的变量一旦赋值以后，不允许重新赋值。共同特性如下：</p>
-<ol>
-<li>声明的变量仅在代码块内有效；</li>
-<li>不存在变量提升（不会提升到作用域顶部进行提前声明）</li>
-<li>暂时性死区（从代码块开始位置到变量完成声明之前，变量不可用）</li>
-<li>不能重复声明同一个变量</li>
-</ol>
-<h2 id="for循环要点"><a href="#for循环要点" class="headerlink" title="for循环要点"></a>for循环要点</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, tom = &#123;&#125;; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">  a[i] = &#123;</span><br><span class="line">      sayHi: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">'I \'m '</span> + (i+<span class="number">1</span>));</span><br><span class="line">      &#125;,</span><br><span class="line">      tom: tom</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">a[<span class="number">6</span>].sayHi(); <span class="comment">// I 'm 7</span></span><br><span class="line"><span class="built_in">console</span>.log(a[<span class="number">5</span>].tom === a[<span class="number">6</span>].tom); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-<p>以上的i变量如果用var声明，会导致最后a数组每个元素sayHi的时候，输出的是同一个i值。 用let声明没有此问题，这是因为let与const给js的作用域带来了块级作用域，for后面的花括号表示这个块级作用域，for循环次数代表了for循环过程中产生的块级作用域个数。 上例中因此创建的作用域有10个，而如果用var声明，只会产生一个作用域。也就是说let的方式，在for循环内部声明的函数都不是在同一个作用域内定义的，所以它们可以单独访问各自作用域里面的i；而var的方式，定义出来的内部函数都是在同一个作用域中的，只有借助立即执行的函数表达式才能让每次循环定义的函数分布到单独的作用域当中。所以let的方式，等同于下面的var方式：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, tom = &#123;&#125;; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">  a[i] = &#123;</span><br><span class="line">      sayHi: (<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">              <span class="built_in">console</span>.log(<span class="string">'I \'m '</span> + (i+<span class="number">1</span>));</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;)(i),</span><br><span class="line">      tom: tom</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">a[<span class="number">6</span>].sayHi(); <span class="comment">// I 'm 7</span></span><br><span class="line"><span class="built_in">console</span>.log(a[<span class="number">5</span>].tom === a[<span class="number">6</span>].tom); <span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
-<p>实际上for循环这个情况，我觉得还跟i是一个基础类型值有关系，上例中tom就不会在每个作用域里面都复制一份；而且如果从作用域角度考虑，i既然是一个外层作用域声明的变量，那么应该在循环里所有的作用域内都有效才对；猜测是ES6对于for循环有做特殊处理。</p>
-<p>另外for循环用了let之后，for部分会形成一个外层作用域，循环体是一个子作用域：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">  <span class="keyword">let</span> i = <span class="string">'abc'</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// abc</span></span><br><span class="line"><span class="comment">// abc</span></span><br><span class="line"><span class="comment">// abc</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="块级作用域"><a href="#块级作用域" class="headerlink" title="块级作用域"></a>块级作用域</h2><p>ES6有了块级作用域。注意点：不要将函数声明在块级作用域内，而是在顶层作用域或者是外部函数作用域中去声明函数。</p>
-<h2 id="Javascript声明变量的6种方式："><a href="#Javascript声明变量的6种方式：" class="headerlink" title="Javascript声明变量的6种方式："></a>Javascript声明变量的6种方式：</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="function"><span class="keyword">function</span> <span class="title">let</span> <span class="title">const</span> <span class="title">class</span> <span class="title">import</span></span></span><br></pre></td></tr></table></figure>
-<h2 id="顶层对象的属性"><a href="#顶层对象的属性" class="headerlink" title="顶层对象的属性"></a>顶层对象的属性</h2><p>var function声明的变量会变为顶层对象的属性，let const class声明的不会。</p>
-<h2 id="顶层对象与globalThis提案"><a href="#顶层对象与globalThis提案" class="headerlink" title="顶层对象与globalThis提案"></a>顶层对象与globalThis提案</h2><p>浏览器、webworker、node等js运行环境中，顶层对象的含义不一致：</p>
-<ul>
-<li>浏览器中可以用window表示顶层对象，webworker与node不可以</li>
-<li>浏览器与webworker可以用self表示顶层对象，node不可以</li>
-<li>node可以用global表示顶层对象，浏览器和webworker不可以</li>
-</ul>
-<p>this可以拿到顶层对象，但是也不完全可靠：</p>
-<ul>
-<li>全局环境中，浏览器的this会返回顶层对象，但是node和es6的module都会返回当前模块</li>
-<li>函数作为非对象方法运行时，return this能返回顶层对象，但是严格模式下会返回undefined</li>
-<li>new Function(‘return this’) 始终能返回顶层对象，但是浏览器启用了内容安全策略，会无效</li>
-</ul>
-<p>现在有一个提案，在语言标准的层面，引入globalThis作为顶层对象。也就是说，任何环境下，globalThis都是存在的，都可以从它拿到顶层对象，指向全局环境下的this。</p>
+<p>源码链接：<a href="/code/vue-router/source-code/util/resolve-components.js">resolve-components.js</a>。源码里面用的是typescript，但是不影响阅读。</p>
+<p>代码解析如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* @flow */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; _Vue &#125; <span class="keyword">from</span> <span class="string">'../install'</span></span><br><span class="line"><span class="keyword">import</span> &#123; warn, isError &#125; <span class="keyword">from</span> <span class="string">'./warn'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveAsyncComponents</span> (<span class="params">matched: Array&lt;RouteRecord&gt;</span>): <span class="title">Function</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> hasAsync = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">let</span> pending = <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> error = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// matched 可能包含多个RouteRecord</span></span><br><span class="line">    <span class="comment">// 每个RouteRecord可能有多个component的定义</span></span><br><span class="line">    <span class="comment">// flatMapComponents的价值就是要处理所有</span></span><br><span class="line">    flatMapComponents(matched, (def, _, match, key) =&gt; &#123;</span><br><span class="line">      <span class="comment">// if it's a function and doesn't have cid attached,</span></span><br><span class="line">      <span class="comment">// assume it's an async component resolve function.</span></span><br><span class="line">      <span class="comment">// we are not using Vue's default async resolving mechanism because</span></span><br><span class="line">      <span class="comment">// we want to halt the navigation until the incoming component has been resolved.</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> def === <span class="string">'function'</span> &amp;&amp; def.cid === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        hasAsync = <span class="literal">true</span></span><br><span class="line">        pending++</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 这个函数在def被调用</span></span><br><span class="line">        <span class="comment">// 并且关联的异步组件已经完成加载时会被调用</span></span><br><span class="line">        <span class="comment">// 最终把解析到的异步组件用来添加到match.components中</span></span><br><span class="line">        <span class="keyword">const</span> resolve = once(<span class="function"><span class="params">resolvedDef</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">if</span> (isESModule(resolvedDef)) &#123;</span><br><span class="line">            resolvedDef = resolvedDef.default</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// save resolved on async factory in case it's used elsewhere</span></span><br><span class="line">          def.resolved = <span class="keyword">typeof</span> resolvedDef === <span class="string">'function'</span></span><br><span class="line">            ? resolvedDef</span><br><span class="line">            : _Vue.extend(resolvedDef)</span><br><span class="line">          match.components[key] = resolvedDef</span><br><span class="line">          pending--</span><br><span class="line">          <span class="keyword">if</span> (pending &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            next()</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 这个函数在异步组件解析失败时调用</span></span><br><span class="line">        <span class="keyword">const</span> reject = once(<span class="function"><span class="params">reason</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">const</span> msg = <span class="string">`Failed to resolve async component <span class="subst">$&#123;key&#125;</span>: <span class="subst">$&#123;reason&#125;</span>`</span></span><br><span class="line">          process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; warn(<span class="literal">false</span>, msg)</span><br><span class="line">          <span class="keyword">if</span> (!error) &#123;</span><br><span class="line">            error = isError(reason)</span><br><span class="line">              ? reason</span><br><span class="line">              : <span class="keyword">new</span> <span class="built_in">Error</span>(msg)</span><br><span class="line">            next(error)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> res</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="comment">// 调用def，resolve和reject作为回调函数传入进去</span></span><br><span class="line">          <span class="comment">// 至于resolve和reject会不会在def内部被调用</span></span><br><span class="line">          <span class="comment">// 取决于def</span></span><br><span class="line">          res = def(resolve, reject)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          reject(e)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (res) &#123;</span><br><span class="line">          <span class="comment">// 以下的情况处理的是def返回的含有Promise实例时</span></span><br><span class="line">          <span class="comment">// 通过Promise来触发resolve和reject</span></span><br><span class="line">          <span class="keyword">if</span> (<span class="keyword">typeof</span> res.then === <span class="string">'function'</span>) &#123;</span><br><span class="line">            res.then(resolve, reject)</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// new syntax in Vue 2.3</span></span><br><span class="line">            <span class="keyword">const</span> comp = res.component</span><br><span class="line">            <span class="keyword">if</span> (comp &amp;&amp; <span class="keyword">typeof</span> comp.then === <span class="string">'function'</span>) &#123;</span><br><span class="line">              comp.then(resolve, reject)</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!hasAsync) next()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> hasSymbol =</span><br><span class="line">  <span class="keyword">typeof</span> <span class="built_in">Symbol</span> === <span class="string">'function'</span> &amp;&amp;</span><br><span class="line">  <span class="keyword">typeof</span> <span class="built_in">Symbol</span>.toStringTag === <span class="string">'symbol'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isESModule</span> (<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> obj.__esModule || (hasSymbol &amp;&amp; obj[<span class="built_in">Symbol</span>.toStringTag] === <span class="string">'Module'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// in Webpack 2, require.ensure now also returns a Promise</span></span><br><span class="line"><span class="comment">// so the resolve/reject functions may get called an extra time</span></span><br><span class="line"><span class="comment">// if the user uses an arrow function shorthand that happens to</span></span><br><span class="line"><span class="comment">// return that Promise.</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">once</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> called = <span class="literal">false</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (called) <span class="keyword">return</span></span><br><span class="line">    called = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, args)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上代码不是很难理解，补充一点使用上的内容：<br>要在<code>vue-router</code>中使用异步组件，有两种做法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Index = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: "Index" */</span> <span class="string">'../pages/Index.vue'</span>)</span><br><span class="line"><span class="keyword">const</span> List = <span class="function"><span class="params">r</span> =&gt;</span> <span class="built_in">require</span>.ensure([], () =&gt; r(<span class="built_in">require</span>(<span class="string">'../pages/List.vue'</span>)), <span class="string">'List'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这两种做法，有一个共同点，就是<code>Index List</code>都是一个函数，所以在上面的代码中，判断一个组件是否为异步组件，是根据<code>def</code>是否为一个函数来判断的，如果<code>def</code>不是函数，那么<code>resolveAsyncComponents</code>的并没有什么作用。</p>
 
       
     </div>
@@ -559,7 +533,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/ES6学习笔记/" rel="tag"># ES6学习笔记</a>
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+            <a href="/tags/vue-router/" rel="tag"># vue-router</a>
+          
+            <a href="/tags/vue-router源码/" rel="tag"># vue-router源码</a>
           
         </div>
       
@@ -572,8 +550,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/01/ES6入门学习的规划/" rel="next" title="ES6入门学习的规划">
-                <i class="fa fa-chevron-left"></i> ES6入门学习的规划
+              <a href="/2020/04/10/vue-router源码：History-js/" rel="next" title="vue-router源码：History.js">
+                <i class="fa fa-chevron-left"></i> vue-router源码：History.js
               </a>
             
           </div>
@@ -581,10 +559,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/13/ES6-数组解构-变量解构/" rel="prev" title="ES6 数组解构&变量解构">
-                ES6 数组解构&变量解构 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -635,17 +609,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -821,23 +786,6 @@
         </div>
       </div>
 
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本点"><span class="nav-number">1.</span> <span class="nav-text">基本点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#for循环要点"><span class="nav-number">2.</span> <span class="nav-text">for循环要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#块级作用域"><span class="nav-number">3.</span> <span class="nav-text">块级作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Javascript声明变量的6种方式："><span class="nav-number">4.</span> <span class="nav-text">Javascript声明变量的6种方式：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顶层对象的属性"><span class="nav-number">5.</span> <span class="nav-text">顶层对象的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顶层对象与globalThis提案"><span class="nav-number">6.</span> <span class="nav-text">顶层对象与globalThis提案</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
       
 
       
