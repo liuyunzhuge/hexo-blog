@@ -7,7 +7,8 @@ tags:
   - vue-router源码
 categories:
   - Javascript
-  - router
+  - Vue
+  - vue-router
 ---
 
 
