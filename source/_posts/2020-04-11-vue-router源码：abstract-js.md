@@ -12,7 +12,7 @@ date: 2020-04-11 16:01:59
 ---
 
 
-vue-router源码解析系列。这是第八篇。本篇介绍源码中的`abstract.js`，是`vue-router`在非浏览器环境如node提供的`History`子类实现，`Histor`类是路由跳转的核心类，在之前的博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。
+vue-router源码解析系列。这是第十篇。本篇介绍源码中的`abstract.js`，是`vue-router`在非浏览器环境如node提供的`History`子类实现，`Histor`类是路由跳转的核心类，在之前的博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。
 
 <!-- more -->
 源码链接：[abstract.js](/code/vue-router/source-code/history/abstract.js)。源码里面用的是typescript，但是不影响阅读。
