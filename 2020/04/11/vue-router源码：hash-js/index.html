@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="vue-router源码解析系列。这是第九篇。本篇介绍源码中的hash.js，它其实比较简单，是vue-router在mode:hash模式下的History子类实现，Histor类是路由跳转的核心类，在之前的博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。">
+<meta name="keywords" content="Vue,vue-router,vue-router源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue-router源码：hash.js">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/04/11/vue-router源码：hash-js/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="vue-router源码解析系列。这是第九篇。本篇介绍源码中的hash.js，它其实比较简单，是vue-router在mode:hash模式下的History子类实现，Histor类是路由跳转的核心类，在之前的博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-11T04:02:09.712Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vue-router源码：hash.js">
+<meta name="twitter:description" content="vue-router源码解析系列。这是第九篇。本篇介绍源码中的hash.js，它其实比较简单，是vue-router在mode:hash模式下的History子类实现，Histor类是路由跳转的核心类，在之前的博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/04/11/vue-router源码：hash-js/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>vue-router源码：hash.js | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">存在的痕迹</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">18</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">85</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/04/11/vue-router源码：hash-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vue-router源码：hash.js
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-11 12:02:09" itemprop="dateCreated datePublished" datetime="2020-04-11T12:02:09Z">2020-04-11</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/Vue/vue-router/" itemprop="url" rel="index"><span itemprop="name">vue-router</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>vue-router源码解析系列。这是第九篇。本篇介绍源码中的<code>hash.js</code>，它其实比较简单，是<code>vue-router</code>在<code>mode:hash</code>模式下的<code>History</code>子类实现，<code>Histor</code>类是路由跳转的核心类，在之前的博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。</p>
+<a id="more"></a>
+<p>源码链接：<a href="/code/vue-router/source-code/history/hash.js">hash.js</a>。源码里面用的是typescript，但是不影响阅读。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">HashHistory</span> <span class="keyword">extends</span> <span class="title">History</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span> (router: Router, base: ?string, fallback: boolean) &#123;</span><br><span class="line">    <span class="keyword">super</span>(router, base)</span><br><span class="line">    <span class="comment">// check history fallback deeplinking</span></span><br><span class="line">    <span class="keyword">if</span> (fallback &amp;&amp; checkFallback(<span class="keyword">this</span>.base)) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ensureSlash()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 下面的英文注释结合 router类中对history的初始化可知一二</span></span><br><span class="line">  <span class="comment">// setupHashListener 将在app进入的首次路由完成时才会初始化</span></span><br><span class="line">      <span class="comment">/* </span></span><br><span class="line"><span class="comment">    if (history instanceof HashHistory) &#123;</span></span><br><span class="line"><span class="comment">      const setupHashListener = () =&gt; &#123;</span></span><br><span class="line"><span class="comment">        history.setupListeners()</span></span><br><span class="line"><span class="comment">      &#125;</span></span><br><span class="line"><span class="comment">      history.transitionTo(</span></span><br><span class="line"><span class="comment">        history.getCurrentLocation(),</span></span><br><span class="line"><span class="comment">        setupHashListener,</span></span><br><span class="line"><span class="comment">        setupHashListener</span></span><br><span class="line"><span class="comment">      )</span></span><br><span class="line"><span class="comment">    &#125; */</span></span><br><span class="line">  <span class="comment">// this is delayed until the app mounts</span></span><br><span class="line">  <span class="comment">// to avoid the hashchange listener being fired too early</span></span><br><span class="line">  setupListeners () &#123;</span><br><span class="line">    <span class="keyword">const</span> router = <span class="keyword">this</span>.router</span><br><span class="line">    <span class="keyword">const</span> expectScroll = router.options.scrollBehavior</span><br><span class="line">    <span class="keyword">const</span> supportsScroll = supportsPushState &amp;&amp; expectScroll</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (supportsScroll) &#123;</span><br><span class="line">      setupScroll()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">window</span>.addEventListener(</span><br><span class="line">      supportsPushState ? <span class="string">'popstate'</span> : <span class="string">'hashchange'</span>,</span><br><span class="line">      () =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> current = <span class="keyword">this</span>.current</span><br><span class="line">        <span class="keyword">if</span> (!ensureSlash()) &#123;</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.transitionTo(getHash(), route =&gt; &#123;</span><br><span class="line">          <span class="keyword">if</span> (supportsScroll) &#123;</span><br><span class="line">            handleScroll(<span class="keyword">this</span>.router, route, current, <span class="literal">true</span>)</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">if</span> (!supportsPushState) &#123;</span><br><span class="line">            replaceHash(route.fullPath)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  push (location: RawLocation, onComplete?: <span class="built_in">Function</span>, onAbort?: <span class="built_in">Function</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; <span class="attr">current</span>: fromRoute &#125; = <span class="keyword">this</span></span><br><span class="line">    <span class="keyword">this</span>.transitionTo(</span><br><span class="line">      location,</span><br><span class="line">      route =&gt; &#123;</span><br><span class="line">        pushHash(route.fullPath)</span><br><span class="line">        handleScroll(<span class="keyword">this</span>.router, route, fromRoute, <span class="literal">false</span>)</span><br><span class="line">        onComplete &amp;&amp; onComplete(route)</span><br><span class="line">      &#125;,</span><br><span class="line">      onAbort</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  replace (location: RawLocation, onComplete?: <span class="built_in">Function</span>, onAbort?: <span class="built_in">Function</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; <span class="attr">current</span>: fromRoute &#125; = <span class="keyword">this</span></span><br><span class="line">    <span class="keyword">this</span>.transitionTo(</span><br><span class="line">      location,</span><br><span class="line">      route =&gt; &#123;</span><br><span class="line">        replaceHash(route.fullPath)</span><br><span class="line">        handleScroll(<span class="keyword">this</span>.router, route, fromRoute, <span class="literal">false</span>)</span><br><span class="line">        onComplete &amp;&amp; onComplete(route)</span><br><span class="line">      &#125;,</span><br><span class="line">      onAbort</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  go (n: number) &#123;</span><br><span class="line">    <span class="built_in">window</span>.history.go(n)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 见上上篇博客中对html5.js中的ensureURL的解析</span></span><br><span class="line">  ensureURL (push?: boolean) &#123;</span><br><span class="line">    <span class="keyword">const</span> current = <span class="keyword">this</span>.current.fullPath</span><br><span class="line">    <span class="keyword">if</span> (getHash() !== current) &#123;</span><br><span class="line">      push ? pushHash(current) : replaceHash(current)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  getCurrentLocation () &#123;</span><br><span class="line">    <span class="keyword">return</span> getHash()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkFallback</span> (<span class="params">base</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// getLocation是html5.js也就是Html5History那个子类里面定义的</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> location = getLocation(base)</span><br><span class="line">  <span class="keyword">if</span> (!<span class="regexp">/^\/#/</span>.test(location)) &#123;</span><br><span class="line">    <span class="built_in">window</span>.location.replace(cleanPath(base + <span class="string">'/#'</span> + location))</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ensureSlash</span> (<span class="params"></span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> path = getHash()</span><br><span class="line">  <span class="keyword">if</span> (path.charAt(<span class="number">0</span>) === <span class="string">'/'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 此处感觉有点问题</span></span><br><span class="line">  <span class="comment">// 如果当前访问的是http://localhost:8080/#abc</span></span><br><span class="line">  <span class="comment">// 会被改为http://localhost:8080/#/abc</span></span><br><span class="line">  <span class="comment">// 在history初始化的时候，这么做是有意义的，但是在setUpListener里面还这么做感觉就不对了</span></span><br><span class="line">  replaceHash(<span class="string">'/'</span> + path)</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这个函数是从浏览器当前地址中解析出路由地址</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">getHash</span> (<span class="params"></span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="comment">// We can't use window.location.hash here because it's not</span></span><br><span class="line">  <span class="comment">// consistent across browsers - Firefox will pre-decode it!</span></span><br><span class="line">  <span class="keyword">let</span> href = <span class="built_in">window</span>.location.href</span><br><span class="line">  <span class="keyword">const</span> index = href.indexOf(<span class="string">'#'</span>)</span><br><span class="line">  <span class="comment">// empty path</span></span><br><span class="line">  <span class="keyword">if</span> (index &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="string">''</span></span><br><span class="line"></span><br><span class="line">  href = href.slice(index + <span class="number">1</span>)</span><br><span class="line">  <span class="comment">// decode the hash but not the search or hash</span></span><br><span class="line">  <span class="comment">// as search(query) is already decoded</span></span><br><span class="line">  <span class="comment">// https://github.com/vuejs/vue-router/issues/2708</span></span><br><span class="line">  <span class="keyword">const</span> searchIndex = href.indexOf(<span class="string">'?'</span>)</span><br><span class="line">  <span class="keyword">if</span> (searchIndex &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> hashIndex = href.indexOf(<span class="string">'#'</span>)</span><br><span class="line">    <span class="keyword">if</span> (hashIndex &gt; <span class="number">-1</span>) &#123;</span><br><span class="line">      href = <span class="built_in">decodeURI</span>(href.slice(<span class="number">0</span>, hashIndex)) + href.slice(hashIndex)</span><br><span class="line">    &#125; <span class="keyword">else</span> href = <span class="built_in">decodeURI</span>(href)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    href = <span class="built_in">decodeURI</span>(href.slice(<span class="number">0</span>, searchIndex)) + href.slice(searchIndex)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> href</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getUrl</span> (<span class="params">path</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> href = <span class="built_in">window</span>.location.href</span><br><span class="line">  <span class="keyword">const</span> i = href.indexOf(<span class="string">'#'</span>)</span><br><span class="line">  <span class="keyword">const</span> base = i &gt;= <span class="number">0</span> ? href.slice(<span class="number">0</span>, i) : href</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;base&#125;</span>#<span class="subst">$&#123;path&#125;</span>`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// pushHash跟底部的replaceHash都是优先利用history api来更新访问地址</span></span><br><span class="line"><span class="comment">// 只有当pushstate不支持的时候，才会使用原始方法更新hash 如location.hash = 以及 location.replace</span></span><br><span class="line"><span class="comment">// pushHash会保证一定会添加新的浏览器历史记录</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pushHash</span> (<span class="params">path</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (supportsPushState) &#123;</span><br><span class="line">    pushState(getUrl(path))</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">window</span>.location.hash = path</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// replaceHash会保证一定不会添加浏览器历史记录</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">replaceHash</span> (<span class="params">path</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (supportsPushState) &#123;</span><br><span class="line">    replaceState(getUrl(path))</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">window</span>.location.replace(getUrl(path))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="为什么还是优先使用history而不是纯hash"><a href="#为什么还是优先使用history而不是纯hash" class="headerlink" title="为什么还是优先使用history而不是纯hash"></a>为什么还是优先使用history而不是纯hash</h2><p>这是因为hash模式，本身就是可以用history来实现的，不一定是<code>hashchange</code>这种比较旧的方式，通常选择hash模式，只是单纯地为了让应用能够兼容更早的浏览器版本，那如果一个浏览器已经完成支持<code>history pushState relaceState</code>和<code>popstate</code>事件了，那用最新的api去实现hash模式，显然更合适。</p>
+<p>为什么能这么做呢？最重要的是为什么能用<code>popstate</code>事件取代<code>hashchange</code>事件呢，难道改变hash的时候除了触发<code>hashchange</code>，还会触发<code>popstate</code>事件吗？</p>
+<p>确实如此，看了自己一篇16年的旧博客，发现一些对<code>hashchange popstate</code>事件有用的知识点：<a href="https://www.cnblogs.com/lyzg/archive/2016/10/21/5960609.html" target="_blank" rel="noopener">理解浏览器历史记录（2）-hashchange、pushState</a></p>
+<blockquote>
+<p>window.onpopstate事件<br>这个事件触发的时机比较有特点：<br>一、history.pushState和history.replaceState都不会触发这个事件<br>二、仅在浏览器前进后退操作、history.go/back/forward调用、hashchange的时候触发</p>
+</blockquote>
+<p>这就明白为啥<code>HashHistory</code>里面在<code>supportsPushState</code>为真的情况下，可以用<code>popstate</code>事件代替<code>hashchange</code>事件的原因了。</p>
+<h2 id="构造函数中的要点"><a href="#构造函数中的要点" class="headerlink" title="构造函数中的要点"></a>构造函数中的要点</h2><p>在构造函数中，有一段：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (fallback &amp;&amp; checkFallback(<span class="keyword">this</span>.base)) &#123;</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先<code>fallback</code>是<code>Router</code>类中传进来的：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以下代码有简化</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> mode = options.mode || <span class="string">'hash'</span></span><br><span class="line"><span class="keyword">this</span>.fallback = mode === <span class="string">'history'</span> &amp;&amp; !supportsPushState &amp;&amp; options.fallback !== <span class="literal">false</span></span><br><span class="line"><span class="comment">// 向后兼容</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.fallback) &#123;</span><br><span class="line">  mode = <span class="string">'hash'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">switch</span> (mode) &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="string">'hash'</span>:</span><br><span class="line">    <span class="keyword">this</span>.history = <span class="keyword">new</span> HashHistory(<span class="keyword">this</span>, options.base, <span class="keyword">this</span>.fallback)</span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>fallback</code>代表了兼容的意思，那就意味着有可能当前的访问地址还是非hash的模式，所以在<code>HashHistory</code>的构造函数中，在检测到<code>fallback</code>的情况下加了一个<code>checkFallback</code>的处理，这个会将当前非hash的访问地址，变为hash模式的访问地址。比如一开始访问的是<code>http://localhost:8080/</code>会被修改为<code>http://localhost:8080/#/</code>。</p>
+<p>构造函数中还有1个<code>this.ensureSlash</code>的调用，这个也是修正访问地址的作用，比如你访问的是<code>http://localhost:8080/#list</code>，则会被换成<code>http://localhost:8080/#/list</code>，然后才去执行初始化路由跳转，否则跟<code>http://localhost:8080/#list</code>去访问，是匹配不到路由的。</p>
+<h2 id="pushHash和replaceHash会导致hashchange被触发吗"><a href="#pushHash和replaceHash会导致hashchange被触发吗" class="headerlink" title="pushHash和replaceHash会导致hashchange被触发吗"></a>pushHash和replaceHash会导致<code>hashchange</code>被触发吗</h2><p>经过测试<code>supportsPushState</code>为<code>true</code>的情况下，那么<code>pushHash</code>和<code>replaceHash</code>最终是通过<code>history.pushState</code>和<code>history.replaceState</code>完成的hash更新，这两个api不会触发<code>hashchange</code>事件，所以<code>popstate</code>事件也不会触发。</p>
+<p>但是在<code>supportsPushState</code>为<code>false</code>的情况下，就不一样了：<code>pushHash</code>和<code>replaceHash</code>最终是通过<code>location.hash赋值</code>和<code>location.replace</code>完成的hash更新，这两个方法完成的hash更新。 那么问题来了？如果代码中通过<code>this.push</code>和<code>this.replace</code>触发路由，那么由于<code>hashchange</code>也会执行，所以会导致listener中的<code>this.transitionTo</code>也会执行，会有问题吗？<br>不会。最终即使进入了回调，执行到this.transitionTo的调用，最终也会因为NavigationDuplicated取消掉由于hashchange事件触发的路由。</p>
+<h2 id="setupListeners"><a href="#setupListeners" class="headerlink" title="setupListeners"></a>setupListeners</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(</span><br><span class="line">  supportsPushState ? <span class="string">'popstate'</span> : <span class="string">'hashchange'</span>,</span><br><span class="line">  () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> current = <span class="keyword">this</span>.current</span><br><span class="line">    <span class="keyword">if</span> (!ensureSlash()) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.transitionTo(getHash(), route =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (supportsScroll) &#123;</span><br><span class="line">        handleScroll(<span class="keyword">this</span>.router, route, current, <span class="literal">true</span>)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (!supportsPushState) &#123;</span><br><span class="line">        replaceHash(route.fullPath)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>首先是这个<code>this.ensureSlash</code>的调用，它不单是返回<code>true false</code>，里面还有<code>replaceHash</code>的处理，如果手动修改<code>hash</code>为一个非<code>/</code>开始的字符串，就会发现<code>this.ensureSlash</code>返回<code>false</code>，路由中止，同时浏览器访问地址中的hash会自动以<code>/</code>开头。如果它<code>this.ensureSlash</code>不返回<code>false</code>，而是在保证了hash的<code>/</code>开头的逻辑后，继续走<code>this.transitionTo</code>的处理，我感觉更有用一点。现在直接<code>return</code>了，就看不出作用了。</p>
+<p>这个<code>ensureSlash</code>也有别人对它的疑问：<a href="https://github.com/vuejs/vue-router/issues/2183" target="_blank" rel="noopener">参见issue</a></p>
+<p>然后是这个调用：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!supportsPushState) &#123;</span><br><span class="line">  replaceHash(route.fullPath)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为啥在纯hash模式下，最后还有加<code>replaceHash</code>的调用呢？因为在每个路由成功后，都有<code>this.ensureURL</code>的处理阿，个人认为它是多余的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+            <a href="/tags/vue-router/" rel="tag"># vue-router</a>
+          
+            <a href="/tags/vue-router源码/" rel="tag"># vue-router源码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/11/vue-router源码：html5-js/" rel="next" title="vue-router源码：html5.js">
+                <i class="fa fa-chevron-left"></i> vue-router源码：html5.js
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">85</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么还是优先使用history而不是纯hash"><span class="nav-number">1.</span> <span class="nav-text">为什么还是优先使用history而不是纯hash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构造函数中的要点"><span class="nav-number">2.</span> <span class="nav-text">构造函数中的要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pushHash和replaceHash会导致hashchange被触发吗"><span class="nav-number">3.</span> <span class="nav-text">pushHash和replaceHash会导致hashchange被触发吗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setupListeners"><span class="nav-number">4.</span> <span class="nav-text">setupListeners</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
