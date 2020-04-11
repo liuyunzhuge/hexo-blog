@@ -200,3 +200,6 @@ if (getLocation(this.base) !== this.current.fullPath) {
 }
 ```
 `ensureURL`的作用就如`ensure`的含义一样，是为了保证浏览器访问地址与`vue-router`内的状态保持一致，所在`vue-route`在3处意味着路由终止的位置都有加入这个调用。
+
+## 特殊的isSameRoute场景
+有一个场景，一定会触发`isSameRoute`。先`push`3条，`/detail/1, /detail/2, /detail/3`，此时浏览器访问位于`/detail/3`，然后点击2次后退按钮，此时浏览器访问位于`/detail/1`，然后在这个页面内触发`replace('/detail/2')`，那么此时的浏览器历史记录就变为了：`/detail/2, /detail/2, /detail/3`，并且浏览器访问位于第1条`/detail/2`，此时在页面内如果触发`push('/detail/2)`，就会触发`same route`。
