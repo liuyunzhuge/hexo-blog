@@ -106,13 +106,13 @@ export class AbstractHistory extends History {
 ## go的处理
 不同于`Html5History HashHistory`可以直接使用`window.history.go`来实现`go`这个方法，`AbstractHistory`必须自己来实现`go`方法。不过看`go`的代码，不太明白一点：为什么不直接用`transitionTo`这个统一的路由跳转入口，而是要使用更加底层的`confirmTranstion`方法。
 
-还有这行代码:
+这行代码:
 ```js
         if (isExtendedError(NavigationDuplicated, err)) {
           this.index = targetIndex
         }
 ```
-感觉可以不加，因为触发了`NavigationDuplicated`，说明路由被`abort`了，路由被`abort`的话，`index`为啥需要改变呢。
+找到这行代码的添加的原因了： [bug fix](https://github.com/vuejs/vue-router/pull/2771)、[issue](https://github.com/vuejs/vue-router/issues/2607)
 
 不过`go`里面的处理有一点是对的，就是不改变`stack`数组的内容，只调整访问的指针`index`。这是与浏览器历史记录管理的特点相符的。曾经写过一篇跟浏览器记录访问相关的文章，可以帮助了解这一点：[理解浏览器的历史记录](https://www.cnblogs.com/lyzg/p/5941919.html)
 
@@ -120,4 +120,8 @@ export class AbstractHistory extends History {
 `replace`方法看起来对于历史记录的管理，跟浏览器的管理方式不同，就是它会删除掉当前记录之后的记录，而不是仅仅替换当前记录，这一点在注释中有说明。
 
 ## 后记
-这个类暂时没看到它的具体用处，所以以上还存在一些不明朗的地方。
+之前对`AbstractHistory`的作用不是很明确，看了几个issue，发现这个类实际上可以在浏览器环境中使用的，只不过用它的话，就会完全脱离浏览器地址以及浏览器历史记录，感觉适合在一个没有去掉地址栏、没有前进后退按钮的网页环境中运行，比如开发一个桌面web应用程序的时候，所以这个类是有价值的，不能仅仅把它看成是node中才能使用。
+
+不过对于这个类的理解还是存在两个不解的点：
+1. replace处理方式
+2. go方法内为啥不用transitionTo
