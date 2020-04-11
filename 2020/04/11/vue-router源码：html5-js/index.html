@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="vue-router源码解析系列。这是第八篇。本篇介绍源码中的html5.js，它其实比较简单，是vue-router在mode:history模式下的History子类实现，Histor类是路由跳转的核心类，在上上篇博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-04-11T04:05:50.908Z">
+<meta property="og:updated_time" content="2020-04-11T07:56:08.367Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="vue-router源码：html5.js">
 <meta name="twitter:description" content="vue-router源码解析系列。这是第八篇。本篇介绍源码中的html5.js，它其实比较简单，是vue-router在mode:history模式下的History子类实现，Histor类是路由跳转的核心类，在上上篇博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。">
@@ -316,7 +316,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">85</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">86</span></a>
 
   </li>
         
@@ -518,6 +518,7 @@
 <p>这个钩子将会阻止浏览器离开当前页面。那么浏览器离开当前页面的方式有几种？其实就是两种，一是通过<code>this.push</code>和<code>this.replace</code>这两个途径主动前往其他页面；二是通过浏览器的前进或后退（用户通过浏览器交互或者是window.history.go）。第一种离开方式，最终对浏览器历史记录的修改，是受代码控制的，并且是在路由完成之后才修改，所以<code>beforeRouteLeave</code>中的<code>next(false)</code>执行时，浏览器历史记录并未发生变化，<code>this.updateRoute</code>也没有执行，所以<code>this.ensureURL(true)</code>等于没做什么事情；但是第二种离开方式，就不一样了，是浏览器的行为先触发，也就是说历史记录是先被浏览器修改了，然后再借助<code>popstate</code>事件通知<code>vue-router</code>，那么当<code>beforeRouteLeave</code>触发时，浏览器历史记录已经被修改了，此时<code>next(false)</code>中断了路由，如果不做<code>this.ensureURL(true)</code>的处理，就会导致浏览器的历史记录，与<code>vue-router</code>中的路由页面不一致，而借助<code>this.ensureURL(true)</code>可以在这种情况，自动把浏览器回退的那条记录添加回来，就保证浏览器记录与<code>vue-router</code>的<code>hook</code>控制的一致性。</p>
 <p>那么前两个<code>ensureURL</code>调用有什么作用呢？我目前理解的是为了保证浏览器访问地址与<code>this.current.fullPath</code>的一致性，因为在路由过程中，不排除有其它js代码他通过<code>history.replaceState</code>修改了浏览器地址，导致浏览器访问地址出现与<code>this.current.fullPath</code>不一致的情况，从正常角度来说，如果一个app内只有<code>vue-router</code>在使用<code>history api</code>，那前两处<code>ensureURL</code>的调用就是多余的，但是加了也没什么关系，因为它大部分情况下，都不会执行，有这个if逻辑在呢：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (getLocation(<span class="keyword">this</span>.base) !== <span class="keyword">this</span>.current.fullPath) &#123;</span><br><span class="line">      <span class="keyword">const</span> current = cleanPath(<span class="keyword">this</span>.base + <span class="keyword">this</span>.current.fullPath)</span><br><span class="line">      push ? pushState(current) : replaceState(current)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p><code>ensureURL</code>的作用就如<code>ensure</code>的含义一样，是为了保证浏览器访问地址与<code>vue-router</code>内的状态保持一致，所在<code>vue-route</code>在3处意味着路由终止的位置都有加入这个调用。</p>
+<h2 id="特殊的isSameRoute场景"><a href="#特殊的isSameRoute场景" class="headerlink" title="特殊的isSameRoute场景"></a>特殊的isSameRoute场景</h2><p>有一个场景，一定会触发<code>isSameRoute</code>。先<code>push</code>3条，<code>/detail/1, /detail/2, /detail/3</code>，此时浏览器访问位于<code>/detail/3</code>，然后点击2次后退按钮，此时浏览器访问位于<code>/detail/1</code>，然后在这个页面内触发<code>replace(&#39;/detail/2&#39;)</code>，那么此时的浏览器历史记录就变为了：<code>/detail/2, /detail/2, /detail/3</code>，并且浏览器访问位于第1条<code>/detail/2</code>，此时在页面内如果触发<code>push(&#39;/detail/2)</code>，就会触发<code>same route</code>。</p>
 
       
     </div>
@@ -648,7 +649,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">85</span>
+                    <span class="site-state-item-count">86</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -816,7 +817,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ensureURL的作用"><span class="nav-number">1.</span> <span class="nav-text">ensureURL的作用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ensureURL的作用"><span class="nav-number">1.</span> <span class="nav-text">ensureURL的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊的isSameRoute场景"><span class="nav-number">2.</span> <span class="nav-text">特殊的isSameRoute场景</span></a></li></ol></div>
             
 
           </div>
