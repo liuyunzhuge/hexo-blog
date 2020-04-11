@@ -12,7 +12,7 @@ date: 2020-04-10 12:56:31
 ---
 
 
-vue-router源码解析系列。这是第八篇。本篇介绍源码中的`resolve-components.js`，它是`vue-router`里面解析异步组件的函数。本系列解析的是官方git库中3.1.6的版本源码。
+vue-router源码解析系列。这是第七篇。本篇介绍源码中的`resolve-components.js`，它是`vue-router`里面解析异步组件的函数。本系列解析的是官方git库中3.1.6的版本源码。
 
 <!-- more -->
 源码链接：[resolve-components.js](/code/vue-router/source-code/util/resolve-components.js)。源码里面用的是typescript，但是不影响阅读。

@@ -12,7 +12,7 @@ date: 2020-04-10 21:12:58
 ---
 
 
-vue-router源码解析系列。这是第七篇。本篇介绍源码中的`html5.js`，它其实比较简单，是`vue-router`在`mode:history`模式下的`History`子类实现，`Histor`类是路由跳转的核心类，在上上篇博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。
+vue-router源码解析系列。这是第八篇。本篇介绍源码中的`html5.js`，它其实比较简单，是`vue-router`在`mode:history`模式下的`History`子类实现，`Histor`类是路由跳转的核心类，在上上篇博客中已有详细的解析。本系列解析的是官方git库中3.1.6的版本源码。
 
 <!-- more -->
 源码链接：[html5.js](/code/vue-router/source-code/history/html5.js)。源码里面用的是typescript，但是不影响阅读。
