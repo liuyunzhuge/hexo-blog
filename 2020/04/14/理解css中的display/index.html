@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="提炼css-display这个module中的一些要点。">
+<meta name="keywords" content="w3c规范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解css中的display">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/04/14/理解css中的display/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="提炼css-display这个module中的一些要点。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-13T09:46:42.979Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解css中的display">
+<meta name="twitter:description" content="提炼css-display这个module中的一些要点。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/04/14/理解css中的display/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>理解css中的display | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">存在的痕迹</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">20</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">87</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/04/14/理解css中的display/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">理解css中的display
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-13 17:46:42" itemprop="dateCreated datePublished" datetime="2020-04-13T17:46:42Z">2020-04-13</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/css/" itemprop="url" rel="index"><span itemprop="name">css</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/css/w3c规范/" itemprop="url" rel="index"><span itemprop="name">w3c规范</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>提炼<code>css-display</code>这个<code>module</code>中的一些要点。</p>
+<a id="more"></a>
+<h2 id="css-box-tree"><a href="#css-box-tree" class="headerlink" title="css box tree"></a>css box tree</h2><p><code>css</code>把一个包含<code>elements</code>和<code>text nodes</code>的<code>document tree</code>渲染到<code>canvas</code>上。<br><code>css</code>生成了一个中间结构：<code>box tree</code>，表示<code>document tree</code>的格式化渲染结构。<br><code>box tree</code>上的每个<code>box</code>与相应的<code>element or pseudo element</code>对应，<code>box tree</code>上的每个<code>text run</code>与<code>text nodes</code>的<code>content</code>对应。</p>
+<p>对每个<code>element</code>而言，<code>css</code>会根据它的<code>display</code>属性值为它自身创建0到多个<code>box</code>。 一个<code>element</code>至少会有一个<code>box</code>，称为<code>principal box</code>，表示<code>element</code>自己以及它在<code>box tree</code>中包含的内容。 有一些<code>display</code>值会生成多个<code>box</code>。比如<code>list-item</code>这个值，会生成一个<code>principal block box</code>和一个<code>marker box</code>。有一些值比如<code>none or contents</code>不会生成任何<code>box</code>。<code>box</code>可以用<code>display</code>的类型来指代，比如一个<code>display:block</code>的<code>element</code>可以被称为一个<code>block box</code>或者<code>block</code>。</p>
+<p>除非另有说明，<code>box</code>会被设定与它对应的<code>element</code>相同的样式。<code>inherited properties</code>（可继承的属性）被设定到<code>element</code>的<code>principal box</code>上，然后通过<code>box tree</code>的层级关系继承给该<code>element</code>生成的自身其它<code>box</code>和后代<code>box</code>。<code>non-inherited properties</code>（不可继承属性）默认情况下也是应用到<code>principal box</code>上，但是如果一个<code>element</code>自身要生成多个box，就可能把<code>non-inherited properties</code>应用到其它<code>box</code>，而不是<code>principal box</code>。比如<code>table</code>元素的<code>border</code>属性，是一个<code>non-inherited property</code>，它是应用到<code>table grid box</code>上的，不是<code>table wrapper box</code>。补充：<code>table</code>的<code>princial box</code>又称为<code>table wrapper box</code>。</p>
+<p><code>document tree</code>中连续的<code>text nodes</code>，<code>css</code>会为它们生成一个<code>text run</code>的东西，来包含这些文本内容，每个<code>text run</code>会被设定成与它们对应的<code>text nodes</code>相同的样式。</p>
+<p>在创建<code>box tree</code>的过程中，某一个<code>element</code>生成的<code>boxes</code>（应该指所有）都是这个元素所有祖先<code>elements</code>的<code>principal box</code>的后代。通常来说，一个元素的<code>principal box</code>的<code>direct parent box</code>就是这个元素祖先元素中，离它最近并且有生成<code>box</code>的那个祖先元素的<code>principal box</code>；但是有例外，比如下面的<code>anonymous box</code>的情况。补充理解：<code>direct parent box</code>的含义，也可以理解为一个元素的<code>principal box</code>的<code>direct parent box</code>，大部分情况应该就是它父级元素的<code>principal box</code>。</p>
+<p><code>anonymous box</code>就是与任何<code>element</code>都没有关系的<code>box</code>。<code>anonymous box</code>都是在特定情况下才会生成用来修复<code>box tree</code>结构；这个特殊情况是指<code>box tree</code>需要一个特别的<code>box</code>嵌套结构，但是这个嵌套结构没有被<code>element tree</code>提供。 比如，一个<code>table cell box</code>要求它的<code>parent box</code>必须是一个<code>tabel row box</code>，所以如果一个<code>display:table-cell</code>的<code>element</code>父级，并不是一个<code>display: table-row</code>的<code>element</code>时，那此时<code>element tree</code>就没有满足<code>table row box -&gt; table cell box</code>这种嵌套结构，<code>css</code>会自动在<code>table cell box</code>的外层生成一个<code>table row box</code>来作为它的<code>parent box</code>。</p>
+<p>在布局过程中，<code>box</code>和<code>text run</code>可能会被分割为多个<code>fragments</code>。比如，当一个<code>inline box</code>或者是<code>text run</code>因为换行，就会被分割为多个<code>fragments</code>；一个<code>block box</code>也会因为<code>page</code>（分页）和<code>columns</code>（分栏），被分割为多个<code>fragments</code>；这个分割过程叫做<code>fragmentation</code>。因此一个<code>box</code>可能会存在0到多个<code>box fragments</code>，一个<code>text run</code>可能存在0到多个<code>text fragments</code>。</p>
+<h2 id="display-property"><a href="#display-property" class="headerlink" title="display property"></a>display property</h2><p><code>display</code>定义了<code>element</code>的<code>display type</code>，包含两个方面：</p>
+<ul>
+<li><code>inner display type</code> 决定它自己生成一个什么类型的<code>formatting context</code>，控制由它生成的<code>descendant boxes</code>如何布局；</li>
+<li><code>outer display type</code> 决定<code>element</code>自己的<code>principal box</code>如何参与<code>flow layout</code>。</li>
+</ul>
+<p>注意此要点的描述：<code>outer display type</code>决定的是自己如何参与<code>flow layout</code>，而<code>css</code>中并不只有一种<code>layout</code>，除了<code>flow layout</code>，还有<code>flex layout</code>、<code>table layout</code>等，那么当一个元素位于一个<code>flow layout</code>当中，<code>outer display type</code>才有意义，否则没有意义。比如当元素位于<code>flex layout</code>或<code>table layout</code>当中，<code>outer display type</code>就没有意义。</p>
+<h3 id="value"><a href="#value" class="headerlink" title="value"></a>value</h3><p><code>display</code>的<code>value</code>定义：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ &lt;display-outside&gt; || &lt;display-inside&gt; ] | &lt;display-listitem&gt; | &lt;display-internal&gt; | &lt;display-box&gt; | &lt;display-legacy&gt;</span><br></pre></td></tr></table></figure></p>
+<p>各个<code>value component</code>的定义：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;display-outside&gt;  = block | inline | run-in</span><br><span class="line">&lt;display-inside&gt;   = flow | flow-root | table | flex | grid | ruby</span><br><span class="line">&lt;display-listitem&gt; = &lt;display-outside&gt;? &amp;&amp; [ flow | flow-root ]? &amp;&amp; list-item</span><br><span class="line">&lt;display-internal&gt; = table-row-group | table-header-group |</span><br><span class="line">                     table-footer-group | table-row | table-cell |</span><br><span class="line">                     table-column-group | table-column | table-caption |</span><br><span class="line">                     ruby-base | ruby-text | ruby-base-container |</span><br><span class="line">                     ruby-text-container</span><br><span class="line">&lt;display-box&gt;      = contents | none</span><br><span class="line">&lt;display-legacy&gt;   = inline-block | inline-table | inline-flex | inline-grid</span><br></pre></td></tr></table></figure></p>
+<p>根据以上语法说明，以下的<code>value</code>形式都是允许的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">display: &lt;display-outside&gt;;</span><br><span class="line">display: &lt;display-inside&gt;;</span><br><span class="line">display: &lt;display-outside&gt; &lt;display-inside&gt;;</span><br><span class="line">display: &lt;display-inside&gt; &lt;display-outside&gt;;</span><br><span class="line">display: &lt;display-listitem&gt;;</span><br><span class="line">display: &lt;display-internal&gt;;</span><br><span class="line">display: &lt;display-box&gt;;</span><br><span class="line">display: &lt;display-legacy&gt;;</span><br></pre></td></tr></table></figure></p>
+<p>特殊的<code>display-listitem</code>还会出现下面这种奇怪的<code>display</code>值写法：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">block</span> <span class="selector-tag">flow</span> <span class="selector-tag">list-item</span>;</span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">list-item</span>;</span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">block</span> <span class="selector-tag">list-item</span>;</span><br></pre></td></tr></table></figure></p>
+<p>以上<code>value type</code>涉及到的<code>&lt;&gt; || | []</code>以及下面的<code>&amp;&amp; ?</code>等符号的语法，是<code>css</code>在规范文档中用来描述<code>Value Definition</code>的一种语法，可前往<a href="https://www.w3.org/TR/css-values-4/#value-defs" target="_blank" rel="noopener">css-valus</a>这个文档学习。</p>
+<p>综合以上内容可以看到，<code>display</code>的值是支持单值、双值和三值写法的：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">block</span> <span class="selector-tag">flow</span>;</span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">block</span> <span class="selector-tag">flow</span> <span class="selector-tag">list-item</span>;</span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">inline-block</span>;</span><br></pre></td></tr></table></figure></p>
+<p>不过目前这个写法还没有得到支持，但是可以从这个角度去理解<code>display</code>，因为多值的写法能够清晰地看到<code>inner display type</code>和<code>outer display type</code>，大部分单值写法只是多值写法的简写形式。</p>
+<h3 id="display-outside"><a href="#display-outside" class="headerlink" title="display-outside"></a>display-outside</h3><p><code>&lt;display-outside&gt;</code>这个<code>value type</code>，决定了<code>display</code>的<code>outer display type</code>，它包含3个值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;display-outside&gt;  = block | inline | run-in</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>run-in</code>并没有完全支持，所以暂不讨论。另外两个含义如下：</p>
+<ul>
+<li><code>block</code> 表示当元素处于<code>flow-layout</code>当中时，生成的<code>box</code>是<code>block-level</code>的</li>
+<li><code>inline</code> 表示当元素处于<code>flow-layout</code>当中时，生成的<code>box</code>是<code>inline-level</code>的</li>
+</ul>
+<p>要分析一个<code>display</code>值的<code>outer display type</code>只要找到<code>display</code>值里面跟<code>&lt;display-outside&gt;</code>对应的部分即可。当讨论一个<code>box</code>是<code>block-level</code>还是<code>inline-level</code>，说的是<code>box</code>的<code>outer display type</code>。</p>
+<h3 id="display-inside"><a href="#display-inside" class="headerlink" title="display-inside"></a>display-inside</h3><p><code>&lt;display-inside&gt;</code>这个<code>value type</code>，决定了<code>display</code>的<code>inner display type</code>，包含以下几个值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;display-inside&gt;   = flow | flow-root | table | flex | grid | ruby</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>ruby</code>并没有完全支持，所以暂不讨论。其它值的含义如下：</p>
+<ul>
+<li><code>flow</code> 表示该元素的包含的内容，会使用<code>flow layout</code>进行布局，<code>flow layout</code>就是<code>block-and-inline layout</code>，它包含两种<code>formatting context</code>: <code>block formatting context</code>和<code>inline formatting context</code>。在<code>display-insde: flow</code>的前提下，当<code>outer display type</code>是<code>inline</code>时，生成的<code>box</code>是一个<code>inline box</code>；当<code>outer display type</code>是<code>block</code>，生成的<code>box</code>是一个<code>block-level</code>的<code>box</code>，称为<code>block container</code>。 <code>block-container</code>与<code>block box</code>不完全相同，<code>block box</code>是突出一个<code>box</code>是<code>block-level</code>的，而<code>block-container</code>是突出一个<code>box</code>的能力，见下面对<code>block container</code>的解释。当一个<code>box</code>是<code>inline box</code>的时候，它始终带着自己和自己包含的内容参与到一个<code>inline formatting context</code>当中一起布局；当一个<code>box</code>是一个<code>block container</code>的时候，它要么会新建一个<code>BFC</code>来布局子内容，要么把子内容放到自己所在的那个<code>block formatting context</code>中一起布局。</li>
+<li><code>flow-root</code> 这个跟<code>flow</code>唯一的区别就是，它一定会让<code>box</code>新建一个<code>BFC</code>。那种新建了<code>BFC</code>的<code>block container</code>都可以当成<code>inner display type</code>为<code>flow root</code>来看待。</li>
+<li><code>table</code> 表示元素会生成一个<code>principal box</code>，也叫做<code>table wrapper box</code>，并且新建一个<code>block formatting context</code>，在此<code>context</code>内再生成一个<code>table grid box</code>，并且使用一个新的布局<code>context</code>:<code>table formatting context</code>来布局内容，这就是所谓的<code>table layout</code>。<code>table wrapper box</code>应该是一个<code>block container</code>，因为它会创建<code>BFC</code>。</li>
+<li><code>flex</code> 表示元素会生成一个<code>flex container box</code>，并创建一个新的布局<code>context</code>:<code>flex formatting context</code>，使用<code>flex layout</code>来布局内容。这个<code>flex container</code>跟<code>block container</code>是完全不同的，<code>flex container</code>指的是这个<code>box</code>是1个<code>flex formatting context</code>的根。</li>
+<li><code>grid</code> 表示元素会生成一个<code>grid container box</code>，并创建一个新的布局<code>context</code>:<code>grid formatting context</code>，使用<code>flex layout</code>来布局内容。这个<code>grid container</code>跟<code>block container</code>是完全不同的，<code>flex container</code>指的是这个<code>box</code>是1个<code>grid formatting context</code>的根。</li>
+</ul>
+<h4 id="block-container"><a href="#block-container" class="headerlink" title="block container"></a>block container</h4><p><code>block container box</code>要么只包含<code>inline box</code>，要么只包含<code>block box</code>。怎么做到这一点呢？需要一个<code>box</code>只包含<code>inline-box</code>比较容易，但是要它只包含<code>block-box</code>如何做到？实际上还是借助<code>anonymous box</code>，比如下面这个结构：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">asd</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>abc<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>div内混合了文本和<code>p</code>节点，<code>css</code>会在<code>asd</code>外面包裹一个<code>anonymous block box</code>来保证<code>div</code>这个<code>block container</code>仅包含<code>block box</code>。</p>
+<p>当一个<code>block container</code>只包含<code>inline box</code>的时候，它会创建一个<code>inline formatting context</code>，并且会在所有的<code>inline box</code>外面包裹一层<code>anonymous box</code>来作为这些<code>inline content</code>的<code>root inline box</code>。</p>
+<p><code>block container</code>在它的<code>parent formatting context</code>不是一个<code>block formatting context</code>的时候，会创建一个新的<code>block formatting context</code>来布局它的内容。这个点值得关注，下面这个例子能证明这个点是对的：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-class">.parent</span> &#123;</span></span><br><span class="line">        width: 400px;</span><br><span class="line"><span class="css">        <span class="selector-tag">background-color</span>: <span class="selector-id">#ddd</span>;</span></span><br><span class="line">        margin: 0 auto;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.child</span> &#123;</span></span><br><span class="line">        width: 100px;</span><br><span class="line">        height: 100px;</span><br><span class="line">        background-color: red;</span><br><span class="line">        float: left;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.main</span> &#123;</span></span><br><span class="line">        display: flex;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"parent"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"child"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>例子中，<code>div.main</code>是一个<code>flex formatting context</code>，而<code>div.parent</code>是一个<code>block container</code>，所以<code>div.parent</code>会创建一个<code>BFC</code>，这样<code>div.child</code>浮动带来的高度塌陷问题就没有了。</p>
+<p>如果<code>block container</code>的<code>parent formatting context</code>是一个<code>BFC</code>，那么<code>block container</code>就是按两种方式来布局它包含的内容：第一种，还是新建一个<code>BFC</code>，比如<code>overflow float position</code>这些属性可能会导致新的<code>BFC</code>被创建；第二种，就是将它的内容放到<code>parent formatting context</code>中去布局。第二种方式，有一个场景值得说明：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-class">.parent</span> &#123;</span></span><br><span class="line">        width: 400px;</span><br><span class="line"><span class="css">        <span class="selector-tag">background-color</span>: <span class="selector-id">#ddd</span>;</span></span><br><span class="line">        margin: 0 auto;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.child</span> &#123;</span></span><br><span class="line">        width: 100px;</span><br><span class="line">        height: 100px;</span><br><span class="line">        background-color: red;</span><br><span class="line">        float: left;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"parent"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span>&gt;</span>yes<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span>&gt;</span>yes<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span>&gt;</span>yes<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span>&gt;</span>yes<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span>&gt;</span>yes<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"child"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>surrounds<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>上例中，为什么与<code>div.parent</code>同级的<code>p</code>元素会环绕在<code>div.child</code>这个浮动元素的右边呢？这是因为上面的例子中<code>div.parent</code>并没有创建新的<code>BFC</code>，所以它的内容都是在<code>body</code>的<code>formatting context</code>中布局出来的，而<code>div.child</code>虽然设置了浮动，但是浮动只能让它从<code>inline formatting context</code>中脱离出来，它仍然属于<code>body</code>的<code>block formatting context</code>，而<code>div.parent</code>后面的<code>p</code>也是在<code>body</code>的<code>context</code>中布局的，这样<code>p</code>里面的文本所形成的<code>inline formatting context</code>与浮动元素的作用关系，导致了这个结果。浮动本质上不会脱离元素所在的<code>block formatting context</code>，所以浮动本质上也没有离开<code>flow layout</code>。如果想让<code>p</code>与<code>div.child</code>不产生浮动环绕的作用，解决办法就是把<code>div.parent</code>变为<code>BFC</code>，这样<code>div.child</code>与<code>p</code>不在同一个<code>block formatting context</code>，它们是不会产生浮动环绕作用的。</p>
+<p><code>block container</code>可以同时有两种<code>formatting context</code>，比如它仅包含<code>inline box</code>，这样它会创建<code>inline formatting context</code>，然后再通过别的方式触发新建<code>BFC</code>，这样就两种<code>formatting context</code>共存了。</p>
+<p><code>block container</code>vs<code>block box</code>：</p>
+<ul>
+<li><code>block box</code>是指<code>block-level box</code>，它参与<code>flow layout</code>时一定是<code>block-level</code>的，它不一定是<code>block container</code>，比如<code>display: block</code>的<code>replace elements</code>所生成的<code>box</code>以及<code>display: flex</code>的元素生成的<code>flex container</code>都是<code>block box</code>，但不是<code>block container</code></li>
+<li><code>block container</code>也不一定都是<code>block box</code>，比如<code>display: inline-block</code>和<code>display: table-cell</code>的元素生成<code>box</code>会创建BFC，属于<code>block container</code>，但不是<code>block-level box</code></li>
+</ul>
+<h3 id="缺省说明"><a href="#缺省说明" class="headerlink" title="缺省说明"></a>缺省说明</h3><p>如果<code>display</code>值，指定了<code>&lt;display-outside&gt;</code>但是没有指定<code>&lt;display-inside&gt;</code>，<code>&lt;display-inside</code>的默认值就是：<code>flow</code>。<br>如果<code>display</code>值，指定了<code>&lt;display-inside&gt;</code>但是没有指定<code>&lt;display-outside&gt;</code>，<code>&lt;display-outside</code>的默认值就是：<code>block</code>。</p>
+<h3 id="display-listitem"><a href="#display-listitem" class="headerlink" title="display-listitem"></a>display-listitem</h3><p>这个<code>value type</code>的定义是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;display-listitem&gt; = &lt;display-outside&gt;? &amp;&amp; [ flow | flow-root ]? &amp;&amp; list-item</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>&lt;display-outside&gt;</code>和<code>[flow | flow-root]</code>是可选的，<code>list-item</code>这个关键词是必须有的。<code>&lt;display-listitem&gt;</code>把<code>inner display type</code>限制为<code>flow | flow-root</code>，暂时没有其它的<code>inner display type</code>。如果未指定<code>outer display type</code>，则<code>outer display type</code>默认值是：<code>block</code>，所以<code>li</code>元素默认都是<code>block-level</code>的；如果未指定<code>inner display type</code>，则<code>inner display type</code>默认值是：<code>flow</code>。 所以<code>&lt;display-listitem</code>&gt;可定义的<code>display</code>值的形式有：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* a. */</span></span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">list-item</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*以下3个与a.均等价*/</span></span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">block</span> <span class="selector-tag">flow</span> <span class="selector-tag">list-item</span>;</span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">flow</span> <span class="selector-tag">list-item</span>;</span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">block</span> <span class="selector-tag">list-item</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*以下两个等价*/</span></span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">inline</span> <span class="selector-tag">list-item</span>;</span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">inline</span> <span class="selector-tag">flow</span> <span class="selector-tag">list-item</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*以下两个等价*/</span></span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">flow-root</span> <span class="selector-tag">list-item</span>;</span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">block</span> <span class="selector-tag">flow-root</span> <span class="selector-tag">list-item</span>;</span><br></pre></td></tr></table></figure></p>
+<p>从上面的举例也能看到，<code>display: list-item</code>这种单值写法是多值写法的简写形式。</p>
+<p><code>display-listitem</code>相比<code>&lt;display-outside&gt; || &lt;display-inside&gt;</code>，最大的区别其实是它会让<code>element</code>多生成一个<code>marker box</code>来表现<code>项目列表</code>的符号，这就是为啥<code>li</code>元素默认情况下，前面会有项目符号的原因。</p>
+<h3 id="display-legacy"><a href="#display-legacy" class="headerlink" title="display-legacy"></a>display-legacy</h3><p>这个<code>value type</code>定义为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;display-legacy&gt; = inline-block | inline-table | inline-flex | inline-grid</span><br></pre></td></tr></table></figure></p>
+<p>这几个关键词就是几个简写形式：</p>
+<ul>
+<li><code>inline-block</code> 等价于<code>inline flow-root</code>，所以<code>display:inline-block</code>的元素其实是个<code>BFC</code></li>
+<li><code>inline-table</code> 等价于<code>inline table</code></li>
+<li><code>inline-flex</code> 等价于<code>inline flex</code></li>
+<li><code>inlin-grid</code> 等价于<code>inline grid</code></li>
+</ul>
+<h3 id="display-internal"><a href="#display-internal" class="headerlink" title="display-internal"></a>display-internal</h3><p>这个<code>value type</code>的定义：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;display-internal&gt; = table-row-group | table-header-group |</span><br><span class="line">                     table-footer-group | table-row | table-cell |</span><br><span class="line">                     table-column-group | table-column | table-caption |</span><br><span class="line">                     ruby-base | ruby-text | ruby-base-container |</span><br><span class="line">                     ruby-text-container</span><br></pre></td></tr></table></figure></p>
+<p>一些布局（例如<code>table</code> <code>ruby</code>）具有复杂的内部结构，其子代和后代可以担当几种不同的角色，<code>display-internal</code>实际上就是在指定元素在<code>table</code> <code>ruby</code>这种特定布局里面充当的角色，所以<code>display-internal</code>跟其它的<code>display</code>的<code>value type</code>不一样，它只有在特定的布局里面才有意义。而且非常特殊的是，<code>display-internal</code>的值，除非另有说明，否则使用这些值的元素生成的box的<code>inner display type</code>和<code>outer display type</code>都将设置为给定关键字。比如<code>display: table-row-group</code>，这个元素的<code>inner display type</code>和<code>outer display type</code>就都是<code>table-row-group</code>。 所以前面好多的关于<code>outer display type</code>和<code>inner display type</code>的知识，在<code>display-internal</code>不一致的，这是<code>css</code>针对<code>table</code> <code>ruby</code>布局的内部处理。</p>
+<p>不考虑<code>ruby</code>，<code>display-internal</code>这个值的详细含义如下：</p>
+<ul>
+<li><p><code>table-row-group, table-header-group, table-footer-group, table-row, table-cell, table-column-group, table-column</code> 表示这个元素是一个<code>table</code>布局的子元素，它会相应的创建<code>internal table box</code>来参与<code>table layout</code>。特殊的是，<code>table-cell</code>指定了<code>inner display type</code>为：<code>flow-root</code>，所以<code>display:table-cell</code>的元素会创建<code>BFC</code>。</p>
+</li>
+<li><p><code>table-caption</code> 表示这个元素会生成一个<code>table caption box</code>，它是一个<code>block box</code>，并且和<code>table and table wrapper boxes</code>有特殊的行为，同时它还有指定<code>inner display type</code>为：<code>flow-root</code>，所以<code>display:table-caption</code>的元素也会创建<code>BFC</code>。</p>
+</li>
+</ul>
+<h3 id="归纳总结"><a href="#归纳总结" class="headerlink" title="归纳总结"></a>归纳总结</h3><p>综合以上内容，发现：学习<code>display</code>的值，主要抓这几个要素：</p>
+<ol>
+<li>分析它生成的<code>box</code>，1个还是多个，每个<code>box</code>的名称是啥</li>
+<li>分析它的<code>inner display type</code>，遵循什么<code>layout</code>，会不会新建<code>formatting context</code></li>
+<li>分析它的<code>outer display type</code>，看看是<code>block-level</code>还是<code>inline-level</code></li>
+</ol>
+<p>下面是一个对常见<code>display</code>值的归纳整理：</p>
+<ul>
+<li><code>display:block</code><blockquote>
+<p>完整写法：<code>display: block flow</code><br>outer display type: <code>block</code><br>inner display type: <code>flow</code><br>box level: <code>block-level</code><br>生成的box：一定是<code>block box</code> 不一定是<code>block container</code>，见前面对此二者的区分说明<br>formatting context: 要么新建一个<code>BFC</code>布局子内容，要么把子内容布局到自己所在的<code>formatting context</code>；自己所在的<code>formatting context</code>是<code>inline formatting context</code>和<code>block formatting context</code>二者之一。</p>
+</blockquote>
+</li>
+<li><code>display:flow-root</code><blockquote>
+<p>完整写法：<code>display: block flow-root</code><br>outer display type: <code>block</code><br>inner display type: <code>flow-root</code><br>box level: <code>block-level</code><br>生成的box：<code>block container</code><br>formatting context: 新建一个<code>BFC</code>布局子内容</p>
+</blockquote>
+</li>
+<li><code>display:inline</code><blockquote>
+<p>完整写法：<code>display: inline flow</code><br>outer display type: <code>inline</code><br>inner display type: <code>flow</code><br>box level: <code>inline-level</code><br>生成的box：<code>inline box</code><br>formatting context: 将子内容布局到自己所在的<code>inline formatting context</code></p>
+</blockquote>
+</li>
+<li><code>display:inline-block</code><blockquote>
+<p>完整写法：<code>display: inline flow-root</code><br>outer display type: <code>inline</code><br>inner display type: <code>flow-root</code><br>box level: <code>inline-level</code><br>生成的box：<code>block contaienr</code><br>formatting context: 新建一个<code>BFC</code>布局子内容</p>
+</blockquote>
+</li>
+<li><code>display:list-item</code><blockquote>
+<p>各个要素与前面四个几乎一致，就是会多生成一个<code>marker box</code></p>
+</blockquote>
+</li>
+<li><code>display:flex</code><blockquote>
+<p>完整写法：<code>display: block flex</code><br>outer display type: <code>block</code><br>inner display type: <code>flex</code><br>box level: <code>block-level</code><br>生成的box：<code>flex contaienr</code><br>formatting context: 新建一个<code>flex formatting context</code>布局子内容</p>
+</blockquote>
+</li>
+<li><code>display:inline-flex</code><blockquote>
+<p>完整写法：<code>display: inline flex</code><br>outer display type: <code>inline</code><br>inner display type: <code>flex</code><br>box level: <code>inline-level</code><br>生成的box：<code>flext contaienr</code><br>formatting context: 新建一个<code>flex formatting context</code>布局子内容</p>
+</blockquote>
+</li>
+<li><code>display:grid</code><blockquote>
+<p>完整写法：<code>display: block grid</code><br>outer display type: <code>block</code><br>inner display type: <code>grid</code><br>box level: <code>block-level</code><br>生成的box：<code>grid contaienr</code><br>formatting context: 新建一个<code>grid formatting context</code>布局子内容</p>
+</blockquote>
+</li>
+<li><code>display:inline-grid</code><blockquote>
+<p>完整写法：<code>display: inline grid</code><br>outer display type: <code>inline</code><br>inner display type: <code>grid</code><br>box level: <code>inline-level</code><br>生成的box：<code>flext contaienr</code><br>formatting context: 新建一个<code>grid formatting context</code>布局子内容</p>
+</blockquote>
+</li>
+<li><code>display:table</code><blockquote>
+<p>完整写法：<code>display: block table</code><br>outer display type: <code>block</code><br>inner display type: <code>table</code><br>box level: <code>block-level</code><br>生成的box：<code>table wrapper box</code>包含<code>table grid box</code>，其中<code>table wrapper box</code>是一个会新建<code>BFC</code>的<code>block-container</code>，且是<code>block-level</code>的<br>formatting context: <code>table wrapper box</code>新建<code>BFC</code>，而<code>table grid box</code>新建<code>table formatting context</code></p>
+</blockquote>
+</li>
+<li><code>display:inline-table</code><blockquote>
+<p>完整写法：<code>display: inline table</code><br>outer display type: <code>inlne</code><br>inner display type: <code>table</code><br>box level: <code>inline-level</code><br>生成的box：<code>table wrapper box</code>包含<code>table grid box</code>，其中<code>table wrapper box</code>是一个会新建<code>BFC</code>的<code>block-container</code>，且是<code>inline-level</code>的<br>formatting context: <code>table wrapper box</code>新建<code>BFC</code>，而<code>table grid box</code>新建<code>table formatting context</code></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="display-type的自动转换"><a href="#display-type的自动转换" class="headerlink" title="display type的自动转换"></a>display type的自动转换</h3><p><code>blockification</code>: 块级化，将<code>box</code>的<code>outer display type</code>强制设定为<code>block</code><br><code>inlinification</code>: 内联化，将<code>box</code>的<code>inner display type</code>强制设定为<code>inline</code></p>
+<p>一些布局可能会对元素的<code>box</code>进行<code>blockification</code>或者是<code>inlinification</code>的处理，比如<code>浮动 或绝对定位 或flex布局</code>都会对元素进行<code>blockification</code>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/w3c规范/" rel="tag"># w3c规范</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/12/vue-router源码：abstract-js/" rel="next" title="vue-router源码：abstract.js">
+                <i class="fa fa-chevron-left"></i> vue-router源码：abstract.js
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">87</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#css-box-tree"><span class="nav-number">1.</span> <span class="nav-text">css box tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#display-property"><span class="nav-number">2.</span> <span class="nav-text">display property</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#value"><span class="nav-number">2.1.</span> <span class="nav-text">value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-outside"><span class="nav-number">2.2.</span> <span class="nav-text">display-outside</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-inside"><span class="nav-number">2.3.</span> <span class="nav-text">display-inside</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#block-container"><span class="nav-number">2.3.1.</span> <span class="nav-text">block container</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺省说明"><span class="nav-number">2.4.</span> <span class="nav-text">缺省说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-listitem"><span class="nav-number">2.5.</span> <span class="nav-text">display-listitem</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-legacy"><span class="nav-number">2.6.</span> <span class="nav-text">display-legacy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-internal"><span class="nav-number">2.7.</span> <span class="nav-text">display-internal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#归纳总结"><span class="nav-number">2.8.</span> <span class="nav-text">归纳总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-type的自动转换"><span class="nav-number">2.9.</span> <span class="nav-text">display type的自动转换</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
