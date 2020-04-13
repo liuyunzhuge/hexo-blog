@@ -343,3 +343,6 @@ formatting context: `table wrapper box`新建`BFC`，而`table grid box`新建`t
 `inlinification`: 内联化，将`box`的`inner display type`强制设定为`inline`
 
 一些布局可能会对元素的`box`进行`blockification`或者是`inlinification`的处理，比如`浮动 或绝对定位 或flex布局`都会对元素进行`blockification`。
+
+## 引用
+> [https://www.w3.org/TR/2019/CR-css-display-3-20190711/](https://www.w3.org/TR/2019/CR-css-display-3-20190711/)
