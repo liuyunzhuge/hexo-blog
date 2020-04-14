@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="经典知识，学习细节。">
+<meta name="keywords" content="w3c规范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解CSS2.1中的盒子模型">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="经典知识，学习细节。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/01.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/02.png">
+<meta property="og:updated_time" content="2020-04-14T09:40:15.518Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解CSS2.1中的盒子模型">
+<meta name="twitter:description" content="经典知识，学习细节。">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/01.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>理解CSS2.1中的盒子模型 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">心外无物</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">20</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">88</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">理解CSS2.1中的盒子模型
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-14 17:40:15" itemprop="dateCreated datePublished" datetime="2020-04-14T17:40:15Z">2020-04-14</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/css/" itemprop="url" rel="index"><span itemprop="name">css</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/css/w3c规范/" itemprop="url" rel="index"><span itemprop="name">w3c规范</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>经典知识，学习细节。</p>
+<a id="more"></a>
+<h2 id="box-dimensions"><a href="#box-dimensions" class="headerlink" title="box dimensions"></a>box dimensions</h2><p><code>css</code>为<code>elements</code>生成<code>box</code>，<code>box</code>是由<code>content</code>区域以及<code>padding</code> <code>border</code> <code>margin</code>区域组成的，其中<code>padding border margin</code>不一定每个<code>box</code>都有。它们的包含关系如图所示：<br><img src="/2020/04/15/理解CSS2-1中的盒子模型/01.png"><br>每个<code>box</code>最里面的矩形区域是<code>content</code>，<code>content</code>外面包裹的第一层环形矩形区域是<code>padding</code>，<code>padding</code>外面包裹的第一层环形矩形区域是<code>border</code>，<code>border</code>外面包裹的第一层环形矩形区域是<code>margin</code>。</p>
+<p>其它概念的含义如下：</p>
+<ul>
+<li><code>content edge</code> 指的是<code>content</code>的矩形内容区域的四条边</li>
+<li><code>padding edge</code> 指的是<code>padding</code>区域外侧的四条边，当<code>padding:0</code>的时候，<code>padding edge</code>与<code>content edge</code>重合</li>
+<li><code>border edge</code> 指的是<code>border</code>区域外侧的四条边，当<code>border:none</code>的时候，<code>border edge</code>与<code>padding edge</code>重合</li>
+<li><code>margin edge</code> 指的是<code>margin</code>区域外侧的四条边，当<code>margin:0</code>的时候，<code>margin edge</code>与<code>border edge</code>重合</li>
+<li><code>content box</code> 就是<code>content</code></li>
+<li><code>padding box</code> 指的是<code>padding edge</code>包裹的矩形区域，等于<code>content</code> + <code>padding</code></li>
+<li><code>border box</code> 指的是<code>border edge</code>包裹的矩形区域，等于<code>content</code> + <code>padding</code> + <code>border</code></li>
+<li><code>margin box</code> 指的是<code>margin edge</code>包裹的矩形区域，等于<code>content</code> + <code>padding</code> + <code>border</code> + <code>margin</code></li>
+</ul>
+<p><code>content padding border margin</code>分上下左右四个部分，比如<code>LM RM</code> 分别指的是<code>left margin</code> <code>rigth margin</code><br><code>content edge, padding edge, border edge, margin edg</code> 当然也分4条边。</p>
+<p><code>box</code>的<code>background</code>是在<code>content border padding</code>这三个区域生效的，<code>margin</code>区域的<code>background</code>始终是透明的。</p>
+<h2 id="margin-properties"><a href="#margin-properties" class="headerlink" title="margin properties"></a>margin properties</h2><p>与<code>margin</code>有关的<code>properties</code>一共有5个，用来定义<code>margin</code>的大小。分别是：</p>
+<ul>
+<li><code>margin-top</code> 定义<code>left margin</code>的大小</li>
+<li><code>margin-right</code> 定义<code>right margin</code>的大小</li>
+<li><code>margin-bottom</code> 定义<code>bottom margin</code>的大小</li>
+<li><code>margin-left</code> 定义<code>left margin</code>的大小</li>
+<li><code>margin</code> 前面四个的简写，可按照<code>top right bottom left</code>的顺序，在一个属性中一次性定义1-4个<code>margin property</code></li>
+</ul>
+<h3 id="lt-margin-width-gt"><a href="#lt-margin-width-gt" class="headerlink" title="&lt;margin-width&gt;"></a><code>&lt;margin-width&gt;</code></h3><p>以上5个属性，全部都依赖<code>&lt;margin-width&gt;</code>这个<code>value type</code>，它的定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;margin-width&gt; = &lt;length&gt; | &lt;percentage&gt; | auto</span><br></pre></td></tr></table></figure></p>
+<p>什么是<code>value type</code>以及<code>&lt;length&gt;</code>和<code>&lt;percentage</code>&gt;这两个<code>value type</code>在哪定义的，都可前往<a href="https://www.w3.org/TR/css-values-4/" target="_blank" rel="noopener">css-valus</a>这个文档学习。</p>
+<p>简单来说，<code>&lt;length&gt;</code>一般就是<code>px em rem</code>这些值，属于绝对值，写多少就是多；<code>&lt;percentage&gt;</code>是指百分比或浮点数作为值，属于相对值，它要依赖于<code>box</code>所在的<code>container box</code>的<code>width</code>来计算最终的<code>margin</code>值。下面的值，都是合法的<code>&lt;margin-width&gt;</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">margin: 20px;</span><br><span class="line">margin: 0.2;</span><br><span class="line">margin: 20%;</span><br><span class="line">margin: auto;</span><br></pre></td></tr></table></figure></p>
+<p>需要着重说明的是，上下左右四个<code>margin</code>都可以设置<code>&lt;percentage&gt;</code>的值，然后不管是谁，这个百分比值，都是相对于当前<code>box</code>的<code>container box</code>的<code>width</code>来计算的，这个<code>container box</code>一般是父元素的<code>box</code>。比如：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"width: 400px; height: 300px"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"margin: 20%"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>上面这个例子中，最终内层<code>div</code>上下左右的<code>margin</code>值就是： <code>20% * 400px = 80px</code>，不能想当然的认为上下<code>margin</code>是根据<code>container box width</code>计算，而左右<code>margin</code>是跟<code>container box height</code>计算。<br>另外，百分比单位是相对<code>container box width</code>计算的，如果<code>container box</code>的<code>width</code>是由<code>container box</code>的内容也就是当前<code>box</code>撑起来的话，那么当前<code>box</code>的百分比值计算出来就是<code>undefined</code>。上面的例子之所以百分比单位有效，是因为第一层div的width是明确指定的，第二层div的<code>box</code>没什么关系。这个要点可以帮助你分析某些时候为什么百分比单位会无效。</p>
+<p><code>auto</code>需要前往其它内容学习，才能知道它的计算方式。另外<code>margin</code>值还能设置负的值，也就是负的<code>&lt;length&gt;</code>是允许的。这两个要点需要学习其它内容才能明确。</p>
+<h3 id="margin-top-margin-bottom这两个property的定义"><a href="#margin-top-margin-bottom这两个property的定义" class="headerlink" title="margin-top margin-bottom这两个property的定义"></a><code>margin-top margin-bottom</code>这两个property的定义</h3><blockquote>
+<p>定义: <code>&lt;margin-width&gt; | inherit</code><br>初始值: 0<br>应用于: 除了<code>table display types</code>以外的所有元素，但是<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素是可以使用<code>margin</code>的<br>是否可被继承: no<br>百分比计算: 相对<code>containing block</code>的<code>width</code>来计算</p>
+</blockquote>
+<p>这两个属性定义垂直方向的<code>margin</code>，它们对<code>non replaced inline elements</code>无效。</p>
+<h3 id="margin-left-margin-rigth这两个property的定义"><a href="#margin-left-margin-rigth这两个property的定义" class="headerlink" title="margin-left margin-rigth这两个property的定义"></a><code>margin-left margin-rigth</code>这两个property的定义</h3><blockquote>
+<p>定义: <code>&lt;margin-width&gt; | inherit</code><br>初始值: 0<br>应用于: 除了<code>table display types</code>以外的所有元素，但是<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素是可以使用<code>margin</code>的<br>是否可被继承: no<br>百分比计算: 相对<code>containing block</code>的<code>width</code>来计算</p>
+</blockquote>
+<p>这两个属性定义水平方向的margin。</p>
+<h3 id="margin的定义"><a href="#margin的定义" class="headerlink" title="margin的定义"></a><code>margin</code>的定义</h3><blockquote>
+<p>定义: <code>&lt;margin-width&gt;{1,4} | inherit</code><br>初始值: 参考各个单独的属性定义<br>应用于: 除了<code>table display types</code>以外的所有元素，但是<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素是可以使用<code>margin</code>的<br>是否可被继承: no<br>百分比计算: 参考各个单独的属性定义</p>
+</blockquote>
+<p>这个属性可以一次性定义4个方向的<code>margin</code>，遵循上右下左的顺序。<code>&lt;margin-width&gt;{1,4}</code>代表<code>&lt;margin-width&gt;</code>可以重复1到4次。</p>
+<h2 id="Collapsing-margins-外边距合并"><a href="#Collapsing-margins-外边距合并" class="headerlink" title="Collapsing margins 外边距合并"></a>Collapsing margins <code>外边距合并</code></h2><p>首先只有垂直外边距才会合并，水平外边距始终不会发生合并，所以谈论外边距合并，说的仅仅是垂直外边距。在<code>css</code>里面，相邻的外边距会发生合并，从两个外边距合并成一个，合并完那个外边距又称为<code>collapsed margin</code>。</p>
+<p>有两个场景即使满足外边距合并的条件也一定不会合并：</p>
+<ul>
+<li><code>root elment</code>的<code>margin</code>不会合并</li>
+<li>如果一个有设置清除浮动的<code>box</code>的上下边距相邻，那这个<code>box</code>会与它后面相邻的其它元素的<code>box</code>的<code>margin</code>发生合并，但是它们合并的最终<code>collapsed margin</code>，不会再与<code>parent box</code>的<code>margin-bottom</code>发生合并。</li>
+</ul>
+<p>第二种情况举例如下：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid #ccc;width: 500px; margin: 0 auto;"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span> <span class="attr">style</span>=<span class="string">"margin: 10px 0;background-color: rebeccapurple;"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"float:left;width: 50px; height: 50px; background-color: #ccc;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"clearance"</span> <span class="attr">style</span>=<span class="string">"margin: 30px 0;clear: both;height:0;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"sibling"</span> <span class="attr">style</span>=<span class="string">"margin: 30px auto;height:0;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>效果如下：<br><img src="/2020/04/15/理解CSS2-1中的盒子模型/02.png" width="500" style="border: none"></p>
+<p>在这个例子中，<code>div.container</code>是<code>container box</code>，而<code>div.clearance</code>是一个有设置清除浮动的<code>box</code>，且上下边距相邻，它会自身进行margin合并，然后再与<code>div.sibling</code>的<code>box</code>发生合并，但是它们俩合并完之后的<code>margin</code>并没有跟<code>div.container</code>的<code>margin-bottom: 10px</code>发生合并，不然从上面的效果图中看到的边框距离颜色内容区域的距离，就不会是那么点距离。</p>
+<p>外边距合并的条件为：</p>
+<ul>
+<li>要被合并的外边距对应的<code>box</code>，不能脱离普通文档流，且它们的<code>box</code>必须位于同一个<code>block formatting context</code>当中</li>
+<li>不能有<code>line box</code>（行框）、<code>padding</code>、<code>border</code>以及<code>浮动清除效果</code>在两个外边距之间，否则它们不会合并</li>
+</ul>
+<p>有以下几种外边距合并的形式：</p>
+<ul>
+<li><code>parent box</code>的<code>top margin</code>与它第一个<code>child box</code>的<code>top margin</code>发生合并</li>
+<li><code>box</code>的<code>bottom margin</code>会和它相邻的下一个元素的<code>box</code>的<code>top margin</code>发生合并</li>
+<li><code>parent box</code>的<code>bottom margin</code>与它最后一个<code>chilld box</code>的<code>bottom margin</code>发生合并。</li>
+<li>同一个<code>box</code>的<code>top margin</code>和<code>bottom margin</code>在<code>min-height</code>为0、<code>height</code>为0或者是<code>auto</code>、并且没有<code>content</code>的时候，也会发生合并。</li>
+</ul>
+<p>外边距是两两合并，然后得到一个新的外边距，新的外边距如果与其它box的外边距继续满足合并条件则还会发生合并；通过上面的合并形式，可以看到，外边距可以发生在父子元素之间、相邻元素之间、元素自身，所有在满足条件的情况下，一次完整的外边距合并，可能包含多个<code>box</code>，而且会跨越<code>box tree</code>多层结构。</p>
+<p>另外一种合并形式总结：</p>
+<blockquote>
+<ul>
+<li>Margins between a floated box and any other box do not collapse (not even between a float and its in-flow children).</li>
+<li>Margins of elements that establish new block formatting contexts (such as floats and elements with ‘overflow’ other than ‘visible’) do not collapse with their in-flow children.</li>
+<li>Margins of absolutely positioned boxes do not collapse (not even with their in-flow children).</li>
+<li>Margins of inline-block boxes do not collapse (not even with their in-flow children).<br>上面这4条英文规范的说的是同一个情况，就是新建了<code>BFC</code>的<code>box</code>不会发生合并，因为它是这个<code>BFC</code>的<code>root element</code>。</li>
+<li>The bottom margin of an in-flow block-level element always collapses with the top margin of its next in-flow block-level sibling, unless that sibling has clearance.<br>一个<code>in-flow block-level</code>的元素的<code>bottom margin</code>始终会跟它下一个<code>in-flow block-level</code>的元素的<code>top margin</code>发生合并，除非下一个元素设置了<code>清除浮动</code>。</li>
+<li>The top margin of an in-flow block element collapses with its first in-flow block-level child’s top margin if the element has no top border, no top padding, and the child has no clearance.<br>一个<code>in-flow block-level</code>的元素的<code>top margin</code>会跟它第一个<code>in-flow block-level</code>的子元素的<code>top amrgin</code>发生合并，前提是这个元素没有设置<code>top border</code>、没有设置<code>top padding</code>、且子元素没有设置<code>清除浮动</code>。</li>
+<li>The bottom margin of an in-flow block box with a ‘height’ of ‘auto’ and a ‘min-height’ of zero collapses with its last in-flow block-level child’s bottom margin if the box has no bottom padding and no bottom border and the child’s bottom margin does not collapse with a top margin that has clearance.<br>一个<code>in-flow block-level</code>且<code>height</code>是<code>auto</code>且<code>min-height</code>为0的元素的<code>bottom margin</code>，会跟它最后一个<code>in-flow block-level</code>的子元素的<code>bottom margin</code>发生合并，前提是这个元素自己没有设置<code>bottom padding</code>、没有设置<code>bottom border</code>、并且这个子元素的<code>bottom margin</code>没有跟前面有设置<code>清除浮动</code>元素的<code>top margin</code>合并过。 前面那个有代码的例子说的就是这个情况。</li>
+<li>A box’s own margins collapse if the ‘min-height’ property is zero, and it has neither top or bottom borders nor top or bottom padding, and it has a ‘height’ of either 0 or ‘auto’, and it does not contain a line box, and all of its in-flow children’s margins (if any) collapse.<br>一个元素的上下边距发生合并，前提是：它的<code>min-heigth</code>是0、且它没有设置上下的<code>border or padding</code>、且它的<code>height</code>是<code>0 or auto</code>、且它里面没有<code>line box</code>、如果有<code>children</code>则<code>children</code>也必须全都自身发生了合并。</li>
+</ul>
+</blockquote>
+<p>上面这个中英文的描述，把合并的四种形式又从例外情况的角度，进行了补充。</p>
+<p>外边距合并的计算逻辑：<br>如果要合并的外边距都是正的，就取它们的最大值。如果里面有负的外边距，就先取所有正的外边距的最大值，然后减去所有负的外边距的绝对值的最大值。如果都是负的，就是0减去所有外边距绝对值的最大值。</p>
+<h2 id="padding-properties"><a href="#padding-properties" class="headerlink" title="padding properties"></a>padding properties</h2><p>与<code>padding</code>有关的<code>properties</code>一共有5个，用来定义<code>padding</code>的大小。分别是：</p>
+<ul>
+<li><code>padding-top</code> 定义<code>left padding</code>的大小</li>
+<li><code>padding-right</code> 定义<code>right padding</code>的大小</li>
+<li><code>padding-bottom</code> 定义<code>bottom padding</code>的大小</li>
+<li><code>padding-left</code> 定义<code>left padding</code>的大小</li>
+<li><code>padding</code> 前面四个的简写，可按照<code>top right bottom left</code>的顺序，在一个属性中一次性定义1-4个<code>padding property</code></li>
+</ul>
+<h3 id="lt-padding-width-gt"><a href="#lt-padding-width-gt" class="headerlink" title="&lt;padding-width&gt;"></a><code>&lt;padding-width&gt;</code></h3><p>以上5个属性，全部都依赖<code>&lt;padding-width&gt;</code>这个<code>value type</code>，它的定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;padding-width&gt; = &lt;length&gt; | &lt;percentage&gt; | auto</span><br></pre></td></tr></table></figure></p>
+<p>下面的值，都是合法的<code>&lt;padding-width&gt;</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">padding: 20px;</span><br><span class="line">padding: 0.2;</span><br><span class="line">padding: 20%;</span><br><span class="line">padding: auto;</span><br></pre></td></tr></table></figure></p>
+<p>跟<code>margin</code>一样，上下左右四个<code>padding</code>都可以设置<code>&lt;percentage&gt;</code>的值，然后不管是谁，这个百分比值，都是相对于当前<code>box</code>的<code>container box</code>的<code>width</code>来计算的，这个<code>container box</code>一般是父元素的<code>box</code>。</p>
+<p><code>padding</code>值<strong>不能</strong>设置负的值。</p>
+<h3 id="padding-top-pading-bottom-padding-left-padding-right的定义"><a href="#padding-top-pading-bottom-padding-left-padding-right的定义" class="headerlink" title="padding-top pading-bottom padding-left padding-right的定义"></a><code>padding-top pading-bottom padding-left padding-right</code>的定义</h3><blockquote>
+<p>定义: <code>&lt;padding-width&gt; | inherit</code><br>初始值: 0<br>应用于: 除了<code>display</code>为<code>table-row-group, table-header-group, table-footer-group, table-row, table-column-group and table-column</code>的所有元素<br>是否可被继承: no<br>百分比计算: 相对<code>containing block</code>的<code>width</code>来计算</p>
+</blockquote>
+<h3 id="padding的定义"><a href="#padding的定义" class="headerlink" title="padding的定义"></a><code>padding</code>的定义</h3><blockquote>
+<p>定义: <code>&lt;padding-width&gt;{1,4} | inherit</code><br>初始值: 参考各个单独的属性定义<br>应用于: 除了<code>display</code>为<code>table-row-group, table-header-group, table-footer-group, table-row, table-column-group and table-column</code>的所有元素<br>是否可被继承: no<br>百分比计算: 参考各个单独的属性定义</p>
+</blockquote>
+<p>这个属性可以一次性定义4个方向的<code>padding</code>，遵循上右下左的顺序。<code>&lt;padding-width&gt;{1,4}</code>代表<code>&lt;padding-width&gt;</code>可以重复1到4次。</p>
+<h2 id="border-properties"><a href="#border-properties" class="headerlink" title="border properties"></a>border properties</h2><p>这个就比较简单了， 参考各种教程学习都行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">border</span><br><span class="line">    border-top</span><br><span class="line">    border-left</span><br><span class="line">    border-right</span><br><span class="line">    border-bottom</span><br><span class="line"></span><br><span class="line">border-color</span><br><span class="line">    border-top-color</span><br><span class="line">    border-right-color</span><br><span class="line">    border-bottom-color</span><br><span class="line">    border-left-color</span><br><span class="line"></span><br><span class="line">border-width</span><br><span class="line">    border-left-width</span><br><span class="line">    border-right-width</span><br><span class="line">    border-top-width</span><br><span class="line">    border-bottom-width</span><br><span class="line"></span><br><span class="line">border-style</span><br><span class="line">    border-top-style</span><br><span class="line">    border-bottom-style</span><br><span class="line">    border-left-style</span><br><span class="line">    border-right-style</span><br></pre></td></tr></table></figure></p>
+<p>一共有以上这么多个<code>border</code>属性。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/w3c规范/" rel="tag"># w3c规范</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/14/理解css中的display/" rel="next" title="理解css中的display">
+                <i class="fa fa-chevron-left"></i> 理解css中的display
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">88</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#box-dimensions"><span class="nav-number">1.</span> <span class="nav-text">box dimensions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#margin-properties"><span class="nav-number">2.</span> <span class="nav-text">margin properties</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-margin-width-gt"><span class="nav-number">2.1.</span> <span class="nav-text">&lt;margin-width&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#margin-top-margin-bottom这两个property的定义"><span class="nav-number">2.2.</span> <span class="nav-text">margin-top margin-bottom这两个property的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#margin-left-margin-rigth这两个property的定义"><span class="nav-number">2.3.</span> <span class="nav-text">margin-left margin-rigth这两个property的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#margin的定义"><span class="nav-number">2.4.</span> <span class="nav-text">margin的定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Collapsing-margins-外边距合并"><span class="nav-number">3.</span> <span class="nav-text">Collapsing margins 外边距合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#padding-properties"><span class="nav-number">4.</span> <span class="nav-text">padding properties</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-padding-width-gt"><span class="nav-number">4.1.</span> <span class="nav-text">&lt;padding-width&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#padding-top-pading-bottom-padding-left-padding-right的定义"><span class="nav-number">4.2.</span> <span class="nav-text">padding-top pading-bottom padding-left padding-right的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#padding的定义"><span class="nav-number">4.3.</span> <span class="nav-text">padding的定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#border-properties"><span class="nav-number">5.</span> <span class="nav-text">border properties</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
