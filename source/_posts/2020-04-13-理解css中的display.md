@@ -104,7 +104,7 @@ display: inline-block;
 * `flow-root` 这个跟`flow`唯一的区别就是，它一定会让`box`新建一个`BFC`。那种新建了`BFC`的`block container`都可以当成`inner display type`为`flow root`来看待。
 * `table` 表示元素会生成一个`principal box`，也叫做`table wrapper box`，并且新建一个`block formatting context`，在此`context`内再生成一个`table grid box`，并且使用一个新的布局`context`:`table formatting context`来布局内容，这就是所谓的`table layout`。`table wrapper box`应该是一个`block container`，因为它会创建`BFC`。
 * `flex` 表示元素会生成一个`flex container box`，并创建一个新的布局`context`:`flex formatting context`，使用`flex layout`来布局内容。这个`flex container`跟`block container`是完全不同的，`flex container`指的是这个`box`是1个`flex formatting context`的根。
-* `grid` 表示元素会生成一个`grid container box`，并创建一个新的布局`context`:`grid formatting context`，使用`flex layout`来布局内容。这个`grid container`跟`block container`是完全不同的，`flex container`指的是这个`box`是1个`grid formatting context`的根。
+* `grid` 表示元素会生成一个`grid container box`，并创建一个新的布局`context`:`grid formatting context`，使用`grid layout`来布局内容。这个`grid container`跟`block container`是完全不同的，`grid container`指的是这个`box`是1个`grid formatting context`的根。
 
 #### block container
 `block container box`要么只包含`inline box`，要么只包含`block box`。怎么做到这一点呢？需要一个`box`只包含`inline-box`比较容易，但是要它只包含`block-box`如何做到？实际上还是借助`anonymous box`，比如下面这个结构：

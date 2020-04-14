@@ -1,4 +1,216 @@
 ---
 title: 理解CSS2.1中的盒子模型
 tags:
+  - w3c规范
+categories:
+  - css
+  - w3c规范
 ---
+
+经典知识，学习细节。
+
+<!-- more -->
+
+## box dimensions
+`css`为`elements`生成`box`，`box`是由`content`区域以及`padding` `border` `margin`区域组成的，其中`padding border margin`不一定每个`box`都有。它们的包含关系如图所示：
+<img src="{% asset_path "01.png" %}">
+每个`box`最里面的矩形区域是`content`，`content`外面包裹的第一层环形矩形区域是`padding`，`padding`外面包裹的第一层环形矩形区域是`border`，`border`外面包裹的第一层环形矩形区域是`margin`。
+
+其它概念的含义如下：
+* `content edge` 指的是`content`的矩形内容区域的四条边
+* `padding edge` 指的是`padding`区域外侧的四条边，当`padding:0`的时候，`padding edge`与`content edge`重合
+* `border edge` 指的是`border`区域外侧的四条边，当`border:none`的时候，`border edge`与`padding edge`重合
+* `margin edge` 指的是`margin`区域外侧的四条边，当`margin:0`的时候，`margin edge`与`border edge`重合
+* `content box` 就是`content`
+* `padding box` 指的是`padding edge`包裹的矩形区域，等于`content` + `padding`
+* `border box` 指的是`border edge`包裹的矩形区域，等于`content` + `padding` + `border`
+* `margin box` 指的是`margin edge`包裹的矩形区域，等于`content` + `padding` + `border` + `margin`
+
+`content padding border margin`分上下左右四个部分，比如`LM RM` 分别指的是`left margin` `rigth margin`
+`content edge, padding edge, border edge, margin edg` 当然也分4条边。
+
+`box`的`background`是在`content border padding`这三个区域生效的，`margin`区域的`background`始终是透明的。
+
+## margin properties
+与`margin`有关的`properties`一共有5个，用来定义`margin`的大小。分别是：
+* `margin-top` 定义`left margin`的大小
+* `margin-right` 定义`right margin`的大小
+* `margin-bottom` 定义`bottom margin`的大小
+* `margin-left` 定义`left margin`的大小
+* `margin` 前面四个的简写，可按照`top right bottom left`的顺序，在一个属性中一次性定义1-4个`margin property`
+
+### `<margin-width>`
+以上5个属性，全部都依赖`<margin-width>`这个`value type`，它的定义如下：
+```
+<margin-width> = <length> | <percentage> | auto
+```
+什么是`value type`以及`<length>`和`<percentage`>这两个`value type`在哪定义的，都可前往[css-valus](https://www.w3.org/TR/css-values-4/)这个文档学习。
+
+简单来说，`<length>`一般就是`px em rem`这些值，属于绝对值，写多少就是多；`<percentage>`是指百分比或浮点数作为值，属于相对值，它要依赖于`box`所在的`container box`的`width`来计算最终的`margin`值。下面的值，都是合法的`<margin-width>`:
+```
+margin: 20px;
+margin: 0.2;
+margin: 20%;
+margin: auto;
+```
+
+需要着重说明的是，上下左右四个`margin`都可以设置`<percentage>`的值，然后不管是谁，这个百分比值，都是相对于当前`box`的`container box`的`width`来计算的，这个`container box`一般是父元素的`box`。比如：
+```html
+<div style="width: 400px; height: 300px">
+    <div style="margin: 20%"></div>
+</div>
+```
+上面这个例子中，最终内层`div`上下左右的`margin`值就是： `20% * 400px = 80px`，不能想当然的认为上下`margin`是根据`container box width`计算，而左右`margin`是跟`container box height`计算。
+另外，百分比单位是相对`container box width`计算的，如果`container box`的`width`是由`container box`的内容也就是当前`box`撑起来的话，那么当前`box`的百分比值计算出来就是`undefined`。上面的例子之所以百分比单位有效，是因为第一层div的width是明确指定的，第二层div的`box`没什么关系。这个要点可以帮助你分析某些时候为什么百分比单位会无效。
+
+`auto`需要前往其它内容学习，才能知道它的计算方式。另外`margin`值还能设置负的值，也就是负的`<length>`是允许的。这两个要点需要学习其它内容才能明确。
+
+### `margin-top margin-bottom`这两个property的定义
+>定义: `<margin-width> | inherit`
+初始值: 0
+应用于: 除了`table display types`以外的所有元素，但是`table-caption, table, inline-table`这3个`table display type`的元素是可以使用`margin`的
+是否可被继承: no
+百分比计算: 相对`containing block`的`width`来计算
+
+这两个属性定义垂直方向的`margin`，它们对`non replaced inline elements`无效。
+
+### `margin-left margin-rigth`这两个property的定义
+>定义: `<margin-width> | inherit`
+初始值: 0
+应用于: 除了`table display types`以外的所有元素，但是`table-caption, table, inline-table`这3个`table display type`的元素是可以使用`margin`的
+是否可被继承: no
+百分比计算: 相对`containing block`的`width`来计算
+
+这两个属性定义水平方向的margin。
+
+### `margin`的定义
+>定义: `<margin-width>{1,4} | inherit`
+初始值: 参考各个单独的属性定义
+应用于: 除了`table display types`以外的所有元素，但是`table-caption, table, inline-table`这3个`table display type`的元素是可以使用`margin`的
+是否可被继承: no
+百分比计算: 参考各个单独的属性定义
+
+这个属性可以一次性定义4个方向的`margin`，遵循上右下左的顺序。`<margin-width>{1,4}`代表`<margin-width>`可以重复1到4次。
+
+## Collapsing margins `外边距合并`
+首先只有垂直外边距才会合并，水平外边距始终不会发生合并，所以谈论外边距合并，说的仅仅是垂直外边距。在`css`里面，相邻的外边距会发生合并，从两个外边距合并成一个，合并完那个外边距又称为`collapsed margin`。
+
+有两个场景即使满足外边距合并的条件也一定不会合并：
+* `root elment`的`margin`不会合并
+* 如果一个有设置清除浮动的`box`的上下边距相邻，那这个`box`会与它后面相邻的其它元素的`box`的`margin`发生合并，但是它们合并的最终`collapsed margin`，不会再与`parent box`的`margin-bottom`发生合并。
+
+第二种情况举例如下：
+```html
+    <div style="border: 1px solid #ccc;width: 500px; margin: 0 auto;">
+        <div class="container" style="margin: 10px 0;background-color: rebeccapurple;">
+            <div style="float:left;width: 50px; height: 50px; background-color: #ccc;"></div>
+            <div class="clearance" style="margin: 30px 0;clear: both;height:0;"></div>
+            <div class="sibling" style="margin: 30px auto;height:0;"></div>
+        </div>
+    </div>
+```
+效果如下：
+<img src="{% asset_path "02.png" %}" width="500" style="border: none">
+
+在这个例子中，`div.container`是`container box`，而`div.clearance`是一个有设置清除浮动的`box`，且上下边距相邻，它会自身进行margin合并，然后再与`div.sibling`的`box`发生合并，但是它们俩合并完之后的`margin`并没有跟`div.container`的`margin-bottom: 10px`发生合并，不然从上面的效果图中看到的边框距离颜色内容区域的距离，就不会是那么点距离。
+
+外边距合并的条件为：
+* 要被合并的外边距对应的`box`，不能脱离普通文档流，且它们的`box`必须位于同一个`block formatting context`当中
+* 不能有`line box`（行框）、`padding`、`border`以及`浮动清除效果`在两个外边距之间，否则它们不会合并
+
+有以下几种外边距合并的形式：
+* `parent box`的`top margin`与它第一个`child box`的`top margin`发生合并
+* `box`的`bottom margin`会和它相邻的下一个元素的`box`的`top margin`发生合并
+* `parent box`的`bottom margin`与它最后一个`chilld box`的`bottom margin`发生合并。
+* 同一个`box`的`top margin`和`bottom margin`在`min-height`为0、`height`为0或者是`auto`、并且没有`content`的时候，也会发生合并。
+
+外边距是两两合并，然后得到一个新的外边距，新的外边距如果与其它box的外边距继续满足合并条件则还会发生合并；通过上面的合并形式，可以看到，外边距可以发生在父子元素之间、相邻元素之间、元素自身，所有在满足条件的情况下，一次完整的外边距合并，可能包含多个`box`，而且会跨越`box tree`多层结构。
+
+另外一种合并形式总结：
+> * Margins between a floated box and any other box do not collapse (not even between a float and its in-flow children).
+* Margins of elements that establish new block formatting contexts (such as floats and elements with 'overflow' other than 'visible') do not collapse with their in-flow children.
+* Margins of absolutely positioned boxes do not collapse (not even with their in-flow children).
+* Margins of inline-block boxes do not collapse (not even with their in-flow children).
+上面这4条英文规范的说的是同一个情况，就是新建了`BFC`的`box`不会发生合并，因为它是这个`BFC`的`root element`。
+* The bottom margin of an in-flow block-level element always collapses with the top margin of its next in-flow block-level sibling, unless that sibling has clearance. 
+一个`in-flow block-level`的元素的`bottom margin`始终会跟它下一个`in-flow block-level`的元素的`top margin`发生合并，除非下一个元素设置了`清除浮动`。
+* The top margin of an in-flow block element collapses with its first in-flow block-level child's top margin if the element has no top border, no top padding, and the child has no clearance. 
+一个`in-flow block-level`的元素的`top margin`会跟它第一个`in-flow block-level`的子元素的`top amrgin`发生合并，前提是这个元素没有设置`top border`、没有设置`top padding`、且子元素没有设置`清除浮动`。
+* The bottom margin of an in-flow block box with a 'height' of 'auto' and a 'min-height' of zero collapses with its last in-flow block-level child's bottom margin if the box has no bottom padding and no bottom border and the child's bottom margin does not collapse with a top margin that has clearance. 
+一个`in-flow block-level`且`height`是`auto`且`min-height`为0的元素的`bottom margin`，会跟它最后一个`in-flow block-level`的子元素的`bottom margin`发生合并，前提是这个元素自己没有设置`bottom padding`、没有设置`bottom border`、并且这个子元素的`bottom margin`没有跟前面有设置`清除浮动`元素的`top margin`合并过。 前面那个有代码的例子说的就是这个情况。
+* A box's own margins collapse if the 'min-height' property is zero, and it has neither top or bottom borders nor top or bottom padding, and it has a 'height' of either 0 or 'auto', and it does not contain a line box, and all of its in-flow children's margins (if any) collapse.
+一个元素的上下边距发生合并，前提是：它的`min-heigth`是0、且它没有设置上下的`border or padding`、且它的`height`是`0 or auto`、且它里面没有`line box`、如果有`children`则`children`也必须全都自身发生了合并。
+
+上面这个中英文的描述，把合并的四种形式又从例外情况的角度，进行了补充。
+
+外边距合并的计算逻辑：
+如果要合并的外边距都是正的，就取它们的最大值。如果里面有负的外边距，就先取所有正的外边距的最大值，然后减去所有负的外边距的绝对值的最大值。如果都是负的，就是0减去所有外边距绝对值的最大值。
+
+## padding properties
+与`padding`有关的`properties`一共有5个，用来定义`padding`的大小。分别是：
+* `padding-top` 定义`left padding`的大小
+* `padding-right` 定义`right padding`的大小
+* `padding-bottom` 定义`bottom padding`的大小
+* `padding-left` 定义`left padding`的大小
+* `padding` 前面四个的简写，可按照`top right bottom left`的顺序，在一个属性中一次性定义1-4个`padding property`
+
+### `<padding-width>`
+以上5个属性，全部都依赖`<padding-width>`这个`value type`，它的定义如下：
+```
+<padding-width> = <length> | <percentage> | auto
+```
+下面的值，都是合法的`<padding-width>`:
+```
+padding: 20px;
+padding: 0.2;
+padding: 20%;
+padding: auto;
+```
+跟`margin`一样，上下左右四个`padding`都可以设置`<percentage>`的值，然后不管是谁，这个百分比值，都是相对于当前`box`的`container box`的`width`来计算的，这个`container box`一般是父元素的`box`。
+
+`padding`值**不能**设置负的值。
+
+### `padding-top pading-bottom padding-left padding-right`的定义
+>定义: `<padding-width> | inherit`
+初始值: 0
+应用于: 除了`display`为`table-row-group, table-header-group, table-footer-group, table-row, table-column-group and table-column`的所有元素
+是否可被继承: no
+百分比计算: 相对`containing block`的`width`来计算
+
+### `padding`的定义
+>定义: `<padding-width>{1,4} | inherit`
+初始值: 参考各个单独的属性定义
+应用于: 除了`display`为`table-row-group, table-header-group, table-footer-group, table-row, table-column-group and table-column`的所有元素
+是否可被继承: no
+百分比计算: 参考各个单独的属性定义
+
+这个属性可以一次性定义4个方向的`padding`，遵循上右下左的顺序。`<padding-width>{1,4}`代表`<padding-width>`可以重复1到4次。
+
+## border properties
+这个就比较简单了， 参考各种教程学习都行。
+```
+border
+    border-top
+    border-left
+    border-right
+    border-bottom
+
+border-color
+    border-top-color
+    border-right-color
+    border-bottom-color
+    border-left-color
+
+border-width
+    border-left-width
+    border-right-width
+    border-top-width
+    border-bottom-width
+
+border-style
+    border-top-style
+    border-bottom-style
+    border-left-style
+    border-right-style
+```
+一共有以上这么多个`border`属性。
