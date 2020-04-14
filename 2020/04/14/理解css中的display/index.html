@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="提炼css-display这个module中的一些要点。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-04-13T09:46:42.979Z">
+<meta property="og:updated_time" content="2020-04-14T02:49:37.728Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css中的display">
 <meta name="twitter:description" content="提炼css-display这个module中的一些要点。">
@@ -203,7 +203,7 @@
     </div>
     
       
-        <p class="site-subtitle">存在的痕迹</p>
+        <p class="site-subtitle">心外无物</p>
       
     
     
@@ -533,7 +533,7 @@
 <li><code>flow-root</code> 这个跟<code>flow</code>唯一的区别就是，它一定会让<code>box</code>新建一个<code>BFC</code>。那种新建了<code>BFC</code>的<code>block container</code>都可以当成<code>inner display type</code>为<code>flow root</code>来看待。</li>
 <li><code>table</code> 表示元素会生成一个<code>principal box</code>，也叫做<code>table wrapper box</code>，并且新建一个<code>block formatting context</code>，在此<code>context</code>内再生成一个<code>table grid box</code>，并且使用一个新的布局<code>context</code>:<code>table formatting context</code>来布局内容，这就是所谓的<code>table layout</code>。<code>table wrapper box</code>应该是一个<code>block container</code>，因为它会创建<code>BFC</code>。</li>
 <li><code>flex</code> 表示元素会生成一个<code>flex container box</code>，并创建一个新的布局<code>context</code>:<code>flex formatting context</code>，使用<code>flex layout</code>来布局内容。这个<code>flex container</code>跟<code>block container</code>是完全不同的，<code>flex container</code>指的是这个<code>box</code>是1个<code>flex formatting context</code>的根。</li>
-<li><code>grid</code> 表示元素会生成一个<code>grid container box</code>，并创建一个新的布局<code>context</code>:<code>grid formatting context</code>，使用<code>flex layout</code>来布局内容。这个<code>grid container</code>跟<code>block container</code>是完全不同的，<code>flex container</code>指的是这个<code>box</code>是1个<code>grid formatting context</code>的根。</li>
+<li><code>grid</code> 表示元素会生成一个<code>grid container box</code>，并创建一个新的布局<code>context</code>:<code>grid formatting context</code>，使用<code>grid layout</code>来布局内容。这个<code>grid container</code>跟<code>block container</code>是完全不同的，<code>grid container</code>指的是这个<code>box</code>是1个<code>grid formatting context</code>的根。</li>
 </ul>
 <h4 id="block-container"><a href="#block-container" class="headerlink" title="block container"></a>block container</h4><p><code>block container box</code>要么只包含<code>inline box</code>，要么只包含<code>block box</code>。怎么做到这一点呢？需要一个<code>box</code>只包含<code>inline-box</code>比较容易，但是要它只包含<code>block-box</code>如何做到？实际上还是借助<code>anonymous box</code>，比如下面这个结构：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">asd</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>abc<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>div内混合了文本和<code>p</code>节点，<code>css</code>会在<code>asd</code>外面包裹一个<code>anonymous block box</code>来保证<code>div</code>这个<code>block container</code>仅包含<code>block box</code>。</p>
@@ -625,6 +625,9 @@
 </ul>
 <h3 id="display-type的自动转换"><a href="#display-type的自动转换" class="headerlink" title="display type的自动转换"></a>display type的自动转换</h3><p><code>blockification</code>: 块级化，将<code>box</code>的<code>outer display type</code>强制设定为<code>block</code><br><code>inlinification</code>: 内联化，将<code>box</code>的<code>inner display type</code>强制设定为<code>inline</code></p>
 <p>一些布局可能会对元素的<code>box</code>进行<code>blockification</code>或者是<code>inlinification</code>的处理，比如<code>浮动 或绝对定位 或flex布局</code>都会对元素进行<code>blockification</code>。</p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><blockquote>
+<p><a href="https://www.w3.org/TR/2019/CR-css-display-3-20190711/" target="_blank" rel="noopener">https://www.w3.org/TR/2019/CR-css-display-3-20190711/</a></p>
+</blockquote>
 
       
     </div>
@@ -921,7 +924,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#css-box-tree"><span class="nav-number">1.</span> <span class="nav-text">css box tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#display-property"><span class="nav-number">2.</span> <span class="nav-text">display property</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#value"><span class="nav-number">2.1.</span> <span class="nav-text">value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-outside"><span class="nav-number">2.2.</span> <span class="nav-text">display-outside</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-inside"><span class="nav-number">2.3.</span> <span class="nav-text">display-inside</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#block-container"><span class="nav-number">2.3.1.</span> <span class="nav-text">block container</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺省说明"><span class="nav-number">2.4.</span> <span class="nav-text">缺省说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-listitem"><span class="nav-number">2.5.</span> <span class="nav-text">display-listitem</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-legacy"><span class="nav-number">2.6.</span> <span class="nav-text">display-legacy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-internal"><span class="nav-number">2.7.</span> <span class="nav-text">display-internal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#归纳总结"><span class="nav-number">2.8.</span> <span class="nav-text">归纳总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-type的自动转换"><span class="nav-number">2.9.</span> <span class="nav-text">display type的自动转换</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#css-box-tree"><span class="nav-number">1.</span> <span class="nav-text">css box tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#display-property"><span class="nav-number">2.</span> <span class="nav-text">display property</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#value"><span class="nav-number">2.1.</span> <span class="nav-text">value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-outside"><span class="nav-number">2.2.</span> <span class="nav-text">display-outside</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-inside"><span class="nav-number">2.3.</span> <span class="nav-text">display-inside</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#block-container"><span class="nav-number">2.3.1.</span> <span class="nav-text">block container</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺省说明"><span class="nav-number">2.4.</span> <span class="nav-text">缺省说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-listitem"><span class="nav-number">2.5.</span> <span class="nav-text">display-listitem</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-legacy"><span class="nav-number">2.6.</span> <span class="nav-text">display-legacy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-internal"><span class="nav-number">2.7.</span> <span class="nav-text">display-internal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#归纳总结"><span class="nav-number">2.8.</span> <span class="nav-text">归纳总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#display-type的自动转换"><span class="nav-number">2.9.</span> <span class="nav-text">display type的自动转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用"><span class="nav-number">3.</span> <span class="nav-text">引用</span></a></li></ol></div>
             
 
           </div>
