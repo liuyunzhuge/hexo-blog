@@ -45,7 +45,7 @@ Percentages:  	不支持百分比
 百分比:  	支持百分比，相对于`containing block`的`height`计算
 负值：允许
 
-当元素是`absolute | fixed`定位时，这个属性定义了`box`的`top margin edge`与`containing block`的上边的距离；当元素是`relative`时，这个属性定义了`box`的`top margin edge`与它在`normal flow`中或`float`时的`top margin edge`的距离。
+当元素是`absolute | fixed`定位时，这个属性定义了`box`的`top margin edge`与`containing block`上边的距离；当元素是`relative`时，这个属性定义了`box`的`top margin edge`与它在`normal flow`中或`float`时的`top margin edge`的距离。
 
 * `bottom`
 > Value:  	<length> | <percentage> | auto | inherit
@@ -55,7 +55,7 @@ Percentages:  	不支持百分比
 百分比:  	支持百分比，相对于`containing block`的`height`计算
 负值：允许
 
-当元素是`absolute | fixed`定位时，这个属性定义了`box`的`bottom margin edge`与`containing block`的`bottom padding edge`的距离；当元素是`relative`时，这个属性定义了`box`的`bottom margin edge`与它在`normal flow`中或`float`时的`bottom margin edge`的距离。
+当元素是`absolute | fixed`定位时，这个属性定义了`box`的`bottom margin edge`与`containing block`下边的距离；当元素是`relative`时，这个属性定义了`box`的`bottom margin edge`与它在`normal flow`中或`float`时的`bottom margin edge`的距离。
 
 * `left`
 > Value:  	<length> | <percentage> | auto | inherit
@@ -65,7 +65,7 @@ Percentages:  	不支持百分比
 百分比:  	支持百分比，相对于`containing block`的`width`计算
 负值：允许
 
-当元素是`absolute | fixed`定位时，这个属性定义了`box`的`left margin edge`与`containing block`的左边的距离；当元素是`relative`时，这个属性定义了`box`的`left margin edge`与它在`normal flow`中或`float`时的`left margin edge`的距离。
+当元素是`absolute | fixed`定位时，这个属性定义了`box`的`left margin edge`与`containing block`左边的距离；当元素是`relative`时，这个属性定义了`box`的`left margin edge`与它在`normal flow`中或`float`时的`left margin edge`的距离。
 
 * `right`
 > Value:  	<length> | <percentage> | auto | inherit
@@ -75,7 +75,7 @@ Percentages:  	不支持百分比
 百分比:  	支持百分比，相对于`containing block`的`width`计算
 负值：允许
 
-当元素是`absolute | fixed`定位时，这个属性定义了`box`的`right margin edge`与`containing block`的右边的距离；当元素是`relative`时，这个属性定义了`box`的`right margin edge`与它在`normal flow`中或`float`时的`right margin edge`的距离。
+当元素是`absolute | fixed`定位时，这个属性定义了`box`的`right margin edge`与`containing block`右边的距离；当元素是`relative`时，这个属性定义了`box`的`right margin edge`与它在`normal flow`中或`float`时的`right margin edge`的距离。
 
 其它要点：
 1. 这四个属性都允许负值，好多网页布局都要利用它们的负值

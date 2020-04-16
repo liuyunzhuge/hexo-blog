@@ -80,9 +80,9 @@ date: 2020-04-16 10:22:24
 
 `line box`默认的宽度是跟`containing block`的宽度一样的，但是当`line box`遇到`float`元素后，`line box`会自动收缩自己的宽度，以便`line box`不跟`float`发生重叠，形成了`line box`环绕`float box`的效果。`line box`的高度根据`line-height`属性的计算规则有关，需要学习其它规范内容。
 
-`line box`的高度始终大于它里面任意一个`inline box`的高度，甚至会出现`line box`的高度比它里面最高的`box`的高度还要高。当某个`box`的高度低于`line box`的高度时，这个`box`在这一行内垂直方向上的对齐方式是由`vertical-align`属性决定的。当`inline boxs`用一个`line box`排不下的时候，它们会被分割到垂直堆叠的多个`line box`中来布局，因为`line box`的宽度最大就是`containing block`的宽度。一个`inline formatting context`实际上由垂直堆叠的多个`line box`布局出来的，这些堆叠的`line box`不会发生重叠，同时它们之间在默认情况下不会出现间隙。当`清除浮动`的时候，可能会让相邻的`line box`之间出现间隙，因为`清除浮动`是增加`line box`的`top margin`，来达到`line box`左右不出现`float box`这个目的的。
+`line box`的高度始终大于它里面任意一个`inline box`的高度，甚至会出现`line box`的高度比它里面最高的`box`的高度还要高。当某个`box`的高度低于`line box`的高度时，这个`box`在这一行内垂直方向上的对齐方式是由`vertical-align`属性决定的。当`inline boxs`用一个`line box`排不下的时候，它们会被分割到垂直堆叠的多个`line box`中来布局，因为`line box`的宽度最大就是`containing block`的宽度。一个`inline formatting context`实际上由垂直堆叠的多个`line box`布局出来的，这些堆叠的`line box`不会发生重叠，同时它们之间在默认情况下不会出现间隙。
 
-同一个`IFC`当中的`line box`，高度不一定相同，比如某个`line box`内有张图片，另一个没有。默认情况下`line box`的左边与`containing block`的左边对齐，`line box`的右边与`containing block`的右边对齐；但是当`float`出现后，部分`line box`的宽度会变窄，以便不与`float box`发生重叠。`line box`与`float box`的这种环绕行为，以及`line box`作用于`清除浮动`的行为，都只会在同一个`BFC`当中发生。 `float`会让一个`inline box`脱离`IFC`，但是不会脱离`BFC`，所以`float`与相应的`line box`还是处于同一个`BFC`，它们才能发生一些特定行为。 假如不想让某个`box`里面的`line box`与这个`box`所在的`BFC`中的`float box`发生特定行为，只需要把这个`box`变为`BFC`即可。
+同一个`IFC`当中的`line box`，高度不一定相同，比如某个`line box`内有张图片，另一个没有。默认情况下`line box`的左边与`containing block`的左边对齐，`line box`的右边与`containing block`的右边对齐；但是当`float`出现后，部分`line box`的宽度会变窄，以便不与`float box`发生重叠。`line box`与`float box`的这种环绕行为，以及`清除浮动`的行为，都只会在同一个`BFC`当中发生。 `float`会让一个`inline box`脱离`IFC`，但是不会脱离`BFC`，所以`float`与相应的`line box`还是处于同一个`BFC`，它们才能发生一些特定行为。 假如不想让某个`box`里面的`line box`与这个`box`所在的`BFC`中的`float box`发生特定行为，只需要把这个`box`变为`BFC`即可。
 
 当一个`line box`内所有的`inline box`的总宽度小于`line box`的宽度时，这些`inline box`在水平方向上的对齐方式，就由`text-align`属性来决定。如果某个`inline box`在一个`line box`内排不下，它就会被分割为多个`box`，然后布局到下一个`line box`当中。但是当一个`inline box`不允许被分割时，比如设置了`white-space: nowrap | pre`，那这个`inline box`就会溢出当前它所在的`line box`。
 
