@@ -3,7 +3,7 @@ title: 理解css中的display
 tags:
   - w3c规范
 categories:
-  - css
+  - CSS
   - w3c规范
 date: 2020-04-13 17:46:42
 ---

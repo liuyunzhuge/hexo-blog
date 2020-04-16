@@ -3,9 +3,11 @@ title: 理解css2.1中的position
 tags:
   - w3c规范
 categories:
-  - css
+  - CSS
   - w3c规范
+date: 2020-04-16 22:21:35
 ---
+
 
 理解`相对定位` `绝对定位` `固定定位`。
 
@@ -111,4 +113,10 @@ Percentages:  	不支持百分比
 
 `containing block`具体的定义是什么呢，分以下几种情况：
 * 根元素`html`所在的`containg block`称为`initial containing block`，对网页来说这个`containing block`与`view port`大小一致，而且固定在`canvas`的原点
-* 对于`position: relative`或`position: absolute`的`box`，
+* 对于`position: relative`或`position: absolute`的`box`，它所在的`containing block`就是离它最近的一个`block container`的`content box`区域
+* 对于`position: fixed`的`box`，它的`containing block`就可以看作是`view port`
+* 对于`position: absoulte`的`box`，需要先找离它最近的一个祖先元素，并且这个祖先元素的`position`设置为了`relative or absolute or fixed`，如果找到了则这个元素的`padding box`就是这个`box`的`containing block`，如果没找到，这个`box`的`containing block`就是`initial containing block`
+
+总结：`containg block`不是一个`box`，只是一个矩形区域，但它一般都是从某个`box`上拆分出来的，它可能是一个`box`的`content box`，或者是一个`box`的`padding box`，或者是跟`view port`相关的一个视觉区域。
+
+

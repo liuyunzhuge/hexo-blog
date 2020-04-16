@@ -3,7 +3,7 @@ title: 理解css2.1中的block-and-inline layout
 tags:
   - w3c规范
 categories:
-  - css
+  - CSS
   - w3c规范
 date: 2020-04-16 10:22:24
 ---
