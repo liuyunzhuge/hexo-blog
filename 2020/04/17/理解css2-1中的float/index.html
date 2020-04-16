@@ -99,23 +99,23 @@
 
 
 
-  <meta name="description" content="理解float。 什么是floatfloat布局可以让一个box移动到某一行的左边或者右边的边缘，float box附近的line boxes会环绕在float box周围。 当一个box向左向右浮动，直到自己的margin edge碰触到container box的content edge或者其它float box的margin edge为止。如果box是从一个line box里面float出来">
+  <meta name="description" content="理解float。">
 <meta name="keywords" content="w3c规范">
 <meta property="og:type" content="article">
 <meta property="og:title" content="理解css2.1中的float">
 <meta property="og:url" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/index.html">
 <meta property="og:site_name" content="流云诸葛">
-<meta property="og:description" content="理解float。 什么是floatfloat布局可以让一个box移动到某一行的左边或者右边的边缘，float box附近的line boxes会环绕在float box周围。 当一个box向左向右浮动，直到自己的margin edge碰触到container box的content edge或者其它float box的margin edge为止。如果box是从一个line box里面float出来">
+<meta property="og:description" content="理解float。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/01.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/03.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/02.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/04.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/05.png">
-<meta property="og:updated_time" content="2020-04-16T11:29:17.672Z">
+<meta property="og:updated_time" content="2020-04-16T11:31:43.206Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css2.1中的float">
-<meta name="twitter:description" content="理解float。 什么是floatfloat布局可以让一个box移动到某一行的左边或者右边的边缘，float box附近的line boxes会环绕在float box周围。 当一个box向左向右浮动，直到自己的margin edge碰触到container box的content edge或者其它float box的margin edge为止。如果box是从一个line box里面float出来">
+<meta name="twitter:description" content="理解float。">
 <meta name="twitter:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/01.png">
 
 
@@ -481,6 +481,7 @@
 
       
         <p>理解<code>float</code>。</p>
+<a id="more"></a>
 <h2 id="什么是float"><a href="#什么是float" class="headerlink" title="什么是float"></a>什么是<code>float</code></h2><p><code>float</code>布局可以让一个<code>box</code>移动到某一行的左边或者右边的边缘，<code>float box</code>附近的<code>line boxes</code>会环绕在<code>float box</code>周围。</p>
 <p>当一个<code>box</code>向左向右浮动，直到自己的<code>margin edge</code>碰触到<code>container box</code>的<code>content edge</code>或者其它<code>float box</code>的<code>margin edge</code>为止。如果<code>box</code>是从一个<code>line box</code>里面<code>float</code>出来的，则这个<code>float box</code>的<code>top margin edge</code>会与<code>line box</code>的顶部边缘对齐。</p>
 <p>如果一个<code>float box</code>在水平方向的浮动空间不够，则这个<code>box</code>就会向下移动直到有足够的浮动空间给它。</p>
