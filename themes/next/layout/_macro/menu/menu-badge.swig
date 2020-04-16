@@ -3,6 +3,7 @@
   {% set badges = {
     archives: site.posts.length,
     categories: site.categories.length,
+    old_blog: 60,
     tags: site.tags.length }
   %}
   {% for menu, count in badges %}
