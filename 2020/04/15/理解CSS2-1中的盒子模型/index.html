@@ -109,7 +109,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/01.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/02.png">
-<meta property="og:updated_time" content="2020-04-16T14:13:04.452Z">
+<meta property="og:updated_time" content="2020-04-16T14:54:04.984Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解CSS2.1中的盒子模型">
 <meta name="twitter:description" content="经典知识，学习细节。">
@@ -549,7 +549,7 @@
 <li>Margins of absolutely positioned boxes do not collapse (not even with their in-flow children).</li>
 <li>Margins of inline-block boxes do not collapse (not even with their in-flow children).<br>上面这4条英文规范的说的是同一个情况，就是新建了<code>BFC</code>的<code>box</code>不会发生合并，因为它是这个<code>BFC</code>的<code>root element</code>。</li>
 <li>The bottom margin of an in-flow block-level element always collapses with the top margin of its next in-flow block-level sibling, unless that sibling has clearance.<br>一个<code>in-flow block-level</code>的元素的<code>bottom margin</code>始终会跟它下一个<code>in-flow block-level</code>的元素的<code>top margin</code>发生合并，除非下一个元素设置了<code>清除浮动</code>。</li>
-<li>The top margin of an in-flow block element collapses with its first in-flow block-level child’s top margin if the element has no top border, no top padding, and the child has no clearance.<br>一个<code>in-flow block-level</code>的元素的<code>top margin</code>会跟它第一个<code>in-flow block-level</code>的子元素的<code>top amrgin</code>发生合并，前提是这个元素没有设置<code>top border</code>、没有设置<code>top padding</code>、且子元素没有设置<code>清除浮动</code>。</li>
+<li>The top margin of an in-flow block element collapses with its first in-flow block-level child’s top margin if the element has no top border, no top padding, and the child has no clearance.<br>一个<code>in-flow block-level</code>的元素的<code>top margin</code>会跟它第一个<code>in-flow block-level</code>的子元素的<code>top margin</code>发生合并，前提是这个元素没有设置<code>top border</code>、没有设置<code>top padding</code>、且子元素没有设置<code>清除浮动</code>。</li>
 <li>The bottom margin of an in-flow block box with a ‘height’ of ‘auto’ and a ‘min-height’ of zero collapses with its last in-flow block-level child’s bottom margin if the box has no bottom padding and no bottom border and the child’s bottom margin does not collapse with a top margin that has clearance.<br>一个<code>in-flow block-level</code>且<code>height</code>是<code>auto</code>且<code>min-height</code>为0的元素的<code>bottom margin</code>，会跟它最后一个<code>in-flow block-level</code>的子元素的<code>bottom margin</code>发生合并，前提是这个元素自己没有设置<code>bottom padding</code>、没有设置<code>bottom border</code>、并且这个子元素的<code>bottom margin</code>没有跟前面有设置<code>清除浮动</code>元素的<code>top margin</code>合并过。 前面那个有代码的例子说的就是这个情况。</li>
 <li>A box’s own margins collapse if the ‘min-height’ property is zero, and it has neither top or bottom borders nor top or bottom padding, and it has a ‘height’ of either 0 or ‘auto’, and it does not contain a line box, and all of its in-flow children’s margins (if any) collapse.<br>一个元素的上下边距发生合并，前提是：它的<code>min-heigth</code>是0、且它没有设置上下的<code>border or padding</code>、且它的<code>height</code>是<code>0 or auto</code>、且它里面没有<code>line box</code>、如果有<code>children</code>则<code>children</code>也必须全都自身发生了合并。</li>
 </ul>
