@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="理解相对定位 绝对定位 固定定位。">
+<meta name="keywords" content="w3c规范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解css2.1中的position">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的position/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="理解相对定位 绝对定位 固定定位。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-16T14:21:35.791Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解css2.1中的position">
+<meta name="twitter:description" content="理解相对定位 绝对定位 固定定位。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的position/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>理解css2.1中的position | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">29</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">18</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">91</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]<span class="badge">60</span></a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的position/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">理解css2.1中的position
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-16 22:21:35" itemprop="dateCreated datePublished" datetime="2020-04-16T22:21:35Z">2020-04-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/CSS/" itemprop="url" rel="index"><span itemprop="name">CSS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/CSS/w3c规范/" itemprop="url" rel="index"><span itemprop="name">w3c规范</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>理解<code>相对定位</code> <code>绝对定位</code> <code>固定定位</code>。</p>
+<a id="more"></a>
+<h2 id="css2-1中的定位方案"><a href="#css2-1中的定位方案" class="headerlink" title="css2.1中的定位方案"></a>css2.1中的定位方案</h2><p>在css2.1中一共有3种定位方案：</p>
+<ol>
+<li><code>normal-flow</code> 文档流，分水平和垂直两个布局上下文</li>
+<li><code>float</code> 浮动，让元素脱离<code>normal-flow</code>里面的<code>IFC</code></li>
+<li><code>absolute position</code> 绝对定位，<code>position: aboslute</code>和<code>position: fixed</code>都属于它</li>
+</ol>
+<p>另外<code>relative postion</code>是同时可应用于<code>normal-flow</code>和<code>float</code>的定位形式，所以没有单独作为一个分类。</p>
+<h2 id="position-property"><a href="#position-property" class="headerlink" title="position property"></a><code>position</code> property</h2><p><code>position</code>这个属性，可用于设置元素的定位方式，它的定义如下：</p>
+<blockquote>
+<p>Value:      static | relative | absolute | fixed | inherit<br>初始值:      static<br>可应用于:      所有元素<br>是否能被继承:      no<br>Percentages:      不支持百分比</p>
+</blockquote>
+<p>各个含义如下：</p>
+<ul>
+<li><code>static</code> 这是<code>position</code>的默认值，元素按默认的<code>normal-layout</code>进行布局。与<code>position</code>相关的四个偏移属性：<code>top left right bottom</code>在<code>position:static</code>时无效。</li>
+<li><code>relative</code> 这个可以开启相对定位。<code>box</code>在<code>normal layout</code>中的布局出来的位置，称为<code>normal position</code>。<code>relative</code>可以让<code>box</code>，相对<code>normal position</code>进行偏移，利用<code>top left rigth bottom</code>这四个偏移属性。当一个<code>box</code>开启<code>relative</code>并且进行偏移之后，对其它在<code>normal-layout</code>中的元素布局没有任何影响，其它元素就好像这个<code>box</code>没有偏移过一样；所以<code>relative</code>可能会导致<code>box</code>与其它<code>box</code>发生重叠。<code>relative</code>对<code>display</code>为<code>table-row-group, table-header-group, table-footer-group, table-row, table-column-group, table-column, table-cell, and table-caption</code>的元素无效。</li>
+<li><code>absolute</code> 这个可以开启绝对定位。它会让<code>box</code>脱离<code>normal layout</code>，注意这里它是完全脱离<code>normal layout</code>，不像<code>float</code>(不会完全脱离<code>BFC</code>)。然后可以使用四个偏移属性<code>top left rigth bottom</code>对<code>box</code>偏移，偏移是相对于<code>containing block</code>进行的。<code>absolute</code>的<code>box</code>不会与任何<code>margin</code>发生合并。所以<code>margin</code>可以用在<code>absolute</code>的元素上实现一些特殊效果，为啥？因为margin能改变元素的位置，对元素实现拉扯定位。</li>
+<li><code>fixed</code> 这个也是绝对定位，是一种特殊的绝对定位，它在偏移时是相对视口<code>viewport</code>进行的，对网页来说，这个<code>视口</code>一般指的的就是网页的可视区域。<code>fixed</code>的<code>box</code>的定位位置不会受网页滚动的影响。</li>
+</ul>
+<h2 id="box-offset"><a href="#box-offset" class="headerlink" title="box offset"></a><code>box offset</code></h2><p><code>relative absolute fixed</code>都可以对<code>box</code>进行偏移（offset），偏移用到四个css属性：<code>top left rigth bottom</code>。各个属性定义如下：</p>
+<ul>
+<li><code>top</code><blockquote>
+<p>Value:      <length> | <percentage> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>height</code>计算<br>负值：允许</percentage></length></p>
+</blockquote>
+</li>
+</ul>
+<p>当元素是<code>absolute | fixed</code>定位时，这个属性定义了<code>box</code>的<code>top margin edge</code>与<code>containing block</code>的上边的距离；当元素是<code>relative</code>时，这个属性定义了<code>box</code>的<code>top margin edge</code>与它在<code>normal flow</code>中或<code>float</code>时的<code>top margin edge</code>的距离。</p>
+<ul>
+<li><code>bottom</code><blockquote>
+<p>Value:      <length> | <percentage> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>height</code>计算<br>负值：允许</percentage></length></p>
+</blockquote>
+</li>
+</ul>
+<p>当元素是<code>absolute | fixed</code>定位时，这个属性定义了<code>box</code>的<code>bottom margin edge</code>与<code>containing block</code>的<code>bottom padding edge</code>的距离；当元素是<code>relative</code>时，这个属性定义了<code>box</code>的<code>bottom margin edge</code>与它在<code>normal flow</code>中或<code>float</code>时的<code>bottom margin edge</code>的距离。</p>
+<ul>
+<li><code>left</code><blockquote>
+<p>Value:      <length> | <percentage> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>width</code>计算<br>负值：允许</percentage></length></p>
+</blockquote>
+</li>
+</ul>
+<p>当元素是<code>absolute | fixed</code>定位时，这个属性定义了<code>box</code>的<code>left margin edge</code>与<code>containing block</code>的左边的距离；当元素是<code>relative</code>时，这个属性定义了<code>box</code>的<code>left margin edge</code>与它在<code>normal flow</code>中或<code>float</code>时的<code>left margin edge</code>的距离。</p>
+<ul>
+<li><code>right</code><blockquote>
+<p>Value:      <length> | <percentage> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>width</code>计算<br>负值：允许</percentage></length></p>
+</blockquote>
+</li>
+</ul>
+<p>当元素是<code>absolute | fixed</code>定位时，这个属性定义了<code>box</code>的<code>right margin edge</code>与<code>containing block</code>的右边的距离；当元素是<code>relative</code>时，这个属性定义了<code>box</code>的<code>right margin edge</code>与它在<code>normal flow</code>中或<code>float</code>时的<code>right margin edge</code>的距离。</p>
+<p>其它要点：</p>
+<ol>
+<li>这四个属性都允许负值，好多网页布局都要利用它们的负值</li>
+<li>百分比都是相对<code>containing block</code>的宽高计算，包括<code>relative</code>。不要认为<code>relative</code>的偏移百分比值是相对于自身计算。</li>
+<li><code>auto</code>这个特殊值的逻辑，需要其它内容。</li>
+</ol>
+<h2 id="relative-positioning"><a href="#relative-positioning" class="headerlink" title="relative positioning"></a>relative positioning</h2><p><code>相对定位</code>要点。</p>
+<p><code>relative</code>可以对<code>normal layout</code>中的<code>box</code>和<code>float box</code>生效。<code>box</code>可以利用四个偏移属性，对<code>box</code>被<code>relative</code>之前的位置进行偏移，被<code>relative</code>的<code>box</code>在发生偏移后，对其它<code>box</code>的布局不会有任何影响，其它<code>box</code>就好像这个<code>box</code>没有移动过一样。所以<code>relative</code>可能会造成<code>box</code>的重叠。但是有一种情况，可能会因为<code>relative</code>影响布局：当<code>box</code>被<code>relative</code>后可能会导致有设置<code>overflow: scroll</code>或<code>overflow:auto</code>的<code>box</code>发生溢出，浏览器需要保证溢出后，还能与这些溢出的<code>relative box</code>交互，就会通过创建滚动条的方式来满足这点要求，滚动条会影响布局，因为滚动条要占据空间。</p>
+<p><code>relative box</code>偏移后，<code>box</code>的尺寸大小不会受影响。</p>
+<p><code>left</code>与<code>right</code>属性，只是将<code>box</code>水平移动，但是不会改变<code>box</code>大小。正的<code>left</code>让<code>box</code>往右偏移，负的<code>left</code>让<code>box</code>往左偏移；反之，正的<code>right</code>让<code>box</code>往左偏移，负的<code>right</code>让<code>box</code>往右偏移；由于<code>box</code>不会因为<code>left</code> <code>right</code>而分割或拉伸，所以它们始终要满足这个关系：<code>left=-right</code>。</p>
+<ul>
+<li>当<code>left</code>和<code>right</code>都是<code>auto</code>的时候，<code>auto</code>是默认值，这两个属性最终被使用的值都是：<code>0</code>。</li>
+<li>如果一个是<code>auto</code>，另一个不是，则另一个根据<code>left=-right</code>自动计算出一个值；</li>
+<li>如果两个都不是<code>auto</code>，则会发生冲突，其中一个会被忽略，然后用<code>left=-right</code>计算一个新值。谁被舍弃，取决于<code>box</code>的<code>direction</code>这个属性。当<code>direction:ltr</code>时，表示从从到右的布局方向，<code>right</code>会被舍弃；当<code>direction:rtl</code>，时，表示从右到左的布局方向，<code>left</code>会被舍弃。</li>
+</ul>
+<p><code>top</code>与<code>bottom</code>属性，只是将<code>box</code>垂直移动，但是不会改变<code>box</code>大小。基本跟<code>left right</code>大同小异，且满足：<code>top=-bottom</code>。有一点不同的是：</p>
+<ul>
+<li>当<code>top</code>和<code>bottom</code>都不是<code>auto</code>的时候，始终是<code>bottom</code>被忽略，然后<code>bottom = -top</code>来得到一个新的<code>bottom</code>值。</li>
+</ul>
+<h2 id="absolute-positioning"><a href="#absolute-positioning" class="headerlink" title="absolute positioning"></a>absolute positioning</h2><p>在绝对定位中，<code>box</code>是相对于它的<code>containing block</code>进行偏移的。它可以同时使用<code>top right left bottom</code>四个属性来指定偏移量，<code>top bottom</code>和<code>left right</code>之间同时设定的话，会对<code>box</code>进行拉伸，所以不存在类似<code>relative</code>那样的牵制关系。</p>
+<p>元素绝对定位后，会完全从<code>normal flow</code>中脱离出来，并新建一个<code>BFC</code>来布局子内容。绝对定位的<code>box</code>会与其它<code>box</code>发生重叠，他们的堆叠顺序，可以通过<code>stack level</code>也就是<code>z-index</code>属性来控制。</p>
+<h2 id="fixed-positioning"><a href="#fixed-positioning" class="headerlink" title="fixed positioning"></a>fixed positioning</h2><p>固定定位就是一种特殊的绝对定位，只不过<code>box</code>偏移的<code>containing block</code>是<code>viewport</code>本身。</p>
+<h2 id="什么是containing-block"><a href="#什么是containing-block" class="headerlink" title="什么是containing block"></a>什么是<code>containing block</code></h2><p>在css2.1里面，很多的<code>box</code>位置和大小都是根据一个矩形区域的边缘来计算的，这个矩形区域称为<code>containing block</code>。一般情况下，都是<code>box</code>充当后代<code>boxes</code>的<code>containing block</code>，我们说它是一个<code>box</code>为它的后代创建了<code>containing block</code>。 一个<code>box</code>的<code>containing block</code>，是指它布局所在的那个块，不是指它生成的那个块。</p>
+<p>每一个<code>box</code>都会有一个相对于它所在的<code>containing block</code>的<code>position</code>值（x,y坐标），但是<code>containing block</code>不会限制<code>box</code>的显示，所以<code>box</code>可能会溢出。</p>
+<p><code>containing block</code>具体的定义是什么呢，分以下几种情况：</p>
+<ul>
+<li>根元素<code>html</code>所在的<code>containg block</code>称为<code>initial containing block</code>，对网页来说这个<code>containing block</code>与<code>view port</code>大小一致，而且固定在<code>canvas</code>的原点</li>
+<li>对于<code>position: relative</code>或<code>position: absolute</code>的<code>box</code>，它所在的<code>containing block</code>就是离它最近的一个<code>block container</code>的<code>content box</code>区域</li>
+<li>对于<code>position: fixed</code>的<code>box</code>，它的<code>containing block</code>就可以看作是<code>view port</code></li>
+<li>对于<code>position: absoulte</code>的<code>box</code>，需要先找离它最近的一个祖先元素，并且这个祖先元素的<code>position</code>设置为了<code>relative or absolute or fixed</code>，如果找到了则这个元素的<code>padding box</code>就是这个<code>box</code>的<code>containing block</code>，如果没找到，这个<code>box</code>的<code>containing block</code>就是<code>initial containing block</code></li>
+</ul>
+<p>总结：<code>containg block</code>不是一个<code>box</code>，只是一个矩形区域，但它一般都是从某个<code>box</code>上拆分出来的，它可能是一个<code>box</code>的<code>content box</code>，或者是一个<code>box</code>的<code>padding box</code>，或者是跟<code>view port</code>相关的一个视觉区域。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/w3c规范/" rel="tag"># w3c规范</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/17/理解css2-1中的float/" rel="next" title="理解css2.1中的float">
+                <i class="fa fa-chevron-left"></i> 理解css2.1中的float
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">91</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#css2-1中的定位方案"><span class="nav-number">1.</span> <span class="nav-text">css2.1中的定位方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#position-property"><span class="nav-number">2.</span> <span class="nav-text">position property</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#box-offset"><span class="nav-number">3.</span> <span class="nav-text">box offset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#relative-positioning"><span class="nav-number">4.</span> <span class="nav-text">relative positioning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#absolute-positioning"><span class="nav-number">5.</span> <span class="nav-text">absolute positioning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fixed-positioning"><span class="nav-number">6.</span> <span class="nav-text">fixed positioning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是containing-block"><span class="nav-number">7.</span> <span class="nav-text">什么是containing block</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
