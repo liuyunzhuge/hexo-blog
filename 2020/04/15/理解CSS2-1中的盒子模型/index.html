@@ -109,7 +109,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/01.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/15/理解CSS2-1中的盒子模型/02.png">
-<meta property="og:updated_time" content="2020-04-17T15:05:02.678Z">
+<meta property="og:updated_time" content="2020-04-17T15:05:53.489Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解CSS2.1中的盒子模型">
 <meta name="twitter:description" content="经典知识，学习细节。">
@@ -512,15 +512,15 @@
 <p>上面这个例子中，最终内层<code>div</code>上下左右的<code>margin</code>值就是： <code>20% * 400px = 80px</code>，不能想当然的认为左右<code>margin</code>是根据<code>containing block width</code>计算，而上下<code>margin</code>是根据<code>containing block height</code>计算。<br>另外，百分比单位是相对<code>containing block</code>的<code>width</code>计算的，如果<code>containing block</code>的宽度是由当前<code>box</code>撑起来的话，那么当前<code>box</code>的百分比值计算出来就是<code>undefined</code>。上面的例子之所以百分比单位有效，是因为第一层div的width是明确指定的，不是靠第二层div的<code>box</code>填充起来的。这个要点可以帮助你分析某些时候为什么百分比单位会无效。</p>
 <p><code>auto</code>需要前往其它内容学习，才能知道它的计算方式。另外<code>margin</code>值还能设置负的值，也就是负的<code>&lt;length&gt;</code>是允许的。这两个要点需要学习其它内容才能明确。</p>
 <h3 id="margin-top-margin-bottom这两个property的定义"><a href="#margin-top-margin-bottom这两个property的定义" class="headerlink" title="margin-top margin-bottom这两个property的定义"></a><code>margin-top margin-bottom</code>这两个property的定义</h3><blockquote>
-<p>定义: <code>&lt;margin-width&gt; | inherit</code><br>初始值: 0<br>应用于: 除了<code>table display types</code>以外的所有元素，<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素是可以使用<code>margin</code><br>是否可被继承: no<br>百分比计算: 相对<code>containing block</code>的<code>width</code>来计算</p>
+<p>定义: <code>&lt;margin-width&gt; | inherit</code><br>初始值: 0<br>应用于: 除了<code>table display types</code>以外的所有元素，<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素可以使用<code>margin</code><br>是否可被继承: no<br>百分比计算: 相对<code>containing block</code>的<code>width</code>来计算</p>
 </blockquote>
 <p>这两个属性定义垂直方向的<code>margin</code>，它们对<code>display: inlne</code>的<code>non replaced elements</code>无效。</p>
 <h3 id="margin-left-margin-rigth这两个property的定义"><a href="#margin-left-margin-rigth这两个property的定义" class="headerlink" title="margin-left margin-rigth这两个property的定义"></a><code>margin-left margin-rigth</code>这两个property的定义</h3><blockquote>
-<p>定义: <code>&lt;margin-width&gt; | inherit</code><br>初始值: 0<br>应用于: 除了<code>table display types</code>以外的所有元素，但是<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素是可以使用<code>margin</code><br>是否可被继承: no<br>百分比计算: 相对<code>containing block</code>的<code>width</code>来计算</p>
+<p>定义: <code>&lt;margin-width&gt; | inherit</code><br>初始值: 0<br>应用于: 除了<code>table display types</code>以外的所有元素，但是<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素可以使用<code>margin</code><br>是否可被继承: no<br>百分比计算: 相对<code>containing block</code>的<code>width</code>来计算</p>
 </blockquote>
 <p>这两个属性定义水平方向的margin。</p>
 <h3 id="margin的定义"><a href="#margin的定义" class="headerlink" title="margin的定义"></a><code>margin</code>的定义</h3><blockquote>
-<p>定义: <code>&lt;margin-width&gt;{1,4} | inherit</code><br>初始值: 参考各个单独的属性定义<br>应用于: 除了<code>table display types</code>以外的所有元素，但是<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素是可以使用<code>margin</code><br>是否可被继承: no<br>百分比计算: 参考各个单独的属性定义</p>
+<p>定义: <code>&lt;margin-width&gt;{1,4} | inherit</code><br>初始值: 参考各个单独的属性定义<br>应用于: 除了<code>table display types</code>以外的所有元素，但是<code>table-caption, table, inline-table</code>这3个<code>table display type</code>的元素可以使用<code>margin</code><br>是否可被继承: no<br>百分比计算: 参考各个单独的属性定义</p>
 </blockquote>
 <p>这个属性可以一次性定义4个方向的<code>margin</code>，遵循上右下左的顺序。<code>&lt;margin-width&gt;{1,4}</code>代表<code>&lt;margin-width&gt;</code>可以重复1到4次。</p>
 <h2 id="Collapsing-margins-外边距合并"><a href="#Collapsing-margins-外边距合并" class="headerlink" title="Collapsing margins 外边距合并"></a>Collapsing margins <code>外边距合并</code></h2><p>首先只有垂直外边距才会合并，水平外边距始终不会发生合并，所以谈论外边距合并，说的仅仅是垂直外边距。在<code>css</code>里面，相邻的垂直外边距会发生合并，从两个外边距合并成一个，合并完那个外边距又称为<code>collapsed margin</code>。</p>
