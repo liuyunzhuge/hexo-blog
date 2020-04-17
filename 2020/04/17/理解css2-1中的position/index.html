@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="理解相对定位 绝对定位 固定定位。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-04-17T13:26:49.563Z">
+<meta property="og:updated_time" content="2020-04-17T13:28:41.789Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css2.1中的position">
 <meta name="twitter:description" content="理解相对定位 绝对定位 固定定位。">
@@ -554,7 +554,7 @@
 <p><code>containing block</code>具体的定义是什么呢，分以下几种情况：</p>
 <ul>
 <li>根元素<code>html</code>所在的<code>containg block</code>称为<code>initial containing block</code>，对网页来说这个<code>containing block</code>与<code>view port</code>大小一致，而且固定在<code>canvas</code>的原点</li>
-<li>对于<code>position: fixed</code>或<code>position: absolute</code>的<code>box</code>，它所在的<code>containing block</code>就是离它最近的一个<code>block container</code>的<code>content box</code>区域</li>
+<li>对于<code>position: relative</code>或<code>position: static</code>的<code>box</code>，它所在的<code>containing block</code>就是离它最近的一个<code>block container</code>的<code>content box</code>区域</li>
 <li>对于<code>position: fixed</code>的<code>box</code>，它的<code>containing block</code>就可以看作是<code>view port</code></li>
 <li>对于<code>position: absoulte</code>的<code>box</code>，需要先找离它最近的一个祖先元素，并且这个祖先元素的<code>position</code>设置为了<code>relative or absolute or fixed</code>，如果找到了则这个元素的<code>padding box</code>就是这个<code>box</code>的<code>containing block</code>，如果没找到，这个<code>box</code>的<code>containing block</code>就是<code>initial containing block</code></li>
 </ul>
