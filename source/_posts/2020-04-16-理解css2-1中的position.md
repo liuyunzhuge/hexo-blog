@@ -113,7 +113,7 @@ Percentages:  	不支持百分比
 
 `containing block`具体的定义是什么呢，分以下几种情况：
 * 根元素`html`所在的`containg block`称为`initial containing block`，对网页来说这个`containing block`与`view port`大小一致，而且固定在`canvas`的原点
-* 对于`position: relative`或`position: absolute`的`box`，它所在的`containing block`就是离它最近的一个`block container`的`content box`区域
+* 对于`position: relative`或`position: static`的`box`，它所在的`containing block`就是离它最近的一个`block container`的`content box`区域
 * 对于`position: fixed`的`box`，它的`containing block`就可以看作是`view port`
 * 对于`position: absoulte`的`box`，需要先找离它最近的一个祖先元素，并且这个祖先元素的`position`设置为了`relative or absolute or fixed`，如果找到了则这个元素的`padding box`就是这个`box`的`containing block`，如果没找到，这个`box`的`containing block`就是`initial containing block`
 
