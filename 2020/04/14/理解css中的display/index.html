@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="提炼css-display这个module中的一些要点。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-04-18T08:35:40.420Z">
+<meta property="og:updated_time" content="2020-04-18T08:37:37.822Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css中的display">
 <meta name="twitter:description" content="提炼css-display这个module中的一些要点。">
@@ -572,7 +572,7 @@
 </blockquote>
 </li>
 <li><code>display:inline-block</code><blockquote>
-<p>完整写法：<code>display: inline flow-root</code><br>outer display type: <code>inline</code><br>inner display type: <code>flow-root</code><br>box level: <code>inline-level</code><br>生成的box：<code>block contaienr</code><br>formatting context: 新建一个<code>BFC</code>布局子内容</p>
+<p>完整写法：<code>display: inline flow-root</code><br>outer display type: <code>inline</code><br>inner display type: <code>flow-root</code><br>box level: <code>inline-level</code><br>生成的box：<code>block container</code><br>formatting context: 新建一个<code>BFC</code>布局子内容</p>
 </blockquote>
 </li>
 <li><code>display:list-item</code><blockquote>
@@ -580,19 +580,19 @@
 </blockquote>
 </li>
 <li><code>display:flex</code><blockquote>
-<p>完整写法：<code>display: block flex</code><br>outer display type: <code>block</code><br>inner display type: <code>flex</code><br>box level: <code>block-level</code><br>生成的box：<code>flex contaienr</code><br>formatting context: 新建一个<code>flex formatting context</code>布局子内容</p>
+<p>完整写法：<code>display: block flex</code><br>outer display type: <code>block</code><br>inner display type: <code>flex</code><br>box level: <code>block-level</code><br>生成的box：<code>flex container</code><br>formatting context: 新建一个<code>flex formatting context</code>布局子内容</p>
 </blockquote>
 </li>
 <li><code>display:inline-flex</code><blockquote>
-<p>完整写法：<code>display: inline flex</code><br>outer display type: <code>inline</code><br>inner display type: <code>flex</code><br>box level: <code>inline-level</code><br>生成的box：<code>flext contaienr</code><br>formatting context: 新建一个<code>flex formatting context</code>布局子内容</p>
+<p>完整写法：<code>display: inline flex</code><br>outer display type: <code>inline</code><br>inner display type: <code>flex</code><br>box level: <code>inline-level</code><br>生成的box：<code>flext container</code><br>formatting context: 新建一个<code>flex formatting context</code>布局子内容</p>
 </blockquote>
 </li>
 <li><code>display:grid</code><blockquote>
-<p>完整写法：<code>display: block grid</code><br>outer display type: <code>block</code><br>inner display type: <code>grid</code><br>box level: <code>block-level</code><br>生成的box：<code>grid contaienr</code><br>formatting context: 新建一个<code>grid formatting context</code>布局子内容</p>
+<p>完整写法：<code>display: block grid</code><br>outer display type: <code>block</code><br>inner display type: <code>grid</code><br>box level: <code>block-level</code><br>生成的box：<code>grid container</code><br>formatting context: 新建一个<code>grid formatting context</code>布局子内容</p>
 </blockquote>
 </li>
 <li><code>display:inline-grid</code><blockquote>
-<p>完整写法：<code>display: inline grid</code><br>outer display type: <code>inline</code><br>inner display type: <code>grid</code><br>box level: <code>inline-level</code><br>生成的box：<code>flext contaienr</code><br>formatting context: 新建一个<code>grid formatting context</code>布局子内容</p>
+<p>完整写法：<code>display: inline grid</code><br>outer display type: <code>inline</code><br>inner display type: <code>grid</code><br>box level: <code>inline-level</code><br>生成的box：<code>flext container</code><br>formatting context: 新建一个<code>grid formatting context</code>布局子内容</p>
 </blockquote>
 </li>
 <li><code>display:table</code><blockquote>
