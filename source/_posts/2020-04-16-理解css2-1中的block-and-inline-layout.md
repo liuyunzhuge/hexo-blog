@@ -68,21 +68,21 @@ date: 2020-04-16 10:22:24
 父级div最终的宽度会变为360，而不是300，因为子div的宽度设置为100%，所以它的宽度也是300，一下子就把父div撑开了，`width: 100%`导致子div失去了自动在水平方向充满父div内容区的流体效果。
 
 `BFC`有两个布局要点：
-1. `box`的顶部边缘对齐`containing block`的顶部。`box`的顶部边缘是指`border box`的上边`top border edge`
-2. `box`的左边对齐`containing block`的左边。`box`的左边是指`border box`的左边`left border edge`
+1. `box`的顶部边缘对齐`containing block`的顶部。
+2. `box`的左边对齐`containing block`的左边。
 
-当一个原本位于`BFC`中的`block-level box`变为一个`BFC`以后，它会失去它在水平方向上的流体布局特性，宽度不再自动充满`containing block`的宽度，而是收缩到自己的内容实际填充宽度，这就是所谓的包裹性。
+`float box` `inline block box` 和`absolutely positioned box`这类`BFC`的`box`会导致它失去在水平方向上的流体布局特性，宽度不再自动充满`containing block`的宽度，而是收缩到自己的内容实际填充宽度，这就是所谓的包裹性。
 
 ## inline formatting context
 当一个`block-level`的`box`里面只有`inline box`的时候，它会创建一个`inline formatting context`来布局这些`inline`内容。`inline box`一定是在一个`IFC`中布局的，它的`children`也会跟它一起布局在相同的`IFC`当中。
 
-在`IFC`当中，`inline box`也是从`containing block`的顶部开始布局的。水平方向上的`margin` `border` `padding`都会起作用。这些`inline box`在水平方向上有多种对齐方式，可能是按照`box`的顶部边缘对齐、可能是底部边缘对齐、也可能是按照文本基线对齐。在`IFC`当中，每一行都是一个不可见矩形区域，来包裹这些`inline box`，这个矩形区域称为`line box`。
+在`IFC`当中，`inline box`也是从`containing block`的顶部开始布局的。水平方向上的`margin` `border` `padding`都会起作用。这些`inline box`在垂直方向上有多种对齐方式，可能是按照`box`的顶部边缘对齐、可能是底部边缘对齐、也可能是按照文本基线对齐。在`IFC`当中，每一行都是一个不可见矩形区域，来包裹这些`inline box`，这个矩形区域称为`line box`。
 
 `line box`默认的宽度是跟`containing block`的宽度一样的，但是当`line box`遇到`float`元素后，`line box`会自动收缩自己的宽度，以便`line box`不跟`float`发生重叠，形成了`line box`环绕`float box`的效果。`line box`的高度根据`line-height`属性的计算规则有关，需要学习其它规范内容。
 
 `line box`的高度始终大于它里面任意一个`inline box`的高度，甚至会出现`line box`的高度比它里面最高的`box`的高度还要高。当某个`box`的高度低于`line box`的高度时，这个`box`在这一行内垂直方向上的对齐方式是由`vertical-align`属性决定的。当`inline boxs`用一个`line box`排不下的时候，它们会被分割到垂直堆叠的多个`line box`中来布局，因为`line box`的宽度最大就是`containing block`的宽度。一个`inline formatting context`实际上由垂直堆叠的多个`line box`布局出来的，这些堆叠的`line box`不会发生重叠，同时它们之间在默认情况下不会出现间隙。
 
-同一个`IFC`当中的`line box`，高度不一定相同，比如某个`line box`内有张图片，另一个没有。默认情况下`line box`的左边与`containing block`的左边对齐，`line box`的右边与`containing block`的右边对齐；但是当`float`出现后，部分`line box`的宽度会变窄，以便不与`float box`发生重叠。`line box`与`float box`的这种环绕行为，以及`清除浮动`的行为，都只会在同一个`BFC`当中发生。 `float`会让一个`inline box`脱离`IFC`，但是不会脱离`BFC`，所以`float`与相应的`line box`还是处于同一个`BFC`，它们才能发生一些特定行为。 假如不想让某个`box`里面的`line box`与这个`box`所在的`BFC`中的`float box`发生特定行为，只需要把这个`box`变为`BFC`即可。
+同一个`IFC`当中的`line box`，高度不一定相同，比如某个`line box`内有张图片，另一个没有。默认情况下`line box`的左边与`containing block`的左边对齐，`line box`的右边与`containing block`的右边对齐；但是当`float`出现后，部分`line box`的宽度会变窄，以便不与`float box`发生重叠。`line box`与`float box`的这种环绕行为，以及`清除浮动`的行为，都只会在同一个`BFC`当中发生。 `float`会让`box`脱离`BFC`或`IFC`的这种文档流布局，但是不会脱离`BFC`，所以`float`与相应的`line box`还是处于同一个`BFC`，它们才能发生一些特定行为。 假如不想让某个`box`里面的`line box`与这个`box`所在的`BFC`中的`float box`发生特定行为，只需要把这个`box`变为`BFC`即可。
 
 当一个`line box`内所有的`inline box`的总宽度小于`line box`的宽度时，这些`inline box`在水平方向上的对齐方式，就由`text-align`属性来决定。如果某个`inline box`在一个`line box`内排不下，它就会被分割为多个`box`，然后布局到下一个`line box`当中。但是当一个`inline box`不允许被分割时，比如设置了`white-space: nowrap | pre`，那这个`inline box`就会溢出当前它所在的`line box`。
 

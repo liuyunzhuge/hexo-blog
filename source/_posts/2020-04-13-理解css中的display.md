@@ -21,7 +21,7 @@ date: 2020-04-13 17:46:42
 
 对每个`element`而言，`css`会根据它的`display`属性值为它自身创建0到多个`box`。 一个`element`至少会有一个`box`，称为`principal box`，表示`element`自己以及它在`box tree`中包含的内容。 有一些`display`值会生成多个`box`。比如`list-item`这个值，会生成一个`principal block box`和一个`marker box`。有一些值比如`none or contents`不会生成任何`box`。`box`可以用`display`的类型来指代，比如一个`display:block`的`element`可以被称为一个`block box`或者`block`。
 
-除非另有说明，`box`会被设定与它对应的`element`相同的样式。`inherited properties`（可继承的属性）被设定到`element`的`principal box`上，然后通过`box tree`的层级关系继承给该`element`生成的自身其它`box`和后代`box`。`non-inherited properties`（不可继承属性）默认情况下也是应用到`principal box`上，但是如果一个`element`自身要生成多个box，就可能把`non-inherited properties`应用到其它`box`，而不是`principal box`。比如`table`元素的`border`属性，是一个`non-inherited property`，它是应用到`table grid box`上的，不是`table wrapper box`。补充：`table`的`princial box`又称为`table wrapper box`。
+除非另有说明，`box`会被设定与它对应的`element`相同的样式。`inherited properties`（可继承的属性）被设定到`element`的`principal box`上，然后通过`box tree`的层级关系继承给该`element`生成的后代`box`。`non-inherited properties`（不可继承属性）默认情况下也是应用到`principal box`上，但是如果一个`element`自身要生成多个box，就可能把`non-inherited properties`应用到其它`box`，而不是`principal box`。比如`table`元素的`border`属性，是一个`non-inherited property`，它是应用到`table grid box`上的，不是`table wrapper box`。补充：`table`的`princial box`又称为`table wrapper box`。
 
 `document tree`中连续的`text nodes`，`css`会为它们生成一个`text run`的东西，来包含这些文本内容，每个`text run`会被设定成与它们对应的`text nodes`相同的样式。
 
@@ -73,7 +73,7 @@ display: block flow list-item;
 display: list-item;
 display: block list-item;
 ```
-以上`value type`涉及到的`<> || | []`以及下面的`&& ?`等符号的语法，是`css`在规范文档中用来描述`Value Definition`的一种语法，可前往[css-valus](https://www.w3.org/TR/css-values-4/#value-defs)这个文档学习。
+以上`value type`涉及到的`<> || | []`以及下面的`&& ?`等符号的语法，是`css`在规范文档中用来描述`Value Definition`的一种语法，可前往[css-values](https://www.w3.org/TR/css-values-4/#value-defs)这个文档学习。
 
 综合以上内容可以看到，`display`的值是支持单值、双值和三值写法的：
 ```css
@@ -192,7 +192,7 @@ div内混合了文本和`p`节点，`css`会在`asd`外面包裹一个`anonymous
 </body>
 </html>
 ```
-上例中，为什么与`div.parent`同级的`p`元素会环绕在`div.child`这个浮动元素的右边呢？这是因为上面的例子中`div.parent`并没有创建新的`BFC`，所以它的内容都是在`body`的`formatting context`中布局出来的，而`div.child`虽然设置了浮动，但是浮动只能让它从`inline formatting context`中脱离出来，它仍然属于`body`的`block formatting context`，而`div.parent`后面的`p`也是在`body`的`context`中布局的，这样`p`里面的文本所形成的`inline formatting context`与浮动元素的作用关系，导致了这个结果。浮动本质上不会脱离元素所在的`block formatting context`，所以浮动本质上也没有离开`flow layout`。如果想让`p`与`div.child`不产生浮动环绕的作用，解决办法就是把`div.parent`变为`BFC`，这样`div.child`与`p`不在同一个`block formatting context`，它们是不会产生浮动环绕作用的。
+上例中，为什么与`div.parent`同级的`p`元素会环绕在`div.child`这个浮动元素的右边呢？这是因为上面的例子中`div.parent`并没有创建新的`BFC`，所以它的内容都是在`body`的`formatting context`中布局出来的，而`div.child`虽然设置了浮动，但是浮动只能让它从文档流脱离出来，它仍然属于`body`的`block formatting context`，而`div.parent`后面的`p`也是在`body`的`context`中布局的，这样`p`里面的文本所形成的`inline formatting context`与浮动元素的作用关系，导致了这个结果。浮动本质上不会脱离元素所在的`block formatting context`。如果想让`p`与`div.child`不产生浮动环绕的作用，解决办法就是把`div.parent`变为`BFC`，这样`div.child`与`p`不在同一个`block formatting context`，它们是不会产生浮动环绕作用的。
 
 `block container`可以同时有两种`formatting context`，比如它仅包含`inline box`，这样它会创建`inline formatting context`，然后再通过别的方式触发新建`BFC`，这样就两种`formatting context`共存了。
 
@@ -201,8 +201,8 @@ div内混合了文本和`p`节点，`css`会在`asd`外面包裹一个`anonymous
 * `block container`也不一定都是`block box`，比如`display: inline-block`和`display: table-cell`的元素生成`box`会创建BFC，属于`block container`，但不是`block-level box`
 
 ### 缺省说明
-如果`display`值，指定了`<display-outside>`但是没有指定`<display-inside>`，`<display-inside`的默认值就是：`flow`。
-如果`display`值，指定了`<display-inside>`但是没有指定`<display-outside>`，`<display-outside`的默认值就是：`block`。
+如果`display`值，指定了`<display-outside>`但是没有指定`<display-inside>`，`<display-inside>`的默认值就是：`flow`。
+如果`display`值，指定了`<display-inside>`但是没有指定`<display-outside>`，`<display-outside>`的默认值就是：`block`。
 
 ### display-listitem
 这个`value type`的定义是：
@@ -271,7 +271,7 @@ outer display type: `block`
 inner display type: `flow`
 box level: `block-level`
 生成的box：一定是`block box` 不一定是`block container`，见前面对此二者的区分说明
-formatting context: 要么新建一个`BFC`布局子内容，要么把子内容布局到自己所在的`formatting context`；自己所在的`formatting context`是`inline formatting context`和`block formatting context`二者之一。
+formatting context: 要么新建一个`BFC`布局子内容，要么把子内容布局到自己所在的`BFC`。
 * `display:flow-root`
 >完整写法：`display: block flow-root`
 outer display type: `block`
@@ -291,7 +291,7 @@ formatting context: 将子内容布局到自己所在的`inline formatting conte
 outer display type: `inline`
 inner display type: `flow-root`
 box level: `inline-level`
-生成的box：`block contaienr`
+生成的box：`block container`
 formatting context: 新建一个`BFC`布局子内容
 * `display:list-item`
 >各个要素与前面四个几乎一致，就是会多生成一个`marker box`
@@ -300,28 +300,28 @@ formatting context: 新建一个`BFC`布局子内容
 outer display type: `block`
 inner display type: `flex`
 box level: `block-level`
-生成的box：`flex contaienr`
+生成的box：`flex container`
 formatting context: 新建一个`flex formatting context`布局子内容
 * `display:inline-flex`
 >完整写法：`display: inline flex`
 outer display type: `inline`
 inner display type: `flex`
 box level: `inline-level`
-生成的box：`flext contaienr`
+生成的box：`flext container`
 formatting context: 新建一个`flex formatting context`布局子内容
 * `display:grid`
 >完整写法：`display: block grid`
 outer display type: `block`
 inner display type: `grid`
 box level: `block-level`
-生成的box：`grid contaienr`
+生成的box：`grid container`
 formatting context: 新建一个`grid formatting context`布局子内容
 * `display:inline-grid`
 >完整写法：`display: inline grid`
 outer display type: `inline`
 inner display type: `grid`
 box level: `inline-level`
-生成的box：`flext contaienr`
+生成的box：`flext container`
 formatting context: 新建一个`grid formatting context`布局子内容
 * `display:table`
 >完整写法：`display: block table`
@@ -340,7 +340,7 @@ formatting context: `table wrapper box`新建`BFC`，而`table grid box`新建`t
 
 ### display type的自动转换
 `blockification`: 块级化，将`box`的`outer display type`强制设定为`block`
-`inlinification`: 内联化，将`box`的`inner display type`强制设定为`inline`
+`inlinification`: 内联化，将`box`的`outer display type`强制设定为`inline`
 
 一些布局可能会对元素的`box`进行`blockification`或者是`inlinification`的处理，比如`浮动 或绝对定位 或flex布局`都会对元素进行`blockification`。
 
