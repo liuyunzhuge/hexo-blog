@@ -108,7 +108,7 @@
 <meta property="og:description" content="这几个概念等价：block-and-inline layout normal flow flow layout。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/16/理解css2-1中的block-and-inline-layout/01.png">
-<meta property="og:updated_time" content="2020-04-18T09:28:21.053Z">
+<meta property="og:updated_time" content="2020-04-18T09:29:59.765Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css2.1中的block-and-inline layout">
 <meta name="twitter:description" content="这几个概念等价：block-and-inline layout normal flow flow layout。">
@@ -509,7 +509,7 @@
 <li><code>box</code>的顶部边缘对齐<code>containing block</code>的顶部。</li>
 <li><code>box</code>的左边对齐<code>containing block</code>的左边。</li>
 </ol>
-<p><code>float box</code> <code>inline block box</code> 和<code>absolutely positioned box</code>这类<code>BFC</code>的<code>box</code>会脱离文档流，导致它失去在水平方向上的流体布局特性，宽度不再自动充满<code>containing block</code>的宽度，而是收缩到自己的内容实际填充宽度，这就是所谓的包裹性。</p>
+<p><code>float box</code> <code>inline block box</code> 和<code>absolutely positioned box</code>这类<code>BFC</code>的<code>box</code>会导致它失去在水平方向上的流体布局特性，宽度不再自动充满<code>containing block</code>的宽度，而是收缩到自己的内容实际填充宽度，这就是所谓的包裹性。</p>
 <h2 id="inline-formatting-context"><a href="#inline-formatting-context" class="headerlink" title="inline formatting context"></a>inline formatting context</h2><p>当一个<code>block-level</code>的<code>box</code>里面只有<code>inline box</code>的时候，它会创建一个<code>inline formatting context</code>来布局这些<code>inline</code>内容。<code>inline box</code>一定是在一个<code>IFC</code>中布局的，它的<code>children</code>也会跟它一起布局在相同的<code>IFC</code>当中。</p>
 <p>在<code>IFC</code>当中，<code>inline box</code>也是从<code>containing block</code>的顶部开始布局的。水平方向上的<code>margin</code> <code>border</code> <code>padding</code>都会起作用。这些<code>inline box</code>在水平方向上有多种对齐方式，可能是按照<code>box</code>的顶部边缘对齐、可能是底部边缘对齐、也可能是按照文本基线对齐。在<code>IFC</code>当中，每一行都是一个不可见矩形区域，来包裹这些<code>inline box</code>，这个矩形区域称为<code>line box</code>。</p>
 <p><code>line box</code>默认的宽度是跟<code>containing block</code>的宽度一样的，但是当<code>line box</code>遇到<code>float</code>元素后，<code>line box</code>会自动收缩自己的宽度，以便<code>line box</code>不跟<code>float</code>发生重叠，形成了<code>line box</code>环绕<code>float box</code>的效果。<code>line box</code>的高度根据<code>line-height</code>属性的计算规则有关，需要学习其它规范内容。</p>
