@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="提炼css-display这个module中的一些要点。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-04-18T08:27:46.740Z">
+<meta property="og:updated_time" content="2020-04-18T08:35:40.420Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css中的display">
 <meta name="twitter:description" content="提炼css-display这个module中的一些要点。">
@@ -560,7 +560,7 @@
 <p>下面是一个对常见<code>display</code>值的归纳整理：</p>
 <ul>
 <li><code>display:block</code><blockquote>
-<p>完整写法：<code>display: block flow</code><br>outer display type: <code>block</code><br>inner display type: <code>flow</code><br>box level: <code>block-level</code><br>生成的box：一定是<code>block box</code> 不一定是<code>block container</code>，见前面对此二者的区分说明<br>formatting context: 要么新建一个<code>BFC</code>布局子内容，要么把子内容布局到自己所在的<code>formatting context</code>；自己所在的<code>formatting context</code>是<code>inline formatting context</code>和<code>block formatting context</code>二者之一。</p>
+<p>完整写法：<code>display: block flow</code><br>outer display type: <code>block</code><br>inner display type: <code>flow</code><br>box level: <code>block-level</code><br>生成的box：一定是<code>block box</code> 不一定是<code>block container</code>，见前面对此二者的区分说明<br>formatting context: 要么新建一个<code>BFC</code>布局子内容，要么把子内容布局到自己所在的<code>BFC</code>。</p>
 </blockquote>
 </li>
 <li><code>display:flow-root</code><blockquote>
