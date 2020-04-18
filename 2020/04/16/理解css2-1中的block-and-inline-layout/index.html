@@ -108,7 +108,7 @@
 <meta property="og:description" content="这几个概念等价：block-and-inline layout normal flow flow layout。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/16/理解css2-1中的block-and-inline-layout/01.png">
-<meta property="og:updated_time" content="2020-04-16T14:46:13.720Z">
+<meta property="og:updated_time" content="2020-04-18T09:23:59.046Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css2.1中的block-and-inline layout">
 <meta name="twitter:description" content="这几个概念等价：block-and-inline layout normal flow flow layout。">
@@ -506,8 +506,8 @@
 <p>父级div最终的宽度会变为360，而不是300，因为子div的宽度设置为100%，所以它的宽度也是300，一下子就把父div撑开了，<code>width: 100%</code>导致子div失去了自动在水平方向充满父div内容区的流体效果。</p>
 <p><code>BFC</code>有两个布局要点：</p>
 <ol>
-<li><code>box</code>的顶部边缘对齐<code>containing block</code>的顶部。<code>box</code>的顶部边缘是指<code>border box</code>的上边<code>top border edge</code></li>
-<li><code>box</code>的左边对齐<code>containing block</code>的左边。<code>box</code>的左边是指<code>border box</code>的左边<code>left border edge</code></li>
+<li><code>box</code>的顶部边缘对齐<code>containing block</code>的顶部。</li>
+<li><code>box</code>的左边对齐<code>containing block</code>的左边。</li>
 </ol>
 <p>当一个原本位于<code>BFC</code>中的<code>block-level box</code>变为一个<code>BFC</code>以后，它会失去它在水平方向上的流体布局特性，宽度不再自动充满<code>containing block</code>的宽度，而是收缩到自己的内容实际填充宽度，这就是所谓的包裹性。</p>
 <h2 id="inline-formatting-context"><a href="#inline-formatting-context" class="headerlink" title="inline formatting context"></a>inline formatting context</h2><p>当一个<code>block-level</code>的<code>box</code>里面只有<code>inline box</code>的时候，它会创建一个<code>inline formatting context</code>来布局这些<code>inline</code>内容。<code>inline box</code>一定是在一个<code>IFC</code>中布局的，它的<code>children</code>也会跟它一起布局在相同的<code>IFC</code>当中。</p>
