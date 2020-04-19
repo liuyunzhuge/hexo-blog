@@ -113,7 +113,7 @@
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/04.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/05.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/17/理解css2-1中的float/06.gif">
-<meta property="og:updated_time" content="2020-04-19T08:02:05.236Z">
+<meta property="og:updated_time" content="2020-04-19T08:34:13.828Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css2.1中的float">
 <meta name="twitter:description" content="理解float。">
@@ -531,9 +531,9 @@
 <p><code>浮动清除</code>的作用是为了让元素的左右不出现<code>float box</code>，只对相同<code>BFC</code>中的<code>float box</code>有效，同时对自己内部的<code>float box</code>无效。</p>
 <p>各个值的含义如下：</p>
 <ul>
-<li><code>left</code> 不允许<code>box</code>左边出现<code>float box</code>，要求<code>box</code>的<code>top border edge</code>必须低于任何在它之前生成的<code>left-floating box</code>的<code>bottom margin edge</code></li>
-<li><code>right</code> 不允许<code>box</code>右边出现<code>float box</code>，要求<code>box</code>的<code>top border edge</code>必须低于任何在它之前生成的<code>left-floating box</code>的<code>bottom margin edge</code></li>
-<li><code>both</code> 不允许<code>box</code>左右出现<code>float box</code>，要求<code>bot</code>的<code>top border edge</code>必须低于任何在它之前生成的<code>left-floating box</code>或<code>right-floating box</code>的<code>bottom margin edge</code></li>
+<li><code>left</code> 要求<code>box</code>的<code>top border edge</code>必须低于任何在它之前生成的<code>left-floating box</code>的<code>bottom margin edge</code></li>
+<li><code>right</code> 要求<code>box</code>的<code>top border edge</code>必须低于任何在它之前生成的<code>left-floating box</code>的<code>bottom margin edge</code></li>
+<li><code>both</code> 要求<code>bot</code>的<code>top border edge</code>必须低于任何在它之前生成的<code>left-floating box</code>或<code>right-floating box</code>的<code>bottom margin edge</code></li>
 <li><code>none</code> 不清除浮动</li>
 </ul>
 <p>非<code>none</code>值的<code>clear</code>属性，会在需要的时候，增加<code>clearance</code>（间隙），<code>clearance</code>会阻碍外边距合并，在盒子模型里面学margin合并的条件时了解过；<code>clearance</code>这段空白的空间是加在被<code>clear</code>的<code>box</code>的<code>top margin edge</code>之上的，以便能在垂直方向上把<code>box</code>推到<code>float box</code>的底下去。<code>clearance</code>是看不到的。</p>
