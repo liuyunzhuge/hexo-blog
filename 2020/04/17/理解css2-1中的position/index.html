@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="理解相对定位 绝对定位 固定定位。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-04-17T13:28:41.789Z">
+<meta property="og:updated_time" content="2020-04-26T13:43:37.418Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css2.1中的position">
 <meta name="twitter:description" content="理解相对定位 绝对定位 固定定位。">
@@ -501,28 +501,28 @@
 <h2 id="box-offset"><a href="#box-offset" class="headerlink" title="box offset"></a><code>box offset</code></h2><p><code>relative absolute fixed</code>都可以对<code>box</code>进行偏移（offset），偏移用到四个css属性：<code>top left rigth bottom</code>。各个属性定义如下：</p>
 <ul>
 <li><code>top</code><blockquote>
-<p>Value:      <length> | <percentage> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>height</code>计算<br>负值：允许</percentage></length></p>
+<p>Value:      <code>&lt;length&gt;</code> | <code>&lt;percentage&gt;</code> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>height</code>计算<br>负值：允许</p>
 </blockquote>
 </li>
 </ul>
 <p>当元素是<code>absolute | fixed</code>定位时，这个属性定义了<code>box</code>的<code>top margin edge</code>与<code>containing block</code>上边的距离；当元素是<code>relative</code>时，这个属性定义了<code>box</code>的<code>top margin edge</code>与它在<code>normal flow</code>中或<code>float</code>时的<code>top margin edge</code>的距离。</p>
 <ul>
 <li><code>bottom</code><blockquote>
-<p>Value:      <length> | <percentage> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>height</code>计算<br>负值：允许</percentage></length></p>
+<p>Value:      <code>&lt;length&gt;</code> | <code>&lt;percentage&gt;</code> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>height</code>计算<br>负值：允许</p>
 </blockquote>
 </li>
 </ul>
 <p>当元素是<code>absolute | fixed</code>定位时，这个属性定义了<code>box</code>的<code>bottom margin edge</code>与<code>containing block</code>下边的距离；当元素是<code>relative</code>时，这个属性定义了<code>box</code>的<code>bottom margin edge</code>与它在<code>normal flow</code>中或<code>float</code>时的<code>bottom margin edge</code>的距离。</p>
 <ul>
 <li><code>left</code><blockquote>
-<p>Value:      <length> | <percentage> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>width</code>计算<br>负值：允许</percentage></length></p>
+<p>Value:      <code>&lt;length&gt;</code> | <code>&lt;percentage&gt;</code> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>width</code>计算<br>负值：允许</p>
 </blockquote>
 </li>
 </ul>
 <p>当元素是<code>absolute | fixed</code>定位时，这个属性定义了<code>box</code>的<code>left margin edge</code>与<code>containing block</code>左边的距离；当元素是<code>relative</code>时，这个属性定义了<code>box</code>的<code>left margin edge</code>与它在<code>normal flow</code>中或<code>float</code>时的<code>left margin edge</code>的距离。</p>
 <ul>
 <li><code>right</code><blockquote>
-<p>Value:      <length> | <percentage> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>width</code>计算<br>负值：允许</percentage></length></p>
+<p>Value:      <code>&lt;length&gt;</code> | <code>&lt;percentage&gt;</code> | auto | inherit<br>初始值:      auto<br>应用于:      所有元素<br>是否可被继承:      不<br>百分比:      支持百分比，相对于<code>containing block</code>的<code>width</code>计算<br>负值：允许</p>
 </blockquote>
 </li>
 </ul>
@@ -540,7 +540,7 @@
 <ul>
 <li>当<code>left</code>和<code>right</code>都是<code>auto</code>的时候，<code>auto</code>是默认值，这两个属性最终被使用的值都是：<code>0</code>。</li>
 <li>如果一个是<code>auto</code>，另一个不是，则另一个根据<code>left=-right</code>自动计算出一个值；</li>
-<li>如果两个都不是<code>auto</code>，则会发生冲突，其中一个会被忽略，然后用<code>left=-right</code>计算一个新值。谁被舍弃，取决于<code>box</code>的<code>direction</code>这个属性。当<code>direction:ltr</code>时，表示从从到右的布局方向，<code>right</code>会被舍弃；当<code>direction:rtl</code>，时，表示从右到左的布局方向，<code>left</code>会被舍弃。</li>
+<li>如果两个都不是<code>auto</code>，则会发生冲突，其中一个会被忽略，然后用<code>left=-right</code>计算一个新值。谁被舍弃，取决于<code>containing block</code>的<code>direction</code>这个属性。当<code>direction:ltr</code>时，表示从从到右的布局方向，<code>right</code>会被舍弃；当<code>direction:rtl</code>，时，表示从右到左的布局方向，<code>left</code>会被舍弃。</li>
 </ul>
 <p><code>top</code>与<code>bottom</code>属性，只是将<code>box</code>垂直移动，但是不会改变<code>box</code>大小。基本跟<code>left right</code>大同小异，且满足：<code>top=-bottom</code>。有一点不同的是：</p>
 <ul>
