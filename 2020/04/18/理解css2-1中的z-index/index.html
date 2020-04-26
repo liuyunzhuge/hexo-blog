@@ -110,7 +110,7 @@
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/18/理解css2-1中的z-index/03.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/18/理解css2-1中的z-index/02.png">
 <meta property="og:image" content="http://blog.liuyunzhuge.com/2020/04/18/理解css2-1中的z-index/04.png">
-<meta property="og:updated_time" content="2020-04-17T09:52:35.470Z">
+<meta property="og:updated_time" content="2020-04-26T14:05:59.591Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解css2.1中的z-index">
 <meta name="twitter:description" content="理解z-index与堆叠上下文 stacking context。">
@@ -501,7 +501,7 @@
 <li><code>&lt;interger&gt;</code> 整型值用来指定<code>box</code>在当前堆叠上下文中的<code>stack level</code>，可以为任意整数，包括负数；同时它还会创建一个新的堆叠上下文；</li>
 <li><code>auto</code> 指定<code>box</code>在当前堆叠上下文中的<code>stack level</code>为<code>0</code>，但是不会创建新的堆叠上下文</li>
 </ul>
-<p>注意：<code>z-index:0</code>与<code>z-index:auto</code>的区别，两者都代表<code>stack-level</code>是0，但是<code>z-idnex:0</code>会创建新的堆叠上下文，而<code>z-index:auto</code>不会。</p>
+<p>注意：<code>z-index:0</code>与<code>z-index:auto</code>的区别，两者都代表<code>stack-level</code>是0，但是<code>z-index:0</code>会创建新的堆叠上下文，而<code>z-index:auto</code>不会。</p>
 <h2 id="painting-order"><a href="#painting-order" class="headerlink" title="painting order"></a>painting order</h2><p>结合<code>stack level</code>以及<code>box tree</code>本身布局的特性，每个<code>堆叠上下文</code>都遵循以下这个顺序（<code>painting order</code>）在<code>z</code>轴上渲染相关的内容。这个顺序依次是从下到上，越靠后的内容它在<code>堆叠上下文</code>中的层级越高：</p>
 <ol>
 <li>先渲染形成<code>堆叠上下文</code>的<code>box</code>的<code>background</code>和<code>border</code></li>
