@@ -38,7 +38,7 @@ Percentages:  	不支持百分比
 ## `box offset`
 `relative absolute fixed`都可以对`box`进行偏移（offset），偏移用到四个css属性：`top left rigth bottom`。各个属性定义如下：
 * `top`
-> Value:  	<length> | <percentage> | auto | inherit
+> Value:  	`<length>` | `<percentage>` | auto | inherit
 初始值:  	auto
 应用于:  	所有元素
 是否可被继承:  	不
@@ -48,7 +48,7 @@ Percentages:  	不支持百分比
 当元素是`absolute | fixed`定位时，这个属性定义了`box`的`top margin edge`与`containing block`上边的距离；当元素是`relative`时，这个属性定义了`box`的`top margin edge`与它在`normal flow`中或`float`时的`top margin edge`的距离。
 
 * `bottom`
-> Value:  	<length> | <percentage> | auto | inherit
+> Value:  	`<length>` | `<percentage>` | auto | inherit
 初始值:  	auto
 应用于:  	所有元素
 是否可被继承:  	不
@@ -58,7 +58,7 @@ Percentages:  	不支持百分比
 当元素是`absolute | fixed`定位时，这个属性定义了`box`的`bottom margin edge`与`containing block`下边的距离；当元素是`relative`时，这个属性定义了`box`的`bottom margin edge`与它在`normal flow`中或`float`时的`bottom margin edge`的距离。
 
 * `left`
-> Value:  	<length> | <percentage> | auto | inherit
+> Value:  	`<length>` | `<percentage>` | auto | inherit
 初始值:  	auto
 应用于:  	所有元素
 是否可被继承:  	不
@@ -68,7 +68,7 @@ Percentages:  	不支持百分比
 当元素是`absolute | fixed`定位时，这个属性定义了`box`的`left margin edge`与`containing block`左边的距离；当元素是`relative`时，这个属性定义了`box`的`left margin edge`与它在`normal flow`中或`float`时的`left margin edge`的距离。
 
 * `right`
-> Value:  	<length> | <percentage> | auto | inherit
+> Value:  	`<length>` | `<percentage>` | auto | inherit
 初始值:  	auto
 应用于:  	所有元素
 是否可被继承:  	不
@@ -92,7 +92,7 @@ Percentages:  	不支持百分比
 `left`与`right`属性，只是将`box`水平移动，但是不会改变`box`大小。正的`left`让`box`往右偏移，负的`left`让`box`往左偏移；反之，正的`right`让`box`往左偏移，负的`right`让`box`往右偏移；由于`box`不会因为`left` `right`而分割或拉伸，所以它们始终要满足这个关系：`left=-right`。
 * 当`left`和`right`都是`auto`的时候，`auto`是默认值，这两个属性最终被使用的值都是：`0`。
 * 如果一个是`auto`，另一个不是，则另一个根据`left=-right`自动计算出一个值；
-* 如果两个都不是`auto`，则会发生冲突，其中一个会被忽略，然后用`left=-right`计算一个新值。谁被舍弃，取决于`box`的`direction`这个属性。当`direction:ltr`时，表示从从到右的布局方向，`right`会被舍弃；当`direction:rtl`，时，表示从右到左的布局方向，`left`会被舍弃。
+* 如果两个都不是`auto`，则会发生冲突，其中一个会被忽略，然后用`left=-right`计算一个新值。谁被舍弃，取决于`containing block`的`direction`这个属性。当`direction:ltr`时，表示从从到右的布局方向，`right`会被舍弃；当`direction:rtl`，时，表示从右到左的布局方向，`left`会被舍弃。
 
 `top`与`bottom`属性，只是将`box`垂直移动，但是不会改变`box`大小。基本跟`left right`大同小异，且满足：`top=-bottom`。有一点不同的是：
 * 当`top`和`bottom`都不是`auto`的时候，始终是`bottom`被忽略，然后`bottom = -top`来得到一个新的`bottom`值。
