@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="不管是严格模式，还是普通模式，new Function(‘return this’)()，总是会返回全局对象。但是，如果浏览器用了 CSP（Content Security Policy，内容安全策略），那么eval、new Function这些方法都可能无法使用。  什么是CSP？即是内容安全策略，是一种对于页面嵌入或加载的内容进行访问控制的安全策略。">
+<meta name="keywords" content="csp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内容安全策略 CSP">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/05/12/内容安全策略-CSP/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="不管是严格模式，还是普通模式，new Function(‘return this’)()，总是会返回全局对象。但是，如果浏览器用了 CSP（Content Security Policy，内容安全策略），那么eval、new Function这些方法都可能无法使用。  什么是CSP？即是内容安全策略，是一种对于页面嵌入或加载的内容进行访问控制的安全策略。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-11T09:48:44.486Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="内容安全策略 CSP">
+<meta name="twitter:description" content="不管是严格模式，还是普通模式，new Function(‘return this’)()，总是会返回全局对象。但是，如果浏览器用了 CSP（Content Security Policy，内容安全策略），那么eval、new Function这些方法都可能无法使用。  什么是CSP？即是内容安全策略，是一种对于页面嵌入或加载的内容进行访问控制的安全策略。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/05/12/内容安全策略-CSP/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>内容安全策略 CSP | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">产品是用户的平行宇宙</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">34</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">20</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">96</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]<span class="badge">60</span></a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/05/12/内容安全策略-CSP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">内容安全策略 CSP
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-05-11 17:48:44" itemprop="dateCreated datePublished" datetime="2020-05-11T17:48:44Z">2020-05-11</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/web安全/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>不管是严格模式，还是普通模式，new Function(‘return this’)()，总是会返回全局对象。但是，如果浏览器用了 CSP（Content Security Policy，内容安全策略），那么eval、new Function这些方法都可能无法使用。</p>
+</blockquote>
+<p>什么是<code>CSP</code>？即是<code>内容安全策略</code>，是一种对于页面嵌入或加载的内容进行访问控制的安全策略。</p>
+<a id="more"></a>
+<p><code>CSP</code>的主要目标是减少和报告<code>XSS</code>攻击 ，<code>XSS</code>攻击利用了浏览器对于从服务器所获取的内容的信任。恶意脚本在受害者的浏览器中得以运行，因为浏览器信任其内容来源，即使有的时候这些脚本并非来自于它本该来的地方。</p>
+<p><code>CSP</code>通过指定有效域——即浏览器认可的可执行脚本的有效来源——使服务器管理者有能力减少或消除<code>XSS</code>攻击所依赖的载体。一个CSP兼容的浏览器将会仅执行从白名单域获取到的脚本文件，忽略所有的其他脚本 (包括内联脚本和HTML的事件处理属性)。</p>
+<p><code>CSP</code>几乎可以控制页面内所有内容的访问，不仅仅是脚本。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>要使用<code>CSP</code>，很简单，有两种方式：</p>
+<ol>
+<li><p>服务端设置<code>Content-Security-Policy</code>这个响应头，值为用来定义访问权限的<code>policy</code>字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: policy</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文档内通过<code>meta</code>标签来设置该页面的<code>CSP</code>，把<code>policy</code>字符串写入<code>meta</code>标签的<code>content</code>，如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Content-Security-Policy"</span> <span class="attr">content</span>=<span class="string">"policy"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>要掌握<code>CSP</code>如何精细化控制，就要掌握<code>policy</code>字符串该如何写。<code>policy</code>是由一系列的<code>CSP</code>指令来定义的，一个<code>policy</code>可以包含多个指令定义，不同的指令之间用分号分隔；每个指令也可以定义多个值，每个值之间用空格分隔。如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: default-src &apos;self&apos;; img-src *; media-src media1.com media2.com; script-src userscripts.example.com</span><br></pre></td></tr></table></figure></p>
+<p>上面的<code>CSP</code>设置中，<code>policy</code>字符串是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">default-src &apos;self&apos;; img-src *; media-src media1.com media2.com; script-src userscripts.example.com</span><br></pre></td></tr></table></figure></p>
+<p>它包含了四个指令：<code>default-src</code> <code>img-src</code> <code>media-src</code> <code>script-src</code>，其中<code>media-src</code>这个指令设置了2个值：<code>media1.com</code>和<code>media2.com</code>，其它3个指令只有1个值。</p>
+<p>每个指令和每个值，都有特定的含义，比如：</p>
+<ul>
+<li><code>default-src</code> 为其它的<code>fetch</code>指令提供默认的访问控制，如果某个<code>fetch</code>指令没有在<code>CSP</code>中定义，但是<code>CSP</code>中有定义<code>default-src</code>，那么这个<code>fetch</code>指令对应的资源加载，就要受<code>default-src</code>指令的控制。 什么是<code>fetch</code>指令，稍后可查看后面的指令内容介绍。 <code>default-src &#39;self&#39;</code>的含义就是仅允许加载与当前网页同域的内容。</li>
+<li><code>img-src</code> 这个指令用来提供图片资源的访问控制。 <code>img-src *</code>的含义是当前网页加载任何域中的图片。</li>
+<li><code>media-src</code> 这个指令是用来提供<code>&lt;audio&gt; &lt;video&gt; &lt;track&gt;</code>这些媒体资源的访问控制。<code>media-src media1.com media2.com</code>的含义就是允许加载<code>media1.com</code>和<code>media2.com</code>这两个域下面的媒体资源</li>
+<li><code>script-src</code> 这个指令是用来提供对于脚本的访问控制。<code>script-src userscripts.example.com</code>的含义就是仅允许执行来自于<code>userscripts.example.com</code>这个域下的脚本</li>
+</ul>
+<p><code>Content-Security-Policy</code>头或者是对应的<code>meta</code>可以设置多个，以便开启多个<code>CSP</code>。多个<code>CSP</code>策略，将会根据指令进行合并，矛盾的指令，将会以更严格那项为准，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: default-src &apos;self&apos; http://example.com;</span><br><span class="line">                         connect-src &apos;none&apos;;</span><br><span class="line">Content-Security-Policy: connect-src http://example.com/;</span><br><span class="line">                         script-src http://example.com/</span><br></pre></td></tr></table></figure></p>
+<p>尽管第二个策略允许连接, 第一个策略仍然包括了<code>connect-src &#39;none&#39;。添加了第二个策略后，只会让资源保护的能力更强，也就是说不会有接口可以被允许访问，等同于最严格的策略，</code>connect-src ‘none’`强制开启。                         </p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p><code>CSP</code>显然是有好处的，但是如果网站想要部署<code>CSP</code>，也是有风险的，一旦策略定制的不够细致，就可能导致正常的内容无法显示，从而影响用户使用。所以除了<code>Content-Security-Policy</code>之外，还有一个<code>Content-Security-Policy-Report-Only</code>的头部，可以在实际部署<code>CSP</code>之前，收集<code>CSP</code>的数据。 这个头的用法与<code>Content-Security-Policy</code>与相同，它与<code>Content-Security-Policy</code>不同的是，当策略生效后，违反策略的访问将被继续允许，而不是像<code>Content-Security-Policy</code>直接拒绝。利用<code>report-uri</code>这个指令，<code>Content-Security-Policy-Report-Only</code>会将违反策略的访问生成报告，发送到<code>report-uri</code>这个指令所指定的地址，从而就能在部署<code>CSP</code>之前，收集到<code>Content-Security-Policy-Report-Only</code>的其它指令的访问情况，尤其是违反策略的记录；下一步就可以对策略进行优化，最后完善之后再把<code>Content-Security-Policy-Report-Only</code>替换为<code>Content-Security-Policy</code>完成部署。</p>
+<h2 id="报告"><a href="#报告" class="headerlink" title="报告"></a>报告</h2><p><code>Content-Security-Policy</code>以及<code>Content-Security-Policy-Report-Only</code>都可以利用<code>report-uri</code>这个指令来收集违反策略的报告：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: default-src &apos;none&apos;; style-src cdn.example.com; report-uri /_/csp-reports</span><br></pre></td></tr></table></figure></p>
+<p>当有违反策略的行为发生后，一个包含如下结构的JSON数据，将会发送到<code>report-uri</code>所指定的地址：</p>
+<ul>
+<li><code>document-uri</code> 发生违规的文档的URI。</li>
+<li><code>referrer</code> 违规发生处的文档引用（地址）。</li>
+<li><code>blocked-uri</code> 被<code>CSP</code>阻止的资源<code>URI</code>。如果被阻止的URI来自不同的源而非文档<code>URI</code>，那么被阻止的资源URI会被删减，仅保留协议，主机和端口号。</li>
+<li><code>violated-directive</code> 违反的策略名称。</li>
+<li><code>original-policy</code> 在<code>Content-Security-Policy</code>头部中指明的原始策略。</li>
+</ul>
+<p>假如有一份html使用了上述的<code>policy</code>，这份<code>html</code>的代码是：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Sign Up<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"css/style.css"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    ... Content ...</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>它试图访问了与页面同域的样式文件，违反了<code>style-src cdn.example.com</code>这个策略，所以这个加载请求会被拒绝，并且会发生一个带有以下数据的报告给<code>/_/csp_reports</code>：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"csp-report"</span>: &#123;</span><br><span class="line">    <span class="attr">"document-uri"</span>: <span class="string">"http://example.com/signup.html"</span>,</span><br><span class="line">    <span class="attr">"referrer"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="attr">"blocked-uri"</span>: <span class="string">"http://example.com/css/style.css"</span>,</span><br><span class="line">    <span class="attr">"violated-directive"</span>: <span class="string">"style-src cdn.example.com"</span>,</span><br><span class="line">    <span class="attr">"original-policy"</span>: <span class="string">"default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><p><code>CSP</code>目前包含了非常多的指令，所以可以做非常精细的安全策略。按照不同的作用可分为</p>
+<ul>
+<li><code>fetch</code>指令</li>
+<li><code>document</code>指令</li>
+<li><code>navigation</code>指令</li>
+<li><code>report</code>指令</li>
+<li>其它</li>
+</ul>
+<p>以下内容简单了解，真正要用还是得回到MDN查看详细的指令说明。</p>
+<p>其中<code>fetch</code>指令包含：</p>
+<ul>
+<li><code>child-src</code> 提供对<code>webworkers</code>和其它内嵌浏览器内容（<code>frame</code> <code>iframe</code>）的访问控制 </li>
+<li><code>connect-src</code> 提供对脚本加载的URL的访问控制</li>
+<li><code>default-src</code> 为其它<code>fetch</code>指令提供默认策略。 受<code>default-src</code>作用的指令包括:<ul>
+<li><code>child-src</code></li>
+<li><code>connect-src</code></li>
+<li><code>font-src</code></li>
+<li><code>frame-src</code></li>
+<li><code>img-src</code></li>
+<li><code>manifest-src</code></li>
+<li><code>media-src</code></li>
+<li><code>object-src</code></li>
+<li><code>script-src</code></li>
+<li><code>style-src</code></li>
+<li><code>worker-src</code></li>
+</ul>
+</li>
+<li><code>font-src</code> 提供对字体文件加载的访问控制。</li>
+<li><code>frame-src</code> 提供对<code>frame iframe</code>加载内容的访问控制。</li>
+<li><code>img-src</code> 提供对图片和图标资源加载的访问控制。</li>
+<li><code>manifest-src</code> 提供对<code>manifest</code>文件的访问控制。</li>
+<li><code>media-src</code> 提供对<code>&lt;audio&gt; &lt;video&gt; &lt;track&gt;</code>元素所加载内容的访问控制。</li>
+<li><code>object-src</code> 提供对<code>&lt;object&gt; &lt;embed&gt; &lt;applet&gt;</code>元素所加载内容的访问控制。</li>
+<li><code>prefetch-src</code> 提供对<code>preload</code>或<code>prefetch</code>资源的访问控制</li>
+<li><code>script-src</code> 提供对脚本来源的执行控制</li>
+<li><code>style-src</code> 提供对样式文件来源的访问控制</li>
+<li><code>webrtc-src</code> 提供对<code>webrtc</code>连接的访问控制</li>
+<li><code>worker-src</code> 提供对<code>web works</code>脚本源的访问控制</li>
+</ul>
+<p><code>document</code>指令包括：</p>
+<ul>
+<li><code>base-uri</code> 限制在DOM中<code>&lt;base&gt;</code>元素可以使用的URL</li>
+<li><code>plugin-types</code> 通过限制可以加载的资源类型来限制哪些插件可以被嵌入到文档中。</li>
+<li><code>sandbox</code> 类似<code>&lt;iframe&gt;</code> <code>sandbox</code>属性，为请求的资源启用沙盒。</li>
+<li><code>disown-opener</code> 确保资源在导航的时候能够脱离父页面。（windown.opener 对象）Ensures a resource will disown its opener when navigated to.</li>
+</ul>
+<p><code>navigation</code>指令包括：</p>
+<ul>
+<li><code>form-action</code> 限制能被用来作为给定上下文的表单提交的目标 URL（说白了，就是限制 form 的 action 属性的链接地址）</li>
+<li><code>frame-ancestors</code> 指定可能嵌入页面的有效父项<code>&lt;frame&gt;, &lt;iframe&gt;, &lt;object&gt;, &lt;embed&gt;, or &lt;applet&gt;</code>.</li>
+<li><code>navigation-to</code> 限制文档可以通过以下任何方式访问URL (a, form, window.location, window.open, etc.)</li>
+</ul>
+<p><code>report</code>指令包括：</p>
+<ul>
+<li><code>report-uri</code> 当出现可能违反CSP的操作时，让客户端提交报告。这些违规报告会以JSON文件的格式通过POST请求发送到指定的URI</li>
+<li><code>report-to</code> Fires a SecurityPolicyViolationEvent.</li>
+</ul>
+<p>其它指令包括：<br><code>block-all-mixed-content</code> 当使用HTTPS加载页面时阻止使用HTTP加载任何资源。<br><code>require-sri-for</code> 需要使用<code>SRI</code>作用于页面上的脚本或样式。<br><code>upgrade-insecure-requests</code> 让浏览器把一个网站所有的不安全 URL（通过 HTTP 访问）当做已经被安全的 URL 链接（通过 HTTPS 访问）替代。这个指令是为了哪些有量大不安全的传统 URL 需要被重写时候准备的。</p>
+<p>值得特别说明以下的是，<code>require-sri-for</code>这个指令可以强制页面内的脚本或样式文件开启<code>SRI</code>检查；<code>upgrade-insecure-requests</code>这个指令可以强制将非https的请求，转换为http请求，这对于那种混合了http和https的页面来说，是比较方便的，尤其是http内容太多，无法轻易切换为https的时候。</p>
+<h2 id="script-src"><a href="#script-src" class="headerlink" title="script-src"></a><code>script-src</code></h2><p>这个指令有几个特殊的值，值得单独了解一下：</p>
+<ul>
+<li><code>&#39;unsafe-eval&#39;</code> 单引号不可省略</li>
+<li><code>&#39;unsafe-hashes&#39;</code> 单引号不可省略</li>
+<li><code>&#39;unsafe-inline&#39;</code> 单引号不可省略</li>
+<li><code>&#39;nonce-&lt;base64-value&gt;&#39;</code> 单引号不可省略</li>
+<li><code>&#39;&lt;hash-algorithm&gt;-&lt;base64-value&gt;&#39;</code> 单引号不可省略</li>
+</ul>
+<p>在默认情况下，内联的<code>event hanlder</code>、<code>javascript:URLs</code>、内联的<code>script</code>元素、<code>eval Function</code>等动态代码都是被禁止的。</p>
+<p>当开启了<code>&#39;unsafe-eval&#39;</code>之后，<code>eval</code>等动态代码执行就是允许的，否则不允许，动态代码方式包括：</p>
+<ul>
+<li>eval()</li>
+<li>Function() <strong>这就能理解本文开始引用那段描述中，关于<code>new Function</code>无法获得全局对象的原因了</strong></li>
+<li>When passing a string literal like to methods like: window.setTimeout(“alert(\”Hello World!\”);”, 500);<ul>
+<li>window.setTimeout</li>
+<li>window.setInterval</li>
+<li>window.setImmediate</li>
+</ul>
+</li>
+</ul>
+<p>当开启了<code>&#39;unsafe-hashes&#39;</code>之后，内联的<code>event handler</code>允许执行，但是<code>javascript:URLs</code>、内联的<code>script</code>元素对应的脚本还是不允许执行。</p>
+<p>当开启了<code>&#39;unsafe-inline&#39;</code>之后，内联的<code>event hanlder</code>、<code>javascript:URLs</code>、内联的<code>script</code>元素相关的脚本都允许执行。</p>
+<p>如果只允许某些内联的<code>script</code>元素对应的脚本可以执行，则可以在服务端生成一个token，并把它用base64编码，应用到<code>&#39;nonce-&lt;base64-value&gt;&#39;</code>这个值里面：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: script-src &apos;nonce-2726c7f26c&apos;</span><br></pre></td></tr></table></figure></p>
+<p>下面这个<code>script</code>就会允许执行：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">nonce</span>=<span class="string">"2726c7f26c"</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> inline = <span class="number">1</span>;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><code>&#39;&lt;hash-algorithm&gt;-&lt;base64-value&gt;&#39;</code>与<code>&#39;nonce-&lt;base64-value&gt;&#39;</code>相似，只不过前者是基于特定的hash算法，对<code>script</code>标签内的内容进行hash再base64编码得到的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: script-src &apos;sha256-B2yPHKaXnvFWtRChIbabYmUBFZdVfKKXHbWtWidDVF8=&apos;</span><br></pre></td></tr></table></figure></p>
+<p>只有与该<code>hash</code>相同的内联<code>script</code>会得以执行：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"><span class="keyword">var</span> inline = <span class="number">1</span>;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>本文参考：</p>
+<blockquote>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy</a><br><a href="https://www.html5rocks.com/en/tutorials/security/content-security-policy/" target="_blank" rel="noopener">https://www.html5rocks.com/en/tutorials/security/content-security-policy/</a><br><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP</a></p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/csp/" rel="tag"># csp</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/11/HTTP-Strict-Transport-Security/" rel="next" title="HTTP Strict Transport Security">
+                <i class="fa fa-chevron-left"></i> HTTP Strict Transport Security
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/12/子资源完整性-SRI/" rel="prev" title="子资源完整性 SRI">
+                子资源完整性 SRI <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">96</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">2.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#报告"><span class="nav-number">3.</span> <span class="nav-text">报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指令"><span class="nav-number">4.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#script-src"><span class="nav-number">5.</span> <span class="nav-text">script-src</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
