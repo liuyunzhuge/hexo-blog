@@ -1,0 +1,202 @@
+---
+title: 内容安全策略 CSP
+tags:
+  - csp
+categories:
+  - web安全
+---
+
+> 不管是严格模式，还是普通模式，new Function('return this')()，总是会返回全局对象。但是，如果浏览器用了 CSP（Content Security Policy，内容安全策略），那么eval、new Function这些方法都可能无法使用。
+
+什么是`CSP`？即是`内容安全策略`，是一种对于页面嵌入或加载的内容进行访问控制的安全策略。
+
+<!-- more -->
+`CSP`的主要目标是减少和报告`XSS`攻击 ，`XSS`攻击利用了浏览器对于从服务器所获取的内容的信任。恶意脚本在受害者的浏览器中得以运行，因为浏览器信任其内容来源，即使有的时候这些脚本并非来自于它本该来的地方。
+
+`CSP`通过指定有效域——即浏览器认可的可执行脚本的有效来源——使服务器管理者有能力减少或消除`XSS`攻击所依赖的载体。一个CSP兼容的浏览器将会仅执行从白名单域获取到的脚本文件，忽略所有的其他脚本 (包括内联脚本和HTML的事件处理属性)。
+
+`CSP`几乎可以控制页面内所有内容的访问，不仅仅是脚本。
+
+## 使用
+要使用`CSP`，很简单，有两种方式：
+1. 服务端设置`Content-Security-Policy`这个响应头，值为用来定义访问权限的`policy`字符串
+```
+Content-Security-Policy: policy
+```
+2. 文档内通过`meta`标签来设置该页面的`CSP`，把`policy`字符串写入`meta`标签的`content`，如：
+```html
+<meta http-equiv="Content-Security-Policy" content="policy">
+```
+
+要掌握`CSP`如何精细化控制，就要掌握`policy`字符串该如何写。`policy`是由一系列的`CSP`指令来定义的，一个`policy`可以包含多个指令定义，不同的指令之间用分号分隔；每个指令也可以定义多个值，每个值之间用空格分隔。如：
+```
+Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com
+```
+上面的`CSP`设置中，`policy`字符串是：
+```
+default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com
+```
+它包含了四个指令：`default-src` `img-src` `media-src` `script-src`，其中`media-src`这个指令设置了2个值：`media1.com`和`media2.com`，其它3个指令只有1个值。
+
+每个指令和每个值，都有特定的含义，比如：
+*  `default-src` 为其它的`fetch`指令提供默认的访问控制，如果某个`fetch`指令没有在`CSP`中定义，但是`CSP`中有定义`default-src`，那么这个`fetch`指令对应的资源加载，就要受`default-src`指令的控制。 什么是`fetch`指令，稍后可查看后面的指令内容介绍。 `default-src 'self'`的含义就是仅允许加载与当前网页同域的内容。
+* `img-src` 这个指令用来提供图片资源的访问控制。 `img-src *`的含义是当前网页加载任何域中的图片。
+* `media-src` 这个指令是用来提供`<audio> <video> <track>`这些媒体资源的访问控制。`media-src media1.com media2.com`的含义就是允许加载`media1.com`和`media2.com`这两个域下面的媒体资源
+* `script-src` 这个指令是用来提供对于脚本的访问控制。`script-src userscripts.example.com`的含义就是仅允许执行来自于`userscripts.example.com`这个域下的脚本
+
+`Content-Security-Policy`头或者是对应的`meta`可以设置多个，以便开启多个`CSP`。多个`CSP`策略，将会根据指令进行合并，矛盾的指令，将会以更严格那项为准，比如：
+```
+Content-Security-Policy: default-src 'self' http://example.com;
+                         connect-src 'none';
+Content-Security-Policy: connect-src http://example.com/;
+                         script-src http://example.com/
+```
+尽管第二个策略允许连接, 第一个策略仍然包括了`connect-src 'none'。添加了第二个策略后，只会让资源保护的能力更强，也就是说不会有接口可以被允许访问，等同于最严格的策略，`connect-src 'none'`强制开启。                         
+
+## 测试
+`CSP`显然是有好处的，但是如果网站想要部署`CSP`，也是有风险的，一旦策略定制的不够细致，就可能导致正常的内容无法显示，从而影响用户使用。所以除了`Content-Security-Policy`之外，还有一个`Content-Security-Policy-Report-Only`的头部，可以在实际部署`CSP`之前，收集`CSP`的数据。 这个头的用法与`Content-Security-Policy`与相同，它与`Content-Security-Policy`不同的是，当策略生效后，违反策略的访问将被继续允许，而不是像`Content-Security-Policy`直接拒绝。利用`report-uri`这个指令，`Content-Security-Policy-Report-Only`会将违反策略的访问生成报告，发送到`report-uri`这个指令所指定的地址，从而就能在部署`CSP`之前，收集到`Content-Security-Policy-Report-Only`的其它指令的访问情况，尤其是违反策略的记录；下一步就可以对策略进行优化，最后完善之后再把`Content-Security-Policy-Report-Only`替换为`Content-Security-Policy`完成部署。
+
+## 报告
+`Content-Security-Policy`以及`Content-Security-Policy-Report-Only`都可以利用`report-uri`这个指令来收集违反策略的报告：
+```
+Content-Security-Policy: default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports
+```
+当有违反策略的行为发生后，一个包含如下结构的JSON数据，将会发送到`report-uri`所指定的地址：
+* `document-uri` 发生违规的文档的URI。
+* `referrer` 违规发生处的文档引用（地址）。
+* `blocked-uri` 被`CSP`阻止的资源`URI`。如果被阻止的URI来自不同的源而非文档`URI`，那么被阻止的资源URI会被删减，仅保留协议，主机和端口号。
+* `violated-directive` 违反的策略名称。
+* `original-policy` 在`Content-Security-Policy`头部中指明的原始策略。
+
+假如有一份html使用了上述的`policy`，这份`html`的代码是：
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    ... Content ...
+  </body>
+</html>
+```
+它试图访问了与页面同域的样式文件，违反了`style-src cdn.example.com`这个策略，所以这个加载请求会被拒绝，并且会发生一个带有以下数据的报告给`/_/csp_reports`：
+```json
+{
+  "csp-report": {
+    "document-uri": "http://example.com/signup.html",
+    "referrer": "",
+    "blocked-uri": "http://example.com/css/style.css",
+    "violated-directive": "style-src cdn.example.com",
+    "original-policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports"
+  }
+}
+```
+
+## 指令
+`CSP`目前包含了非常多的指令，所以可以做非常精细的安全策略。按照不同的作用可分为
+* `fetch`指令
+* `document`指令
+* `navigation`指令
+* `report`指令
+* 其它
+
+以下内容简单了解，真正要用还是得回到MDN查看详细的指令说明。
+
+其中`fetch`指令包含：
+* `child-src` 提供对`webworkers`和其它内嵌浏览器内容（`frame` `iframe`）的访问控制 
+* `connect-src` 提供对脚本加载的URL的访问控制
+* `default-src` 为其它`fetch`指令提供默认策略。 受`default-src`作用的指令包括:
+    * `child-src`
+    * `connect-src`
+    * `font-src`
+    * `frame-src`
+    * `img-src`
+    * `manifest-src`
+    * `media-src`
+    * `object-src`
+    * `script-src`
+    * `style-src`
+    * `worker-src`
+* `font-src` 提供对字体文件加载的访问控制。
+* `frame-src` 提供对`frame iframe`加载内容的访问控制。
+* `img-src` 提供对图片和图标资源加载的访问控制。
+* `manifest-src` 提供对`manifest`文件的访问控制。
+* `media-src` 提供对`<audio> <video> <track>`元素所加载内容的访问控制。
+* `object-src` 提供对`<object> <embed> <applet>`元素所加载内容的访问控制。
+* `prefetch-src` 提供对`preload`或`prefetch`资源的访问控制
+* `script-src` 提供对脚本来源的执行控制
+* `style-src` 提供对样式文件来源的访问控制
+* `webrtc-src` 提供对`webrtc`连接的访问控制
+* `worker-src` 提供对`web works`脚本源的访问控制
+
+`document`指令包括：
+* `base-uri` 限制在DOM中`<base>`元素可以使用的URL
+* `plugin-types` 通过限制可以加载的资源类型来限制哪些插件可以被嵌入到文档中。
+* `sandbox` 类似`<iframe>` `sandbox`属性，为请求的资源启用沙盒。
+* `disown-opener` 确保资源在导航的时候能够脱离父页面。（windown.opener 对象）Ensures a resource will disown its opener when navigated to.
+
+`navigation`指令包括：
+* `form-action` 限制能被用来作为给定上下文的表单提交的目标 URL（说白了，就是限制 form 的 action 属性的链接地址）
+* `frame-ancestors` 指定可能嵌入页面的有效父项`<frame>, <iframe>, <object>, <embed>, or <applet>`.
+* `navigation-to` 限制文档可以通过以下任何方式访问URL (a, form, window.location, window.open, etc.)
+
+`report`指令包括：
+* `report-uri` 当出现可能违反CSP的操作时，让客户端提交报告。这些违规报告会以JSON文件的格式通过POST请求发送到指定的URI
+* `report-to` Fires a SecurityPolicyViolationEvent.
+
+其它指令包括：
+`block-all-mixed-content` 当使用HTTPS加载页面时阻止使用HTTP加载任何资源。
+`require-sri-for` 需要使用`SRI`作用于页面上的脚本或样式。
+`upgrade-insecure-requests` 让浏览器把一个网站所有的不安全 URL（通过 HTTP 访问）当做已经被安全的 URL 链接（通过 HTTPS 访问）替代。这个指令是为了哪些有量大不安全的传统 URL 需要被重写时候准备的。
+
+值得特别说明以下的是，`require-sri-for`这个指令可以强制页面内的脚本或样式文件开启`SRI`检查；`upgrade-insecure-requests`这个指令可以强制将非https的请求，转换为http请求，这对于那种混合了http和https的页面来说，是比较方便的，尤其是http内容太多，无法轻易切换为https的时候。
+
+## `script-src`
+这个指令有几个特殊的值，值得单独了解一下：
+* `'unsafe-eval'` 单引号不可省略
+* `'unsafe-hashes'` 单引号不可省略
+* `'unsafe-inline'` 单引号不可省略
+* `'nonce-<base64-value>'` 单引号不可省略
+* `'<hash-algorithm>-<base64-value>'` 单引号不可省略
+
+在默认情况下，内联的`event hanlder`、`javascript:URLs`、内联的`script`元素、`eval Function`等动态代码都是被禁止的。
+
+当开启了`'unsafe-eval'`之后，`eval`等动态代码执行就是允许的，否则不允许，动态代码方式包括：
+* eval()
+* Function() **这就能理解本文开始引用那段描述中，关于`new Function`无法获得全局对象的原因了**
+* When passing a string literal like to methods like: window.setTimeout("alert(\"Hello World!\");", 500);
+    * window.setTimeout
+    * window.setInterval
+    * window.setImmediate
+
+当开启了`'unsafe-hashes'`之后，内联的`event handler`允许执行，但是`javascript:URLs`、内联的`script`元素对应的脚本还是不允许执行。
+
+当开启了`'unsafe-inline'`之后，内联的`event hanlder`、`javascript:URLs`、内联的`script`元素相关的脚本都允许执行。
+
+如果只允许某些内联的`script`元素对应的脚本可以执行，则可以在服务端生成一个token，并把它用base64编码，应用到`'nonce-<base64-value>'`这个值里面：
+```
+Content-Security-Policy: script-src 'nonce-2726c7f26c'
+```
+下面这个`script`就会允许执行：
+```html
+<script nonce="2726c7f26c">
+  var inline = 1;
+</script>
+```
+
+`'<hash-algorithm>-<base64-value>'`与`'nonce-<base64-value>'`相似，只不过前者是基于特定的hash算法，对`script`标签内的内容进行hash再base64编码得到的：
+```
+Content-Security-Policy: script-src 'sha256-B2yPHKaXnvFWtRChIbabYmUBFZdVfKKXHbWtWidDVF8='
+```
+只有与该`hash`相同的内联`script`会得以执行：
+```html
+<script>var inline = 1;</script>
+```
+
+本文参考：
+> https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy
+> https://www.html5rocks.com/en/tutorials/security/content-security-policy/
+> https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP
+

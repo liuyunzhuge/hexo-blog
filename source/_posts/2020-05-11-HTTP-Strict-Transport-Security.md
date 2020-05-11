@@ -1,7 +1,8 @@
 ---
 title: HTTP Strict Transport Security
 tags:
-  - https安全相关
+  - HSTS
+  - https
 categories:
   - web安全
 date: 2020-05-11 11:59:13
