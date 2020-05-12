@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Same-site Policy称为浏览器同源策略，是一项非常重要的安全策略。限制不同源的文档或它加载的脚本，对其它文档的访问，帮助阻拦恶意的网站侵犯用户权益。 同源的定义页面的协议 主机 端口 三者构成一个页面的源，三者中有一项不同，则是不同源。 IE的同源策略有两个主要的差异点：  授信范围（Trust Zones）：两个相互之间高度互信的域名，如公司域名（corporate domains）">
+<meta name="keywords" content="ssp,同源策略">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器同源策略 same-origin policy">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/05/13/浏览器同源策略-same-origin-policy/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="Same-site Policy称为浏览器同源策略，是一项非常重要的安全策略。限制不同源的文档或它加载的脚本，对其它文档的访问，帮助阻拦恶意的网站侵犯用户权益。 同源的定义页面的协议 主机 端口 三者构成一个页面的源，三者中有一项不同，则是不同源。 IE的同源策略有两个主要的差异点：  授信范围（Trust Zones）：两个相互之间高度互信的域名，如公司域名（corporate domains）">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/05/13/浏览器同源策略-same-origin-policy/01.png">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/05/13/浏览器同源策略-same-origin-policy/02.png">
+<meta property="og:updated_time" content="2020-05-12T14:22:46.276Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浏览器同源策略 same-origin policy">
+<meta name="twitter:description" content="Same-site Policy称为浏览器同源策略，是一项非常重要的安全策略。限制不同源的文档或它加载的脚本，对其它文档的访问，帮助阻拦恶意的网站侵犯用户权益。 同源的定义页面的协议 主机 端口 三者构成一个页面的源，三者中有一项不同，则是不同源。 IE的同源策略有两个主要的差异点：  授信范围（Trust Zones）：两个相互之间高度互信的域名，如公司域名（corporate domains）">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2020/05/13/浏览器同源策略-same-origin-policy/01.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/05/13/浏览器同源策略-same-origin-policy/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>浏览器同源策略 same-origin policy | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">产品是用户的平行宇宙</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">39</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">21</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">99</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]<span class="badge">60</span></a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/05/13/浏览器同源策略-same-origin-policy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浏览器同源策略 same-origin policy
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-05-12 22:22:46" itemprop="dateCreated datePublished" datetime="2020-05-12T22:22:46Z">2020-05-12</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/web安全/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>Same-site Policy</code>称为浏览器同源策略，是一项非常重要的安全策略。限制不同源的文档或它加载的脚本，对其它文档的访问，帮助阻拦恶意的网站侵犯用户权益。</p>
+<h2 id="同源的定义"><a href="#同源的定义" class="headerlink" title="同源的定义"></a>同源的定义</h2><p>页面的<code>协议</code> <code>主机</code> <code>端口</code> 三者构成一个页面的源，三者中有一项不同，则是不同源。</p>
+<p>IE的同源策略有两个主要的差异点：</p>
+<ul>
+<li>授信范围（Trust Zones）：两个相互之间高度互信的域名，如公司域名（corporate domains），则不受同源策略限制。</li>
+<li>端口：IE未将端口号纳入到同源策略的检查中，因此<code>https://company.com:81/index.html</code>和<code>https://company.com/index.html</code>属于同源并且不受任何限制。</li>
+</ul>
+<h2 id="源的继承"><a href="#源的继承" class="headerlink" title="源的继承"></a>源的继承</h2><p>通过<code>javascript:</code>伪协议以及<code>about:blank结合window.open</code>打开的新文档，将继承源文档的源，因为这些新文档不具备服务端的信息。</p>
+<p>通过<code>javascript:;</code>伪协议打开新文档：<br><figure class="highlight html"><figcaption><span>demo01.html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!doctype html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>javascript:伪协议测试<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript: '&lt;script&gt;window.opener.makeContent(window)&lt;/script&gt;';"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span>测试<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"demo01.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight js"><figcaption><span>demo01.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> someContent = <span class="string">'some content'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeContent</span>(<span class="params">&#123;document&#125;</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> parentContent = someContent</span><br><span class="line">    <span class="built_in">document</span>.write(<span class="string">`&lt;div&gt;<span class="subst">$&#123;parentContent&#125;</span>&lt;/div&gt;`</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过<code>window.open</code>打开<code>about:blank</code>的新文档：<br><figure class="highlight html"><figcaption><span>demo02.html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!doctype html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>about:blank测试<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript: openNewWin();"</span>&gt;</span>测试<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"../dist/js/demo01.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight js"><figcaption><span>demo02.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">openNewWin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> win = <span class="built_in">window</span>.open(<span class="string">'about:blank'</span>)</span><br><span class="line">    <span class="keyword">let</span> &#123;<span class="built_in">document</span>&#125; = win</span><br><span class="line">    <span class="built_in">document</span>.open()</span><br><span class="line">    <span class="built_in">document</span>.write(</span><br><span class="line">        <span class="string">`&lt;!doctype html&gt;</span></span><br><span class="line"><span class="string">&lt;html&gt;</span></span><br><span class="line"><span class="string">&lt;head&gt;</span></span><br><span class="line"><span class="string">    &lt;meta charset="UTF-8"&gt;</span></span><br><span class="line"><span class="string">    &lt;title&gt;about:blank测试&lt;/title&gt;</span></span><br><span class="line"><span class="string">&lt;/head&gt;</span></span><br><span class="line"><span class="string">&lt;body&gt;</span></span><br><span class="line"><span class="string">maked by document.write</span></span><br><span class="line"><span class="string">&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;`</span></span><br><span class="line">    )</span><br><span class="line">    <span class="built_in">document</span>.close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="作用范围"><a href="#作用范围" class="headerlink" title="作用范围"></a>作用范围</h2><p>同源策略的作用范围包含三个方面：</p>
+<ol>
+<li>限制对于网络资源的访问，包括表单提交、XHR、fetch、图片、音视频、脚本和css等</li>
+<li>限制对于不同源页面之间的DOM交互</li>
+<li>限制对于浏览器端存储资源的访问，包括cookies、Web Storage和IndexedDB</li>
+</ol>
+<h3 id="网络资源的限制"><a href="#网络资源的限制" class="headerlink" title="网络资源的限制"></a>网络资源的限制</h3><p>当出现跨源网络资源访问时，同源策略有不同的处理方式:</p>
+<ol>
+<li>如果是一个跨源的网络资源写操作，通常都是允许的，比如链接跳转、页面重定向、表单提交。但是xhr和fetch这种操作需要通过<code>CORS</code>方式才能访问成功。</li>
+<li>嵌入页面的网络资源访问，通常都是允许的，比如：<ul>
+<li><code>&lt;script src=&quot;...&quot;&gt;&lt;/script&gt;</code> 标签嵌入跨域脚本。但是跨域脚本中出现的运行错误明细，无法被<code>window.onerror</code>捕捉到，只有同源的脚本抛出的错误，才能捕捉到错误明细。</li>
+<li><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;...&quot;&gt;</code> 标签嵌入CSS。由于CSS的松散的语法规则，CSS的跨域需要一个设置正确的HTTP头部<code>Content-Type</code>。不同浏览器有不同的限制。</li>
+<li>通过 <code>&lt;img&gt;</code> 展示的图片。支持的图片格式包括PNG,JPEG,GIF,BMP,SVG,…</li>
+<li>通过 <code>&lt;video&gt;</code> 和 <code>&lt;audio&gt;</code> 播放的多媒体资源。</li>
+<li>通过 <code>&lt;object&gt;</code>、 <code>&lt;embed&gt;</code> 和 <code>&lt;applet&gt;</code> 嵌入的插件。</li>
+<li>通过 <code>@font-face</code> 引入的字体。一些浏览器允许跨域字体（ <code>cross-origin fonts</code>），一些需要同源字体（<code>same-origin fonts</code>）。</li>
+<li>通过 <code>&lt;iframe&gt;</code> 载入的任何资源。站点可以使用<code>X-Frame-Options</code>消息头来阻止这种形式的跨域交互。</li>
+</ul>
+</li>
+<li>读取跨源的网络资源内容，通常是不允许的。比如在<code>canvas</code>中虽然可以读取跨源的图片数据并写入画布，但是这会污染画布，导致<code>canvas</code>后续的api如<code>getImageData()、toBlob()、toDataURL()</code>会抛出安全错误。（参考：<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/CORS_enabled_image）" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/HTML/CORS_enabled_image）</a></li>
+</ol>
+<p>降低同源策略对网络资源的访问限制的唯一方式，是使用<code>CORS</code>机制。比如上面提到的跨源<code>script</code>执行后，无法捕捉到它抛出的错误明细，但是通过设置<code>script</code>的<code>CORS setting attribute</code> - <code>crossOrigin</code>属性，就能解决这个问题；上述提到跨源图片写入<code>canvas</code>会污染画布也是类似的，通过设置<code>img</code>的<code>crossOrigin</code>属性，也能解决跨源给<code>canvas</code>带来的安全性问题，参考下面demo03中的代码。<br><figure class="highlight js"><figcaption><span>demo03</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">startDownload</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> imageURL = <span class="string">"https://cdn.glitch.com/4c9ebeb9-8b9a-4adc-ad0a-238d9ae00bb5%2Fmdn_logo-only_color.svg?1535749917189"</span>;</span><br><span class="line"> </span><br><span class="line">  downloadedImg = <span class="keyword">new</span> Image;</span><br><span class="line">  downloadedImg.crossOrigin = <span class="string">"Anonymous"</span>;</span><br><span class="line">  downloadedImg.addEventListener(<span class="string">"load"</span>, imageReceived, <span class="literal">false</span>);</span><br><span class="line">  downloadedImg.src = imageURL;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">imageReceived</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> canvas = <span class="built_in">document</span>.createElement(<span class="string">"canvas"</span>);</span><br><span class="line">  <span class="keyword">let</span> context = canvas.getContext(<span class="string">"2d"</span>);</span><br><span class="line"></span><br><span class="line">  canvas.width = downloadedImg.width;</span><br><span class="line">  canvas.height = downloadedImg.height;</span><br><span class="line"> </span><br><span class="line">  context.drawImage(downloadedImg, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">  imageBox.appendChild(canvas);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    localStorage.setItem(<span class="string">"saved-image-example"</span>, canvas.toDataURL(<span class="string">"image/png"</span>));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">catch</span>(err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Error: "</span> + err);</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="不同源之间DOM交互的限制"><a href="#不同源之间DOM交互的限制" class="headerlink" title="不同源之间DOM交互的限制"></a>不同源之间DOM交互的限制</h3><p>这种情况主要出现在页面与<code>frames、iframes</code>中的页面、页面与它用<code>window.open</code>打开的页面之间出现跨域时。 如果不是跨源的，那么：</p>
+<ul>
+<li>页面与它包含的<code>frames或iframes</code>中的页面，可以通过<code>window</code>对象、<code>frames和iframe</code>的<code>name</code>、以及<code>parent</code>属性来获取对方的引用，并且能够访问对方的<code>document</code>对象，从而完成DOM交互</li>
+<li>页面与它用<code>window.open</code>打开的页面，可以通过<code>window.open</code>的返回值、以及<code>window.opener</code>来获取对方的引用，并且能够访问对方的<code>document</code>对象，从而完成DOM交互</li>
+</ul>
+<p>一旦它们是跨源的页面，则在它们拿到对方的<code>window</code>对象以后，只能使用非常有限的api来访问<code>window</code>对象，<code>dom</code>操作最重要的<code>document</code>对象是绝对禁止访问的。<code>window</code>对象上允许使用的api有：</p>
+<ul>
+<li>方法<ul>
+<li><code>window.blur</code></li>
+<li><code>window.close</code></li>
+<li><code>window.focus</code></li>
+<li><code>window.postMessage</code></li>
+</ul>
+</li>
+<li>属性<br>  — <code>window.closed</code>    Read only.<br>  — <code>window.frames</code>    Read only.<br>  — <code>window.length</code>    Read only.<br>  — <code>window.location</code>    Read/Write.<br>  — <code>window.opener</code>    Read only.<br>  — <code>window.parent</code>    Read only.<br>  — <code>window.self</code>    Read only.<br>  — <code>window.top</code>    Read only.<br>  — <code>window.window</code>    Read only.</li>
+</ul>
+<p>有的浏览器可能开放的方法/属性比上面多。  从上面的api也能看到，<code>window.location</code>也是允许跨源访问的，这个对象即使拿到之后，对它的访问也是有限制的：</p>
+<ul>
+<li>方法<ul>
+<li><code>location.replace</code></li>
+</ul>
+</li>
+<li>属性        <ul>
+<li><code>href</code> Write-only.</li>
+</ul>
+</li>
+</ul>
+<p>示例：<br><img src="/2020/05/13/浏览器同源策略-same-origin-policy/01.png" width="600" style="border: none"></p>
+<p>这样的安全是非常合理的，不然恶意网站就很容易攻击成功了。但是这个方式也给合理的跨源访问增加了限制，比如两个跨源的域名是两个互信的域名，它们如果有跨源的访问需求，显然应该是要被支持的。想要两个跨源的页面之间直接进行DOM交互是不可能的，但是如果能让两个跨源的页面之间能够传递消息，那么间接地就能完成DOM交互等同源场景才能做的事情了。目前有3种方式能够实现跨源的两个页面之间进行通信。</p>
+<p>第一种是利用<code>hash</code>修改<code>location.href</code>，然后各自用<code>hashchange</code>事件监听消息。<br><figure class="highlight js"><figcaption><span>父窗口</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> src = originURL + <span class="string">'#'</span> + data;</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'myIFrame'</span>).src = src;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight js"><figcaption><span>子窗口</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onhashchange = checkMessage;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkMessage</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> message = <span class="built_in">window</span>.location.hash;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子窗口也可以修改父窗口的hash</span></span><br><span class="line">parent.location.href= target + <span class="string">"#"</span> + hash;</span><br></pre></td></tr></table></figure>
+<p>这个方式是可行的，但是缺点也比较多：</p>
+<ol>
+<li>hash不是用来干这个，这个方式可能与那些hash原本的特性相冲突，比如跟<code>spa router</code>框架</li>
+<li>这个方式利用了<code>location.href</code>，所以可交互的数据量是有限的</li>
+<li>如果把大量的信息追加在hash中，会让地址栏变得比较丑</li>
+</ol>
+<p>第二种是利用<code>window.name</code>这个属性来进行交互。下面的示例中，页面A将可以通过借助<code>window.name</code>的方式，获取到跨域页面B中的数据<br><figure class="highlight html"><figcaption><span>页面A</span><a href="http://localhost:9001/html/demo1.html" target="_blank" rel="noopener">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>test1<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>test1页面<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span> <span class="title">getCrossOriginData</span>(<span class="params">target, callback</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> boo = <span class="literal">false</span>;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> iframe = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> loadData = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">if</span> (boo) &#123;</span></span><br><span class="line"><span class="javascript">                    <span class="keyword">var</span> data = iframe.contentWindow.name;</span></span><br><span class="line">                    callback(data);</span><br><span class="line"><span class="javascript">                    iframe.contentWindow.document.write(<span class="string">''</span>);</span></span><br><span class="line">                    iframe.contentWindow.close();</span><br><span class="line"><span class="javascript">                    <span class="built_in">document</span>.body.removeChild(iframe);</span></span><br><span class="line"><span class="javascript">                &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">                    boo = <span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">                    iframe.contentWindow.location = <span class="string">"about:blank"</span>;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">            iframe.src = target;</span><br><span class="line">            iframe.onload = loadData;</span><br><span class="line"><span class="javascript">            <span class="built_in">document</span>.body.appendChild(iframe);</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">        getCrossOriginData(<span class="string">'http://127.0.0.1:5500/client2/html/index.html'</span>, <span class="built_in">console</span>.log.bind(<span class="built_in">console</span>))</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight html"><figcaption><span>页面B</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>test2<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>test2页面<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> person = &#123;</span></span><br><span class="line"><span class="javascript">            name: <span class="string">'wayne zhu'</span>,</span></span><br><span class="line">            age: 22,</span><br><span class="line"><span class="javascript">            school: <span class="string">'xjtu'</span></span></span><br><span class="line">        &#125;</span><br><span class="line"><span class="javascript">        <span class="built_in">window</span>.name = <span class="built_in">JSON</span>.stringify(person)</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个方式之所以成功，是因为iframe中<code>window.name</code>属性在设置之后，即使修改了iframe的地址，让它显示其它文档，依然不会改变原先<code>window.name</code>的值，这说明<code>window.name</code>这个属性是跟浏览器窗口有关的一个属性，即使这个窗口内的网页发生更新和替换，不会影响到这个属性值，除非脚本主动去设置它。 上面的代码中为什么在iframe第一次load成功后，要再把它的src更改为<code>about:blank</code>呢，这是因为<code>window.name</code>是一个不允许跨源访问的属性，只有同源才可以访问，而<code>about:blank</code>会与源文档继承相同的源。</p>
+<p>总体来看，这个方式利用的window.name能存储很多数据，而且隐藏了数据细节，但也不是一个好的方式：</p>
+<ol>
+<li><code>window.name</code>明明是不允许跨源访问的api，却被用来做跨源的事情</li>
+<li>上述方式仅仅能完成跨源的数据访问，但是不能实现两个页面之间进行双向通信，iframe是无法获取到<code>parent.name</code>的</li>
+</ol>
+<p>第三种方式，是利用web标准的api<code>postMessage</code>来完成两个页面之间的通信，这是最正确的方式，所以也是最推荐使用的。它的使用其实很简单，参考MDN文档即可：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage</a></p>
+<h3 id="浏览器端存储资源的限制"><a href="#浏览器端存储资源的限制" class="headerlink" title="浏览器端存储资源的限制"></a>浏览器端存储资源的限制</h3><p>浏览器端的存储资源主要包括：<code>cookies</code> 、 <code>Web Storage</code>和<code>Indexed DB</code>。<code>Web Storage</code>和<code>Indexed DB</code>按照严格的同源方式分开存储，所以跨源页面无法获取对方的<code>Web Storage</code>和<code>Indexed DB</code>。</p>
+<p><code>cookies</code>使用不同的源定义方式，它的源仅跟<code>cookie</code>的<code>domain</code>即<code>域</code>有关。一个页面可以为当前域或者父域设置<code>cookie</code>，只要父域不是公共后缀即可。公共后缀是指<code>.com</code> 、<code>.cn</code>、<code>.org</code>等。 不管使用哪个协议（<code>HTTP/HTTPS</code>）或端口号，浏览器都允许给定的域以及其任何子域名(<code>sub-domains</code>) 访问<code>cookie</code>。比如一个<code>cookie</code>如果它的域设置为了<code>.a.com</code>，那么<code>a.com</code>以及所有<code>*.a.com</code>下的页面，就都可以访问到这个<code>cookie</code>。</p>
+<h2 id="源的更改"><a href="#源的更改" class="headerlink" title="源的更改"></a>源的更改</h2><p>在满足某些限制条件的情况下，页面可以通过<code>document.domain</code>修改它的源，但是只能把源修改为当前域或者它的父域，否则就会报错：<br><img src="/2020/05/13/浏览器同源策略-same-origin-policy/02.png" width="600" style="border: none"></p>
+<p>父域与子域页面通过设置相同的<code>document.domain</code>之后，这样的两个跨源页面可以突破上面介绍的DOM交互限制。</p>
+<p>示例一：<br><figure class="highlight html"><figcaption><span>http://liuyunzhuge.com:5500/client/html/demo1.html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">iframe</span> <span class="attr">id</span>=<span class="string">"childFrame"</span> <span class="attr">name</span>=<span class="string">"child"</span> <span class="attr">frameborder</span>=<span class="string">"0"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.domain = <span class="string">'liuyunzhuge.com'</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> childFrame = <span class="built_in">document</span>.querySelector(<span class="string">'#childFrame'</span>)</span></span><br><span class="line">        </span><br><span class="line"><span class="javascript">        childFrame.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">let</span> c = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span></span><br><span class="line">            c.innerText = child.callback()</span><br><span class="line"><span class="javascript">            <span class="built_in">document</span>.body.appendChild(c)</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">        childFrame.src = <span class="string">'http://a.liuyunzhuge.com:5500/client2/html/index.html'</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span> <span class="title">getContent</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> <span class="string">'content from parent'</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight html"><figcaption><span>http://a.liuyunzhuge.com:5500/client2/html/index.html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.domain = <span class="string">'liuyunzhuge.com'</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.write(parent.getContent())</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">callback</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="string">'content from child'</span></span></span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个示例原本是受跨域限制的，但是<code>document.domain</code>让它们突破了跨源的限制，现在可以互相直接访问了。</p>
+<p>示例二：<br><figure class="highlight html"><figcaption><span>http://liuyunzhuge.com:5500/client/html/demo2.html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">onclick</span>=<span class="string">"openNewWin()"</span>&gt;</span>打开新页面<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.domain = <span class="string">'liuyunzhuge.com'</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span> <span class="title">getContent</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> <span class="string">'content from opener'</span></span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span> <span class="title">setContentFromNewWin</span>(<span class="params">content</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">let</span> c = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span></span><br><span class="line">                c.innerText = content</span><br><span class="line"><span class="javascript">                <span class="built_in">document</span>.body.appendChild(c)</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span> <span class="title">openNewWin</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">window</span>.open(<span class="string">'http://a.liuyunzhuge.com:5500/client2/html/02.html'</span>, <span class="string">'_blank'</span>)</span></span><br><span class="line">        &#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight html"><figcaption><span>http://a.liuyunzhuge.com:5500/client2/html/02.html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.domain = <span class="string">'liuyunzhuge.com'</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.write(<span class="built_in">window</span>.opener.getContent())</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="built_in">window</span>.opener.setContentFromNewWin(<span class="string">'content from new window'</span>)</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上面这个示例也是，通过<code>document.domain</code>让新打开的<code>window</code>与它的<code>opener</code>之间可以类似同源交互了。</p>
+<p><code>cookie</code>只依据自己的<code>domain</code>进行共享，跟<code>document.cookie</code>的设置关系不大，网上好多东西都是说<code>document.domain</code>设置后，就可以共享<code>cookie</code>，这是不对的。</p>
+<p><code>web storage</code>与<code>indexed db</code>虽然无法在设置了相同<code>document.domain</code>的父子域页面中共享，但是既然这样的两个页面已经互相访问dom了，那自然就可以借助相关的<code>window</code>对象来访问各自的<code>web storage</code>与<code>indexed db</code>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ssp/" rel="tag"># ssp</a>
+          
+            <a href="/tags/同源策略/" rel="tag"># 同源策略</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/12/Referrer-Policy/" rel="next" title="Referrer Policy">
+                <i class="fa fa-chevron-left"></i> Referrer Policy
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">99</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#同源的定义"><span class="nav-number">1.</span> <span class="nav-text">同源的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源的继承"><span class="nav-number">2.</span> <span class="nav-text">源的继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作用范围"><span class="nav-number">3.</span> <span class="nav-text">作用范围</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络资源的限制"><span class="nav-number">3.1.</span> <span class="nav-text">网络资源的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同源之间DOM交互的限制"><span class="nav-number">3.2.</span> <span class="nav-text">不同源之间DOM交互的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浏览器端存储资源的限制"><span class="nav-number">3.3.</span> <span class="nav-text">浏览器端存储资源的限制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源的更改"><span class="nav-number">4.</span> <span class="nav-text">源的更改</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
