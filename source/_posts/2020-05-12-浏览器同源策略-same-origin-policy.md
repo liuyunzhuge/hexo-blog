@@ -11,6 +11,8 @@ date: 2020-05-12 22:22:46
 
 `Same-site Policy`称为浏览器同源策略，是一项非常重要的安全策略。限制不同源的文档或它加载的脚本，对其它文档的访问，帮助阻拦恶意的网站侵犯用户权益。
 
+<!-- more -->
+
 ## 同源的定义
 页面的`协议` `主机` `端口` 三者构成一个页面的源，三者中有一项不同，则是不同源。
 
@@ -377,3 +379,5 @@ parent.location.href= target + "#" + hash;
 `cookie`只依据自己的`domain`进行共享，跟`document.cookie`的设置关系不大，网上好多东西都是说`document.domain`设置后，就可以共享`cookie`，这是不对的。
 
 `web storage`与`indexed db`虽然无法在设置了相同`document.domain`的父子域页面中共享，但是既然这样的两个页面已经互相访问dom了，那自然就可以借助相关的`window`对象来访问各自的`web storage`与`indexed db`。
+
+> https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy

@@ -4,7 +4,9 @@ tags:
   - 语言基础
 categories:
   - Javascript
+date: 2020-05-14 11:44:47
 ---
+
 
 巩固两个基础小知识：javascript:伪协议与void运算符。
 
