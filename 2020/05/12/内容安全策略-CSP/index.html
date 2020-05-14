@@ -107,7 +107,7 @@
 <meta property="og:site_name" content="流云诸葛">
 <meta property="og:description" content="不管是严格模式，还是普通模式，new Function(‘return this’)()，总是会返回全局对象。但是，如果浏览器用了 CSP（Content Security Policy，内容安全策略），那么eval、new Function这些方法都可能无法使用。  什么是CSP？即是内容安全策略，是一种对于页面嵌入或加载的内容进行访问控制的安全策略。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-11T09:48:44.486Z">
+<meta property="og:updated_time" content="2020-05-14T02:05:51.331Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="内容安全策略 CSP">
 <meta name="twitter:description" content="不管是严格模式，还是普通模式，new Function(‘return this’)()，总是会返回全局对象。但是，如果浏览器用了 CSP（Content Security Policy，内容安全策略），那么eval、new Function这些方法都可能无法使用。  什么是CSP？即是内容安全策略，是一种对于页面嵌入或加载的内容进行访问控制的安全策略。">
@@ -259,7 +259,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">39</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">43</span></a>
 
   </li>
         
@@ -297,7 +297,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">99</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">102</span></a>
 
   </li>
         
@@ -499,7 +499,7 @@
 <li><code>script-src</code> 这个指令是用来提供对于脚本的访问控制。<code>script-src userscripts.example.com</code>的含义就是仅允许执行来自于<code>userscripts.example.com</code>这个域下的脚本</li>
 </ul>
 <p><code>Content-Security-Policy</code>头或者是对应的<code>meta</code>可以设置多个，以便开启多个<code>CSP</code>。多个<code>CSP</code>策略，将会根据指令进行合并，矛盾的指令，将会以更严格那项为准，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: default-src &apos;self&apos; http://example.com;</span><br><span class="line">                         connect-src &apos;none&apos;;</span><br><span class="line">Content-Security-Policy: connect-src http://example.com/;</span><br><span class="line">                         script-src http://example.com/</span><br></pre></td></tr></table></figure></p>
-<p>尽管第二个策略允许连接, 第一个策略仍然包括了<code>connect-src &#39;none&#39;。添加了第二个策略后，只会让资源保护的能力更强，也就是说不会有接口可以被允许访问，等同于最严格的策略，</code>connect-src ‘none’`强制开启。                         </p>
+<p>尽管第二个策略允许连接, 第一个策略仍然包括了<code>connect-src &#39;none&#39;</code>。添加了第二个策略后，只会让资源保护的能力更强，也就是说不会有接口可以被允许访问，等同于最严格的策略，<code>connect-src &#39;none&#39;</code>强制开启。                         </p>
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p><code>CSP</code>显然是有好处的，但是如果网站想要部署<code>CSP</code>，也是有风险的，一旦策略定制的不够细致，就可能导致正常的内容无法显示，从而影响用户使用。所以除了<code>Content-Security-Policy</code>之外，还有一个<code>Content-Security-Policy-Report-Only</code>的头部，可以在实际部署<code>CSP</code>之前，收集<code>CSP</code>的数据。 这个头的用法与<code>Content-Security-Policy</code>与相同，它与<code>Content-Security-Policy</code>不同的是，当策略生效后，违反策略的访问将被继续允许，而不是像<code>Content-Security-Policy</code>直接拒绝。利用<code>report-uri</code>这个指令，<code>Content-Security-Policy-Report-Only</code>会将违反策略的访问生成报告，发送到<code>report-uri</code>这个指令所指定的地址，从而就能在部署<code>CSP</code>之前，收集到<code>Content-Security-Policy-Report-Only</code>的其它指令的访问情况，尤其是违反策略的记录；下一步就可以对策略进行优化，最后完善之后再把<code>Content-Security-Policy-Report-Only</code>替换为<code>Content-Security-Policy</code>完成部署。</p>
 <h2 id="报告"><a href="#报告" class="headerlink" title="报告"></a>报告</h2><p><code>Content-Security-Policy</code>以及<code>Content-Security-Policy-Report-Only</code>都可以利用<code>report-uri</code>这个指令来收集违反策略的报告：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: default-src &apos;none&apos;; style-src cdn.example.com; report-uri /_/csp-reports</span><br></pre></td></tr></table></figure></p>
 <p>当有违反策略的行为发生后，一个包含如下结构的JSON数据，将会发送到<code>report-uri</code>所指定的地址：</p>
@@ -727,7 +727,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">99</span>
+                    <span class="site-state-item-count">102</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -881,7 +881,15 @@
                     
                       
                     
-                    <span class="site-state-item-count">38</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">43</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
