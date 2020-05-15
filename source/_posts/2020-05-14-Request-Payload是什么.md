@@ -48,7 +48,7 @@ date: 2020-05-14 20:10:26
         <input type="submit" value="提交">
     </form>
 ```
-<img src="{% asset_path "07.png" %}" width="800" style="border: none">
+<img src="{% asset_path "06.png" %}" width="800" style="border: none">
 从图可以看到，这个时候开发者工具显示的是`Form Data`，并且通过查看`Form Data`原始数据，可以看到数据是未经过`url`编码处理的。
 
 
