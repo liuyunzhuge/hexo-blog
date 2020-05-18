@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="WebComponents是一项在网页里面直接进行组件化开发的标准，帮助你在不使用任何框架的前提下，进行自定义组件开发。">
+<meta name="keywords" content="WebComponents">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebComponents入门">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/05/18/WebComponents入门/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="WebComponents是一项在网页里面直接进行组件化开发的标准，帮助你在不使用任何框架的前提下，进行自定义组件开发。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.liuyunzhuge.com/2020/05/18/WebComponents入门/01.png">
+<meta property="og:updated_time" content="2020-05-18T04:03:21.876Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WebComponents入门">
+<meta name="twitter:description" content="WebComponents是一项在网页里面直接进行组件化开发的标准，帮助你在不使用任何框架的前提下，进行自定义组件开发。">
+<meta name="twitter:image" content="http://blog.liuyunzhuge.com/2020/05/18/WebComponents入门/01.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/05/18/WebComponents入门/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>WebComponents入门 | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">产品是用户的平行宇宙</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">49</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">24</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">106</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]<span class="badge">60</span></a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/05/18/WebComponents入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">WebComponents入门
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-05-18 12:03:21" itemprop="dateCreated datePublished" datetime="2020-05-18T12:03:21Z">2020-05-18</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/WebApi/" itemprop="url" rel="index"><span itemprop="name">WebApi</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>WebComponents</code>是一项在网页里面直接进行组件化开发的标准，帮助你在不使用任何框架的前提下，进行自定义组件开发。</p>
+<a id="more"></a>
+<h2 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h2><p>要开发一个自定义组件，非常简单，尤其在你使用过<code>vue</code>等框架，对组件化概念有一定认识之后：</p>
+<ol>
+<li>创建一个类或函数来定义<code>web</code>组件</li>
+<li>使用<code>CustomElementRegistry.define()</code>这个api来注册第一步定义的组件</li>
+<li>组件内部可使用<code>ShadowDom</code>技术来实现内部细节</li>
+<li>通过<code>template</code>和<code>slot</code>元素，在组件内部与外部之间构建灵活的内容替换方式</li>
+<li>在页面其它位置，像普通<code>html</code>元素一样使用前面开发好的自定义组件。</li>
+</ol>
+<h2 id="创建自定义组件的类"><a href="#创建自定义组件的类" class="headerlink" title="创建自定义组件的类"></a>创建自定义组件的类</h2><p>有两种方式创建自定义组件的类：</p>
+<ol>
+<li>创建一个独立的自定义组件类</li>
+</ol>
+<p>示例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PopUpInfo</span> <span class="keyword">extends</span> <span class="title">HTMLElement</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="comment">// 必须首先调用 super方法 </span></span><br><span class="line">    <span class="keyword">super</span>(); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 其它构造写在这里</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个方式中，通过继承<code>HTMLElement</code>得到一个<code>PopUpInfo</code>类，这个类代表了一个新的自定义组件。 <code>HTMLElement</code>接口，是所有<code>html</code>元素都间接或直接继承的接口。 所以直接继承这个类的方式，得到的自定义组件，是一个完全独立的新组件，可以把它当成一个新的<code>html</code>元素来看待。</p>
+<ol start="2">
+<li>基于已有的标准<code>html</code>元素继承</li>
+</ol>
+<p>示例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WordCount</span> <span class="keyword">extends</span> <span class="title">HTMLParagraphElement</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="comment">// 必须首先调用 super方法 </span></span><br><span class="line">    <span class="keyword">super</span>(); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 其它构造写在这里</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个方式中，通过继承<code>HTMLParagraphElement</code>得到一个<code>WordCount</code>类，<code>HTMLParagraphElement</code>从字面含义可知，它代表的是<code>p</code>元素。 <code>WordCount</code>类继承了<code>p</code>元素之后，将具备<code>p</code>元素的自身的特性。 这样得到的一个自定义组件，在注册和使用时，与前面一种方式得到的自定义组件，是有区别的。</p>
+<p><strong>前面总结的两种方式都有共同点：必须有明确的<code>extend</code>目标，必须有<code>constructor</code>函数，必须调用<code>super()</code>函数。</strong></p>
+<h2 id="注册和使用自定义组件"><a href="#注册和使用自定义组件" class="headerlink" title="注册和使用自定义组件"></a>注册和使用自定义组件</h2><p>使用<code>CustomElementRegistry.define()</code>这个api来注册自定义组件，也有两种方式。通过<code>window.customElements</code>可以得到一个<code>CustomElementRegistry</code>的实例。</p>
+<ol>
+<li>注册独立使用的自定义组件</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">customElements.define(<span class="string">'popup-info'</span>, <span class="class"><span class="keyword">class</span> <span class="title">PopUpInfo</span> <span class="keyword">extends</span> <span class="title">HTMLElement</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="comment">// 必须首先调用 super方法 </span></span><br><span class="line">    <span class="keyword">super</span>(); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 其它构造写在这里</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>以上把<code>PopUpInfo</code>注册为了一个自定义组件，并且可以在<code>html</code>中通过<code>popup-info</code>标签来直接使用。如：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">popup-info</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>在<code>document.createElement</code>中，也可以直接使用：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.createElement(<span class="string">'popup-info'</span>)</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>注册继承了标准元素的自定义组件</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">customElements.define(<span class="string">'expanding-list'</span>, <span class="class"><span class="keyword">class</span> <span class="title">ExpandingList</span> <span class="keyword">extends</span> <span class="title">HTMLUListElement</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="comment">// 必须首先调用 super方法 </span></span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 其它构造逻辑写在这里</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123; <span class="attr">extends</span>: <span class="string">"ul"</span> &#125;);</span><br></pre></td></tr></table></figure>
+<p>这类组件不能直接用注册的标签名称使用，而是要基于它扩展的标准元素、结合<code>is</code>这个<code>html</code>属性来使用。如：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">is</span>=<span class="string">"expanding-list"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>在<code>document.createElement</code>中，也要做调整，使用<code>is</code>option：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.createElement(<span class="string">'ul'</span>, &#123;<span class="attr">is</span>: <span class="string">'expanding-list'</span>&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>两种组件注册时的共同要求</strong>：标签名称必须是用短横线分割的多个单词，且必须符合<code>DOMString</code>标准。</p>
+<h2 id="使用ShadowDom"><a href="#使用ShadowDom" class="headerlink" title="使用ShadowDom"></a>使用ShadowDom</h2><p>在自定义组件的内部，通过<code>ShadowDom</code>来构造内部的细节。 从编程的角度来说，组件要与外部进行职责分离，内部细节应该对外不可见；从<code>html</code>元素的角度来说，元素最终都是通过<code>dom</code>结构来展现的。所以<code>ShadowDom</code>就出现了。首先它就是一份普通的<code>dom</code>结构，但与我们常规看到的<code>dom</code>不一样的是，它在它所依附的元素外部，是不可见的。而且，它不是一个新技术概念，浏览器在过去，就已经在使用<code>ShadowDom</code>来封装内部标准元素。比如说<code>video</code>元素，我们在页面中使用的时候，它都自带控制栏，这个控制栏就是<code>ShadowDom</code>完成的。</p>
+<p><code>ShadowDom</code>通过附加在某个常规的<code>dom</code>节点上，间接地参与了整个页面的渲染，这个被附加的<code>dom</code>节点称为<code>ShadowHost</code>。<code>ShadowDom</code>内部就跟普通<code>dom</code>没有区别，它也有跟<code>document</code>一样的跟节点，称为<code>ShadowRoot</code>。我们把<code>document</code>结构称为<code>document tree</code>，<code>ShadowDom</code>结构称为<code>ShadowTree</code>。 这是它们的关系：<br><img src="/2020/05/18/WebComponents入门/01.png" width="600" style="border: none"></p>
+<h3 id="使用实践"><a href="#使用实践" class="headerlink" title="使用实践"></a>使用实践</h3><p>通过<code>Element.attachShadow()</code>，可以给任意元素附加一个<code>ShadowDom</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> shadow = elementRef.attachShadow(&#123;<span class="attr">mode</span>: <span class="string">'open'</span>&#125;);</span><br><span class="line"><span class="keyword">let</span> shadow = elementRef.attachShadow(&#123;<span class="attr">mode</span>: <span class="string">'closed'</span>&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这个方法调用后偶返回了<code>ShadowDom</code>的<code>ShadowRoot</code>引用。<code>attachShow</code>使用时，有一个<code>mode</code>的option，它可以配置为：<code>closed</code>或<code>open</code>。当它是<code>open</code>的时候，回头这个附加了<code>ShadowDom</code>的元素，可以通过下面的方式访问<code>ShadowDom</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">elementRef.shadowRoot</span><br></pre></td></tr></table></figure></p>
+<p>而<code>closed</code>option则不可以。所以<code>closed</code>option特别适合用在自定义组件里面。</p>
+<p>当你拿到<code>ShadowRoot</code>之后，就可以往<code>ShadowDom</code>里面，添加普通的<code>DOM</code>节点了：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PopUpInfo</span> <span class="keyword">extends</span> <span class="title">HTMLElement</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 附件shadowdom</span></span><br><span class="line">    <span class="keyword">const</span> shadow = <span class="keyword">this</span>.attachShadow(&#123;<span class="attr">mode</span>: <span class="string">'open'</span>&#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建常规dom节点</span></span><br><span class="line">    <span class="keyword">const</span> wrapper = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>);</span><br><span class="line">    wrapper.setAttribute(<span class="string">'class'</span>, <span class="string">'wrapper'</span>);</span><br><span class="line">    shadow.appendChild(wrapper);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>自定义元素可以通过<code>html</code>的<code>attribute</code>往组件内部传递外部的数据：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PopUpInfo</span> <span class="keyword">extends</span> <span class="title">HTMLElement</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 附件shadowdom</span></span><br><span class="line">    <span class="keyword">const</span> shadow = <span class="keyword">this</span>.attachShadow(&#123;<span class="attr">mode</span>: <span class="string">'open'</span>&#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建常规dom节点</span></span><br><span class="line">    <span class="keyword">const</span> wrapper = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>);</span><br><span class="line">    wrapper.setAttribute(<span class="string">'class'</span>, <span class="string">'wrapper'</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> info = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>);</span><br><span class="line">    <span class="comment">// 获取自定义元素在页面中注册的属性</span></span><br><span class="line">    <span class="keyword">const</span> text = <span class="keyword">this</span>.getAttribute(<span class="string">'data-text'</span>);</span><br><span class="line">    info.textContent = text;</span><br><span class="line"></span><br><span class="line">    wrapper.appendChild(info);</span><br><span class="line">    shadow.appendChild(wrapper);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">popup-info</span> <span class="attr">data-text</span>=<span class="string">"..."</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>还可以在<code>ShadowDom</code>里面编写<code>css</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PopUpInfo</span> <span class="keyword">extends</span> <span class="title">HTMLElement</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create a shadow root</span></span><br><span class="line">    <span class="keyword">const</span> shadow = <span class="keyword">this</span>.attachShadow(&#123;<span class="attr">mode</span>: <span class="string">'open'</span>&#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> style = <span class="built_in">document</span>.createElement(<span class="string">'style'</span>);</span><br><span class="line"></span><br><span class="line">    style.textContent = <span class="string">`</span></span><br><span class="line"><span class="string">        .wrapper &#123;</span></span><br><span class="line"><span class="string">            position: relative;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        .info &#123;</span></span><br><span class="line"><span class="string">            font-size: 0.8rem;</span></span><br><span class="line"><span class="string">            width: 200px;</span></span><br><span class="line"><span class="string">            display: inline-block;</span></span><br><span class="line"><span class="string">            border: 1px solid black;</span></span><br><span class="line"><span class="string">            padding: 10px;</span></span><br><span class="line"><span class="string">            background: white;</span></span><br><span class="line"><span class="string">            border-radius: 10px;</span></span><br><span class="line"><span class="string">            opacity: 0;</span></span><br><span class="line"><span class="string">            transition: 0.6s all;</span></span><br><span class="line"><span class="string">            position: absolute;</span></span><br><span class="line"><span class="string">            bottom: 20px;</span></span><br><span class="line"><span class="string">            left: 10px;</span></span><br><span class="line"><span class="string">            z-index: 3;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        img &#123;</span></span><br><span class="line"><span class="string">            width: 1.2rem;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        .icon:hover + .info, .icon:focus + .info &#123;</span></span><br><span class="line"><span class="string">            opacity: 1;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    `</span></span><br><span class="line"></span><br><span class="line">    shadow.appendChild(style);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>总之，在<code>ShadowDom</code>里面能做的事情，与在<code>document</code>中是没啥区别的，它们就是两个完全隔离的<code>dom</code>渲染区域。</p>
+<h2 id="使用template和slot"><a href="#使用template和slot" class="headerlink" title="使用template和slot"></a>使用template和slot</h2><p>不同于上面直接在js中写内部的<code>html</code>结构和样式，自定义组件还能利用<code>template</code>和<code>slot</code>这个元素来实现更加强大的<code>html</code>结构构建功能。可参考：<a href="https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_templates_and_slots" target="_blank" rel="noopener">使用template和slot</a></p>
+<h2 id="使用生命周期函数"><a href="#使用生命周期函数" class="headerlink" title="使用生命周期函数"></a>使用生命周期函数</h2><p>在自定义组件中还能使用生命周期函数，来开发更强的组件，可参考： <a href="https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements#%E4%BD%BF%E7%94%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">使用生命周期函数</a></p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p><code>mdn</code>上有提供诸多实例，包含了<code>web component</code>相关的各个要点，在真正想去实践<code>web component</code>时，可以拿来研究参考：<a href="https://github.com/mdn/web-components-examples" target="_blank" rel="noopener">mdn实例</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WebComponents/" rel="tag"># WebComponents</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/16/FormData和URLSearchParams接口/" rel="next" title="FormData和URLSearchParams接口">
+                <i class="fa fa-chevron-left"></i> FormData和URLSearchParams接口
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">106</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">49</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#开发流程"><span class="nav-number">1.</span> <span class="nav-text">开发流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建自定义组件的类"><span class="nav-number">2.</span> <span class="nav-text">创建自定义组件的类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注册和使用自定义组件"><span class="nav-number">3.</span> <span class="nav-text">注册和使用自定义组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用ShadowDom"><span class="nav-number">4.</span> <span class="nav-text">使用ShadowDom</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用实践"><span class="nav-number">4.1.</span> <span class="nav-text">使用实践</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用template和slot"><span class="nav-number">5.</span> <span class="nav-text">使用template和slot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用生命周期函数"><span class="nav-number">6.</span> <span class="nav-text">使用生命周期函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">7.</span> <span class="nav-text">实例</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
