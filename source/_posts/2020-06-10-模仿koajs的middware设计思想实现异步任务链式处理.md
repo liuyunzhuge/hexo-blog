@@ -2,6 +2,7 @@
 title: 模仿koajs的middware设计思想实现异步任务链式处理
 date: 2020-06-10 16:37:18
 tags:
+  - koajs
 ---
 
 
@@ -232,3 +233,73 @@ runSequence(hooks, async function runSequenceFn(hook, next) {
 })
 ```
 `async`函数是异步处理用同步方式进行表达的设计，所以以上代码，按照同步逻辑来理解即可。
+
+## koa源码
+koajs中这个处理时利用`koa-compose`来处理的，这是一个非常简单的源码：
+```js
+function compose(middleware) {
+    if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
+
+    return function (context, next) {
+        // last called middleware #
+        let index = -1
+        return dispatch(0)
+        function dispatch(i) {
+            if (i <= index) return Promise.reject(new Error('next() called multiple times'))
+            index = i
+            let fn = middleware[i]
+            if (i === middleware.length) fn = next
+            if (!fn) return Promise.resolve()
+            try {
+                return Promise.resolve(fn(context, dispatch.bind(null, i + 1)))
+            } catch (err) {
+                return Promise.reject(err)
+            }
+        }
+    }
+}
+```
+基于这个`compose`函数，也能实现async的异步任务链：
+```js
+const long = () => new Promise(resolve => setTimeout(resolve, 1000))
+const now = Date.now()
+
+let hooks = [
+    async function (ctx, next) {
+        console.log('===>1', Date.now() - now)
+        await long()
+        ctx.from = 1
+        await next()
+        await long()
+        console.log('1<===', Date.now() - now)
+    },
+    async function (ctx, next) {
+        console.log('===>2', Date.now() - now)
+        await long()
+        ctx.from = ctx.from + ' 2'
+        await next()
+        await long()
+        console.log('2<===', Date.now() - now)
+    },
+    async function (ctx, next) {
+        console.log('===>3', Date.now() - now)
+        await long()
+        ctx.from = ctx.from + ' 3'
+        await next()
+        await long()
+        console.log('3<===', Date.now() - now)
+    }
+]
+
+let ctx = {}
+let runSequence = compose(hooks)
+runSequence(ctx).then(() => {
+    // ===>1 1
+    // ===>2 1002
+    // ===>3 2004
+    // 3<=== 4014
+    // 2<=== 5020
+    // 1<=== 6025
+    console.log(ctx) // {from: '1 2 3'}
+})
+```
