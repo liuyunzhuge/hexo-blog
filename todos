@@ -1,7 +1,6 @@
 event loop
 执行上下文
 作用域链
-pwa
 内存泄露
 
 url发生了什么
@@ -18,6 +17,8 @@ http 1.0 1.1 2.0
 长连接
 
 节流和防抖
+高阶函数
+    curry
 Object
 Array
 String
@@ -34,8 +35,9 @@ TypedArray
 XMLHttpRequest
 fetch
 
+pwa
+manifest
 websocket
 eventsource
 web worker
 service workers
-manifest

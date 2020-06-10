@@ -1,4 +1,0 @@
----
-title: resource hints
-tags:
----
