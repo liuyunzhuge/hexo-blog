@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="TypeScript是es的超集，这是官方的定义。经过一段时间的初步学习，我认为这个定义可以简单理解为有强大类型化功能的es。它可以为标准的es提供类型检查的服务，减少代码问题；还有一个好处是，可以为IDE提供快捷的代码提示的功能，提升开发人员的编码体验。">
+<meta name="keywords" content="typescript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript">
+<meta property="og:url" content="http://blog.liuyunzhuge.com/2020/07/04/TypeScript/index.html">
+<meta property="og:site_name" content="流云诸葛">
+<meta property="og:description" content="TypeScript是es的超集，这是官方的定义。经过一段时间的初步学习，我认为这个定义可以简单理解为有强大类型化功能的es。它可以为标准的es提供类型检查的服务，减少代码问题；还有一个好处是，可以为IDE提供快捷的代码提示的功能，提升开发人员的编码体验。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-03T08:17:35.093Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TypeScript">
+<meta name="twitter:description" content="TypeScript是es的超集，这是官方的定义。经过一段时间的初步学习，我认为这个定义可以简单理解为有强大类型化功能的es。它可以为标准的es提供类型检查的服务，减少代码问题；还有一个好处是，可以为IDE提供快捷的代码提示的功能，提升开发人员的编码体验。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://blog.liuyunzhuge.com/2020/07/04/TypeScript/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>TypeScript | 流云诸葛</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?408d612136fe80ee9370a3bdf6a84f4e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">流云诸葛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">产品是用户的平行宇宙</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">52</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">24</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">109</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-old_blog">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="https://www.cnblogs.com/lyzg/" rel="noopener" target="_blank"><i class="menu-item-icon fa fa-fw fa-pagelines"></i> <br>博客园[2015-2016]<span class="badge">60</span></a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/liuyunzhuge" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.liuyunzhuge.com/2020/07/04/TypeScript/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="流云诸葛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TypeScript
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-07-03 16:17:35" itemprop="dateCreated datePublished" datetime="2020-07-03T16:17:35Z">2020-07-03</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>TypeScript</code>是es的超集，这是官方的定义。经过一段时间的初步学习，我认为这个定义可以简单理解为有强大类型化功能的es。它可以为标准的es提供类型检查的服务，减少代码问题；还有一个好处是，可以为IDE提供快捷的代码提示的功能，提升开发人员的编码体验。</p>
+<a id="more"></a>
+<h2 id="typescript-vs-babel-vs-webpack"><a href="#typescript-vs-babel-vs-webpack" class="headerlink" title="typescript vs babel vs webpack"></a>typescript vs babel vs webpack</h2><p><code>typescript</code> vs <code>babel</code>: 二者都有转码能力，但是<code>babel</code>在转码时，不具备类型检查的能力，最多能检测出es本身的语法错误。<code>typescript</code>更侧重的是语言类型的检查，<code>babel</code>更侧重的是<code>ES6</code>到<code>ES5</code>之间的代码转换。</p>
+<p><code>typescript</code> vs <code>webpack</code>: <code>webpack</code>是单纯的依赖构建工具，它会严格遵守模块之间的依赖关系来输出构建，如果某个依赖不存在，则构建会失败；<code>typescript</code>是严格的类型检查工具，它在类型检查时，如果发现有未定义的类型，则会报错，但是只要能想办法把类型定义（ts的声明文件）添加进去，它就不会报错了，即使类型对应的模块可执行文件并不存在。 所以<code>typescript</code>更看重类型的有效性，而<code>webpack</code>更看重模块的有效性。</p>
+<p>这三个工具并不冲突，而且可以相辅相成使用，它们的工作流我认为是这样的：</p>
+<ol>
+<li><code>typescript</code>提供类型检查和代码提示，开发时用ts编写代码，由<code>ts</code>编译为最新的<code>es6</code>格式的代码；</li>
+<li><code>babel</code>将<code>typescript</code>编译过后的代码，做转码处理，输出为<code>es5</code>的代码；</li>
+<li><code>webpack</code>根据<code>babel</code>的输出，进行构建。</li>
+</ol>
+<h2 id="typescript-的类型系统"><a href="#typescript-的类型系统" class="headerlink" title="typescript 的类型系统"></a>typescript 的类型系统</h2><p>这个部分有简单的内容，也有复杂的内容，需要花时间才能积累。官方的文档以及那些流行的前端库中的<code>.d.ts</code>文件是非常好的学习资源。</p>
+<h2 id="typescript-的模块机制"><a href="#typescript-的模块机制" class="headerlink" title="typescript 的模块机制"></a>typescript 的模块机制</h2><p>在es标准的模块机制出来之前，js的模块化都是利用js语言本身的特性，动态实现的，知名的机制有：amd和commonjs，这些模块化手段本质上是对外隐藏内部实现的js对象；es标准模块机制出来之后，从语言层级提供了模块导入和导出的服务，相比amd和commonjs，我认为它们并没有根本性的区别，只是es标准的模块更能代表一门编程语言的原生特性，始终是有先进性的。而且，虽然现在开发都用es标准在写模块，但真正应用到生产环境中时，还是会通过转码的方式，变为已经应用非常广泛的commonjs等机制。</p>
+<p>typescript的模块机制，以es标准的模块机制为基础，只把含<code>import</code>或<code>export</code>的文件当成模块看待，为了不与es标准内容重复，下面仅列出ts与es标准不一样的一些模块使用特性。</p>
+<ol>
+<li><p>导出声明<br> ts除了支持es标准中的声明（var let const function class）外，还支持导出: namespace, enum, interface和type别名。interface和type别名，仅在ts编译期间有生效，在运行期间是不可见的。而namespace和enum虽然也是ts新增的声明类型，但是它们在ts编译之后，会成为可在运行期间真实存在的js对象。</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> A &#123;&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">let</span> b = <span class="number">1</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">enum</span> LEVEL &#123;</span><br><span class="line">    up,</span><br><span class="line">    down</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">namespace</span> D3 &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">let</span> d = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> Animal &#123;</span><br><span class="line">    name: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">type</span> AL = Animal</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>导入types<br> ts3.8以前，可以使用<code>import</code>语句导入类型，3.8以后可以使用<code>import</code>和<code>import type</code>来导入类型。 为什么要加入<code>import type</code>的处理？先看<code>import</code>:</p>
+ <figure class="highlight ts"><figcaption><span>使用import导入类型</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ./foo.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> Options &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">doThing</span>(<span class="params">options: Options</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ./bar.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123; doThing, Options &#125; <span class="keyword">from</span> <span class="string">"./foo"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doThingBetter</span>(<span class="params">options: Options</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// do something twice as good</span></span><br><span class="line">    doThing(options);</span><br><span class="line">    doThing(options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+ <figure class="highlight js"><figcaption><span>编译结果</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// foo.js</span></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(exports, <span class="string">"__esModule"</span>, &#123; <span class="attr">value</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">exports.doThing = <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doThing</span>(<span class="params">options</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line">exports.doThing = doThing;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bar.js</span></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(exports, <span class="string">"__esModule"</span>, &#123; <span class="attr">value</span>: <span class="literal">true</span> &#125;);</span><br><span class="line"><span class="comment">// ./bar.ts</span></span><br><span class="line"><span class="keyword">var</span> foo_js_1 = <span class="built_in">require</span>(<span class="string">"./foo.js"</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doThingBetter</span>(<span class="params">options</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// do something twice as good</span></span><br><span class="line">    foo_js_1.doThing(options);</span><br><span class="line">    foo_js_1.doThing(options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> es标准模块的导入导出，都是运行时的依赖导入导出，它的操作对象是value。而ts的模块导入导出，除了实现es标准模块的导入导出之后，还实现有它自身基于类型的导入导出，这属于编译阶段的导入导出，在编译完成之后，这个导入导出语句是需要擦除的。 所以上述编译结果中，看不到对<code>Options</code>这个类型的导入导出语句。</p>
+<p> 上述这种处理方式，默认情况下是没问题的，因为ts能够识别哪些导入导出是类型，然后在导出结果中自动擦除。 但是有一些场景中，这个机制有点问题。</p>
+<blockquote>
+<p>官方说明：<a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-8-beta/#type-only-imports-exports" target="_blank" rel="noopener">https://devblogs.microsoft.com/typescript/announcing-typescript-3-8-beta/#type-only-imports-exports</a></p>
+</blockquote>
+<p> 首先：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ./foo.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> Options &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// ./bar.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123; Options &#125; <span class="keyword">from</span> <span class="string">"./foo"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;Options&#125;</span><br></pre></td></tr></table></figure>
+<p> <code>bar.ts</code>这种使用方式，无法识别出<code>Options</code>到底是类型还是value。<code>babel</code>和<code>ts</code>的<code>transpileModule</code>API处理<code>bar.ts</code>都会生成错误的代码。如果开启<code>tsconfig.json</code>中的<code>isolatedModules</code>为<code>true</code>，将可以看到一个报错提示：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Re-exporting a <span class="built_in">type</span> when the <span class="string">'--isolatedModules'</span> flag is provided requires using <span class="string">'export type'</span>.</span><br></pre></td></tr></table></figure>
+<p> 第二：因为当ts识别出一个import语句仅仅只是导入类型的时候，就会把这个语句从编译结果中抹掉，如果导入类型的这个模块，除了有对外暴露类型外，还有其它运行时的代码需要执行，由于编译结果中抹掉了对模块的导入语句，将导致代码在运行期间会出问题。改善这个方式的办法是：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This statement will get erased because of import elision.</span></span><br><span class="line"><span class="keyword">import</span> &#123; SomeTypeFoo, SomeOtherTypeBar &#125; <span class="keyword">from</span> <span class="string">"./module-with-side-effects"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// This statement always sticks around.</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"./module-with-side-effects"</span>;</span><br></pre></td></tr></table></figure>
+<p> 也就是需要把模块再用<code>import</code>导入一次。显然这个方式是别扭的。</p>
+<p> 最后一个例子，出现在<code>angular</code>中：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ./service.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> Service &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line">register(<span class="string">"globalServiceId"</span>, Service);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ./consumer.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123; Service &#125; <span class="keyword">from</span> <span class="string">"./service.js"</span>;</span><br><span class="line"></span><br><span class="line">inject(<span class="string">"globalServiceId"</span>, <span class="function"><span class="keyword">function</span> (<span class="params">service: Service</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// do stuff with Service</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p> 上述两个文件，由于<code>consumer.ts</code>中发现导入的<code>service</code>仅仅只是一个类型的作用，导致<code>import</code> <code>service.ts</code>的语句在编译结果中被抹掉。最终<code>comsumer.ts</code>在执行时一定会报错，因为<code>service.ts</code>没有在运行被加载执行。</p>
+<p> 综上所述，ts原先考虑将type与value，统一用<code>import</code>语句来处理，在少部分的场景中遇到了问题，于是ts3.8以后推出了<code>import type</code>语句，这个语句仅仅用来导入类型，而且ts可以非常明确这个import一定会在编译结果中被抹掉。</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; SomeThing &#125; <span class="keyword">from</span> <span class="string">"./some-module.js"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">type</span> &#123; SomeThing &#125;;</span><br></pre></td></tr></table></figure>
+<p> 推出这样的一个导入类型的方式，ts应该是想推动以后导入模块时，要严格区分value和类型的导入，如果是导入value用<code>import</code>，如果是导入type用<code>import type</code>。 </p>
+<p> 通过<code>import type</code>导入的类型在使用时只能当成<code>type</code>使用，不能当成<code>value</code>使用：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; Base &#125; <span class="keyword">from</span> <span class="string">"my-library"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> Foo, &#123; Bar, Baz &#125; <span class="keyword">from</span> <span class="string">"some-module"</span>;</span><br><span class="line"><span class="comment">//     ~~~~~~~~~~~~~~~~~~~~~~</span></span><br><span class="line"><span class="comment">// error! A type-only import can specify a default import or named bindings, but not both.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> baseConstructor: <span class="keyword">typeof</span> Base;</span><br><span class="line"><span class="comment">//                          ~~~~</span></span><br><span class="line"><span class="comment">// error! 'Base' only refers to a type, but is being used as a value here.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">class</span> Derived <span class="keyword">extends</span> Base &#123;</span><br><span class="line">    <span class="comment">//                        ~~~~</span></span><br><span class="line">    <span class="comment">// error! 'Base' only refers to a type, but is being used as a value here.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 官方3.8的发布说明中这么解释<code>import type</code>的意义：</p>
+<blockquote>
+<p>That means that you can’t use values even if they’re purely used for type positions.<br> We’re looking at changing this behavior based on recent feedback. Instead of only importing the type side of declarations, we’re planning on changing the meaning of import type to mean “import whatever this is, but only allow it in type positions.” </p>
+</blockquote>
+<p> 按照这个理解，如果使用<code>import type</code>来导入一个类，也无法将它当成类来使用，只能当成类型使用：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// animal.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> Animal &#123;</span><br><span class="line">    name: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// comsumer.ts</span></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123;Animal&#125; <span class="keyword">from</span> <span class="string">"./animal"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> animal = <span class="keyword">new</span> Animal()</span><br><span class="line"><span class="comment">//               ~~~~~~</span></span><br><span class="line"><span class="comment">// 'Animal' cannot be used as a value because it was imported using 'import type'.</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>export =</code>以及<code>import = require()</code><br> ts支持类似commonjs的模块的导出和导入方式：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> numberRegexp = <span class="regexp">/^[0-9]+$/</span>;</span><br><span class="line"><span class="keyword">class</span> ZipCodeValidator &#123;</span><br><span class="line">    isAcceptable(s: <span class="built_in">string</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> s.length === <span class="number">5</span> &amp;&amp; numberRegexp.test(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> = ZipCodeValidator;</span><br><span class="line"></span><br><span class="line"><span class="comment">// consumer.ts</span></span><br><span class="line"><span class="keyword">import</span> zip = <span class="built_in">require</span>(<span class="string">"./ZipCodeValidator"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Some samples to try</span></span><br><span class="line"><span class="keyword">let</span> strings = [<span class="string">"Hello"</span>, <span class="string">"98052"</span>, <span class="string">"101"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Validators to use</span></span><br><span class="line"><span class="keyword">let</span> validator = <span class="keyword">new</span> zip();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Show whether each string passed each validator</span></span><br><span class="line">strings.forEach(<span class="function"><span class="params">s</span> =&gt;</span> &#123;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`"<span class="subst">$&#123; s &#125;</span>" - <span class="subst">$&#123; validator.isAcceptable(s) ? <span class="string">"matches"</span> : <span class="string">"does not match"</span> &#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p> 这种模块导入和导出方式是ts特有的，不推荐使用。</p>
+</li>
+<li><p><code>--module</code>以及<code>--target</code><br> <code>--module</code>这个编译选项用来指定ts编译后采用何种模块风格，支持：<code>amd commonjs umd es6 es2015 esnext</code>等。<br> <code>--target</code>这个编译选项用来指定ts编译后采用哪个版本的es，支持：<code>es3 es5 es6 es2016 es2017 esnext</code>等，覆盖所有的es标准版本。<br> <code>--module</code>的默认值根据<code>--target</code>决定，如果<code>--target</code>是<code>es3</code>或<code>es5</code>，则<code>--module</code>默认采用<code>commonjs</code>，否则采用<code>es6</code>。而<code>--target</code>的默认值是<code>es3</code>。<br> 其实现在的生产环境来说，模块规范只有两个是有广泛应用价值的：<code>commonjs</code>和<code>es6</code>。如果不使用babel，那么<code>--target</code>应该设置为<code>es5</code>，而<code>--module</code>应该设置为<code>commonjs</code>，如果使用babel，则可以把<code>--target</code>设置为<code>es6</code>或更高版本，然后把<code>--module</code>设置为<code>es6</code>或更高版本。<br> 为什么<code>--target</code>针对es5之后的版本，有那么多个可选值呢？从它的可选值可以看到，<code>--target</code>与ecmascript每年的发布周期是有关系的，es标准按照惯例，每年年中发布一个正式版，这样来看的话<code>--target</code>每年都会增加一个值。<br> 为什么<code>--module</code>中es5之后的可选值只有<code>es6 es2015 esnext</code>呢，这应该是因为<code>--module</code>只跟es的模块相关的特性有关系，而es标准虽然每年发布一次，但是不代表每一年都会发布跟模块相关的内容。</p>
+</li>
+<li><p><code>Ambient Modules</code><br> ts有一个非常强大的声明机制，可以用来补充它的类型检查系统。很多的js库并不是用ts开发的，即使用ts开发，但是发布到npm之后，也不是ts的版本，这些库要应用到ts的项目中，就会失去类型检查的特性。 但是利用ts的声明机制，可以把这些库的api，用声明的文件的形式发布出来，这样ts就能利用声明文件，完成类型检查。本质上是利用了ts做的只是编译阶段的工作，而不是运行时的工作，所以它在类型检查时，只需要知道类型是什么，以及到哪里能找到类型即可，至于这个类型对应的真正可执行文件是否存在，它是不管的。ts把这种类型声明称为：<code>ambient</code>:</p>
+<blockquote>
+<p>We call declarations that don’t define an implementation “ambient”.</p>
+</blockquote>
+<p> 模块也可以利用声明机制，成为一个<code>ambient module</code>。 看如下示例：</p>
+ <figure class="highlight ts"><figcaption><span>src/consumer.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Moment <span class="keyword">from</span> <span class="string">"moment"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> m = Moment(<span class="string">'2020-06-01'</span>, <span class="string">'YYYY-MM-DD'</span>)</span><br></pre></td></tr></table></figure>
+<p> 这个示例在<code>moment</code>没有安装的情况下是会报错的：</p>
+<blockquote>
+<p>Cannot find module ‘moment’ or its corresponding type declarations.ts</p>
+</blockquote>
+<p> 解决办法已经很清楚了，要么安装<code>moment</code>，要么添加它的声明文件。 接下来添加如下模拟的声明文件：</p>
+ <figure class="highlight ts"><figcaption><span>src/nest/moment.d.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">module</span> "moment" &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">interface</span> MomentClass &#123;</span><br><span class="line">        toJson():<span class="built_in">string</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">interface</span> MomentStatic &#123;</span><br><span class="line">        (dateStr: <span class="built_in">string</span>, format?: <span class="built_in">string</span>): MomentClass</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> Moment: MomentStatic</span><br><span class="line"></span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">default</span> Moment</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 然后修改<code>src/consumer.js</code>，顶部使用三斜线指令<code>&lt;reference path=&quot;...&quot;/&gt;</code>引入上面的声明文件：</p>
+ <figure class="highlight ts"><figcaption><span>src/consumer.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;reference path="nest/moment.d.ts"/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Moment <span class="keyword">from</span> <span class="string">"moment"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> m = Moment(<span class="string">'2020-06-01'</span>, <span class="string">'YYYY-MM-DD'</span>)</span><br></pre></td></tr></table></figure>
+<p> 此时重新编译就不会看到报错了。编译结果如下：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="comment">/// &lt;reference path="nest/b.d.ts"/&gt;</span></span><br><span class="line"><span class="keyword">var</span> __importDefault = (<span class="keyword">this</span> &amp;&amp; <span class="keyword">this</span>.__importDefault) || <span class="function"><span class="keyword">function</span> (<span class="params">mod</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (mod &amp;&amp; mod.__esModule) ? mod : &#123; <span class="string">"default"</span>: mod &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(exports, <span class="string">"__esModule"</span>, &#123; value: <span class="literal">true</span> &#125;);</span><br><span class="line"><span class="keyword">const</span> moment_1 = __importDefault(<span class="built_in">require</span>(<span class="string">"moment"</span>));</span><br><span class="line"><span class="keyword">let</span> m = moment_1.default(<span class="string">'2020-06-01'</span>, <span class="string">'YYYY-MM-DD'</span>);</span><br></pre></td></tr></table></figure>
+<p> 从编译结果看到，这是一个<code>commonjs</code>风格模块，里面有<code>require</code>调用，所以在实际运行时，必须要保证<code>require(&#39;moment&#39;)</code>能加载到<code>moment</code>的真正可执行文件才行。但是<code>ts</code>通过模拟的<code>moment</code>的声明文件，已经知道<code>moment</code>的api结构了，所以它能够完成自己的类型编译工作，而<code>require(&quot;moment&quot;)</code>是运行时的工作，它是不管的。也就是说这个声明文件的作用，就是用来声明模块的结构是什么样的，它的潜台词就是有一个模块是这样的结构，如果其它模块在用它的时候不满足它的类型声明，就是错的。</p>
+<p> 这个设计的好处就是，尽管在ts推出的时候，大部分js库都不是用ts开发的，但是只要有人愿意为这些库提供声明文件，那这些库就可以顺利在ts中使用，而现在这个工作，大部分js库都已经做完了，所以现在使用ts开发项目，会变得非常方便。</p>
+<p> 为了简化模块的声明工作，甚至只需要这么简单的声明一下就可以了：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">module</span> "hot-new-<span class="keyword">module</span>";</span><br></pre></td></tr></table></figure>
+<p> 这样的话，将现有的js项目迁移到ts项目就会简化很多了。</p>
+</li>
+<li><p>模块的动态加载<br> 在ts中，如果模块导入的内容，仅仅使用在类型检查的位置当中，那么这个模块的真实引用在编译完之后就会被移除：</p>
+ <figure class="highlight ts"><figcaption><span>nest/foo.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> StringValidator &#123;</span><br><span class="line">    isAcceptable(s: <span class="built_in">string</span>): <span class="built_in">boolean</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> numberRegexp = <span class="regexp">/^[0-9]+$/</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> ZipCodeValidator <span class="keyword">implements</span> StringValidator &#123;</span><br><span class="line">    isAcceptable(s: <span class="built_in">string</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> s.length === <span class="number">5</span> &amp;&amp; numberRegexp.test(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+ <figure class="highlight ts"><figcaption><span>bar.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ZipCodeValidator <span class="keyword">as</span> Zip &#125; <span class="keyword">from</span> <span class="string">"./nest/foo"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> ZipCodeValidator: <span class="keyword">typeof</span> Zip = <span class="literal">null</span></span><br></pre></td></tr></table></figure>
+<p> 在上述代码中，<code>bar.ts</code>里面使用<code>Zip</code>，仅仅是在一个类型检查的位置使用，<code>typeof Zip</code>可以得到<code>Zip</code>这个名称中的类型含义，所以在<code>bar.ts</code>的编译结果中看不到对<code>foo</code>模块的引用：</p>
+ <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line">exports.__esModule = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">var</span> ZipCodeValidator = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+<p> 利用这一点可以用来做模块的动态加载：</p>
+ <figure class="highlight ts"><figcaption><span>bar.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="function"><span class="keyword">function</span> <span class="title">require</span>(<span class="params">moduleName: <span class="built_in">string</span></span>): <span class="title">any</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; ZipCodeValidator <span class="keyword">as</span> Zip &#125; <span class="keyword">from</span> <span class="string">"./nest/foo"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> loadCondition = <span class="built_in">Math</span>.random() * <span class="number">10</span> &gt; <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(loadCondition) &#123;</span><br><span class="line">    <span class="keyword">let</span> ZipCodeValidator: <span class="keyword">typeof</span> Zip = <span class="built_in">require</span>(<span class="string">"./nest/foo"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 编译结果：</p>
+ <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line">exports.__esModule = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">var</span> loadCondition = <span class="built_in">Math</span>.random() * <span class="number">10</span> &gt; <span class="number">5</span>;</span><br><span class="line"><span class="keyword">if</span> (loadCondition) &#123;</span><br><span class="line">    <span class="keyword">var</span> ZipCodeValidator = <span class="built_in">require</span>(<span class="string">"./nest/foo"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>什么是模块<br> 在ts中，不管是<code>.ts</code>文件还是<code>.d.ts</code>文件，只有里面包含有最顶级的<code>import</code>或<code>export</code>才会被当成模块处理，否则只会当成一个普通的脚本文件处理，同时它的内容在全局作用域内有效。</p>
+<p> 这意味着下面的代码：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">namespace</span> DD &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">interface</span> Selectors &#123;</span><br><span class="line">        select: &#123;</span><br><span class="line">            (selector: <span class="built_in">string</span>): Selection;</span><br><span class="line">            (element: EventTarget): Selection;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">interface</span> Event &#123;</span><br><span class="line">        x: <span class="built_in">number</span>;</span><br><span class="line">        y: <span class="built_in">number</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">interface</span> Base <span class="keyword">extends</span> Selectors &#123;</span><br><span class="line">        event: Event;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">var</span> d4: DD.Base;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;DD&#125;</span><br></pre></td></tr></table></figure>
+<p> 这段代码如果被三斜线指令引用，就会发现里面的<code>DD</code>和<code>d4</code>，外部根本无法直接使用，因为这个这个文件包含<code>export</code>所以被当成了一个模块，要使用模块内的东西，就要使用<code>import</code>的方式。要在三斜线指令中，直接使用这里面的声明，就应该去掉最后的<code>export</code>。</p>
+</li>
+<li><p>模块的真实引用<br> 这是一个非常重要的特性。当ts导入一个模块后，它会检查导入的内容的使用方式，区分它们是当成类型来使用还是当成值来使用，如果是当成类型来使用，则说明这个模块仅在编译期间需要，在运行期间不需要，所以ts编译结果中不会包含这个模块的真实引用方式，比如<code>require(&quot;&quot;)</code>的调用；如果有当成值来使用，说明这个模块不仅在编译期间需要，在运行期间也需要，所以ts的编译结果中就会包含这个模块真实的引用方式。</p>
+</li>
+</ol>
+<h2 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h2><p>命名空间是ts提供的，es标准中不包含这个，而且编写模块时，ts官方也建议不要在模块内部使用命名空间。</p>
+<h2 id="模块解析（module-resolution）"><a href="#模块解析（module-resolution）" class="headerlink" title="模块解析（module resolution）"></a>模块解析（module resolution）</h2><p>模块解析就是ts编译器用来弄清每个<code>import</code>所指向内容的过程。以<code>import {a} from &quot;moduleA&quot;</code>来说，为了弄清<code>a</code>的用途，编译器需要准确地知道它的含义是什么，并且需要检查它在<code>moduleA</code>中的定义。</p>
+<p>编译器需要知道<code>moduleA</code>的类型结构是什么？也就是在ts文档中经常提到一个词：<code>shape</code>。<code>moduleA</code>可以通过自定义的<code>.ts/.tsx</code>文件中编写，也可能位于其它所依赖的<code>.d.ts</code>文件中。</p>
+<p>首先，编译器会尝试去定位一个能够代表导入模块的文件，它会使用两种定位查找策略：<code>classic</code>和<code>node</code>。如果编译器根据定位查找策略没有找到对应的文件，并且这个模块的路径不是一个相对路径，则编译器会视图通过<code>ambient modules</code>来查找这个模块。 <code>ambient modules</code>就是定义在<code>.d.ts</code>文件中，然后通过三斜线指令<code>&lt;reference &gt;</code>来使用的那种模块。如果最终都找不到这个模块，就会抛出错误，提示模块不存在。</p>
+<h3 id="相对-vs-非相对的模块导入"><a href="#相对-vs-非相对的模块导入" class="headerlink" title="相对 vs 非相对的模块导入"></a>相对 vs 非相对的模块导入</h3><p>以<code>/</code> <code>./</code> <code>../</code>开头的导入属于相对导入：<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Entry <span class="keyword">from</span> <span class="string">"./components/Entry"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; DefaultHeaders &#125; <span class="keyword">from</span> <span class="string">"../constants/http"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"/mod"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>其它的属于非相对导入：<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> $ <span class="keyword">from</span> <span class="string">"jquery"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; Component &#125; <span class="keyword">from</span> <span class="string">"@angular/core"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>相对导入完全依赖当前文件与目标模块的相对位置来查找，并且未找到目标模块文件时，也无法降级到去查找<code>ambient module</code>，适用于导入项目内部模块。<br>非相对导入遵循<code>classic</code>或<code>node</code>的策略来定位文件，并且未找到目标模块时，会启用查找<code>ambient module</code>，适用于导入项目外部的模块。</p>
+<h3 id="解析策略"><a href="#解析策略" class="headerlink" title="解析策略"></a>解析策略</h3><p>这个可以通过配置<code>--moduleResolution</code>这个编译选项来设置，默认值为：<code>module === &quot;AMD&quot; or &quot;System&quot; or &quot;ES6&quot; ? &quot;Classic&quot; : &quot;Node&quot;</code>。</p>
+<ol>
+<li><p><code>classic</code><br> 这个策略解析相对路径时比较简单，举例来说：<code>import { b } from &quot;./moduleB&quot;</code>，位于<code>/root/src/folder/A.ts</code>，会进行以下查找：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/root/src/folder/moduleB.ts</span><br><span class="line">/root/src/folder/moduleB.d.ts</span><br></pre></td></tr></table></figure>
+<p> 注意它是同时查找<code>.ts</code>和<code>.d.ts</code>文件。</p>
+<p> 这个策略解析非相对路径时，会从当前文件所在目录，逐级往上查找，直到找到位置。举例来说：<code>import { b } from &quot;moduleB&quot;</code>，位于<code>/root/src/folder/A.ts</code>，会进行以下查找：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/root/src/folder/moduleB.ts</span><br><span class="line">/root/src/folder/moduleB.d.ts</span><br><span class="line">/root/src/moduleB.ts</span><br><span class="line">/root/src/moduleB.d.ts</span><br><span class="line">/root/moduleB.ts</span><br><span class="line">/root/moduleB.d.ts</span><br><span class="line">/moduleB.ts</span><br><span class="line">/moduleB.d.ts</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>node</code><br> 这个策略是ts以nodejs的模块解析策略为基础，然后添加了自己的解析逻辑。nodejs模块解析策略，也区分相对路径和非相对路径。<br> 如果是相对路径，以<code>var x = require(&quot;./moduleB&quot;)</code>位于<code>/root/src/moduelA.js</code>文件中为例，则会进行以下查找：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/root/src/moduleB.js，先看这个文件是否存在</span><br><span class="line">/root/src/moduleB，判断这个目录下是否有package.json文件，并且里面是否有指定一个main字段</span><br><span class="line">/root/src/moduleB/index.js，最后判断这个文件是否存在</span><br></pre></td></tr></table></figure>
+<p> 如果是绝对路径，则主要以查找<code>node_modules</code>为主，举例来说：<code>var x = require(&quot;moduleB&quot;)</code>位于<code>/root/src/moduelA.js</code>文件中，那么它会进行以下查找：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/root/src/node_modules/moduleB.js</span><br><span class="line">/root/src/node_modules/moduleB/package.json (<span class="keyword">if</span> it specifies a <span class="string">"main"</span> property)</span><br><span class="line">/root/src/node_modules/moduleB/index.js</span><br><span class="line"></span><br><span class="line">/root/node_modules/moduleB.js</span><br><span class="line">/root/node_modules/moduleB/package.json (<span class="keyword">if</span> it specifies a <span class="string">"main"</span> property)</span><br><span class="line">/root/node_modules/moduleB/index.js</span><br><span class="line"></span><br><span class="line">/node_modules/moduleB.js</span><br><span class="line">/node_modules/moduleB/package.json (<span class="keyword">if</span> it specifies a <span class="string">"main"</span> property)</span><br><span class="line">/node_modules/moduleB/index.js</span><br></pre></td></tr></table></figure>
+<p> ts以node的这个解析策略为基础，扩展了自己的解析逻辑。首先它会解析更多的文件格式：<code>.ts .tsx .d.ts</code>。然后它会检查<code>package.json</code>中的<code>types</code>字段指定的文件是否存在，而不是<code>main</code>字段，以免与<code>node</code>的解析冲突。</p>
+<p> 如果是相对路径，以<code>var x = require(&quot;./moduleB&quot;)</code>位于<code>/root/src/moduelA.ts</code>文件中为例，则会进行以下查找：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/root/src/moduleB.ts</span><br><span class="line">/root/src/moduleB.tsx</span><br><span class="line">/root/src/moduleB.d.ts</span><br><span class="line">/root/src/moduleB/package.json (<span class="keyword">if</span> it specifies a <span class="string">"types"</span> property)</span><br><span class="line">/root/src/moduleB/index.ts</span><br><span class="line">/root/src/moduleB/index.tsx</span><br><span class="line">/root/src/moduleB/index.d.ts</span><br></pre></td></tr></table></figure>
+<p> 如果是非相对路径，以<code>var x = require(&quot;moduleB&quot;)</code>位于<code>/root/src/moduelA.js</code>文件中为例，那么它会进行以下查找：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">/root/src/node_modules/moduleB.ts</span><br><span class="line">/root/src/node_modules/moduleB.tsx</span><br><span class="line">/root/src/node_modules/moduleB.d.ts</span><br><span class="line">/root/src/node_modules/moduleB/package.json (<span class="keyword">if</span> it specifies a <span class="string">"types"</span> property)</span><br><span class="line">/root/src/node_modules/@types/moduleB.d.ts</span><br><span class="line">/root/src/node_modules/moduleB/index.ts</span><br><span class="line">/root/src/node_modules/moduleB/index.tsx</span><br><span class="line">/root/src/node_modules/moduleB/index.d.ts</span><br><span class="line"></span><br><span class="line">/root/node_modules/moduleB.ts</span><br><span class="line">/root/node_modules/moduleB.tsx</span><br><span class="line">/root/node_modules/moduleB.d.ts</span><br><span class="line">/root/node_modules/moduleB/package.json (<span class="keyword">if</span> it specifies a <span class="string">"types"</span> property)</span><br><span class="line">/root/node_modules/@types/moduleB.d.ts</span><br><span class="line">/root/node_modules/moduleB/index.ts</span><br><span class="line">/root/node_modules/moduleB/index.tsx</span><br><span class="line">/root/node_modules/moduleB/index.d.ts</span><br><span class="line"></span><br><span class="line">/node_modules/moduleB.ts</span><br><span class="line">/node_modules/moduleB.tsx</span><br><span class="line">/node_modules/moduleB.d.ts</span><br><span class="line">/node_modules/moduleB/package.json (<span class="keyword">if</span> it specifies a <span class="string">"types"</span> property)</span><br><span class="line">/node_modules/@types/moduleB.d.ts</span><br><span class="line">/node_modules/moduleB/index.ts</span><br><span class="line">/node_modules/moduleB/index.tsx</span><br><span class="line">/node_modules/moduleB/index.d.ts</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="types与相关的编译选项"><a href="#types与相关的编译选项" class="headerlink" title="@types与相关的编译选项"></a>@types与相关的编译选项</h2><p>注意到上面示例中，有提到一个<code>@types</code>的<code>scope</code>包，这个是社区维护的一个高质量的<code>ts</code>的声明文件库，包含了目前大部分的js库以及js环境的声明定义，详情可参考：<a href="http://definitelytyped.org/" target="_blank" rel="noopener">http://definitelytyped.org/</a>。</p>
+<p>比如你想引入<code>jquery</code>做类型检查，可以安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install @types/jquery --save</span><br></pre></td></tr></table></figure></p>
+<p>然后就可以在ts项目中使用<code>@types/jquery</code>中已经定义好的<code>jquery</code>的api结构类型：<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> $ = <span class="built_in">require</span>(<span class="string">'jquery'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面使用$将会有完整的代码提示和类型检查。</span></span><br><span class="line"><span class="comment">// $('#box').addClass('...')</span></span><br></pre></td></tr></table></figure></p>
+<p>这个<code>@types</code>被ts加到<code>node</code>的模块查找策略中，更方便了开发人员对于社区已有的类型定义的重用，最终目的为了推广ts。</p>
+<p>但是这种方式只是安装了<code>@types/jquery</code>，然后在ts编译<code>import $ = require(&#39;jquery&#39;)</code>时，它靠<code>@types/jquery</code>能够完成对<code>$</code>的类型检查，<code>jquery</code>模块的可执行文件是没有安装的，所以项目中还需要安装<code>jquery</code>，才能完成后续<code>babel</code>以及<code>webpack</code>等工具的处理。还是那句话，ts不关心模块可执行文件是否存在， 只关心模块的<code>shape</code>结构是怎么样的，以及能否找到可以描述它的<code>shape</code>的文件。</p>
+<p>如果你在用某个第三方的库，发现它还没有相关的声明定义文件，假如你自己已经写好了，则可以按照<code>@types</code>官方的发布提交规范，把你的声明文件提交给他们，这样以后别的开发者就可以直接用你写的了。</p>
+<p>默认情况下，所有<strong>可见</strong>的<code>@types</code>包，都会自动加入的ts的全局编译环境中。任何<code>node_modules/@types</code>内的封闭文件夹都被视为可见的，包括：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./node_modules/@types</span><br><span class="line">../node_modules/@types</span><br><span class="line">../../node_modues/@types</span><br><span class="line">etc...</span><br></pre></td></tr></table></figure></p>
+<p>这个全局编译环境是指，即使不显示地导入<code>@types</code>的包，这些包的类型也能生效。 比如你安装了<code>@types/jquery</code>，然后编写：<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a: JQuery;</span><br></pre></td></tr></table></figure></p>
+<p>这个代码将会编译成功，因为它可以从全局环境中解析出<code>JQuery</code>的类型，它来自于<code>@types/jquery</code>。</p>
+<p>有两个编译选项可以改变这个编译行为。</p>
+<p>第一个是<code>--typeRoot</code>，它可以指定一个文件夹作为<code>@types</code>检查的根目录，只有这个文件夹内的包才会被加入到编译环境，不再考虑<code>node_modules/@types</code>下的包了。如：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="attr">"compilerOptions"</span>: &#123;</span><br><span class="line">       <span class="attr">"typeRoots"</span> : [<span class="string">"./typings"</span>]</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>第二个是<code>--types</code>，它可以指定一个数组，仅把指定范围内的包，加入到编译环境，而不是把所有<code>node_modules/@types</code>下的包都加入：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="attr">"compilerOptions"</span>: &#123;</span><br><span class="line">       <span class="attr">"types"</span> : [<span class="string">"node"</span>, <span class="string">"lodash"</span>, <span class="string">"express"</span>]</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个配置就只把<code>node lodash express</code>3个包加入当前项目的编译环境，其它<code>node_modules/@types</code>下的包则不会加入。这个选项是比较有好处的。 另外如果把<code>types</code>配置为：<code>[]</code>，则会禁用所有的<code>@types</code>相关包。</p>
+<p>注意上面这种行为更多地是在全局范围内类型检查有意义。假如设置<code>types: []</code>，那么以下代码将不会再能检查出<code>JQuery</code>类型。<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a: JQuery;</span><br></pre></td></tr></table></figure></p>
+<p>但是这并不影响单独导入<code>JQuery</code>，如果我们显示导入<code>jquery</code>，则<code>JQuery</code>类型，依然能在模块中使用：<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"jquery"</span></span><br><span class="line"><span class="keyword">let</span> a: JQuery</span><br></pre></td></tr></table></figure></p>
+<p>即使<code>types:[]</code>关掉了对<code>@types/jquery</code>的自动引入。 这个例子提醒我们，<code>@types</code>的默认行为，是对全局环境生效的，但是不影响模块机制；这也充分说明，在使用ts的时候，首先要明确当前这个文件，到底是一个模块文件还是一个非模块文件，如果是一个非模块文件，意味着它的内容就是在全局范围内生效的。</p>
+<p><strong>ts中的全局范围，应该是指ts全局的编译环境范围，而不是浏览器的全局环境。</strong></p>
+<h2 id="lib与–lib"><a href="#lib与–lib" class="headerlink" title="lib与–lib"></a>lib与–lib</h2><p>与<code>@types</code>相似的，ts默认还提供了一个<code>lib</code>库。新建一个ts项目，随便编写：<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(...)</span><br></pre></td></tr></table></figure></p>
+<p>你就能看到<code>addEventListener</code>的输入提示。 这是因为ts安装后，自带<code>lib</code>库，提前把es语言标准和web api标准的声明文件都准备好了，所以在ts项目中，就能自动识别已启用的<code>lib</code>。</p>
+<p>从官方文档看，目前<code>lib</code>库中包含有：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">► ES5</span><br><span class="line">► ES6</span><br><span class="line">► ES2015</span><br><span class="line">► ES7</span><br><span class="line">► ES2016</span><br><span class="line">► ES2017</span><br><span class="line">► ES2018</span><br><span class="line">► ESNext</span><br><span class="line">► DOM</span><br><span class="line">► DOM.Iterable</span><br><span class="line">► WebWorker</span><br><span class="line">► ScriptHost</span><br><span class="line">► ES2015.Core</span><br><span class="line">► ES2015.Collection</span><br><span class="line">► ES2015.Generator</span><br><span class="line">► ES2015.Iterable</span><br><span class="line">► ES2015.Promise</span><br><span class="line">► ES2015.Proxy</span><br><span class="line">► ES2015.Reflect</span><br><span class="line">► ES2015.Symbol</span><br><span class="line">► ES2015.Symbol.WellKnown</span><br><span class="line">► ES2016.Array.Include</span><br><span class="line">► ES2017.object</span><br><span class="line">► ES2017.Intl</span><br><span class="line">► ES2017.SharedMemory</span><br><span class="line">► ES2017.String</span><br><span class="line">► ES2017.TypedArrays</span><br><span class="line">► ES2018.Intl</span><br><span class="line">► ES2018.Promise</span><br><span class="line">► ES2018.RegExp</span><br><span class="line">► ESNext.AsyncIterable</span><br><span class="line">► ESNext.Array</span><br><span class="line">► ESNext.Intl</span><br><span class="line">► ESNext.Symbol</span><br></pre></td></tr></table></figure></p>
+<p>默认值与`–target选项有关系：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">► For --target ES5: DOM,ES5,ScriptHost</span><br><span class="line">► For --target ES6: DOM,ES6,DOM.Iterable,ScriptHost</span><br></pre></td></tr></table></figure></p>
+<p>通过<code>--lib</code>这个编译选项可以显示地改变ts项目所要启用的<code>lib</code>:<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"lib"</span>: [</span><br><span class="line">        <span class="string">"DOM"</span>,</span><br><span class="line">        <span class="string">"WebWorker"</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>结合<code>@types</code>来看，<code>lib</code>解决的是es和web标准层面的类型定义问题，<code>@types</code>解决的是众多js库的类型定义问题，只要这两个部分做的好，ts这个工具在使用上面就不具备阻力了，我想这也是2019年ts发展迅猛的一个重要原因。</p>
+<h2 id="声明文件"><a href="#声明文件" class="headerlink" title="声明文件"></a>声明文件</h2><p>ts需要的是类型的<code>shape</code>，声明文件就是为这个设计的。不论是<code>@types</code>还是<code>lib</code>，它们给ts提供的就是类型和结构的声明，它们可以解决js运行环境和大部分第三方依赖的类型需求，但是实际项目中也不排除会遇到需要自己手写声明文件的场景。</p>
+<p>前面写的：<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">module</span> "foo"</span><br></pre></td></tr></table></figure></p>
+<p>这就是一个最简单的声明文件，而且这是一个非模块类型的声明文件。但是即使是模块中，也可以有声明：<br><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"jquery"</span></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">let</span> $: JQueryStatic</span><br></pre></td></tr></table></figure></p>
+<p>所以声明的来源有四个:</p>
+<ul>
+<li>手写的非模块文件</li>
+<li>手写的模块文件</li>
+<li><code>@types</code>下的包</li>
+<li><code>lib</code></li>
+</ul>
+<p>声明文件中的声明怎么写，以及怎么去抽离一个已有的库的声明结构，包括如何将声明文件发布到<code>npm</code>或<code>@types</code>，这些内容是声明文件这个模块的核心。 此处不做深入介绍，本文后面的部分也许会做一些总结。</p>
+<h2 id="三斜线指令"><a href="#三斜线指令" class="headerlink" title="三斜线指令"></a>三斜线指令</h2><p>在前面的内容中，已经看到有对三斜线指令的使用。三斜线指令是对ts编译环境类型进行补充的一个方式。它们必须位于文件顶部，它们所指定的文件或声明，将在ts编译时优先包含进编译环境。三斜线指令有三种形式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;reference path=&quot;...&quot; /&gt;</span><br><span class="line">/// &lt;reference type=&quot;...&quot; /&gt;</span><br><span class="line">/// &lt;reference lib=&quot;...&quot; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>它们有不同的使用场景。</p>
+<ol>
+<li><p><code>&lt;reference path=&quot;...&quot; /&gt;</code><br> 这个指令，通过<code>path</code>指定一个<code>.d.ts</code>或<code>.ts</code>文件，这通常是ts项目中需要自己手写的声明文件所在的位置。如下这个例子：</p>
+ <figure class="highlight ts"><figcaption><span>nest/b.d.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">namespace</span> modB &#123;</span><br><span class="line">    <span class="keyword">interface</span> Animal &#123;</span><br><span class="line">        name: <span class="built_in">string</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">createAnimal</span>(<span class="params">name: <span class="built_in">string</span></span>): <span class="title">Animal</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+ <figure class="highlight ts"><figcaption><span>a.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;reference path="./nest/b.d.ts" /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> dog: modB.Animal = modB.createAnimal(<span class="string">'dog'</span>)</span><br></pre></td></tr></table></figure>
+<p> 这个例子中<code>nest/b.d.ts</code>中手写了对<code>modB</code>的声明，<code>modB</code>是一个通过命名空间<code>modB</code>来使用的一个模块。 <code>a.ts</code>中需要直接使用<code>modB</code>这个命名空间，但是如果不把它的声明文件加进来，直接使用<code>modB</code>会报错，所以通过<code>&lt;refrence path=&quot;...&quot; /&gt;</code>把<code>nest/b.td.ts</code>提前加入对<code>a.ts</code>的编译环境中。</p>
+<p> 因为<code>nest/b.d.ts</code>是一个非模块的声明文件，它的作用范围是全局的，所以在<code>a.ts</code>中，不需要<code>import</code>直接就可以使用<code>modB</code>这个全局的明明空间名称。 如果把<code>nest/b.d.ts</code>改为:</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">namespace</span> modB &#123;</span><br><span class="line">    <span class="keyword">interface</span> Animal &#123;</span><br><span class="line">        name: <span class="built_in">string</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">createAnimal</span>(<span class="params">name: <span class="built_in">string</span></span>): <span class="title">Animal</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;modB&#125;</span><br></pre></td></tr></table></figure>
+<p> 最后的一个<code>export</code>把<code>nest/b.d.ts</code>变为了一个模块声明文件，将导致<code>a.ts</code>无法再通过<code>modB</code>这个全局空间名称直接使用<code>modB</code>，需要改为<code>import</code>:</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;modB&#125; <span class="keyword">from</span> <span class="string">"./nest/b"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> dog: modB.Animal = modB.createAnimal(<span class="string">'dog'</span>)</span><br></pre></td></tr></table></figure>
+<p> 所以<code>&lt;reference path=&quot;...&quot; /&gt;</code>要使用的文件是不应该包含<code>export</code>的。但是也不绝对，即使是模块类型的声明文件，也可以通过<code>export as namespace ...</code>在全局范围内暴露一个名称出来，这个在声明文件的具体写法中有介绍。</p>
+<p> <code>&lt;reference path=&quot;...&quot; /&gt;</code>也是提供<code>ambient module</code>的来源，如果一个<code>import</code>语句按照<code>module resolution</code>的策略找不到模块或模块声明，则会查看文件顶部的<code>&lt;reference path=&quot;...&quot; /&gt;</code>所指定的声明文件中，是否有该模块的声明。如：</p>
+ <figure class="highlight ts"><figcaption><span>nest/b.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">module</span> "modB" &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">interface</span> Animal &#123;</span><br><span class="line">        name: <span class="built_in">string</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createAnimal</span>(<span class="params">name: <span class="built_in">string</span></span>): <span class="title">Animal</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+ <figure class="highlight ts"><figcaption><span>a.ts</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;reference path="./nest/b.d.ts" /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> modB <span class="keyword">from</span> <span class="string">"modB"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> v: modB.Animal = modB.createAnimal(<span class="string">'dog'</span>)</span><br></pre></td></tr></table></figure>
+<p> <code>&lt;reference path=&quot;./nest/b.d.ts&quot; /&gt;</code>一定需要写吗？不一定需要写。比如把<code>a.ts</code>和<code>nest/b.d.ts</code>都加入<code>tsconfig.json</code>的<code>files</code>配置中：</p>
+ <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"files"</span>: [</span><br><span class="line">        <span class="string">"src/a.ts"</span>,</span><br><span class="line">        <span class="string">"src/nest/b.d.ts"</span></span><br><span class="line">    ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 则<code>nest/b.td.ts</code>会自动加入到ts的编译环境中，<code>a.ts</code>内即使没有明确的三斜线指令，也不影响ts找到<code>modB</code>的<code>ambient module</code>。但是从清晰角度来看，还是明确地写出三斜线指令会更好。</p>
+<p> 这个点结合之前的<code>lib</code>和<code>@types</code>，以及模块解析策略，可以看到ts提供的编译环境，对于类型的查找范围是非常大的，它不会放弃任何一个有机会提供类型的位置。  同时也能看到在ts中区分一个文件是模块还是非模块是很重要的，它直接决定这个文件内的内容的在编译时的作用范围。</p>
+</li>
+<li><p><code>&lt;reference type=&quot;...&quot; /&gt;</code><br> 这个跟上面那个类似，不过它通过type属性来指定一个值，指定的是什么呢？是<code>@types</code>下的某个包的名称，这个指令通常应用于自己要发布的<code>package</code>当中。比如你开发了一个<code>package</code>，写好了它的声明文件，但是你的包，除了自己的类型，还依赖了<code>@types</code>的某些包，那么在你的声明文件里面，就可以加上这个指令，比如<code>&lt;reference type=&quot;node&quot; /&gt;</code>。这样别人安装了你的包，导入你的包之后，会发现其实它还需要依赖<code>@types/node</code>。它然后把<code>@types/node</code>安装以下， 你的包提供的类型结构就可以在它的ts项目中使用了。</p>
+</li>
+<li><p><code>&lt;reference lib=&quot;...&quot; /&gt;</code><br> 前面了解到<code>lib</code>是ts自带的类型声明库，并且可以通过<code>--lib</code>来指定ts项目要开启的<code>lib</code>。如果某些<code>lib</code>特性，仅在某个文件中启用，那么可以通过这个指令，为这个文件单独开启这个<code>lib</code>的支持。如：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;reference lib="es2017.string" /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="string">"foo"</span>.padStart(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="tsconfig-json"><a href="#tsconfig-json" class="headerlink" title="tsconfig.json"></a>tsconfig.json</h2><p>这是ts的配置文件，它在的地方，将被作为ts项目编译的根目录。ts可以通过<code>--file --include --exclude</code>来配置编译的文件范围，其中<code>--file</code>要求配置文件的绝对或相对路径，不支持泛匹配；<code>--include --exclude</code>支持类似<code>glob</code>的配置方式。</p>
+<blockquote>
+<p>官方说明： <a href="https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#details" target="_blank" rel="noopener">https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#details</a></p>
+</blockquote>
+<p>如果<code>include</code>配置未指定文件后缀的话，那么<code>.ts .d.ts .tsx</code>后缀的文件都会包含进去。 同时如果<code>--allowJs</code>也是<code>true</code>的话，那么<code>.js .jsx</code>后缀的文件也会加入进去。</p>
+<p>如果<code>files</code>和<code>include</code>两个选项都没指定，那么ts会把所有允许的后缀文件都加入到编译范围内，当然除了那些被<code>exclude</code>指定排除的。所有允许的后缀包括<code>.ts .d.ts .tsx</code>，以及在<code>allowJs: true</code>时还包含：<code>.js .jsx</code>。</p>
+<p>如果指定了<code>files</code>和<code>include</code>，那么ts的范围就是这两个的并集。通过<code>include</code>指定的文件范围，可以通过<code>exclude</code>做过滤排除。但是<code>files</code>指定的文件，无法通过<code>exclude</code>来排除。<code>exclude</code>在未指定的情况下，默认排除<code>node_modules/</code>、<code>bower_components/</code>等。 </p>
+<p>包含在<code>files</code>和<code>include</code>中的文件，如果依赖了其他未在<code>files</code>和<code>include</code>中的文件，则也会包含进编译环境。举例来说，如果<code>A.ts</code>在<code>files</code>或<code>includes</code>中，但是<code>B.ts</code>不在，此时如果<code>A.ts</code>导入了<code>B.ts</code>，则<code>B.ts</code>也会一起编译。 而且<code>B.ts</code>通过<code>exclude</code>无法排除，因为<code>A.ts</code>需要它。除非<code>A.ts</code>也被<code>exclude</code>排除。</p>
+<p>从这部分内容也能看到，tsconfig.json把整个文件夹都变为了编译范围，在不做范围控制的情况下，项目内满足ts后缀要求的文件，都会被它识别为编译环境的一部分。这就是为啥在vscode和webstorm中，明明没有引用某些类型，但是依然可以看到这些类型的提示，这就是这些类型正在整个项目范围内生效所导致的。</p>
+<h2 id="再看声明文件"><a href="#再看声明文件" class="headerlink" title="再看声明文件"></a>再看声明文件</h2><p>声明文件的作用是描述代码的类型结构，也就是<code>shape</code>。但是js本身是一个弱类型的语言，在ts之前，js的动态能力一方面让它的灵活性远高于强类型语言，另一方面也因为动态特性，导致js的代码结构几乎没有太过统一的形式。 ts想出了声明文件，试图靠它描述所有非ts语言的代码结构，但是js的动态特性，让这个声明文件的编写有时变得比开发代码还要复杂。</p>
+<h3 id="写法举例"><a href="#写法举例" class="headerlink" title="写法举例"></a>写法举例</h3><p>先来看看声明文件的部分场景的写法。</p>
+<ol>
+<li><p>如何声明全局变量<br> 注意这个全局变量，是指真的在js全局环境中运行时存在的变量。<br> 假如运行时代码是这样的：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"Half the number of widgets is "</span> + (foo / <span class="number">2</span>));</span><br></pre></td></tr></table></figure>
+<p> <code>foo</code>是一个全局变量，上述代码编译会报错，必须先声明foo变量才可使用，改为：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">var</span> foo: <span class="built_in">number</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"Half the number of widgets is "</span> + (foo / <span class="number">2</span>));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如何声明全局函数<br> 跟全局变量类似：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="function"><span class="keyword">function</span> <span class="title">greet</span>(<span class="params">v: <span class="built_in">string</span></span>): <span class="title">void</span></span>;</span><br><span class="line"></span><br><span class="line">greet(<span class="string">"hello, world"</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>声明全局的带属性的对象</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">namespace</span> myLib &#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">makeGreeting</span>(<span class="params">v: <span class="built_in">string</span></span>) : <span class="title">string</span></span>;</span><br><span class="line">    <span class="keyword">var</span> numberOfGreetings: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result = myLib.makeGreeting(<span class="string">"hello, world"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"The computed greeting is:"</span> + result);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> count = myLib.numberOfGreetings;</span><br></pre></td></tr></table></figure>
+<p> 此处借助<code>declare namespace myLib</code>往全局编译环境声明了一个<code>myLib</code>的命名空间。</p>
+</li>
+<li><p>方法重载声明<br> 假如运行时代码是这样的：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Widget &#123;</span><br><span class="line">    name?: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> x: Widget = getWidget(<span class="number">43</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> arr: Widget[] = getWidget(<span class="string">"all of them"</span>);</span><br></pre></td></tr></table></figure>
+<p> <code>getWidget</code>有两种调用形式，上述代码不存在<code>getWidget</code>，需要声明才能使用：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="function"><span class="keyword">function</span> <span class="title">getWidget</span> (<span class="params">v: <span class="built_in">number</span></span>): <span class="title">Widget</span></span>;</span><br><span class="line"><span class="keyword">declare</span> <span class="function"><span class="keyword">function</span> <span class="title">getWidget</span>(<span class="params"> v: <span class="built_in">string</span></span>): <span class="title">Widget</span>[]</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> Widget &#123;</span><br><span class="line">    name?: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> x: Widget = getWidget(<span class="number">43</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> arr: Widget[] = getWidget(<span class="string">"all of them"</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>声明可重用的接口<br> 假如运行时代码是这样的：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">greet(&#123;</span><br><span class="line">    greeting: <span class="string">"hello world"</span>,</span><br><span class="line">    duration: <span class="number">4000</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p> 添加声明后：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> GreetingSettings &#123;</span><br><span class="line">    greeting: <span class="built_in">string</span>;</span><br><span class="line">    duration?: <span class="built_in">number</span>;</span><br><span class="line">    color?: <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="function"><span class="keyword">function</span> <span class="title">greet</span>(<span class="params">setting: GreetingSettings</span>): <span class="title">void</span></span>;</span><br><span class="line"></span><br><span class="line">greet(&#123;</span><br><span class="line">    greeting: <span class="string">"hello world"</span>,</span><br><span class="line">    duration: <span class="number">4000</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>声明可重用的别名<br> 假如运行时的代码是这样的：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getGreeting</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"howdy"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> Greeter &#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> MyGreeter <span class="keyword">extends</span> Greeter &#123; &#125;</span><br><span class="line"></span><br><span class="line">greet(<span class="string">"hello"</span>);</span><br><span class="line">greet(getGreeting);</span><br><span class="line">greet(<span class="keyword">new</span> MyGreeter());</span><br></pre></td></tr></table></figure>
+<p> 添加声明：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> GreetingLike = <span class="built_in">string</span> | <span class="function">(<span class="params">(<span class="params"></span>) =&gt; <span class="built_in">string</span></span>) | <span class="params">Greeter</span>;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="params">declare</span> <span class="params">function</span> <span class="params">greet</span>(<span class="params">g: GreetingLike</span>): <span class="params">void</span>;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="params">function</span> <span class="params">getGreeting</span><span class="params">()</span> &#123;</span></span><br><span class="line"><span class="function">    <span class="params">return</span> "<span class="params">howdy</span>";</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"><span class="params">class</span> <span class="params">Greeter</span> &#123;</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"><span class="params">class</span> <span class="params">MyGreeter</span> <span class="params">extends</span> <span class="params">Greeter</span> &#123; &#125;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="params">greet</span>(<span class="params">"hello"</span>);</span></span><br><span class="line"><span class="function"><span class="params">greet</span>(<span class="params">getGreeting</span>);</span></span><br><span class="line"><span class="function"><span class="params">greet</span>(<span class="params"><span class="keyword">new</span> MyGreeter(<span class="params"></span>)</span>);</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将类型声组织到一起<br> 假如运行时代码是这样的：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">log(&#123; verbose: <span class="literal">true</span> &#125;);</span><br><span class="line">alert(&#123; modal: <span class="literal">false</span>, title: <span class="string">"Current Greeting"</span> &#125;);</span><br></pre></td></tr></table></figure>
+<p> 这里有一个<code>log</code>和<code>alert</code>函数，他们分别接受不同结构的<code>options</code>作为参数，可以考虑把这些<code>options</code>通过命名空间组织到一起：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">options: GreetingLib.Options.Log</span>): <span class="title">void</span></span></span><br><span class="line"><span class="function"><span class="title">declare</span> <span class="function"><span class="keyword">function</span> <span class="title">alert</span>(<span class="params">options: GreetingLib.Options.Alert</span>): <span class="title">void</span></span></span></span><br><span class="line"><span class="function"><span class="function"></span></span></span><br><span class="line"><span class="function"><span class="function"><span class="title">declare</span> <span class="title">namespace</span> <span class="title">GreetingLib</span>.<span class="title">Options</span> </span>&#123;</span></span><br><span class="line"><span class="function">    // <span class="title">Refer</span> <span class="title">to</span> <span class="title">via</span> <span class="title">GreetingLib</span>.<span class="title">Options</span>.<span class="title">Log</span></span></span><br><span class="line"><span class="function">    <span class="title">interface</span> <span class="title">Log</span> </span>&#123;</span><br><span class="line">        verbose?: <span class="built_in">boolean</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">interface</span> Alert &#123;</span><br><span class="line">        modal: <span class="built_in">boolean</span>;</span><br><span class="line">        title?: <span class="built_in">string</span>;</span><br><span class="line">        color?: <span class="built_in">string</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">log(&#123; verbose: <span class="literal">true</span> &#125;);</span><br><span class="line">alert(&#123; modal: <span class="literal">false</span>, title: <span class="string">"Current Greeting"</span> &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>声明一个类<br> 假如运行时代码是这样的：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myGreeter = <span class="keyword">new</span> Greeter(<span class="string">"hello, world"</span>);</span><br><span class="line">myGreeter.greeting = <span class="string">"howdy"</span>;</span><br><span class="line">myGreeter.showGreeting();</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> SpecialGreeter <span class="keyword">extends</span> Greeter &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="string">"Very special greetings"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 要为<code>Greeter</code>添加声明：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="keyword">class</span> Greeter &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params">v: <span class="built_in">string</span></span>)</span><br><span class="line"></span><br><span class="line">    greeting: string;</span><br><span class="line"></span><br><span class="line">    showGreeting(<span class="params"></span>): void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const myGreeter = new Greeter(<span class="params">"hello, world"</span>);</span><br><span class="line">myGreeter.greeting = "howdy";</span><br><span class="line">myGreeter.showGreeting(<span class="params"></span>);</span><br><span class="line"></span><br><span class="line">class SpecialGreeter extends Greeter &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="string">"Very special greetings"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="代码的结构"><a href="#代码的结构" class="headerlink" title="代码的结构"></a>代码的结构</h3><p>上一个部分介绍了声明的一些写法。这个部分介绍声明文件作用的几种文件结构。</p>
+<ol>
+<li><p>全局的库结构<br> 在使用第三方库的时候，如果该库是通过暴露全局的变量、函数或对象来给别人使用的，那么这种库的代码结构就是全局的代码结构。ts提供了一个针对这种结构的声明文件模板可供参考：<a href="https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-d-ts.html" target="_blank" rel="noopener">global.d.ts</a></p>
+</li>
+<li><p>模块化的库结构<br> 全局的库结构已经不太流行了，现在的库，一般都是模块化的方式组织的。模块规范目前主要由：commonjs es umd三种风格。commonjs主要在node中应用；es在哪都能应用，最终都会编译为别的；umd比较通用，即可以通过模块化方式使用，也可以通过全局环境的方式使用。</p>
+<p> ts提供了三种声明文件模板，来为这种模块化的库编写声明。</p>
+<p> 第一种：<a href="https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-function-d-ts.html" target="_blank" rel="noopener">module-function.d.ts</a><br> 假如这个模块，可以通过函数的方式进行调用，比如下面的形式，就可以用这个模板：</p>
+ <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="built_in">require</span>(<span class="string">"foo"</span>);</span><br><span class="line"><span class="comment">// Note: calling 'x' as a function</span></span><br><span class="line"><span class="keyword">var</span> y = x(<span class="number">42</span>);</span><br></pre></td></tr></table></figure>
+<p> 第二种：<a href="https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-class-d-ts.html" target="_blank" rel="noopener">module-class.d.ts</a><br> 假如这个模块，可以通过<code>new</code>的方式使用，比如下面的形式，就可以用这个模板：</p>
+ <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="built_in">require</span>(<span class="string">"bar"</span>);</span><br><span class="line"><span class="comment">// Note: using 'new' operator on the imported variable</span></span><br><span class="line"><span class="keyword">var</span> y = <span class="keyword">new</span> x(<span class="string">"hello"</span>);</span><br></pre></td></tr></table></figure>
+<p> 第三种：<a href="https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-d-ts.html" target="_blank" rel="noopener">module.d.ts</a><br> 假如这个模块，不能被当成函数调用，也不能被<code>new</code>构造，就可以用这个模板。</p>
+<p> vs 全局的库结构。 在全局的库结构中，声明文件是看不到<code>import</code>和<code>export</code>关键字的，一旦有这个了，就会被当成模块化的声明文件了，声明文件内的内容将无法暴露到全局的编译环境中。 另外在模块化的声明文件里，如果是要暴露给外部的声明，需要额外添加<code>export</code>关键字。 对比这些模板就知道了。</p>
+<p> 另外在上面的模板中，还能见到一个声明语法， 如果一个模块化的声明文件中还想暴露出一个在全局空间都能生效的名称，可以使用：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">as</span> <span class="keyword">namespace</span> myFuncLib;</span><br></pre></td></tr></table></figure>
+<p> 这应该是专门为umd模块设计的。</p>
+</li>
+</ol>
+<p>还有其它几种代码结构的模板，可前往官方文档查看介绍，以下是它们的模板文件：</p>
+<ul>
+<li><a href="https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-plugin-d-ts.html" target="_blank" rel="noopener">module-plugin.d.ts</a></li>
+<li><a href="https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-plugin-d-ts.html" target="_blank" rel="noopener">global-plugin.d.ts</a></li>
+<li><a href="https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-modifying-module-d-ts.html" target="_blank" rel="noopener">global-modifying-module-plugin.d.ts</a></li>
+</ul>
+<h3 id="声明文件中的依赖"><a href="#声明文件中的依赖" class="headerlink" title="声明文件中的依赖"></a>声明文件中的依赖</h3><p>声明文件中如果依赖其它的声明，也是可以添加依赖。 </p>
+<ol>
+<li><p>如果你要写的声明文件是一个全局的声明文件<br> 全局的声明文件，要添加别的依赖，只能通过一种方式，就是：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;reference types="someLib" /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getThing</span>(<span class="params"></span>): <span class="title">someLib</span>.<span class="title">thing</span></span>;</span><br></pre></td></tr></table></figure>
+<p> 因为全局声明文件，依赖别的声明，不能通过<code>import</code>，否则它就变为模块化的声明文件了。而且，它只能依赖其它声明文件暴露到全局编译空间的名称。它只能利用<code>/// &lt;reference types=&quot;...&quot; /&gt;</code>这个指令，<code>types</code>里面写其它声明文件暴露到全局编译空间的名称即可。</p>
+</li>
+<li><p>如果你要写得声明文件是一个模块化的声明文件，并且你依赖的声明也是一个全局空间的声明<br> 也是利用<code>/// &lt;reference types=&quot;...&quot; /&gt;</code>这个指令来完成依赖：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;reference types="moment" /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getThing</span>(<span class="params"></span>): <span class="title">moment</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果你要写得声明文件是一个模块化的声明文件，并且你依赖的声明也是一个模块化的声明<br> 则可以利用<code>import</code>：</p>
+ <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> moment <span class="keyword">from</span> <span class="string">"moment"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getThing</span>(<span class="params"></span>): <span class="title">moment</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>经过测试，发现<code>/// &lt;reference types=&quot;...&quot; /&gt;</code>，不能针对本地文件生效，改用<code>/// &lt;reference path=&quot;...&quot; /&gt;</code>可以依赖本地文件。 毕竟<code>/// &lt;reference types=&quot;...&quot; /&gt;</code>包含的还是<code>@types</code>下的包，本地文件需要用<code>/// &lt;reference path=&quot;...&quot; /&gt;</code>。</p>
+<h3 id="声明文件发布的位置"><a href="#声明文件发布的位置" class="headerlink" title="声明文件发布的位置"></a>声明文件发布的位置</h3><p>当你发布一个npm包时，如果有写声明文件，则声明文件可以在<code>package.json</code>的以下几个位置指定：</p>
+<ol>
+<li>通过<code>types</code>或<code>typings</code>这个属性来指定；</li>
+<li>跟你的包文件一起，用<code>file</code>这个属性来制定；因为当使用<code>files</code>来指定包文件时，<code>types</code>和<code>typings</code>指定的内容会被忽略。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/typescript/" rel="tag"># typescript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/15/从培训课程收集的前端技术一览/" rel="next" title="从培训课程收集的前端技术一览">
+                <i class="fa fa-chevron-left"></i> 从培训课程收集的前端技术一览
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">109</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">52</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#typescript-vs-babel-vs-webpack"><span class="nav-number">1.</span> <span class="nav-text">typescript vs babel vs webpack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typescript-的类型系统"><span class="nav-number">2.</span> <span class="nav-text">typescript 的类型系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typescript-的模块机制"><span class="nav-number">3.</span> <span class="nav-text">typescript 的模块机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名空间"><span class="nav-number">4.</span> <span class="nav-text">命名空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块解析（module-resolution）"><span class="nav-number">5.</span> <span class="nav-text">模块解析（module resolution）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相对-vs-非相对的模块导入"><span class="nav-number">5.1.</span> <span class="nav-text">相对 vs 非相对的模块导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析策略"><span class="nav-number">5.2.</span> <span class="nav-text">解析策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#types与相关的编译选项"><span class="nav-number">6.</span> <span class="nav-text">@types与相关的编译选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lib与–lib"><span class="nav-number">7.</span> <span class="nav-text">lib与–lib</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#声明文件"><span class="nav-number">8.</span> <span class="nav-text">声明文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三斜线指令"><span class="nav-number">9.</span> <span class="nav-text">三斜线指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tsconfig-json"><span class="nav-number">10.</span> <span class="nav-text">tsconfig.json</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#再看声明文件"><span class="nav-number">11.</span> <span class="nav-text">再看声明文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#写法举例"><span class="nav-number">11.1.</span> <span class="nav-text">写法举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码的结构"><span class="nav-number">11.2.</span> <span class="nav-text">代码的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#声明文件中的依赖"><span class="nav-number">11.3.</span> <span class="nav-text">声明文件中的依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#声明文件发布的位置"><span class="nav-number">11.4.</span> <span class="nav-text">声明文件发布的位置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: decodeURI(window.location.pathname).substring(0, 50),
+      owner: 'liuyunzhuge',
+      repo: 'hexo-blog',
+      
+      oauth: {
+      
+      
+        client_secret: '49dc49b3aaf2a5282382aef99917a0c45eb0c002',
+      
+        client_id: 'aea5dac45cf0c7d4f8fd'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').not('.gist .highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+        if (result) $(this).text('复制成功');
+        else $(this).text('复制失败');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+
+</body>
+</html>
