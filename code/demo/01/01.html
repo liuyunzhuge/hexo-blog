@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let length = 100000
+        let arr = []
+
+        for (let i = 0; i < length; i++) {
+            arr.push(i)
+        }
+
+        performance.mark("array.concat.start")
+        for (let i = 0; i < length; i++) {
+            arr.push(arr[i])
+        }
+        performance.mark("array.concat.end")
+        performance.measure("array.concat", "array.concat.start", "array.concat.end")
+        console.log(arr.length)
+    </script>
+</body>
+
+</html>
