@@ -276,7 +276,7 @@ public class TextMessage {
         message_area = document.querySelector('#message_area'),
         clientId = localStorage.clientId || (Date.now() + Math.random() * 1000000 ^ 0),
         name = localStorage.name || prompt('请输入一个昵称'),
-        server = `ws://localhost:8080/demo/message/${clientId}`
+        server = `ws://localhost:8080${location.pathname}message/${clientId}`
 
     let socket = null;
 
@@ -286,7 +286,11 @@ public class TextMessage {
 
     let shifted = false;
     document.addEventListener('keydown', e => {
-        shifted = false;
+        if (e.key === 'Shift') {
+            shifted = true;
+        }
+    });
+    document.addEventListener('keyup', e => {
         if (e.key === 'Shift') {
             shifted = true;
         }
