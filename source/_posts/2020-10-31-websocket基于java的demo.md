@@ -176,12 +176,34 @@ public class TextMessage {
             margin: 0;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            padding: 50px 0;
+        }
+
+        body > div {
+            display: flex;
+            flex-direction: column;
+            max-width: 1000px;
+            min-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #f2f2f2;
+            border-radius: 8px;
+            height: 100%;
+        }
+
+        .message_area {
+            flex: 1;
+            overflow-y: auto;
+        }
+
         .input_area {
             height: 80px;
             width: 100%;
             display: flex;
-            position: fixed;
-            bottom: 0;
             border-top: 1px solid #f2f2f2;
         }
 
@@ -262,13 +284,15 @@ public class TextMessage {
     </style>
 </head>
 <body>
-<div class="message_area" id="message_area"></div>
-<div class="input_area">
-    <div>
-        <textarea id="messageInput" placeholder="输入要发送的消息"></textarea>
-    </div>
-    <div>
-        <button id="btnSend" type="button" class="btn" onclick="send()">发送</button>
+<div>
+    <div class="message_area" id="message_area"></div>
+    <div class="input_area">
+        <div>
+            <textarea id="messageInput" placeholder="输入要发送的消息"></textarea>
+        </div>
+        <div>
+            <button id="btnSend" type="button" class="btn" onclick="send()">发送</button>
+        </div>
     </div>
 </div>
 <script>
@@ -295,9 +319,6 @@ public class TextMessage {
             shifted = true;
         }
     });
-    document.addEventListener('keyup', e => {
-        shifted = false;
-    });
     messageInput.addEventListener('keypress', e => {
         if (!shifted && e.key === 'Enter') return requestAnimationFrame(send);
     })
@@ -320,8 +341,9 @@ public class TextMessage {
             createSocket();
         }
 
-        const value = messageInput.value;
+        const value = messageInput.value.trim();
         messageInput.value = '';
+        if(!value) return;
         const data = {
             text: value,
             from: {
@@ -345,6 +367,7 @@ public class TextMessage {
             elem.classList.add('self');
         }
         message_area.appendChild(elem)
+        elem.scrollIntoView()
     }
 </script>
 </body>
